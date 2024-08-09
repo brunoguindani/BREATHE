@@ -28,5 +28,6 @@
 	<classpathentry kind="lib" path="C:/Documenti/UniBG/Tesi/Pulse/Engine/engine-feature-ventilator_updates/src/java/jar/slf4j-api-2.0.7.jar"/>
 	<classpathentry kind="lib" path="C:/Documenti/UniBG/Tesi/Pulse/Engine/engine-feature-ventilator_updates/src/java/jar/slf4j-simple-2.0.7.jar"/>
 	<classpathentry kind="lib" path="C:/Documenti/UniBG/Tesi/Pulse/Engine/engine-feature-ventilator_updates/src/java/jar/xmlbeans-5.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Documenti/UniBG/Tesi/Pulse/Engine/builds/install/bin/Pulse.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
