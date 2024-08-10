@@ -4,35 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-
-import com.kitware.pulse.cdm.actions.SEAction;
-import com.kitware.pulse.cdm.bind.Events.eEvent;
-import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
-import com.kitware.pulse.cdm.bind.PatientActions.HemorrhageData.eCompartment;
-import com.kitware.pulse.cdm.conditions.SECondition;
-import com.kitware.pulse.cdm.engine.SEDataRequestManager;
-import com.kitware.pulse.cdm.engine.SEActiveEvent;
-import com.kitware.pulse.cdm.engine.SEEventHandler;
-import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
-import com.kitware.pulse.cdm.patient.SEPatient;
-import com.kitware.pulse.cdm.patient.actions.SEHemorrhage;
-import com.kitware.pulse.cdm.patient.actions.SESubstanceCompoundInfusion;
-import com.kitware.pulse.cdm.patient.assessments.SECompleteBloodCount;
-import com.kitware.pulse.cdm.patient.conditions.SEChronicAnemia;
-import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.LengthUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.MassUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.PowerUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
-import com.kitware.pulse.engine.PulseEngine;
-import com.kitware.pulse.cdm.properties.SEScalarTime;
-import com.kitware.pulse.utilities.Log;
-import com.kitware.pulse.utilities.LogListener;
-import com.kitware.pulse.utilities.JNIBridge;
 
 public class App extends JFrame {
 
@@ -99,7 +70,7 @@ public class App extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startSimulation();
+                new SimulationWorker(App.this).execute(); // Usa un SwingWorker per eseguire la simulazione
             }
         });
     }
@@ -113,78 +84,18 @@ public class App extends JFrame {
         gbc.gridy++;
     }
 
-    private void startSimulation() {
-        // Inizializzazione di JNIBridge e PulseEngine
-        JNIBridge.initialize();
-        PulseEngine pe = new PulseEngine();
-        
-        String[] requestList = {"SimTime","HeartRate","TotalLungVolume","RespirationRate","BloodVolume"};
-
-        // Creazione e configurazione delle richieste di dati
-        SEDataRequestManager dataRequests = new SEDataRequestManager();
-        dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
-        dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
-        dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
-        dataRequests.createPhysiologyDataRequest(requestList[4], VolumeUnit.mL);
-        dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
-
-        // Configurazione del paziente
-        /*
-        SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
-        SEPatient patient = patient_configuration.getPatient();
-        patient.setName(nameField.getText());
-        patient.setSex(eSex.Male); 
-        patient.getAge().setValue(Double.parseDouble(ageField.getText()), TimeUnit.yr);
-        patient.getWeight().setValue(Double.parseDouble(weightField.getText()), MassUnit.lb);
-        patient.getHeight().setValue(Double.parseDouble(heightField.getText()), LengthUnit.in);
-        patient.getBodyFatFraction().setValue(Double.parseDouble(bodyFatField.getText()));
-        patient.getHeartRateBaseline().setValue(Double.parseDouble(heartRateField.getText()), FrequencyUnit.Per_min);
-        patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(diastolicField.getText()), PressureUnit.mmHg);
-        patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(systolicField.getText()), PressureUnit.mmHg);
-        patient.getRespirationRateBaseline().setValue(Double.parseDouble(respirationRateField.getText()), FrequencyUnit.Per_min);
-        patient.getBasalMetabolicRate().setValue(Double.parseDouble(basalMetabolicRateField.getText()), PowerUnit.kcal_Per_day);
-        
-        // Inizializzazione del motore Pulse con la configurazione del paziente e le richieste di dati
-        pe.initializeEngine(patient_configuration, dataRequests);
-        */
-        
-        //SOLO PER DEBUG
-        pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
-        SEPatient initialPatient = new SEPatient();
-        pe.getInitialPatient(initialPatient);
-
-        resultArea.append("Started\n");
-        // Avanzamento temporale e gestione degli errori
-        SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
-        for(int tempo = 0; tempo < 10; tempo++) {
-            if (!pe.advanceTime(time)) {
-                resultArea.append("Something bad happened\n");
-                return;
-            }
-
-            // Estrazione e scrittura dei dati
-            List<Double> dataValues = pe.pullData();
-            dataRequests.writeData(dataValues);
-            resultArea.append("---------------------------\n");
-            for(int i = 0; i < (dataValues.size()); i++ ) {
-                resultArea.append(requestList[i] + ": " + dataValues.get(i) + "\n");
-            }
-
-            // Aggiungi punto al grafico usando SimTime (dataValues.get(0)) e HeartRate (dataValues.get(1))
-            int x = (int)(dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
-            int y = (int) (250 - dataValues.get(1)*2);
-            chartPanel.addPoint(x, y);
-
-            time.setValue(1, TimeUnit.s);
-            Log.info("Advancing "+time+"...");
-        }
-
-        // Pulizia finale e chiusura della simulazione
-        pe.clear();
-        pe.cleanUp();
-        resultArea.append("Simulation Complete\n");
+    public JTextArea getResultArea() {
+        return resultArea;
     }
-    
+
+    public LineChartPanel getChartPanel() {
+        return chartPanel;
+    }
+
+    public String getTextFieldValue(JTextField textField) {
+        return textField.getText();
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             App app = new App();
@@ -192,4 +103,3 @@ public class App extends JFrame {
         });
     }
 }
-
