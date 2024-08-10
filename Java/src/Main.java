@@ -148,7 +148,7 @@ public class Main
     dataRequests.createPhysiologyDataRequest("TotalLungVolume", VolumeUnit.mL);
     dataRequests.createPhysiologyDataRequest("RespirationRate", FrequencyUnit.Per_min);
     dataRequests.createPhysiologyDataRequest("BloodVolume", VolumeUnit.mL);
-    dataRequests.createPhysiologyDataRequest("BasalMetabolicRate");
+    dataRequests.createPatientDataRequest("BasalMetabolicRate",PowerUnit.kcal_Per_day);
     // In addition to getting this data back via this API
     // You can have Pulse write the data you have requested to a CSV file
     dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
@@ -157,7 +157,7 @@ public class Main
     // data_values[0] is ALWAYS the simulation time in seconds
     // The rest of the data values are in order of the data_requests list provided
 
-    InitializationType initType = InitializationType.PatientFile;
+    InitializationType initType = InitializationType.StateFile;
     // INITIALIZE THE ENGINE WITH A PATIENT
     switch(initType)
     {
