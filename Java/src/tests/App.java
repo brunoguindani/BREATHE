@@ -4,24 +4,31 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import com.kitware.pulse.cdm.patient.actions.SEAirwayObstruction;
+import com.kitware.pulse.utilities.Log;
 
 public class App extends JFrame {
 
     private JTextField nameField, ageField, weightField, heightField, bodyFatField;
     private JTextField heartRateField, diastolicField, systolicField, respirationRateField, basalMetabolicRateField;
     private JTextArea resultArea;
-    private LineChartPanel chartPanel; // Aggiungi il pannello per il grafico
+    private LineChartPanel chartPanelTop, chartPanelBot;
 
     public App() {
         setTitle("Pulse Simulation");
-        setSize(800, 700);  // Aumenta la dimensione per fare spazio al grafico
+        setSize(1400, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Pannello per gli input
+        // Imposta il colore di sfondo della finestra principale
+        getContentPane().setBackground(Color.LIGHT_GRAY);
+
+        // Pannello per gli input (centro)
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridBagLayout());
         inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        inputPanel.setPreferredSize(new Dimension(250, 0));
+        inputPanel.setBackground(Color.LIGHT_GRAY);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -46,35 +53,94 @@ public class App extends JFrame {
         gbc.gridy++;
         gbc.gridwidth = 2;
         JButton startButton = new JButton("Start Simulation");
+        startButton.setBackground(new Color(0, 122, 255)); // Blu
+        startButton.setForeground(Color.WHITE);
+        startButton.setFocusPainted(false);
         inputPanel.add(startButton, gbc);
 
-        // Pannello per il grafico
-        chartPanel = new LineChartPanel();
+        // Bottone per fermare la simulazione
+        JButton stopButton = new JButton("Stop Simulation");
+        stopButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
+        stopButton.setBackground(new Color(255, 59, 48)); // Rosso
+        stopButton.setForeground(Color.WHITE);
+        stopButton.setFocusPainted(false);
+        gbc.gridy++;
+        inputPanel.add(stopButton, gbc);
 
-        // Area di testo per visualizzare i risultati
+        // Bottone per iniziare un'azione
+        JButton actionButton = new JButton("Action");
+        actionButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
+        actionButton.setBackground(new Color(52, 199, 89)); // Verde
+        actionButton.setForeground(Color.WHITE);
+        actionButton.setFocusPainted(false);
+        gbc.gridy++;
+        inputPanel.add(actionButton, gbc);
+
+        chartPanelTop = new LineChartPanel(); // Primo grafico
+        chartPanelBot = new LineChartPanel(); // Secondo grafico
+
+        // Pannello per il grafico (destra)
+        JPanel chartsPanel = new JPanel();
+        chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
+        chartsPanel.add(chartPanelTop);
+        chartsPanel.add(chartPanelBot);
+        chartsPanel.setBackground(Color.LIGHT_GRAY);
+
+        // Area di testo per visualizzare i risultati (sinistra)
         resultArea = new JTextArea();
         resultArea.setEditable(false);
         resultArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         resultArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        resultArea.setBackground(Color.WHITE);
         JScrollPane scrollPane = new JScrollPane(resultArea);
+        scrollPane.setPreferredSize(new Dimension(350, 0));
+        scrollPane.setBackground(Color.LIGHT_GRAY);
 
-        // Pannello per la parte inferiore
-        JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.add(chartPanel, BorderLayout.WEST);  // Pannello del grafico
-        bottomPanel.add(scrollPane, BorderLayout.CENTER); // Area di testo con scroll
+        // Aggiungi i pannelli al layout principale
+        add(scrollPane, BorderLayout.WEST);    // Area di testo con scroll a sinistra
+        add(inputPanel, BorderLayout.CENTER);  // Pannello input al centro
+        add(chartsPanel, BorderLayout.EAST);   // Pannello del grafico a destra
 
-        add(inputPanel, BorderLayout.NORTH);   // Parte superiore
-        add(bottomPanel, BorderLayout.CENTER); // Parte inferiore con grafico e area di testo
-   
         // Azione per avviare la simulazione
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                startButton.setEnabled(false);
+                stopButton.setEnabled(true);
+                actionButton.setEnabled(true);
+                chartPanelTop.clear(); // Pulizia del grafico
+                chartPanelBot.clear(); // Pulizia del grafico
+                resultArea.setText(""); // Pulizia dell'area risultati
                 new SimulationWorker(App.this).execute(); // Usa un SwingWorker per eseguire la simulazione
             }
         });
+
+        // Azione per fermare la simulazione
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SimulationWorker.requestStop(); // Richiedi l'arresto
+                startButton.setEnabled(true);
+                stopButton.setEnabled(false);
+                actionButton.setEnabled(false);
+            }
+        });
+
+        // Azione per iniziare un'azione
+        actionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SEAirwayObstruction h = new SEAirwayObstruction();
+                h.getSeverity().setValue(0.8);
+
+                if (!SimulationWorker.pe.processAction(h)) {
+                    Log.error("Engine was unable to process requested actions");
+                    return;
+                }
+            }
+        });
     }
-    
+
     private void addLabelAndField(String labelText, JTextField textField, JPanel panel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
@@ -88,8 +154,8 @@ public class App extends JFrame {
         return resultArea;
     }
 
-    public LineChartPanel getChartPanel() {
-        return chartPanel;
+    public LineChartPanel[] getChartPanel() {
+        return new LineChartPanel[]{chartPanelTop, chartPanelBot};
     }
 
     public String getTextFieldValue(JTextField textField) {

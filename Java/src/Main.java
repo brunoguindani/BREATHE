@@ -265,7 +265,7 @@ public class Main
 
     // Let's do something to the patient, you can either send actions over one at a time, or pass in a List<SEAction>
     
-    /*SEHemorrhage h = new SEHemorrhage();
+    SEHemorrhage h = new SEHemorrhage();
     h.setCompartment(eCompartment.RightLeg);
     h.getSeverity().setValue(0.8);
     
@@ -279,7 +279,7 @@ public class Main
       Log.error("Engine was unable to process requested actions");
       return;
     }
-    */
+    
     // At any point you can also pull the current active actions from the engine
     Log.info("Here are the current active actions in the engine");
     List<SEAction> actions = new ArrayList<SEAction>();
