@@ -12,11 +12,11 @@ import java.util.List;
 
 class LineChartPanel extends JPanel {
     private final java.util.List<Point> points = new ArrayList<>();
-    private int maxXValue = 10;  // Valore massimo dell'asse X
+    private int maxXValue = 15;  // Valore massimo dell'asse X
     private int maxYValue = 100; // Valore massimo dell'asse Y
 
     public LineChartPanel() {
-        setPreferredSize(new Dimension(400, 300));
+        setPreferredSize(new Dimension(600, 300));
         setBackground(Color.WHITE);
     }
 
@@ -27,7 +27,7 @@ class LineChartPanel extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Disegna assi
-        g2.drawLine(50, 250, 350, 250); // Asse X
+        g2.drawLine(50, 250, 500, 250); // Asse X
         g2.drawLine(50, 50, 50, 250);   // Asse Y
 
         // Disegna etichette sugli assi
@@ -35,21 +35,25 @@ class LineChartPanel extends JPanel {
 
         // Disegna il grafico a linee
         if (points.size() > 1) {
-            for (int i = 0; i < points.size() - 1; i++) {
+        	int prevX = 50;
+            for (int i = Math.max(0,points.size()-maxXValue); i < points.size() - 1; i++) {
                 Point p1 = points.get(i);
                 Point p2 = points.get(i + 1);
-                g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+                //g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+            	g2.drawLine(prevX, p1.y, p2.x - p1.x + prevX, p2.y);
+            	prevX = p2.x - p1.x + prevX;           
             }
         }
     }
 
     private void drawAxisLabels(Graphics2D g2) {
         // Etichette asse X
+    	/*
         for (int i = 0; i <= maxXValue; i++) {
             int x = 50 + (i * 30); // Spaziatura delle etichette
             int y = 265; // Posizione dell'etichetta lungo l'asse Y
             g2.drawString(String.valueOf(i), x, y);
-        }
+        }*/
 
         // Etichette asse Y
         for (int i = 0; i <= maxYValue; i += 20) {
@@ -62,5 +66,10 @@ class LineChartPanel extends JPanel {
     public void addPoint(int x, int y) {
         points.add(new Point(x, y));
         repaint(); // Aggiorna il grafico
+    }
+    
+    public void clear() {
+    	 points.clear(); // Clear the list of points
+    	 repaint();  
     }
 }
