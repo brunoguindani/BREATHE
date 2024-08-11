@@ -12,10 +12,12 @@ import java.util.List;
 
 class LineChartPanel extends JPanel {
     private final java.util.List<Point> points = new ArrayList<>();
-    private int maxXValue = 15;  // Valore massimo dell'asse X
+    private int maxXValue = 150;  // Valore massimo dell'asse X
     private int maxYValue = 100; // Valore massimo dell'asse Y
+    private String title;
 
-    public LineChartPanel() {
+    public LineChartPanel(String title) {
+        this.title = title;
         setPreferredSize(new Dimension(600, 300));
         setBackground(Color.WHITE);
     }
@@ -25,6 +27,13 @@ class LineChartPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        //Disegna titolo
+        if (title != null && !title.isEmpty()) {
+            g2.setFont(g2.getFont().deriveFont(16f)); // Imposta la dimensione del font del titolo
+            int titleWidth = g2.getFontMetrics().stringWidth(title);
+            g2.drawString(title, (getWidth() - titleWidth) / 2, 30); // Centra il titolo in alto
+        }
 
         // Disegna assi
         g2.drawLine(50, 250, 500, 250); // Asse X

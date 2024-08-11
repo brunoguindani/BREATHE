@@ -61,7 +61,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 publish("Something bad happened\n");
                 return null;
             }
-
+            
             // Estrazione e scrittura dei dati
             List<Double> dataValues = pe.pullData();
             dataRequests.writeData(dataValues);
@@ -85,7 +85,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             y = (int) (250 - dataValues.get(3)*2);
             app.getChartPanel()[1].addPoint(x, y);
 
-            time.setValue(1, TimeUnit.s);
+            time.setValue(0.10, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
 	    
