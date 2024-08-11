@@ -52,6 +52,7 @@ public class App extends JFrame {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
+        
         JButton startButton = new JButton("Start Simulation");
         startButton.setBackground(new Color(0, 122, 255)); // Blu
         startButton.setForeground(Color.WHITE);
@@ -76,8 +77,8 @@ public class App extends JFrame {
         gbc.gridy++;
         inputPanel.add(actionButton, gbc);
 
-        chartPanelTop = new LineChartPanel(); // Primo grafico
-        chartPanelBot = new LineChartPanel(); // Secondo grafico
+        chartPanelTop = new LineChartPanel("Heart Rate"); // Primo grafico
+        chartPanelBot = new LineChartPanel("Respiratory Rate"); // Secondo grafico
 
         // Pannello per il grafico (destra)
         JPanel chartsPanel = new JPanel();
