@@ -10,13 +10,13 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-class LineChartPanel extends JPanel {
+class LineChartPanelTest extends JPanel {
     private final java.util.List<Point> points = new ArrayList<>();
     private int maxXValue = 150;  // Valore massimo dell'asse X
     private int maxYValue = 100; // Valore massimo dell'asse Y
     private String title;
 
-    public LineChartPanel(String title) {
+    public LineChartPanelTest(String title) {
         this.title = title;
         setPreferredSize(new Dimension(600, 300));
         setBackground(Color.WHITE);
