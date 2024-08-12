@@ -6,24 +6,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kitware.pulse.cdm.actions.SEAction;
+import com.kitware.pulse.cdm.bind.Enums.eSwitch;
+import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
+import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.patient.SEPatient;
+import com.kitware.pulse.cdm.patient.actions.SEAcuteRespiratoryDistressSyndromeExacerbation;
+import com.kitware.pulse.cdm.patient.actions.SEDyspnea;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.PressureTimePerVolumeUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerPressureUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.utilities.JNIBridge;
 
-public class SimulationWorker extends SwingWorker<Void, String> {
+public class SimulationWorkerTest extends SwingWorker<Void, String> {
 
 	private static volatile boolean stopRequested = false;
-    private final App app;
+    private final AppTest app;
     public static PulseEngine pe;
 
-    public SimulationWorker(App app) {
-        this.app = app;
+    public SimulationWorkerTest(AppTest appTest) {
+        this.app = appTest;
     }
     
     public static void requestStop() {
@@ -45,13 +56,37 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createPhysiologyDataRequest(requestList[4], VolumeUnit.mL);
-        dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
+        //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
 
+        //Ventilatore
+       
+        
         //SOLO PER DEBUG
         pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
         SEPatient initialPatient = new SEPatient();
         pe.getInitialPatient(initialPatient);
 
+        SEAcuteRespiratoryDistressSyndromeExacerbation ards = new SEAcuteRespiratoryDistressSyndromeExacerbation();
+        ards.getSeverity(eLungCompartment.LeftLung).setValue(0.5);
+        ards.getSeverity(eLungCompartment.RightLung).setValue(0.5);
+        pe.processAction(ards);
+        
+        SEDyspnea dyspnea = new SEDyspnea();
+        dyspnea.getTidalVolumeSeverity().setValue(1.0);
+        pe.processAction(dyspnea);
+        
+        
+        //Qua imposto il ventilatore
+        SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
+        
+        if(app.isCPAPConnected())
+        	cpap.setConnection(eSwitch.On);
+        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue()));
+        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.getDeltaPressureSupValue()), PressureUnit.cmH2O);
+        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue()), PressureUnit.cmH2O);
+        cpap.getSlope().setValue(Double.parseDouble(app.getSlopeValue()), TimeUnit.s);
+        pe.processAction(cpap);
+        
         publish("Started\n");
         // Avanzamento temporale e gestione degli errori
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
