@@ -47,7 +47,8 @@ public class Main
     pulse.setLogFilename("./test_results/howto/HowTo_MechanicalVentilator.java.log");
     
     SEDataRequestManager dataRequests = new SEDataRequestManager();// Vitals Monitor Data
-    dataRequests.createPhysiologyDataRequest("HeartRate", FrequencyUnit.Per_min);
+    dataRequests.createPhysiologyDataRequest("RespirationRate", FrequencyUnit.Per_min);
+   /* dataRequests.createPhysiologyDataRequest("HeartRate", FrequencyUnit.Per_min);
     dataRequests.createPhysiologyDataRequest("ArterialPressure", PressureUnit.mmHg);
     dataRequests.createPhysiologyDataRequest("MeanArterialPressure", PressureUnit.mmHg);
     dataRequests.createPhysiologyDataRequest("SystolicArterialPressure", PressureUnit.mmHg);
@@ -58,9 +59,9 @@ public class Main
     dataRequests.createPhysiologyDataRequest("SkinTemperature", TemperatureUnit.C);
     dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
     dataRequests.createPhysiologyDataRequest("BloodVolume", VolumeUnit.mL);
-    dataRequests.createECGDataRequest("Lead3ElectricPotential", ElectricPotentialUnit.mV);
+    dataRequests.createECGDataRequest("Lead3ElectricPotential", ElectricPotentialUnit.mV);*/
     // Ventilator Monitor Data
-    dataRequests.createMechanicalVentilatorDataRequest("AirwayPressure", PressureUnit.cmH2O);
+    /*dataRequests.createMechanicalVentilatorDataRequest("AirwayPressure", PressureUnit.cmH2O);
     dataRequests.createMechanicalVentilatorDataRequest("BreathState");
     dataRequests.createMechanicalVentilatorDataRequest("DynamicRespiratoryCompliance", VolumePerPressureUnit.mL_Per_cmH2O);
     dataRequests.createMechanicalVentilatorDataRequest("EndTidalCarbonDioxideFraction");
@@ -86,7 +87,7 @@ public class Main
     dataRequests.createMechanicalVentilatorDataRequest("TidalVolume", VolumeUnit.L);
     dataRequests.createMechanicalVentilatorDataRequest("TotalLungVolume", VolumeUnit.L);
     dataRequests.createMechanicalVentilatorDataRequest("TotalPositiveEndExpiratoryPressure", PressureUnit.cmH2O);
-    dataRequests.createMechanicalVentilatorDataRequest("TotalPulmonaryVentilation", VolumePerTimeUnit.L_Per_s);
+    dataRequests.createMechanicalVentilatorDataRequest("TotalPulmonaryVentilation", VolumePerTimeUnit.L_Per_s);*/
     
     pulse.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
     
@@ -96,7 +97,7 @@ public class Main
     pulse.processAction(ards);
     
     SEDyspnea dyspnea = new SEDyspnea();
-    dyspnea.getTidalVolumeSeverity().setValue(1.0);
+    dyspnea.getTidalVolumeSeverity().setValue(1);
     pulse.processAction(dyspnea);
     
  // We have action support for several commonly used ventilator modes
@@ -106,7 +107,7 @@ public class Main
     // These modes are internally converted into a configuration setting,
     // You can retrieve the resulting settings action and use it as a basis for more configurations if you want.
     // For example, if you wanted to lengthen the InspirationPatientTriggerFlow of the mode
-
+/*
     SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
     cpap.setConnection(eSwitch.On);
     cpap.getFractionInspiredOxygen().setValue(0.21);
@@ -114,11 +115,13 @@ public class Main
     cpap.getPositiveEndExpiratoryPressure().setValue(5.0, PressureUnit.cmH2O);
     cpap.getSlope().setValue(0.2, TimeUnit.s);
     pulse.processAction(cpap);
-    pulse.advanceTime_s(10);
-    // get the values of the data you requested at this time
-    data_values = pulse.pullData();
-    // And write it out to the console
-    dataRequests.writeData(data_values);
+    for(int i = 0; i<= 100 ;i++) {
+        pulse.advanceTime_s(1);
+        // get the values of the data you requested at this time
+        data_values = pulse.pullData();
+        // And write it out to the console
+        dataRequests.writeData(data_values);	
+    }*/
 
     SEMechanicalVentilatorPressureControl pc_ac = new SEMechanicalVentilatorPressureControl();
     pc_ac.setConnection(eSwitch.On);
@@ -128,14 +131,16 @@ public class Main
     pc_ac.getInspiratoryPressure().setValue(19.0, PressureUnit.cmH2O);
     pc_ac.getPositiveEndExpiratoryPressure().setValue(5.0, PressureUnit.cmH2O);
     pc_ac.getRespirationRate().setValue(12.0, FrequencyUnit.Per_min);
-    pc_ac.getSlope().setValue(0, TimeUnit.s);
+    pc_ac.getSlope().setValue(0.2, TimeUnit.s);
     pulse.processAction(pc_ac);
-    pulse.advanceTime_s(10);
-    // get the values of the data you requested at this time
-    data_values = pulse.pullData();
-    // And write it out to the console
-    dataRequests.writeData(data_values);
-
+    for(int i = 0; i<= 100 ;i++) {
+        pulse.advanceTime_s(1);
+        // get the values of the data you requested at this time
+        data_values = pulse.pullData();
+        // And write it out to the console
+        dataRequests.writeData(data_values);	
+    }
+/*
     SEMechanicalVentilatorVolumeControl vc_ac = new SEMechanicalVentilatorVolumeControl();
     vc_ac.setConnection(eSwitch.On);
     vc_ac.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
@@ -214,7 +219,7 @@ public class Main
     // get the values of the data you requested at this time
     data_values = pulse.pullData();
     // And write it out to the console
-    dataRequests.writeData(data_values);
+    dataRequests.writeData(data_values);*/
   }
 
 }

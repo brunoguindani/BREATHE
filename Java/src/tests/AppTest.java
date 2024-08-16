@@ -18,14 +18,14 @@ public class AppTest extends JFrame {
 
     private JTextField nameField, ageField, weightField, heightField, bodyFatField;
     private JTextField heartRateField, diastolicField, systolicField, respirationRateField, basalMetabolicRateField;
-    public JTextField fractionInspOxygenField, deltaPressureSupField, positiveEndExpPresField, slopeFiel;
+    public JTextField fractionInspOxygenField, deltaPressureSupField, positiveEndExpPresField, slopeField, inspiratoryPeriodField, inspiratoryPressureField, respirationRatePCACField;
     private JTextArea resultArea;
     private LineChartPanelTest chartPanelTop, chartPanelBot;
     private JButton switchButton;
     private JPanel cardPanel;
     private CardLayout cardLayout;
     
-    private JCheckBox cpapConnection;
+    private JCheckBox pcacConnection;
     
     public AppTest() {
         setTitle("Pulse Simulation");
@@ -113,14 +113,16 @@ public class AppTest extends JFrame {
         
         //Pannello ventilatore (centro)
         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure
-        cpapConnection = new JCheckBox("Ventilazione cpap", false);
-        ventilatorPanel.add(cpapConnection, gbc);
+        pcacConnection = new JCheckBox("Ventilazione pcap", false);
+        ventilatorPanel.add(pcacConnection, gbc);
         gbc.gridx = 0;
         gbc.gridy++;
         addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenField = new JTextField("0.21"), ventilatorPanel, gbc);
-        addLabelAndField("Delta Pressure Support:", deltaPressureSupField = new JTextField("10"), ventilatorPanel, gbc);
+        addLabelAndField("Inspiratory Period:", inspiratoryPeriodField = new JTextField("1"), ventilatorPanel, gbc);  
+        addLabelAndField("Inspiratory Pressure:", inspiratoryPressureField = new JTextField("19"), ventilatorPanel, gbc);
         addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresField = new JTextField("5"), ventilatorPanel, gbc);
-        addLabelAndField("Slope:", slopeFiel = new JTextField("0.2"), ventilatorPanel, gbc);
+        addLabelAndField("Respiration Rate:", respirationRatePCACField = new JTextField("12"), ventilatorPanel, gbc);
+        addLabelAndField("Slope:", slopeField = new JTextField("0.2"), ventilatorPanel, gbc);
         
         
         
@@ -138,7 +140,7 @@ public class AppTest extends JFrame {
         resultArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         resultArea.setBackground(Color.WHITE);
         JScrollPane scrollPane = new JScrollPane(resultArea);
-        scrollPane.setPreferredSize(new Dimension(350, 0));
+        scrollPane.setPreferredSize(new Dimension(450, 0));
         scrollPane.setBackground(Color.LIGHT_GRAY);
 
         // Aggiungi i pannelli al layout principale
@@ -228,9 +230,21 @@ public class AppTest extends JFrame {
     public String getTextFieldValue(JTextField textField) {
         return textField.getText();
     }
-
-    public boolean isCPAPConnected() {
-        return cpapConnection.isSelected();
+    
+	public boolean isPCACConnected() {
+	    return pcacConnection.isSelected();
+	}
+     
+    public String getinspiratoryPeriodValue() {
+        return inspiratoryPeriodField.getText();
+    }
+    
+    public String getinspiratoryPressureValue() {
+        return inspiratoryPressureField.getText();
+    }
+    
+    public String getrespirationRatePCACValue() {
+        return respirationRatePCACField.getText();
     }
     
     public String getFractionInspOxygenValue() {
@@ -246,7 +260,7 @@ public class AppTest extends JFrame {
     }
 
     public String getSlopeValue() {
-        return slopeFiel.getText();
+        return slopeField.getText();
     }
     
     
