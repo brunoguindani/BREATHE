@@ -34,6 +34,7 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
 	private static volatile boolean stopRequested = false;
     private final AppTest app;
     public static PulseEngine pe;
+    public static volatile boolean ventilationSwitchRequest = false;
 
     public SimulationWorkerTest(AppTest appTest) {
         this.app = appTest;
@@ -98,11 +99,6 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
         SEMechanicalVentilatorPressureControl pc_ac = new SEMechanicalVentilatorPressureControl();
         SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         
-        if(app.isPCACConnected())
-	        start_pc_ac(pc_ac);
-        if(app.isCPAPConnected())
-	        start_cpap(cpap);
-        
         publish("Started\n");
         // Avanzamento temporale e gestione degli errori
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
@@ -113,11 +109,18 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
                 return null;
             }
             
-            //Ventilatore pc_ac
-            if(app.isPCACConnected())
-            	start_pc_ac(pc_ac);
-            if(app.isCPAPConnected())
-    	        start_cpap(cpap);
+            if(ventilationSwitchRequest) {
+            	ventilationSwitchRequest = false;
+            	
+                //Ventilatore pc_ac
+                if(app.isPCACConnected()){ 
+                	start_pc_ac(pc_ac);
+                }
+                if(app.isCPAPConnected()){
+        	        start_cpap(cpap);
+        	    }
+            }
+
     	        
             // Estrazione e scrittura dei dati
             List<Double> dataValues = pe.pullData();
