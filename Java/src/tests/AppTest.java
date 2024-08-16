@@ -17,6 +17,7 @@ public class AppTest extends JFrame {
     private JButton switchButton;
     private JPanel cardPanel, ventilatorCardPanel;
     private CardLayout cardLayout, ventilatorCardLayout;
+    private VentilationMode selectedVentilationMode = VentilationMode.PCAC;
 
     //Ventilatori
     private JRadioButton pcac;
@@ -118,8 +119,8 @@ public class AppTest extends JFrame {
         addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresPCACField = new JTextField("5"), pcapPanel, gbc);
         addLabelAndField("Respiration Rate:", respirationRatePCACField = new JTextField("12"), pcapPanel, gbc);
         addLabelAndField("Slope:", slopePCACField = new JTextField("0.2"), pcapPanel, gbc);
-        pcacConnection = new JCheckBox("Connessione", false);
-        pcapPanel.add(pcacConnection, gbc);
+        /*pcacConnection = new JCheckBox("Connessione", false);
+        pcapPanel.add(pcacConnection, gbc);*/
 
         
         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
@@ -127,8 +128,8 @@ public class AppTest extends JFrame {
         addLabelAndField("Delta Pressure Support:", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
         addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
         addLabelAndField("Slope:", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
-        cpapConnection = new JCheckBox("Connessione", false);
-        cpapPanel.add(cpapConnection, gbc);
+       /*cpapConnection = new JCheckBox("Connessione", false);
+        cpapPanel.add(cpapConnection, gbc);*/
         
         ventilatorCardPanel.add(pcapPanel, "PCAC");
         ventilatorCardPanel.add(cpapPanel, "CPAP");
@@ -143,13 +144,25 @@ public class AppTest extends JFrame {
         JPanel radioPanel = new JPanel(new GridLayout(1, 2));
         radioPanel.add(pcac);
         radioPanel.add(cpap);
+        
+        JButton connectButton = new JButton("Connect");
+        connectButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
+        connectButton.setForeground(Color.BLACK);
+        connectButton.setFocusPainted(false);
 
         ventilatorPanel.add(radioPanel, BorderLayout.NORTH);
+        ventilatorPanel.add(connectButton, BorderLayout.SOUTH);
         ventilatorPanel.add(ventilatorCardPanel, BorderLayout.CENTER);
 
         // Imposta i listener per i JRadioButton
-        pcac.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "PCAC"));
-        cpap.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "CPAP"));
+        pcac.addActionListener(e -> {
+        	ventilatorCardLayout.show(ventilatorCardPanel, "PCAC");
+        	selectedVentilationMode = VentilationMode.PCAC;
+        	});
+        cpap.addActionListener(e -> {
+        	ventilatorCardLayout.show(ventilatorCardPanel, "CPAP");
+        	selectedVentilationMode = VentilationMode.CPAP;
+        });
 
         // Pannello per il grafico (destra)
         JPanel chartsPanel = new JPanel();
@@ -185,6 +198,7 @@ public class AppTest extends JFrame {
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
+            connectButton.setEnabled(true);
             actionButton.setEnabled(true);
             chartPanelTop.clear(); // Pulizia del grafico
             chartPanelBot.clear(); // Pulizia del grafico
@@ -201,6 +215,7 @@ public class AppTest extends JFrame {
             // SimulationWorker.requestStop(); // Richiedi l'arresto
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
+            connectButton.setEnabled(false);
             actionButton.setEnabled(false);
         });
 
@@ -214,6 +229,14 @@ public class AppTest extends JFrame {
                 Log.error("Engine was unable to process requested actions");
                 return;
             }
+        });
+        
+        // Azione per connettere i ventilatori
+        connectButton.addActionListener(e -> {
+        	if(!SimulationWorkerTest.ventilationSwitchRequest)
+        		SimulationWorkerTest.ventilationSwitchRequest = true;
+        	else
+        		SimulationWorkerTest.ventilationSwitchRequest = false;
         });
 
         // Azione per cambiare pannello
@@ -254,11 +277,11 @@ public class AppTest extends JFrame {
     public String getTextFieldValue(JTextField textField) {
         return textField.getText();
     }
-
     
     //Get ventilatore PCAC
     public boolean isPCACConnected() {
-        return pcacConnection.isSelected();
+        //return pcacConnection.isSelected();
+    	return selectedVentilationMode == VentilationMode.PCAC;
     }
     
     public String getInspiratoryPeriodValue_PCAC() {
@@ -287,7 +310,8 @@ public class AppTest extends JFrame {
 
   //Get ventilatore CPAP
     public boolean isCPAPConnected() {
-        return cpapConnection.isSelected();
+        //return cpapConnection.isSelected();
+        return selectedVentilationMode == VentilationMode.CPAP;
     }
     
     public String getFractionInspOxygenValue_CPAP() {
