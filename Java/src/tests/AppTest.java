@@ -5,28 +5,31 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.patient.actions.SEAirwayObstruction;
-import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
-import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.utilities.Log;
-
-import tests.AppTest;
 
 public class AppTest extends JFrame {
 
     private JTextField nameField, ageField, weightField, heightField, bodyFatField;
     private JTextField heartRateField, diastolicField, systolicField, respirationRateField, basalMetabolicRateField;
-    public JTextField fractionInspOxygenField, deltaPressureSupField, positiveEndExpPresField, slopeField, inspiratoryPeriodField, inspiratoryPressureField, respirationRatePCACField;
     private JTextArea resultArea;
     private LineChartPanelTest chartPanelTop, chartPanelBot;
     private JButton switchButton;
-    private JPanel cardPanel;
-    private CardLayout cardLayout;
-    
+    private JPanel cardPanel, ventilatorCardPanel;
+    private CardLayout cardLayout, ventilatorCardLayout;
+
+    //Ventilatori
+    private JRadioButton pcac;
+    public JTextField fractionInspOxygenPCACField, inspiratoryPeriodPCACField, inspiratoryPressurePCACField, positiveEndExpPresPCACField, respirationRatePCACField, slopePCACField;
     private JCheckBox pcacConnection;
     
+    private JRadioButton cpap;
+    public JTextField fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
+    private JCheckBox cpapConnection;
+    
+    ButtonGroup ventilatori = new ButtonGroup();
+   
+
     public AppTest() {
         setTitle("Pulse Simulation");
         setSize(1400, 700);
@@ -46,8 +49,7 @@ public class AppTest extends JFrame {
         patientPanel.setPreferredSize(new Dimension(250, 0));
         patientPanel.setBackground(Color.LIGHT_GRAY);
 
-        JPanel ventilatorPanel = new JPanel();
-        ventilatorPanel.setLayout(new GridBagLayout());
+        JPanel ventilatorPanel = new JPanel(new BorderLayout());
         ventilatorPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ventilatorPanel.setPreferredSize(new Dimension(250, 0));
         ventilatorPanel.setBackground(Color.LIGHT_GRAY);
@@ -102,33 +104,59 @@ public class AppTest extends JFrame {
         gbc.gridy++;
         patientPanel.add(actionButton, gbc);
 
-        // Pulsante per cambiare pannello
-        switchButton = new JButton("Ventilatore");
-        switchButton.setPreferredSize(new Dimension(120, 30)); // Imposta una dimensione fissa per il pulsante
-        gbc.gridy++;
-        add(switchButton, BorderLayout.SOUTH);
-        
-        chartPanelTop = new LineChartPanelTest("Heart Rate"); // Primo grafico
-        chartPanelBot = new LineChartPanelTest("Respiratory Rate"); // Secondo grafico
-        
-        //Pannello ventilatore (centro)
+        // Pannello ventilatore con CardLayout per diverse opzioni di ventilazione
+        ventilatorCardLayout = new CardLayout();
+        ventilatorCardPanel = new JPanel(ventilatorCardLayout);
+
+        JPanel pcapPanel = new JPanel(new GridBagLayout());
+        JPanel cpapPanel = new JPanel(new GridBagLayout());
+
         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure
-        pcacConnection = new JCheckBox("Ventilazione pcap", false);
-        ventilatorPanel.add(pcacConnection, gbc);
-        gbc.gridx = 0;
-        gbc.gridy++;
-        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenField = new JTextField("0.21"), ventilatorPanel, gbc);
-        addLabelAndField("Inspiratory Period:", inspiratoryPeriodField = new JTextField("1"), ventilatorPanel, gbc);  
-        addLabelAndField("Inspiratory Pressure:", inspiratoryPressureField = new JTextField("19"), ventilatorPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresField = new JTextField("5"), ventilatorPanel, gbc);
-        addLabelAndField("Respiration Rate:", respirationRatePCACField = new JTextField("12"), ventilatorPanel, gbc);
-        addLabelAndField("Slope:", slopeField = new JTextField("0.2"), ventilatorPanel, gbc);
+        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenPCACField = new JTextField("0.21"), pcapPanel, gbc);
+        addLabelAndField("Inspiratory Period:", inspiratoryPeriodPCACField = new JTextField("1"), pcapPanel, gbc);
+        addLabelAndField("Inspiratory Pressure:", inspiratoryPressurePCACField = new JTextField("19"), pcapPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresPCACField = new JTextField("5"), pcapPanel, gbc);
+        addLabelAndField("Respiration Rate:", respirationRatePCACField = new JTextField("12"), pcapPanel, gbc);
+        addLabelAndField("Slope:", slopePCACField = new JTextField("0.2"), pcapPanel, gbc);
+        pcacConnection = new JCheckBox("Connessione", false);
+        pcapPanel.add(pcacConnection, gbc);
+
         
+        // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
+        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenCPAPField = new JTextField("0.21"), cpapPanel, gbc);
+        addLabelAndField("Delta Pressure Support:", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
+        addLabelAndField("Slope:", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
+        cpapConnection = new JCheckBox("Connessione", false);
+        cpapPanel.add(cpapConnection, gbc);
+       
+
         
-        
+        ventilatorCardPanel.add(pcapPanel, "PCAC");
+        ventilatorCardPanel.add(cpapPanel, "CPAP");
+
+        pcac = new JRadioButton("Ventilazione pcac");
+        cpap = new JRadioButton("Ventilazione cpap");
+
+        ventilatori.add(pcac);
+        ventilatori.add(cpap);
+
+        JPanel radioPanel = new JPanel(new GridLayout(1, 2));
+        radioPanel.add(pcac);
+        radioPanel.add(cpap);
+
+        ventilatorPanel.add(radioPanel, BorderLayout.NORTH);
+        ventilatorPanel.add(ventilatorCardPanel, BorderLayout.CENTER);
+
+        // Imposta i listener per i JRadioButton
+        pcac.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "PCAP"));
+        cpap.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "CPAP"));
+
         // Pannello per il grafico (destra)
         JPanel chartsPanel = new JPanel();
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
+        chartPanelTop = new LineChartPanelTest("Heart Rate"); // Primo grafico
+        chartPanelBot = new LineChartPanelTest("Respiratory Rate"); // Secondo grafico
         chartsPanel.add(chartPanelTop);
         chartsPanel.add(chartPanelBot);
         chartsPanel.setBackground(Color.LIGHT_GRAY);
@@ -143,52 +171,49 @@ public class AppTest extends JFrame {
         scrollPane.setPreferredSize(new Dimension(450, 0));
         scrollPane.setBackground(Color.LIGHT_GRAY);
 
+        // Pulsante per cambiare pannello
+        switchButton = new JButton("Ventilatore");
+        switchButton.setPreferredSize(new Dimension(120, 30)); // Imposta una dimensione fissa per il pulsante
+        gbc.gridy++;
+        add(switchButton, BorderLayout.SOUTH);
+
         // Aggiungi i pannelli al layout principale
         add(scrollPane, BorderLayout.WEST);    // Area di testo con scroll a sinistra
         add(cardPanel, BorderLayout.CENTER);  // Pannello input al centro
         add(chartsPanel, BorderLayout.EAST);   // Pannello del grafico a destra
-        
+
         // Azione per avviare la simulazione
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                actionButton.setEnabled(true);
-                chartPanelTop.clear(); // Pulizia del grafico
-                chartPanelBot.clear(); // Pulizia del grafico
-                resultArea.setText(""); // Pulizia dell'area risultati
-                
-                //TEST
-                new SimulationWorkerTest(AppTest.this).execute(); //new SimulationWorker(App.this).execute(); // Usa un SwingWorker per eseguire la simulazione
-            }
+        startButton.addActionListener(e -> {
+            startButton.setEnabled(false);
+            stopButton.setEnabled(true);
+            actionButton.setEnabled(true);
+            chartPanelTop.clear(); // Pulizia del grafico
+            chartPanelBot.clear(); // Pulizia del grafico
+            resultArea.setText(""); // Pulizia dell'area risultati
+
+            //TEST
+            new SimulationWorkerTest(AppTest.this).execute(); //new SimulationWorker(App.this).execute(); // Usa un SwingWorker per eseguire la simulazione
         });
 
         // Azione per fermare la simulazione
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //TEST
-                SimulationWorkerTest.requestStop(); 
-                // SimulationWorker.requestStop(); // Richiedi l'arresto
-                startButton.setEnabled(true);
-                stopButton.setEnabled(false);
-                actionButton.setEnabled(false);
-            }
+        stopButton.addActionListener(e -> {
+            //TEST
+            SimulationWorkerTest.requestStop(); 
+            // SimulationWorker.requestStop(); // Richiedi l'arresto
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            actionButton.setEnabled(false);
         });
 
         // Azione per iniziare un'azione
-        actionButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                SEAirwayObstruction h = new SEAirwayObstruction();
-                h.getSeverity().setValue(0.8);
-                
-                //TEST
-                if (!SimulationWorkerTest.pe.processAction(h)) {
-                    Log.error("Engine was unable to process requested actions");
-                    return;
-                }
+        actionButton.addActionListener(e -> {
+            SEAirwayObstruction h = new SEAirwayObstruction();
+            h.getSeverity().setValue(0.8);
+
+            //TEST
+            if (!SimulationWorkerTest.pe.processAction(h)) {
+                Log.error("Engine was unable to process requested actions");
+                return;
             }
         });
 
@@ -230,37 +255,56 @@ public class AppTest extends JFrame {
     public String getTextFieldValue(JTextField textField) {
         return textField.getText();
     }
+
     
-	public boolean isPCACConnected() {
-	    return pcacConnection.isSelected();
-	}
-     
-    public String getinspiratoryPeriodValue() {
-        return inspiratoryPeriodField.getText();
+    //Get ventilatore PCAC
+    public boolean isPCACConnected() {
+        return pcacConnection.isSelected();
     }
     
-    public String getinspiratoryPressureValue() {
-        return inspiratoryPressureField.getText();
+    public String getInspiratoryPeriodValue_PCAC() {
+        return inspiratoryPeriodPCACField.getText();
     }
-    
-    public String getrespirationRatePCACValue() {
+
+    public String getInspiratoryPressureValue_PCAC() {
+        return inspiratoryPressurePCACField.getText();
+    }
+
+    public String getRespirationRateValue_PCAC() {
         return respirationRatePCACField.getText();
     }
+
+    public String getFractionInspOxygenValue_PCAC() {
+        return fractionInspOxygenPCACField.getText();
+    }
+
+    public String getPositiveEndExpPresValue_PCAC() {
+        return positiveEndExpPresPCACField.getText();
+    }
+
+    public String getSlopeValue_PCAC() {
+        return slopePCACField.getText();
+    }
+
+  //Get ventilatore CPAP
+    public boolean isCPAPConnected() {
+        return cpapConnection.isSelected();
+    }
     
-    public String getFractionInspOxygenValue() {
-        return fractionInspOxygenField.getText();
+    public String getFractionInspOxygenValue_CPAP() {
+        return fractionInspOxygenCPAPField.getText();
+    }
+    
+    public String getDeltaPressureSupValue_CPAP() {
+        return deltaPressureSupCPAPField.getText();
     }
 
-    public String getDeltaPressureSupValue() {
-        return deltaPressureSupField.getText();
+    public String getPositiveEndExpPresValue_CPAP() {
+        return positiveEndExpPresCPAPField.getText();
     }
 
-    public String getPositiveEndExpPresValue() {
-        return positiveEndExpPresField.getText();
-    }
-
-    public String getSlopeValue() {
-        return slopeField.getText();
+    public String getSlopeValue_CPAP() {
+        return slopeCPAPField.getText();
     }
     
     

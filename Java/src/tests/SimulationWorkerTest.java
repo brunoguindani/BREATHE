@@ -94,20 +94,14 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
         dyspnea.getTidalVolumeSeverity().setValue(1.0);
         pe.processAction(dyspnea);   
         
-        //Qua imposto il ventilatore
+        //Creo i ventilatori
         SEMechanicalVentilatorPressureControl pc_ac = new SEMechanicalVentilatorPressureControl();
+        SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         
         if(app.isPCACConnected())
-        	pc_ac.setConnection(eSwitch.On);      
-        pc_ac.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
-        pc_ac.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue()));
-        pc_ac.getInspiratoryPeriod().setValue(Double.parseDouble(app.getinspiratoryPeriodValue()),TimeUnit.s);
-        pc_ac.getInspiratoryPressure().setValue(Double.parseDouble(app.getinspiratoryPressureValue()), PressureUnit.cmH2O);
-        pc_ac.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue()), PressureUnit.cmH2O);
-        pc_ac.getRespirationRate().setValue(Double.parseDouble(app.getrespirationRatePCACValue()), FrequencyUnit.Per_min);
-        pc_ac.getSlope().setValue(Double.parseDouble(app.getSlopeValue()), TimeUnit.s);
-        
-        pe.processAction(pc_ac);
+	        start_pc_ac(pc_ac);
+        if(app.isCPAPConnected())
+	        start_cpap(cpap);
         
         publish("Started\n");
         // Avanzamento temporale e gestione degli errori
@@ -119,6 +113,12 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
                 return null;
             }
             
+            //Ventilatore pc_ac
+            if(app.isPCACConnected())
+            	start_pc_ac(pc_ac);
+            if(app.isCPAPConnected())
+    	        start_cpap(cpap);
+    	        
             // Estrazione e scrittura dei dati
             List<Double> dataValues = pe.pullData();
             dataRequests.writeData(dataValues);
@@ -165,5 +165,27 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
     @Override
     protected void done() {
         app.getResultArea().append("Simulazione fermata.\n");
+    }
+    
+    
+    private void start_pc_ac(SEMechanicalVentilatorPressureControl pc_ac) {
+        pc_ac.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
+        pc_ac.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue_PCAC()));
+        pc_ac.getInspiratoryPeriod().setValue(Double.parseDouble(app.getInspiratoryPeriodValue_PCAC()),TimeUnit.s);
+        pc_ac.getInspiratoryPressure().setValue(Double.parseDouble(app.getInspiratoryPressureValue_PCAC()), PressureUnit.cmH2O);
+        pc_ac.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue_PCAC()), PressureUnit.cmH2O);
+        pc_ac.getRespirationRate().setValue(Double.parseDouble(app.getRespirationRateValue_PCAC()), FrequencyUnit.Per_min);
+        pc_ac.getSlope().setValue(Double.parseDouble(app.getSlopeValue_PCAC()), TimeUnit.s);
+        pc_ac.setConnection(eSwitch.On);
+        pe.processAction(pc_ac);
+    }
+    
+    private void start_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
+        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue_CPAP()));
+        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.getDeltaPressureSupValue_CPAP()), PressureUnit.cmH2O);
+        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue_CPAP()), PressureUnit.cmH2O);
+        cpap.getSlope().setValue(Double.parseDouble(app.getSlopeValue_CPAP()), TimeUnit.s);
+        cpap.setConnection(eSwitch.On);
+        pe.processAction(cpap);
     }
 }
