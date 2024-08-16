@@ -129,13 +129,12 @@ public class AppTest extends JFrame {
         addLabelAndField("Slope:", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
         cpapConnection = new JCheckBox("Connessione", false);
         cpapPanel.add(cpapConnection, gbc);
-       
-
         
         ventilatorCardPanel.add(pcapPanel, "PCAC");
         ventilatorCardPanel.add(cpapPanel, "CPAP");
 
         pcac = new JRadioButton("Ventilazione pcac");
+        pcac.setSelected(true);
         cpap = new JRadioButton("Ventilazione cpap");
 
         ventilatori.add(pcac);
@@ -149,7 +148,7 @@ public class AppTest extends JFrame {
         ventilatorPanel.add(ventilatorCardPanel, BorderLayout.CENTER);
 
         // Imposta i listener per i JRadioButton
-        pcac.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "PCAP"));
+        pcac.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "PCAC"));
         cpap.addActionListener(e -> ventilatorCardLayout.show(ventilatorCardPanel, "CPAP"));
 
         // Pannello per il grafico (destra)
