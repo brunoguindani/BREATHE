@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
+import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
@@ -21,6 +22,7 @@ import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerPressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
@@ -59,7 +61,24 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
         //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
 
         //Ventilatore
-       
+        /*
+        SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
+        SEPatient patient = patient_configuration.getPatient();
+        patient.setName(nameField.getText());
+        patient.setSex(eSex.Male); 
+        patient.getAge().setValue(Double.parseDouble(ageField.getText()), TimeUnit.yr);
+        patient.getWeight().setValue(Double.parseDouble(weightField.getText()), MassUnit.lb);
+        patient.getHeight().setValue(Double.parseDouble(heightField.getText()), LengthUnit.in);
+        patient.getBodyFatFraction().setValue(Double.parseDouble(bodyFatField.getText()));
+        patient.getHeartRateBaseline().setValue(Double.parseDouble(heartRateField.getText()), FrequencyUnit.Per_min);
+        patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(diastolicField.getText()), PressureUnit.mmHg);
+        patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(systolicField.getText()), PressureUnit.mmHg);
+        patient.getRespirationRateBaseline().setValue(Double.parseDouble(respirationRateField.getText()), FrequencyUnit.Per_min);
+        patient.getBasalMetabolicRate().setValue(Double.parseDouble(basalMetabolicRateField.getText()), PowerUnit.kcal_Per_day);
+        
+        // Inizializzazione del motore Pulse con la configurazione del paziente e le richieste di dati
+        pe.initializeEngine(patient_configuration, dataRequests);
+        */
         
         //SOLO PER DEBUG
         pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
@@ -73,19 +92,22 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
         
         SEDyspnea dyspnea = new SEDyspnea();
         dyspnea.getTidalVolumeSeverity().setValue(1.0);
-        pe.processAction(dyspnea);
-        
+        pe.processAction(dyspnea);   
         
         //Qua imposto il ventilatore
-        SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
+        SEMechanicalVentilatorPressureControl pc_ac = new SEMechanicalVentilatorPressureControl();
         
-        if(app.isCPAPConnected())
-        	cpap.setConnection(eSwitch.On);
-        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue()));
-        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.getDeltaPressureSupValue()), PressureUnit.cmH2O);
-        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue()), PressureUnit.cmH2O);
-        cpap.getSlope().setValue(Double.parseDouble(app.getSlopeValue()), TimeUnit.s);
-        pe.processAction(cpap);
+        if(app.isPCACConnected())
+        	pc_ac.setConnection(eSwitch.On);      
+        pc_ac.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
+        pc_ac.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue()));
+        pc_ac.getInspiratoryPeriod().setValue(Double.parseDouble(app.getinspiratoryPeriodValue()),TimeUnit.s);
+        pc_ac.getInspiratoryPressure().setValue(Double.parseDouble(app.getinspiratoryPressureValue()), PressureUnit.cmH2O);
+        pc_ac.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue()), PressureUnit.cmH2O);
+        pc_ac.getRespirationRate().setValue(Double.parseDouble(app.getrespirationRatePCACValue()), FrequencyUnit.Per_min);
+        pc_ac.getSlope().setValue(Double.parseDouble(app.getSlopeValue()), TimeUnit.s);
+        
+        pe.processAction(pc_ac);
         
         publish("Started\n");
         // Avanzamento temporale e gestione degli errori
