@@ -12,7 +12,7 @@ public class AppTest extends JFrame {
 
     private JTextArea resultArea;
     private LineChartPanelTest chartPanelTop, chartPanelBot;
-    private JButton switchButton;
+    private JTabbedPane switchTabbedPane;
     private JPanel cardPanel, ventilatorCardPanel;
     private CardLayout cardLayout, ventilatorCardLayout;
 
@@ -47,9 +47,9 @@ public class AppTest extends JFrame {
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
         // Pannello per gli input (centro)
-        cardLayout = new CardLayout();
-        cardPanel = new JPanel(cardLayout);
-
+        switchTabbedPane = new JTabbedPane();
+        switchTabbedPane.setBackground(Color.LIGHT_GRAY);
+        
         JPanel patientPanel = new JPanel();
         patientPanel.setLayout(new GridBagLayout());
         patientPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -61,9 +61,9 @@ public class AppTest extends JFrame {
         ventilatorPanel.setPreferredSize(new Dimension(250, 0));
         ventilatorPanel.setBackground(Color.LIGHT_GRAY);
 
-        cardPanel.add(patientPanel, "Paziente");
-        cardPanel.add(ventilatorPanel, "Ventilatore");
-
+        switchTabbedPane.addTab("Paziente", patientPanel);
+        switchTabbedPane.addTab("Ventilatore", ventilatorPanel);
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -215,15 +215,10 @@ public class AppTest extends JFrame {
         scrollPane.setPreferredSize(new Dimension(450, 0));
         scrollPane.setBackground(Color.LIGHT_GRAY);
 
-        // Pulsante per cambiare pannello
-        switchButton = new JButton("Ventilatore");
-        switchButton.setPreferredSize(new Dimension(120, 30)); // Imposta una dimensione fissa per il pulsante
-        gbc.gridy++;
-        add(switchButton, BorderLayout.SOUTH);
 
         // Aggiungi i pannelli al layout principale
         add(scrollPane, BorderLayout.WEST);    // Area di testo con scroll a sinistra
-        add(cardPanel, BorderLayout.CENTER);  // Pannello input al centro
+        add(switchTabbedPane, BorderLayout.CENTER);  // Pannello input al centro
         add(chartsPanel, BorderLayout.EAST);   // Pannello del grafico a destra
 
         // Azione per avviare la simulazione
@@ -237,7 +232,7 @@ public class AppTest extends JFrame {
             resultArea.setText(""); // Pulizia dell'area risultati
 
             //TEST
-            new SimulationWorkerTest(AppTest.this).execute(); //new SimulationWorker(App.this).execute(); // Usa un SwingWorker per eseguire la simulazione
+            new SimulationWorkerTest(AppTest.this).execute(); // Usa un SwingWorker per eseguire la simulazione
         });
 
         // Azione per fermare la simulazione
@@ -281,23 +276,6 @@ public class AppTest extends JFrame {
         	disconnectButton.setEnabled(false);
         });
         
-        
-        // Azione per cambiare pannello
-        switchButton.addActionListener(new ActionListener() {
-            private boolean showingPatientPanel = true;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (showingPatientPanel) {
-                    cardLayout.show(cardPanel, "Ventilatore");
-                    switchButton.setText("Paziente");
-                } else {
-                    cardLayout.show(cardPanel, "Paziente");
-                    switchButton.setText("Ventilatore");
-                }
-                showingPatientPanel = !showingPatientPanel;
-            }
-        });
     }
 
     private void addLabelAndField(String labelText, JComponent component, JPanel panel, GridBagConstraints gbc) {
