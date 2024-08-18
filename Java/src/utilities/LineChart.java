@@ -1,4 +1,4 @@
-package tests;
+package utilities;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -9,14 +9,14 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-class LineChartPanelTest extends JPanel {
+public class LineChart extends JPanel {
     private final List<Point> points = new ArrayList<>();
     private int maxXValue = 150;  // Valore massimo dell'asse X
     private int maxYValue;  // Valore massimo dell'asse Y
     private int yStep;      // Step per l'asse Y
     private String title;
 
-    public LineChartPanelTest(String title) {
+    public LineChart(String title) {
         this.title = title;
         this.setMaxY();
         setPreferredSize(new Dimension(600, 300));

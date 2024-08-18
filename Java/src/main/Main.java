@@ -1,11 +1,13 @@
-package tests;
+package main;
 
 import javax.swing.SwingUtilities;
 
-public class MainTest {
+import app.App;
+
+public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            AppTest app = new AppTest();
+            App app = new App();
             app.setVisible(true);
         });
     }
