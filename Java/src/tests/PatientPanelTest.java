@@ -67,22 +67,12 @@ public class PatientPanelTest {
         stopButton.setFocusPainted(false);
         gbc.gridy++;
         patientPanel.add(stopButton, gbc);
-
-        // Bottone per iniziare un'azione
-        JButton actionButton = new JButton("Action");
-        actionButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
-        actionButton.setBackground(new Color(52, 199, 89)); // Verde
-        actionButton.setForeground(Color.WHITE);
-        actionButton.setFocusPainted(false);
-        gbc.gridy++;
-        patientPanel.add(actionButton, gbc);
         
         // Azione per avviare la simulazione
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
             app.connectButton.setEnabled(true);
-            actionButton.setEnabled(true);
             for (int i =0; i< app.chartPanels.length ;i++) {
             	app.chartPanels[i].clear();
             }
@@ -101,7 +91,6 @@ public class PatientPanelTest {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
             app.connectButton.setEnabled(false);
-            actionButton.setEnabled(false);
         });
         
     }
