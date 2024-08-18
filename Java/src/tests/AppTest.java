@@ -13,8 +13,8 @@ public class AppTest extends JFrame {
     private JTextArea resultArea;
     private LineChartPanelTest chartPanelTop, chartPanelBot;
     private JTabbedPane switchTabbedPane;
-    private JPanel cardPanel, ventilatorCardPanel;
-    private CardLayout cardLayout, ventilatorCardLayout;
+    private JPanel ventilatorCardPanel;
+    private CardLayout ventilatorCardLayout;
 
 
     //Dati del paziente
@@ -23,17 +23,21 @@ public class AppTest extends JFrame {
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     
     //Ventilatori
-    private JRadioButton pcac;
-    public JTextField fractionInspOxygenPCACField, inspiratoryPeriodPCACField, inspiratoryPressurePCACField, positiveEndExpPresPCACField, respirationRatePCACField, slopePCACField;
+    private JRadioButton pc;
+    public JTextField fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
+    JComboBox<String> AMComboBox_PC = new JComboBox<>(new String[]{"AC", "CMV"});
     
     private JRadioButton cpap;
     public JTextField fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
     
-    private JRadioButton vcac;
-    public JTextField flowVCACField, fractionInspOxygenVCACField, inspiratoryPeriodVCACField, positiveEndExpPresVCACField, respirationRateVCACField, tidalVolVCACField;
-   
+    private JRadioButton vc;
+    public JTextField flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
+    JComboBox<String> AMComboBox_VC = new JComboBox<>(new String[]{"AC", "CMV"});
+    
     ButtonGroup ventilatori = new ButtonGroup();
-    private VentilationModeTest selectedVentilationMode = VentilationModeTest.PCAC;
+    private VentilationModeTest selectedVentilationMode = VentilationModeTest.PC;
+    
+  //Azioni (malattie..)
 
     
     
@@ -60,9 +64,16 @@ public class AppTest extends JFrame {
         ventilatorPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         ventilatorPanel.setPreferredSize(new Dimension(250, 0));
         ventilatorPanel.setBackground(Color.LIGHT_GRAY);
+        
+        JPanel actionPanel = new JPanel(new BorderLayout());
+        actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        actionPanel.setPreferredSize(new Dimension(250, 0));
+        actionPanel.setBackground(Color.LIGHT_GRAY);
 
-        switchTabbedPane.addTab("Paziente", patientPanel);
-        switchTabbedPane.addTab("Ventilatore", ventilatorPanel);
+        switchTabbedPane.addTab("Patient", patientPanel);
+        switchTabbedPane.addTab("Actions", actionPanel);
+        switchTabbedPane.addTab("Ventilator", ventilatorPanel);
+        
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -116,50 +127,51 @@ public class AppTest extends JFrame {
         ventilatorCardLayout = new CardLayout();
         ventilatorCardPanel = new JPanel(ventilatorCardLayout);
 
-        JPanel pcapPanel = new JPanel(new GridBagLayout());
+        JPanel pcPanel = new JPanel(new GridBagLayout());
         JPanel cpapPanel = new JPanel(new GridBagLayout());
-        JPanel vcacPanel = new JPanel(new GridBagLayout());
+        JPanel vcPanel = new JPanel(new GridBagLayout());
 
         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (PCAC)
-        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenPCACField = new JTextField("0.21"), pcapPanel, gbc);
-        addLabelAndField("Inspiratory Period:", inspiratoryPeriodPCACField = new JTextField("1"), pcapPanel, gbc);
-        addLabelAndField("Inspiratory Pressure:", inspiratoryPressurePCACField = new JTextField("19"), pcapPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresPCACField = new JTextField("5"), pcapPanel, gbc);
-        addLabelAndField("Respiration Rate:", respirationRatePCACField = new JTextField("12"), pcapPanel, gbc);
-        addLabelAndField("Slope:", slopePCACField = new JTextField("0.2"), pcapPanel, gbc);
+        addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
+        addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriodPCField = new JTextField("1"), pcPanel, gbc);
+        addLabelAndField("Inspiratory Pressure - Pinsp", inspiratoryPressurePCField = new JTextField("19"), pcPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresPCField = new JTextField("5"), pcPanel, gbc);
+        addLabelAndField("Respiration Rate - RR", respirationRatePCField = new JTextField("12"), pcPanel, gbc);
+        addLabelAndField("Slope", slopePCField = new JTextField("0.2"), pcPanel, gbc);
+        addLabelAndField("Assisted Mode", AMComboBox_PC, pcPanel, gbc);
         
         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
-        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenCPAPField = new JTextField("0.21"), cpapPanel, gbc);
-        addLabelAndField("Delta Pressure Support:", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
-        addLabelAndField("Slope:", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
+        addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenCPAPField = new JTextField("0.21"), cpapPanel, gbc);
+        addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
+        addLabelAndField("Slope", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
         
         // Campi per ventilatore SEMechanicalVentilatorVolumeControl (VCAC)
-        addLabelAndField("Flow:", flowVCACField = new JTextField("60"), vcacPanel, gbc);
-        addLabelAndField("Fraction Inspired Oxygen:", fractionInspOxygenVCACField = new JTextField("0.21"), vcacPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure:", positiveEndExpPresVCACField = new JTextField("5"), vcacPanel, gbc);
-        addLabelAndField("Inspiratory Period:", inspiratoryPeriodVCACField = new JTextField("1"), vcacPanel, gbc);
-        addLabelAndField("Respiration Rate:", respirationRateVCACField = new JTextField("12"), vcacPanel, gbc);
-        addLabelAndField("Tidal Volume:", tidalVolVCACField = new JTextField("900"), vcacPanel, gbc);
+        addLabelAndField("Flow", flowVCField = new JTextField("60"), vcPanel, gbc);
+        addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenVCField = new JTextField("0.21"), vcPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresVCField = new JTextField("5"), vcPanel, gbc);
+        addLabelAndField("Inspiratory Period", inspiratoryPeriodVCField = new JTextField("1"), vcPanel, gbc);
+        addLabelAndField("Respiration Rate - RR", respirationRateVCField = new JTextField("12"), vcPanel, gbc);
+        addLabelAndField("Tidal Volume - VT", tidalVolVCField = new JTextField("900"), vcPanel, gbc);
+        addLabelAndField("Assisted Mode", AMComboBox_VC, vcPanel, gbc);
         
-        
-        ventilatorCardPanel.add(pcapPanel, "PCAC");
+        ventilatorCardPanel.add(pcPanel, "PC");
         ventilatorCardPanel.add(cpapPanel, "CPAP");
-        ventilatorCardPanel.add(vcacPanel, "VCAC");
+        ventilatorCardPanel.add(vcPanel, "VC");
 
-        pcac = new JRadioButton("PC_AC");
-        pcac.setSelected(true);
+        pc = new JRadioButton("PC");
+        pc.setSelected(true);
         cpap = new JRadioButton("CPAP");
-        vcac = new JRadioButton("VC_AC");
+        vc = new JRadioButton("VC");
 
-        ventilatori.add(pcac);
+        ventilatori.add(pc);
         ventilatori.add(cpap);
-        ventilatori.add(vcac);
+        ventilatori.add(vc);
 
         JPanel radioPanel = new JPanel(new GridLayout(1, 3));
-        radioPanel.add(pcac);
+        radioPanel.add(pc);
         radioPanel.add(cpap);
-        radioPanel.add(vcac);
+        radioPanel.add(vc);
         
         JButton connectButton = new JButton("Connect");
         connectButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
@@ -183,17 +195,17 @@ public class AppTest extends JFrame {
         
         
         // Imposta i listener per i JRadioButton
-        pcac.addActionListener(e -> {
-        	ventilatorCardLayout.show(ventilatorCardPanel, "PCAC");
-        	selectedVentilationMode = VentilationModeTest.PCAC;
+        pc.addActionListener(e -> {
+        	ventilatorCardLayout.show(ventilatorCardPanel, "PC");
+        	selectedVentilationMode = VentilationModeTest.PC;
         	});
         cpap.addActionListener(e -> {
         	ventilatorCardLayout.show(ventilatorCardPanel, "CPAP");
         	selectedVentilationMode = VentilationModeTest.CPAP;
         });
-        vcac.addActionListener(e -> {
-        	ventilatorCardLayout.show(ventilatorCardPanel, "VCAC");
-        	selectedVentilationMode = VentilationModeTest.VCAC;
+        vc.addActionListener(e -> {
+        	ventilatorCardLayout.show(ventilatorCardPanel, "VC");
+        	selectedVentilationMode = VentilationModeTest.VC;
         });
 
         // Pannello per il grafico (destra)
@@ -350,33 +362,37 @@ public class AppTest extends JFrame {
     
     //Get ventilatore PCAC
     public boolean isPCACConnected() {
-    	return selectedVentilationMode == VentilationModeTest.PCAC;
+    	return selectedVentilationMode == VentilationModeTest.PC;
     }
     
     public String getInspiratoryPeriodValue_PCAC() {
-        return inspiratoryPeriodPCACField.getText();
+        return inspiratoryPeriodPCField.getText();
     }
 
     public String getInspiratoryPressureValue_PCAC() {
-        return inspiratoryPressurePCACField.getText();
+        return inspiratoryPressurePCField.getText();
     }
 
     public String getRespirationRateValue_PCAC() {
-        return respirationRatePCACField.getText();
+        return respirationRatePCField.getText();
     }
 
     public String getFractionInspOxygenValue_PCAC() {
-        return fractionInspOxygenPCACField.getText();
+        return fractionInspOxygenPCField.getText();
     }
 
     public String getPositiveEndExpPresValue_PCAC() {
-        return positiveEndExpPresPCACField.getText();
+        return positiveEndExpPresPCField.getText();
     }
 
     public String getSlopeValue_PCAC() {
-        return slopePCACField.getText();
+        return slopePCField.getText();
     }
 
+    public String getAssistedMode_PC() {
+        return (String) AMComboBox_PC.getSelectedItem();
+    }
+    
   //Get ventilatore CPAP
     public boolean isCPAPConnected() {
         return selectedVentilationMode == VentilationModeTest.CPAP;
@@ -400,31 +416,34 @@ public class AppTest extends JFrame {
     
   //Get ventilatore VCAC
     public boolean isVCACConnected() {
-        return selectedVentilationMode == VentilationModeTest.VCAC;
+        return selectedVentilationMode == VentilationModeTest.VC;
     }
     
     public String getFractionInspOxygenValue_VCAC() {
-        return fractionInspOxygenVCACField.getText();
+        return fractionInspOxygenVCField.getText();
     }
     
     public String getFlow_VCAC() {
-        return flowVCACField.getText();
+        return flowVCField.getText();
     }
 
     public String getInspiratoryPeriod_VCAC() {
-        return inspiratoryPeriodVCACField.getText();
+        return inspiratoryPeriodVCField.getText();
     }
 
     public String getTidalVol_VCAC() {
-        return tidalVolVCACField.getText();
+        return tidalVolVCField.getText();
     }
     
     public String getRespirationRate_VCAC() {
-        return respirationRateVCACField.getText();
+        return respirationRateVCField.getText();
     }
     
     public String getPositiveEndExpPres_VCAC() {
-        return positiveEndExpPresVCACField.getText();
+        return positiveEndExpPresVCField.getText();
     }
     
+    public String getAssistedMode_VC() {
+        return (String) AMComboBox_VC.getSelectedItem();
+    }
 }

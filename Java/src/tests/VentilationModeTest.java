@@ -1,5 +1,5 @@
 package tests;
 
 public enum VentilationModeTest {
-	PCAC, CPAP, VCAC
+	PC, CPAP, VC
 }
