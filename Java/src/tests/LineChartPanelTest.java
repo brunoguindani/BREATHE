@@ -9,17 +9,18 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-
 class LineChartPanelTest extends JPanel {
     private final List<Point> points = new ArrayList<>();
     private int maxXValue = 150;  // Valore massimo dell'asse X
-    private int maxYValue = 100;  // Valore massimo dell'asse Y
+    private int maxYValue;  // Valore massimo dell'asse Y
+    private int yStep;      // Step per l'asse Y
     private String title;
 
     public LineChartPanelTest(String title) {
         this.title = title;
+        this.setMaxY();
         setPreferredSize(new Dimension(600, 300));
-        setBackground(Color.WHITE);
+        setBackground(Color.BLACK);  // Imposta sfondo nero
     }
 
     @Override
@@ -31,19 +32,19 @@ class LineChartPanelTest extends JPanel {
         // Disegna il titolo
         if (title != null && !title.isEmpty()) {
             g2.setFont(g2.getFont().deriveFont(20f)); // Font più grande e visibile
-            g2.setColor(Color.BLACK); // Colore del titolo
+            g2.setColor(Color.WHITE); // Colore bianco per il titolo
             int titleWidth = g2.getFontMetrics().stringWidth(title);
             g2.drawString(title, (getWidth() - titleWidth) / 2, 30); // Centra il titolo in alto
         }
 
         // Disegna assi
-        g2.setColor(Color.DARK_GRAY); // Colore degli assi
+        g2.setColor(Color.WHITE); // Colore bianco per gli assi
         g2.setStroke(new java.awt.BasicStroke(1.5f)); // Spessore più evidente per gli assi
         g2.drawLine(50, 250, 550, 250); // Asse X
         g2.drawLine(50, 50, 50, 250);   // Asse Y
 
         // Disegna la griglia
-        g2.setColor(new Color(220, 220, 220)); // Colore della griglia
+        g2.setColor(new Color(255, 255, 255, 80)); // Colore bianco semi-trasparente per la griglia
         g2.setStroke(new java.awt.BasicStroke(0.5f)); // Spessore sottile per la griglia
 
         // Griglia verticale
@@ -51,9 +52,10 @@ class LineChartPanelTest extends JPanel {
             g2.drawLine(i, 50, i, 250);
         }
 
-        // Griglia orizzontale
-        for (int i = 50; i <= 250; i += 30) {
-            g2.drawLine(50, i, 550, i);
+        // Griglia orizzontale (calcolata dinamicamente)
+        for (int i = 0; i <= maxYValue; i += yStep) {
+            int y = 250 - (i * 200 / maxYValue); // Scala la griglia in base a maxY
+            g2.drawLine(50, y, 550, y);
         }
 
         // Disegna etichette sugli assi
@@ -62,7 +64,7 @@ class LineChartPanelTest extends JPanel {
         // Disegna il grafico a linee
         if (points.size() > 1) {
             int prevX = 50;
-            g2.setColor(new Color(0, 123, 255)); // Colore blu per la linea
+            g2.setColor(Color.GREEN); // Colore bianco per la linea del grafico
             g2.setStroke(new java.awt.BasicStroke(2f)); // Spessore della linea
 
             for (int i = Math.max(0, points.size() - maxXValue); i < points.size() - 1; i++) {
@@ -75,7 +77,7 @@ class LineChartPanelTest extends JPanel {
     }
 
     private void drawAxisLabels(Graphics2D g2) {
-        g2.setColor(Color.GRAY); // Colore delle etichette
+        g2.setColor(Color.WHITE); // Colore bianco per le etichette
         g2.setFont(g2.getFont().deriveFont(12f)); // Font più piccolo e leggibile
 
         // Etichette asse X
@@ -85,10 +87,10 @@ class LineChartPanelTest extends JPanel {
             g2.drawString(String.valueOf(i), x - 10, y + 15);
         }
 
-        // Etichette asse Y
-        for (int i = 0; i <= maxYValue; i += 20) {
+        // Etichette asse Y (calcolate dinamicamente)
+        for (int i = 0; i <= maxYValue; i += yStep) {
             int x = 30; // Posizione dell'etichetta lungo l'asse X
-            int y = 250 - (i * 2); // Scala l'etichetta per adattarla al grafico
+            int y = 250 - (i * 200 / maxYValue); // Scala l'etichetta per adattarla al grafico
             g2.drawString(String.valueOf(i), x - 10, y + 5);
         }
     }
@@ -101,5 +103,30 @@ class LineChartPanelTest extends JPanel {
     public void clear() {
         points.clear(); // Pulisce la lista dei punti
         repaint();
+    }
+    
+    public void setMaxY(){
+        switch(this.title){
+            case "Heart Rate":
+                this.maxYValue = 150;
+                this.yStep = 20;  // Imposta il salto per l'asse Y
+                break;
+            case "Total Lung Volume":
+                this.maxYValue = 3000;
+                this.yStep = 400;  // Imposta il salto per l'asse Y
+                break;
+            case "Respiratory Rate":
+                this.maxYValue = 30;
+                this.yStep = 5;   // Imposta il salto per l'asse Y
+                break;
+            default:
+                this.maxYValue = 100;
+                this.yStep = 20;  // Imposta il salto di default
+                break;
+        }
+    }
+    
+    public int getMaxY() {
+    	return this.maxYValue;
     }
 }

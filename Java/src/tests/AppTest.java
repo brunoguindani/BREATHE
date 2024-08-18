@@ -11,7 +11,7 @@ import com.kitware.pulse.utilities.Log;
 public class AppTest extends JFrame {
 
     private JTextArea resultArea;
-    private LineChartPanelTest chartPanelTop, chartPanelBot;
+    private LineChartPanelTest[] chartPanels = new LineChartPanelTest[3];
     private JTabbedPane switchTabbedPane;
     private JPanel cardPanel, ventilatorCardPanel;
     private CardLayout cardLayout, ventilatorCardLayout;
@@ -197,13 +197,32 @@ public class AppTest extends JFrame {
         });
 
         // Pannello per il grafico (destra)
-        JPanel chartsPanel = new JPanel();
+        /*JPanel chartsPanel = new JPanel();
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartPanelTop = new LineChartPanelTest("Heart Rate"); // Primo grafico
         chartPanelBot = new LineChartPanelTest("Respiratory Rate"); // Secondo grafico
         chartsPanel.add(chartPanelTop);
         chartsPanel.add(chartPanelBot);
+        chartsPanel.setBackground(Color.LIGHT_GRAY);*/
+        
+     // Crea un pannello per contenere i grafici
+        JPanel chartsPanel = new JPanel();
+        chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.LIGHT_GRAY);
+
+        // Aggiungi i grafici al pannello
+        chartPanels[0] = new LineChartPanelTest("Heart Rate"); // Primo grafico
+        chartPanels[1] = new LineChartPanelTest("Total Lung Volume"); // Secondo grafico
+        chartPanels[2] = new LineChartPanelTest("Respiratory Rate"); // Secondo grafico
+        for (int i =0; i< chartPanels.length ;i++) {
+        	 chartsPanel.add(chartPanels[i]);
+        }
+        
+
+        // Crea un JScrollPane per rendere il pannello scorrevole
+        JScrollPane scrollChartPane = new JScrollPane(chartsPanel);
+        scrollChartPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollChartPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         // Area di testo per visualizzare i risultati (sinistra)
         resultArea = new JTextArea();
@@ -219,7 +238,7 @@ public class AppTest extends JFrame {
         // Aggiungi i pannelli al layout principale
         add(scrollPane, BorderLayout.WEST);    // Area di testo con scroll a sinistra
         add(switchTabbedPane, BorderLayout.CENTER);  // Pannello input al centro
-        add(chartsPanel, BorderLayout.EAST);   // Pannello del grafico a destra
+        add(scrollChartPane, BorderLayout.EAST);   // Pannello del grafico a destra
 
         // Azione per avviare la simulazione
         startButton.addActionListener(e -> {
@@ -227,8 +246,9 @@ public class AppTest extends JFrame {
             stopButton.setEnabled(true);
             connectButton.setEnabled(true);
             actionButton.setEnabled(true);
-            chartPanelTop.clear(); // Pulizia del grafico
-            chartPanelBot.clear(); // Pulizia del grafico
+            for (int i =0; i< chartPanels.length ;i++) {
+            	chartPanels[i].clear();
+            }
             resultArea.setText(""); // Pulizia dell'area risultati
 
             //TEST
@@ -294,7 +314,7 @@ public class AppTest extends JFrame {
     }
 
     public LineChartPanelTest[] getChartPanel() {
-        return new LineChartPanelTest[]{chartPanelTop, chartPanelBot};
+        return chartPanels;
     }
 
     public String getTextFieldValue(JTextField textField) {

@@ -168,10 +168,12 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
 
             // Aggiungi punto al grafico usando SimTime (dataValues.get(0)) e HeartRate (dataValues.get(1))
             int x = (int)(dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
-            int y = (int) (250 - dataValues.get(1)*2);
+            int y = (int) (250 - dataValues.get(1)*200/app.getChartPanel()[0].getMaxY());
             app.getChartPanel()[0].addPoint(x, y);
-            y = (int) (250 - dataValues.get(3)*2);
+            y = (int) (250 - dataValues.get(2)*200/app.getChartPanel()[1].getMaxY());
             app.getChartPanel()[1].addPoint(x, y);
+            y = (int) (250 - dataValues.get(3)*200/app.getChartPanel()[2].getMaxY());
+            app.getChartPanel()[2].addPoint(x, y);
 
             time.setValue(0.10, TimeUnit.s);
             Log.info("Advancing "+time+"...");
