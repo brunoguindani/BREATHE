@@ -126,13 +126,13 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
             
             if(ventilationDisconnectRequest) {
             	ventilationDisconnectRequest = false;
-            	if(app.isPCACConnected()){ 
+            	if(app.ventilator.isPCACConnected()){ 
                 	stop_pc(pc);
                 }
-                else if(app.isCPAPConnected()){
+                else if(app.ventilator.isCPAPConnected()){
         	        stop_cpap(cpap);
         	    }
-                else if(app.isVCACConnected()){
+                else if(app.ventilator.isVCACConnected()){
         	        stop_vc(vc);
         	    }
             	
@@ -140,13 +140,13 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
             else if(ventilationSwitchRequest) {
             	ventilationSwitchRequest = false;
             	
-                if(app.isPCACConnected()){ 
+                if(app.ventilator.isPCACConnected()){ 
                 	start_pc(pc);
                 }
-                else if(app.isCPAPConnected()){
+                else if(app.ventilator.isCPAPConnected()){
         	        start_cpap(cpap);
         	    }
-                else if(app.isVCACConnected()){
+                else if(app.ventilator.isVCACConnected()){
         	        start_vc(vc);
         	    }
             }
@@ -170,12 +170,12 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
 
             // Aggiungi punto al grafico usando SimTime (dataValues.get(0)) e HeartRate (dataValues.get(1))
             int x = (int)(dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
-            int y = (int) (250 - dataValues.get(1)*200/app.getChartPanel()[0].getMaxY());
-            app.getChartPanel()[0].addPoint(x, y);
-            y = (int) (250 - dataValues.get(2)*200/app.getChartPanel()[1].getMaxY());
-            app.getChartPanel()[1].addPoint(x, y);
-            y = (int) (250 - dataValues.get(3)*200/app.getChartPanel()[2].getMaxY());
-            app.getChartPanel()[2].addPoint(x, y);
+            int y = (int) (250 - dataValues.get(1)*200/app.charts.getChartPanel()[0].getMaxY());
+            app.charts.getChartPanel()[0].addPoint(x, y);
+            y = (int) (250 - dataValues.get(2)*200/app.charts.getChartPanel()[1].getMaxY());
+            app.charts.getChartPanel()[1].addPoint(x, y);
+            y = (int) (250 - dataValues.get(3)*200/app.charts.getChartPanel()[2].getMaxY());
+            app.charts.getChartPanel()[2].addPoint(x, y);
 
             time.setValue(0.10, TimeUnit.s);
             Log.info("Advancing "+time+"...");
@@ -192,30 +192,30 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
     @Override
     protected void process(java.util.List<String> chunks) {
         for (String chunk : chunks) {
-            app.getResultArea().append(chunk);
+            app.log.getResultArea().append(chunk);
         }
     }
     
 
     @Override
     protected void done() {
-        app.getResultArea().append("Simulazione fermata.\n");
+        app.log.getResultArea().append("Simulazione fermata.\n");
     }
     
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
-    	if (app.getAssistedMode_PC().equals("AC")) {
+    	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
     		pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
 		} else {
 			pc.setMode(MechanicalVentilatorPressureControlData.eMode.ContinuousMandatoryVentilation);
 		}
         pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
-        pc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue_PCAC()));
-        pc.getInspiratoryPeriod().setValue(Double.parseDouble(app.getInspiratoryPeriodValue_PCAC()),TimeUnit.s);
-        pc.getInspiratoryPressure().setValue(Double.parseDouble(app.getInspiratoryPressureValue_PCAC()), PressureUnit.cmH2O);
-        pc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue_PCAC()), PressureUnit.cmH2O);
-        pc.getRespirationRate().setValue(Double.parseDouble(app.getRespirationRateValue_PCAC()), FrequencyUnit.Per_min);
-        pc.getSlope().setValue(Double.parseDouble(app.getSlopeValue_PCAC()), TimeUnit.s);
+        pc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_PCAC()));
+        pc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriodValue_PCAC()),TimeUnit.s);
+        pc.getInspiratoryPressure().setValue(Double.parseDouble(app.ventilator.getInspiratoryPressureValue_PCAC()), PressureUnit.cmH2O);
+        pc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_PCAC()), PressureUnit.cmH2O);
+        pc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRateValue_PCAC()), FrequencyUnit.Per_min);
+        pc.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_PCAC()), TimeUnit.s);
         pc.setConnection(eSwitch.On);
         pe.processAction(pc);
     }
@@ -226,10 +226,10 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
     }
     
     private void start_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
-        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue_CPAP()));
-        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.getDeltaPressureSupValue_CPAP()), PressureUnit.cmH2O);
-        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPresValue_CPAP()), PressureUnit.cmH2O);
-        cpap.getSlope().setValue(Double.parseDouble(app.getSlopeValue_CPAP()), TimeUnit.s);
+        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_CPAP()));
+        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.ventilator.getDeltaPressureSupValue_CPAP()), PressureUnit.cmH2O);
+        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_CPAP()), PressureUnit.cmH2O);
+        cpap.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_CPAP()), TimeUnit.s);
         cpap.setConnection(eSwitch.On);
         pe.processAction(cpap);
     }
@@ -240,18 +240,18 @@ public class SimulationWorkerTest extends SwingWorker<Void, String> {
     }
     
     private void start_vc(SEMechanicalVentilatorVolumeControl vc) {
-    	if (app.getAssistedMode_PC().equals("AC")) {
+    	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
     		vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
 		} else {
 			vc.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
 		}
     	vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
-        vc.getFlow().setValue(Double.parseDouble(app.getFlow_VCAC()), VolumePerTimeUnit.L_Per_min);
-        vc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.getFractionInspOxygenValue_VCAC()));
-        vc.getInspiratoryPeriod().setValue(Double.parseDouble(app.getInspiratoryPeriod_VCAC()), TimeUnit.s);
-        vc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.getPositiveEndExpPres_VCAC()), PressureUnit.cmH2O);
-        vc.getRespirationRate().setValue(Double.parseDouble(app.getRespirationRate_VCAC()), FrequencyUnit.Per_min);
-        vc.getTidalVolume().setValue(Double.parseDouble(app.getTidalVol_VCAC()), VolumeUnit.mL);
+        vc.getFlow().setValue(Double.parseDouble(app.ventilator.getFlow_VCAC()), VolumePerTimeUnit.L_Per_min);
+        vc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_VCAC()));
+        vc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriod_VCAC()), TimeUnit.s);
+        vc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPres_VCAC()), PressureUnit.cmH2O);
+        vc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRate_VCAC()), FrequencyUnit.Per_min);
+        vc.getTidalVolume().setValue(Double.parseDouble(app.ventilator.getTidalVol_VCAC()), VolumeUnit.mL);
         vc.setConnection(eSwitch.On);
         pe.processAction(vc);
     }
