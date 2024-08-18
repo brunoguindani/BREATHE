@@ -31,13 +31,13 @@ public class AppTest extends JFrame {
         // Pannello per gli input (centro)
         JPanel patientPanel = patient.getPatientPanel();
         JPanel ventilatorPanel = ventilator.getVentilatorPanel();	
-        JScrollPane scrollActionPanel = action.getActionScrollPane();
+        JPanel actionPanel = action.getActionPanel();
         JScrollPane scrollLogPane = log.getLogScrollPane();
         
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
         switchTabbedPane.addTab("Patient", patientPanel);
-        switchTabbedPane.addTab("Action", scrollActionPanel);
+        switchTabbedPane.addTab("Action", actionPanel);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
         

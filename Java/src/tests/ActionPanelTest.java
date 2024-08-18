@@ -7,32 +7,21 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 public class ActionPanelTest {
-    private JPanel actionPanel = new JPanel();
+    private JPanel sectionsPanel = new JPanel();  // Pannello per le sezioni espandibili
     private JButton applyButton;
     private JScrollPane scrollActionPane;
+    private JPanel actionPanel;  // Nuovo JPanel che contiene lo JScrollPane e il pulsante "Applica"
 
     public ActionPanelTest() {
-        // Configurazione del pannello principale
-        actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
-        actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        actionPanel.setBackground(Color.LIGHT_GRAY);
+        // Configurazione del pannello delle sezioni
+        sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
+        sectionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        sectionsPanel.setBackground(Color.LIGHT_GRAY);
 
         // Aggiungi le sezioni espandibili
-        for (int i = 1; i <= 3; i++) {  // Modificato a 3 sezioni per esempio
-            actionPanel.add(createExpandableSection("Azione " + i, "Campo A" + i, "Campo B" + i, "Campo C" + i));
+        for (int i = 1; i <= 300; i++) {  // Modificato a 3 sezioni per esempio
+            sectionsPanel.add(createExpandableSection("Azione " + i, "Campo A" + i, "Campo B" + i, "Campo C" + i));
         }
-
-        // Pulsante "Applica"
-        applyButton = new JButton("Applica");
-        applyButton.setPreferredSize(new Dimension(120, 30));
-        applyButton.setBackground(new Color(0, 122, 255));  // Blu
-        applyButton.setForeground(Color.WHITE);
-        applyButton.setFocusPainted(false);
-        applyButton.setMargin(new Insets(0, 0, 0, 0));  // Rimuove i margini del pulsante
-        applyButton.addActionListener(e -> {
-            // Logica per il pulsante "Applica"
-            JOptionPane.showMessageDialog(actionPanel, "Settings Applied");
-        });
 
         // Pannello per il pulsante "Applica"
         JPanel applyPanel = new JPanel();
@@ -46,21 +35,32 @@ public class ActionPanelTest {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.EAST;
 
+        // Pulsante "Applica"
+        applyButton = new JButton("Applica");
+        applyButton.setPreferredSize(new Dimension(120, 30));
+        applyButton.setBackground(new Color(0, 122, 255));  // Blu
+        applyButton.setForeground(Color.WHITE);
+        applyButton.setFocusPainted(false);
+        applyButton.setMargin(new Insets(0, 0, 0, 0));  // Rimuove i margini del pulsante
+        applyButton.addActionListener(e -> {
+            // Logica per il pulsante "Applica"
+            JOptionPane.showMessageDialog(sectionsPanel, "Settings Applied");
+        });
+
         // Aggiungi il pulsante "Applica" al pannello
         applyPanel.add(applyButton, gbc);
 
-        actionPanel.add(Box.createVerticalGlue());  // Spazio per spingere il pulsante "Applica" verso il basso
-        actionPanel.add(applyPanel);
-
         // Aggiungi lo scroll pane
-        scrollActionPane = new JScrollPane(actionPanel);
+        scrollActionPane = new JScrollPane(sectionsPanel);
         scrollActionPane.setPreferredSize(new Dimension(400, 600));
         scrollActionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollActionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    }
 
-    public JScrollPane getActionScrollPane() {
-        return scrollActionPane;
+        // Nuovo pannello che contiene lo scroll pane e il pannello del pulsante "Applica"
+        actionPanel = new JPanel();
+        actionPanel.setLayout(new BorderLayout());
+        actionPanel.add(scrollActionPane, BorderLayout.CENTER);
+        actionPanel.add(applyPanel, BorderLayout.SOUTH);  // Posiziona il pannello del pulsante "Applica" in basso
     }
 
     private JPanel createExpandableSection(String title, String... fieldLabels) {
@@ -123,8 +123,12 @@ public class ActionPanelTest {
         panel.add(component, gbc);
         gbc.gridy++;
     }
-    
+
     public JPanel getActionPanel() {
         return actionPanel;
+    }
+    
+    public JScrollPane getActionScrollPane() {
+        return scrollActionPane;
     }
 }
