@@ -14,21 +14,17 @@ public class ChartsPanel {
     JScrollPane scrollChartPane;
     
     public ChartsPanel() {
- // Crea un pannello per contenere i grafici
         
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Aggiungi i grafici al pannello
-        chartPanels[0] = new LineChart("Heart Rate"); // Primo grafico
-        chartPanels[1] = new LineChart("Total Lung Volume"); // Secondo grafico
-        chartPanels[2] = new LineChart("Respiratory Rate"); // Secondo grafico
+        chartPanels[0] = new LineChart("Heart Rate"); 
+        chartPanels[1] = new LineChart("Total Lung Volume"); 
+        chartPanels[2] = new LineChart("Respiratory Rate"); 
         for (int i =0; i< chartPanels.length ;i++) {
         	 chartsPanel.add(chartPanels[i]);
         }
         
-
-        // Crea un JScrollPane per rendere il pannello scorrevole
         scrollChartPane = new JScrollPane(chartsPanel);
         scrollChartPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollChartPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

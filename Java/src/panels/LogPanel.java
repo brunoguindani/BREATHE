@@ -13,7 +13,6 @@ public class LogPanel {
     private JScrollPane scrollLogPane;
     
 	public LogPanel() {
-		// Area di testo per visualizzare i risultati (sinistra)
 	    resultArea = new JTextArea();
 	    resultArea.setEditable(false);
 	    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 12));

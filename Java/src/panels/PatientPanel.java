@@ -18,7 +18,6 @@ import app.App;
 import app.SimulationWorker;
 
 public class PatientPanel {
-	 //Dati del paziente
     private JTextField nameField_Patient, ageField_Patient, weightField_Patient, heightField_Patient, bodyFatField_Patient;
     private JTextField heartRateField_Patient, diastolicField_Patient, systolicField_Patient, respirationRateField_Patient, basalMetabolicRateField_Patient;
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
@@ -36,9 +35,7 @@ public class PatientPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        
-        
-        // Aggiungi campi di input con GridBagLayout
+             
         addLabelAndField("Name:", nameField_Patient = new JTextField("Standard"), patientPanel, gbc);
         addLabelAndField("Sex:", sexComboBox_Patient, patientPanel, gbc); 
         addLabelAndField("Age (years):", ageField_Patient = new JTextField("44"), patientPanel, gbc);
@@ -51,27 +48,23 @@ public class PatientPanel {
         addLabelAndField("Respiration Rate Baseline:", respirationRateField_Patient = new JTextField("16"), patientPanel, gbc);
         addLabelAndField("Basal Metabolic Rate (kcal/day):", basalMetabolicRateField_Patient = new JTextField("1600"), patientPanel, gbc);
 
-        
-     // Bottone per avviare la simulazione
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         JButton startButton = new JButton("Start Simulation");
-        startButton.setBackground(new Color(0, 122, 255)); // Blu
+        startButton.setBackground(new Color(0, 122, 255)); 
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
         patientPanel.add(startButton, gbc);
 
-        // Bottone per fermare la simulazione
         JButton stopButton = new JButton("Stop Simulation");
-        stopButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
-        stopButton.setBackground(new Color(255, 59, 48)); // Rosso
+        stopButton.setEnabled(false); 
+        stopButton.setBackground(new Color(255, 59, 48));
         stopButton.setForeground(Color.WHITE);
         stopButton.setFocusPainted(false);
         gbc.gridy++;
         patientPanel.add(stopButton, gbc);
         
-        // Azione per avviare la simulazione
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
@@ -79,18 +72,13 @@ public class PatientPanel {
             for (int i =0; i< app.chartPanels.length ;i++) {
             	app.chartPanels[i].clear();
             }
-            app.log.getResultArea().setText(""); // Pulizia dell'area risultati
+            app.log.getResultArea().setText("");
 
-            //TEST
-            new SimulationWorker(app).execute(); // Usa un SwingWorker per eseguire la simulazione
-
+            new SimulationWorker(app).execute(); 
             });
 
-        // Azione per fermare la simulazione
         stopButton.addActionListener(e -> {
-            //TEST
             SimulationWorker.requestStop(); 
-            // SimulationWorker.requestStop(); // Richiedi l'arresto
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
             app.connectButton.setEnabled(false);
