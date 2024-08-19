@@ -13,6 +13,11 @@ import java.awt.*;
 
 public class App extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private JTabbedPane switchTabbedPane;
 	
 	public PatientPanel patient = new PatientPanel(this);

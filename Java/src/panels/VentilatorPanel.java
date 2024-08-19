@@ -54,15 +54,13 @@ public class VentilatorPanel {
          gbc.gridx = 0;
          gbc.gridy = 0;
          
-         // Pannello ventilatore con CardLayout per diverse opzioni di ventilazione
          ventilatorCardLayout = new CardLayout();
          ventilatorCardPanel = new JPanel(ventilatorCardLayout);
 
          JPanel pcPanel = new JPanel(new GridBagLayout());
          JPanel cpapPanel = new JPanel(new GridBagLayout());
          JPanel vcPanel = new JPanel(new GridBagLayout());
-
-       
+     
          // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (PCAC)
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
          addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriodPCField = new JTextField("1"), pcPanel, gbc);
@@ -107,17 +105,17 @@ public class VentilatorPanel {
          
          
          
-         App.connectButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
+         App.connectButton.setEnabled(false);  
          App.connectButton.setForeground(Color.BLACK);
          App.connectButton.setFocusPainted(false);
          
          JButton disconnectButton = new JButton("Disconnect all");
-         disconnectButton.setEnabled(false);  // Disabilitato finché la simulazione non parte
+         disconnectButton.setEnabled(false); 
          disconnectButton.setForeground(Color.RED);
          disconnectButton.setFocusPainted(false);
          
          JPanel buttonPanel = new JPanel();
-         buttonPanel.setLayout(new GridLayout(2, 1)); // 2 righe, 1 colonna
+         buttonPanel.setLayout(new GridLayout(2, 1)); 
          buttonPanel.add(App.connectButton);
          buttonPanel.add(disconnectButton);
          
@@ -126,8 +124,6 @@ public class VentilatorPanel {
          ventilatorPanel.add(buttonPanel, BorderLayout.SOUTH);
          ventilatorPanel.add(ventilatorCardPanel, BorderLayout.CENTER);
          
-         
-         // Imposta i listener per i JRadioButton
          pc.addActionListener(e -> {
          	ventilatorCardLayout.show(ventilatorCardPanel, "PC");
          	selectedVentilationMode = VentilationMode.PC;
@@ -141,7 +137,6 @@ public class VentilatorPanel {
          	selectedVentilationMode = VentilationMode.VC;
          });
 
-         // Azione per connettere i ventilatori
          App.connectButton.addActionListener(e -> {
          	if(!SimulationWorker.ventilationSwitchRequest)
          		SimulationWorker.ventilationSwitchRequest = true;
@@ -150,7 +145,6 @@ public class VentilatorPanel {
          	disconnectButton.setEnabled(true);
          });
 
-      // Azione per disconnettere i ventilatori
          disconnectButton.addActionListener(e -> {
          	if(!SimulationWorker.ventilationDisconnectRequest)
          		SimulationWorker.ventilationDisconnectRequest = true;
