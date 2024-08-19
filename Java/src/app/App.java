@@ -55,11 +55,11 @@ public class App extends JFrame {
         switchTabbedPane.addTab("Log", scrollLogPane);
         
         // Pannello per il grafico (destra)
-        JScrollPane scrollChartPane = charts.getChartsScrollPane();
-        chartPanels = charts.getChartPanel();      
+        JPanel chartPanel = charts.getChartPanel();
+        chartPanels = charts.getChartsPanel();      
        
         // Aggiungi i pannelli al layout principale
         add(switchTabbedPane, BorderLayout.CENTER);  // Pannello input al centro
-        add(scrollChartPane, BorderLayout.EAST);   // Pannello del grafico a destra
+        add(chartPanel, BorderLayout.EAST);   // Pannello del grafico a destra
     }
 }

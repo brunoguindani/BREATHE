@@ -59,7 +59,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         JNIBridge.initialize();
         pe = new PulseEngine();
         
-        String[] requestList = {"SimTime","HeartRate","TotalLungVolume","RespirationRate","BloodVolume"};
+        String[] requestList = {"SimTime",
+        						"HeartRate",
+        						"TotalLungVolume",
+        						"RespirationRate",
+        						"BloodVolume"
+        						};
 
         // Creazione e configurazione delle richieste di dati
         SEDataRequestManager dataRequests = new SEDataRequestManager();
@@ -172,12 +177,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
             // Aggiungi punto al grafico usando SimTime (dataValues.get(0)) e HeartRate (dataValues.get(1))
             int x = (int)(dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
-            int y = (int) (250 - dataValues.get(1)*200/app.charts.getChartPanel()[0].getMaxY());
-            app.charts.getChartPanel()[0].addPoint(x, y);
-            y = (int) (250 - dataValues.get(2)*200/app.charts.getChartPanel()[1].getMaxY());
-            app.charts.getChartPanel()[1].addPoint(x, y);
-            y = (int) (250 - dataValues.get(3)*200/app.charts.getChartPanel()[2].getMaxY());
-            app.charts.getChartPanel()[2].addPoint(x, y);
+            int y = (int) (250 - dataValues.get(1)*200/app.charts.getChartsPanel()[0].getMaxY());
+            app.charts.getChartsPanel()[0].addPoint(x, y);
+            y = (int) (250 - dataValues.get(2)*200/app.charts.getChartsPanel()[1].getMaxY());
+            app.charts.getChartsPanel()[1].addPoint(x, y);
+            y = (int) (250 - dataValues.get(3)*200/app.charts.getChartsPanel()[2].getMaxY());
+            app.charts.getChartsPanel()[2].addPoint(x, y);
 
             time.setValue(0.10, TimeUnit.s);
             Log.info("Advancing "+time+"...");
