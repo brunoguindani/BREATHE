@@ -19,7 +19,7 @@ public class ChartsPanel {
     private JCheckBox[] chartCheckboxes;
     
     public ChartsPanel() {
-    	String[] chartNames = {"Heart Rate","Total Lung Volume","Respiratory Rate"};
+    	String[] chartNames = {"Heart Rate","Total Lung Volume","Respiratory Rate","ECG"};
     	chartPanels = new LineChart[chartNames.length];
     	chartCheckboxes = new JCheckBox[chartNames.length];
     	
