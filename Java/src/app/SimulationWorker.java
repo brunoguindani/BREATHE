@@ -16,6 +16,7 @@ import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEAcuteRespiratoryDistressSyndromeExacerbation;
 import com.kitware.pulse.cdm.patient.actions.SEDyspnea;
+import com.kitware.pulse.cdm.properties.CommonUnits.ElectricPotentialUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.LengthUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.MassUnit;
@@ -63,7 +64,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         						"HeartRate",
         						"TotalLungVolume",
         						"RespirationRate",
-        						"BloodVolume"
+        						"BloodVolume",
+        						"Lead3ElectricPotential"
         						};
 
         // Creazione e configurazione delle richieste di dati
@@ -72,6 +74,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createPhysiologyDataRequest(requestList[4], VolumeUnit.mL);
+        dataRequests.createECGDataRequest(requestList[5], ElectricPotentialUnit.mV);
         //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
 
         /*
@@ -176,15 +179,17 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             }
 
             // Aggiungi punto al grafico usando SimTime (dataValues.get(0)) e HeartRate (dataValues.get(1))
-            int x = (int)(dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
-            int y = (int) (250 - dataValues.get(1)*200/app.charts.getChartsPanel()[0].getMaxY());
+            double x = (dataValues.get(0)*30+50);  // Scala il tempo per renderlo visibile
+            double y = (250 - dataValues.get(1)*200/app.charts.getChartsPanel()[0].getMaxY());
             app.charts.getChartsPanel()[0].addPoint(x, y);
-            y = (int) (250 - dataValues.get(2)*200/app.charts.getChartsPanel()[1].getMaxY());
+            y = (250 - dataValues.get(2)*200/app.charts.getChartsPanel()[1].getMaxY());
             app.charts.getChartsPanel()[1].addPoint(x, y);
-            y = (int) (250 - dataValues.get(3)*200/app.charts.getChartsPanel()[2].getMaxY());
+            y = (250 - dataValues.get(3)*200/app.charts.getChartsPanel()[2].getMaxY());
             app.charts.getChartsPanel()[2].addPoint(x, y);
+            y = (250 - dataValues.get(4)*200/app.charts.getChartsPanel()[3].getMaxY());
+            app.charts.getChartsPanel()[3].addPoint(x, y);
 
-            time.setValue(0.10, TimeUnit.s);
+            time.setValue(0.1, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
         
