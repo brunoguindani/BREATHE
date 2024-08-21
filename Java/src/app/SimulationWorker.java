@@ -9,10 +9,15 @@ import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
+import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.patient.SEPatient;
+import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.properties.CommonUnits.ElectricPotentialUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.LengthUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.MassUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.PowerUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
@@ -65,36 +70,37 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
         //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
 
-        /*
+        
         //Paziente
 		SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 		SEPatient patient = patient_configuration.getPatient();
 		
 		// Supponendo che "app" sia un'istanza della classe App
-		patient.setName(app.getName_PATIENT());
-		patient.getAge().setValue(Double.parseDouble(app.getAge_PATIENT()), TimeUnit.yr);
-		patient.getWeight().setValue(Double.parseDouble(app.getWeight_PATIENT()), MassUnit.lb);
-		patient.getHeight().setValue(Double.parseDouble(app.getHeight_PATIENT()), LengthUnit.in);
-		patient.getBodyFatFraction().setValue(Double.parseDouble(app.getBodyFatFraction_PATIENT()));
-		patient.getHeartRateBaseline().setValue(Double.parseDouble(app.getHeartRate_PATIENT()), FrequencyUnit.Per_min);
-		patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(app.getDiastolicPressure_PATIENT()), PressureUnit.mmHg);
-		patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(app.getSystolicPressure_PATIENT()), PressureUnit.mmHg);
-		patient.getRespirationRateBaseline().setValue(Double.parseDouble(app.getRespirationRate_PATIENT()), FrequencyUnit.Per_min);
-		patient.getBasalMetabolicRate().setValue(Double.parseDouble(app.getBasalMetabolicRate_PATIENT()), PowerUnit.kcal_Per_day);
-		if (app.getSex_PATIENT().equals("Male")) {
+		patient.setName(app.patient.getName_PATIENT());
+		patient.getAge().setValue(Double.parseDouble(app.patient.getAge_PATIENT()), TimeUnit.yr);
+		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
+		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
+		patient.getBodyFatFraction().setValue(Double.parseDouble(app.patient.getBodyFatFraction_PATIENT()));
+		patient.getHeartRateBaseline().setValue(Double.parseDouble(app.patient.getHeartRate_PATIENT()), FrequencyUnit.Per_min);
+		patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getDiastolicPressure_PATIENT()), PressureUnit.mmHg);
+		patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getSystolicPressure_PATIENT()), PressureUnit.mmHg);
+		patient.getRespirationRateBaseline().setValue(Double.parseDouble(app.patient.getRespirationRate_PATIENT()), FrequencyUnit.Per_min);
+		patient.getBasalMetabolicRate().setValue(Double.parseDouble(app.patient.getBasalMetabolicRate_PATIENT()), PowerUnit.kcal_Per_day);
+		if (app.patient.getSex_PATIENT().equals("Male")) {
 		    patient.setSex(eSex.Male);
 		} else {
 		    patient.setSex(eSex.Female);
 		}
 
         // Inizializzazione del motore Pulse con la configurazione del paziente e le richieste di dati
+        
         pe.initializeEngine(patient_configuration, dataRequests);
-       
-        */
+        
         //SOLO PER DEBUG
-        pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
-        SEPatient initialPatient = new SEPatient();
-        pe.getInitialPatient(initialPatient);
+//        pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
+//        SEPatient initialPatient = new SEPatient();
+//        pe.getInitialPatient(initialPatient);
+
 
         /*
         SEAcuteRespiratoryDistressSyndromeExacerbation ards = new SEAcuteRespiratoryDistressSyndromeExacerbation();
@@ -175,7 +181,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             }
 
 
-            time.setValue(0.01, TimeUnit.s);
+            time.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
         

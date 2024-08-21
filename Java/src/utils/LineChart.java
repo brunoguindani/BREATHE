@@ -19,7 +19,7 @@ public class LineChart extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final List<Point> points = new ArrayList<>();
-    private int maxXValue = 1000;  
+    private int maxXValue = 500;  
     private int maxYValue;  
     private int minYValue = 0;  
     private int yStep;      
@@ -97,7 +97,7 @@ public class LineChart extends JPanel {
 
     private void drawGrid(Graphics2D g2) {
         int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
-        int labelInterval = 100; // Intervallo per le etichette sull'asse X
+        int labelInterval = 50; // Intervallo per le etichette sull'asse X
 
         int startXValue = Math.max(0, points.size() - maxXValue);
         for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
@@ -116,14 +116,14 @@ public class LineChart extends JPanel {
         g2.setFont(g2.getFont().deriveFont(12f)); 
 
         int chartWidth = getWidth() - 100; 
-        int labelInterval = 100; 
+        int labelInterval = 50; 
 
         int startXValue = Math.max(0, points.size() - maxXValue);
         
         for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
             int x = 50 + ((i - startXValue) * chartWidth / maxXValue);
             int y = 265;
-            g2.drawString(String.valueOf(i / 100), x - 10, y + 15);
+            g2.drawString(String.valueOf(i / 50), x - 10, y + 15);
         }
 
         for (int i = minYValue; i <= maxYValue; i += yStep) {
