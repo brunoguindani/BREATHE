@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,6 +24,7 @@ public class PatientPanel {
     private JTextField heartRateField_Patient, diastolicField_Patient, systolicField_Patient, respirationRateField_Patient, basalMetabolicRateField_Patient;
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JPanel patientPanel = new JPanel();
+    private String selectedFilePath;
     
     public PatientPanel(App app) {
     	
@@ -52,11 +54,19 @@ public class PatientPanel {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
+        JButton startFromFileButton = new JButton("Start From File");
+        startFromFileButton.setBackground(new Color(0, 122, 255)); 
+        startFromFileButton.setForeground(Color.WHITE);
+        startFromFileButton.setFocusPainted(false);
+        patientPanel.add(startFromFileButton, gbc);
+        
         JButton startButton = new JButton("Start Simulation");
         startButton.setBackground(new Color(0, 122, 255)); 
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
+        gbc.gridy++;
         patientPanel.add(startButton, gbc);
+
 
         JButton stopButton = new JButton("Stop Simulation");
         stopButton.setEnabled(false); 
@@ -66,8 +76,11 @@ public class PatientPanel {
         gbc.gridy++;
         patientPanel.add(stopButton, gbc);
         
+
+
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
+            startFromFileButton.setEnabled(false);
             stopButton.setEnabled(true);
             App.connectButton.setEnabled(true);
             for (int i =0; i< app.chartPanels.length ;i++) {
@@ -81,9 +94,21 @@ public class PatientPanel {
         stopButton.addActionListener(e -> {
             SimulationWorker.requestStop(); 
             startButton.setEnabled(true);
+            startFromFileButton.setEnabled(true);
+            selectedFilePath = null;
             stopButton.setEnabled(false);
             App.connectButton.setEnabled(false);
             app.action.disableButtonStates();
+        });
+        
+        startFromFileButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser("./states/");
+            int returnValue = fileChooser.showOpenDialog(null);
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                startFromFileButton.setEnabled(false);
+            }
+            startButton.doClick();
         });
         
     }
@@ -99,6 +124,11 @@ public class PatientPanel {
         gbc.gridx = 1;
         panel.add(component, gbc);
         gbc.gridy++;
+    }
+    
+    //Get del file se selezionato
+    public String getSelectedFilePath() {
+        return selectedFilePath;
     }
     
     
