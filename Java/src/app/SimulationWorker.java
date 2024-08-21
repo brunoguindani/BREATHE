@@ -70,17 +70,19 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		String patientFilePath = app.patient.getSelectedFilePath();
 		 
 		if (patientFilePath == null || patientFilePath.isEmpty()) {
-			/*
+			
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
 			pe.initializeEngine(patient_configuration, dataRequests);
-			*/
+			
+			/*
 			//PER DEBUG
 			pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
 			//Controllo se è riuscito a caricare il file
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
+			*/
 		}
 		else {
 			pe.serializeFromFile(patientFilePath, dataRequests);
