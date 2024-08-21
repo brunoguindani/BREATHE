@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 
 import app.App;
 import app.SimulationWorker;
+import utils.Action;
 
 public class PatientPanel {
     private JTextField nameField_Patient, ageField_Patient, weightField_Patient, heightField_Patient, bodyFatField_Patient;
@@ -73,7 +74,7 @@ public class PatientPanel {
             	app.chartPanels[i].clear();
             }
             app.log.getResultArea().setText("");
-
+            app.action.enableButtonStates();
             new SimulationWorker(app).execute(); 
             });
 
@@ -82,6 +83,7 @@ public class PatientPanel {
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
             App.connectButton.setEnabled(false);
+            app.action.disableButtonStates();
         });
         
     }

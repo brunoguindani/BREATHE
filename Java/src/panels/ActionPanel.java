@@ -9,6 +9,7 @@ public class ActionPanel {
     private JPanel sectionsPanel = new JPanel();  
     private JScrollPane scrollActionPane;
     private JPanel actionPanel;  
+    private Action[] actions;
 
     public ActionPanel() {
         // Configurazione del pannello delle sezioni
@@ -19,28 +20,31 @@ public class ActionPanel {
         /*
          * AZIONI
          */
-        int i = 0;
-        sectionsPanel.add(new Action(
-        	    "ARDS Exacerbation",
-        	    new JLabel("Left Lung"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
-        	    new JLabel("Right Lung"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-        	).sectionPanel
-        ); i++;
-        sectionsPanel.add(new Action(
-        	    "Airway Obstruction",
-        	    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-        	).sectionPanel
-        ); i++;
-        sectionsPanel.add(new Action(
-        	    "Dyspnea",
-        	    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-        	).sectionPanel
-        ); i++;
-        sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10*i))); // da rimuovere piu avanti
+        actions = new Action[] {
+                new Action(
+                    "ARDS Exacerbation",
+                    new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                    new JLabel("Right Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+                ),
+                new Action(
+                    "Airway Obstruction",
+                    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+                ),
+                new Action(
+                    "Dyspnea",
+                    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+                )
+            };
+
+            for (Action action : actions) {
+                sectionsPanel.add(action.sectionPanel);
+            }
+            
+            sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10 * actions.length))); // da rimuovere piu avanti
+            
         /*
          * FINE AZIONI
          */
-
         // Aggiungi lo scroll pane
         scrollActionPane = new JScrollPane(sectionsPanel);
         scrollActionPane.setPreferredSize(new Dimension(400, 600));
@@ -59,5 +63,17 @@ public class ActionPanel {
     
     public JScrollPane getActionScrollPane() {
         return scrollActionPane;
+    }
+    
+    public void enableButtonStates() {
+        for (Action action : actions) {
+            action.enableButtonState();
+        }
+    }
+    
+    public void disableButtonStates() {
+        for (Action action : actions) {
+            action.disableButtonState();
+        }
     }
 }
