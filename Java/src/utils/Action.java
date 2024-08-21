@@ -154,38 +154,7 @@ public class Action {
                             }
                             break;
                     }
-
-                    if (success) {
-                        // Cambia colore a verde e inizia il fading
-                        setButtonColor(sourceButton, Color.GREEN);
-                        Timer timer = new Timer(100, new ActionListener() {
-                            int step = 0;
-                            Color startColor = Color.GREEN;
-                            Color endColor = new Color(0, 122, 255); // Colore originale
-                            int duration = 20; // Numero di passi per il fading
-
-                            @Override
-                            public void actionPerformed(ActionEvent evt) {
-                                step++;
-                                float ratio = (float) step / duration;
-                                int red = (int) (startColor.getRed() * (1 - ratio) + endColor.getRed() * ratio);
-                                int green = (int) (startColor.getGreen() * (1 - ratio) + endColor.getGreen() * ratio);
-                                int blue = (int) (startColor.getBlue() * (1 - ratio) + endColor.getBlue() * ratio);
-                                setButtonColor(sourceButton, new Color(red, green, blue));
-                                if (step >= duration) {
-                                    ((Timer) evt.getSource()).stop();
-                                }
-                            }
-                        });
-                        timer.setInitialDelay(1000); // Tempo di attesa in verde prima di iniziare il fading
-                        timer.start();
-                    } else {
-                        Log.error("Engine was unable to process requested actions");
-                    }
-                } else {
-                    // Se il simulatore non è partito
-                    Log.error("Simulation not started");
-                }
+                } 
             }
         };
     }
