@@ -32,12 +32,16 @@ import com.kitware.pulse.utilities.JNIBridge;
 
 public class SimulationWorker extends SwingWorker<Void, String> {
 
-	private static volatile boolean stopRequested = false;
+	
     private final App app;
     public static PulseEngine pe;
+    private String[] requestList;
+    private SEDataRequestManager dataRequests;
+    private static volatile boolean stopRequested = false;
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
+    
 
     public SimulationWorker(App appTest) {
         this.app = appTest;
@@ -51,75 +55,51 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     protected Void doInBackground() throws Exception {
         stopRequested = false;
         started = true;
+        
         // Inizializzazione di JNIBridge e PulseEngine
         JNIBridge.initialize();
         pe = new PulseEngine();
         
-        String[] requestList = {"SimTime",
-        						"HeartRate",
-        						"TotalLungVolume",
-        						"RespirationRate",
-        						"Lead3ElectricPotential"
-        						};
 
         // Creazione e configurazione delle richieste di dati
-        SEDataRequestManager dataRequests = new SEDataRequestManager();
-        dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
-        dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
-        dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
-        dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
-        //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
+        dataRequests = new SEDataRequestManager();
+        setDataRequests(dataRequests);
 
         
         //Paziente
-		SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
-		SEPatient patient = patient_configuration.getPatient();
-		
-		// Supponendo che "app" sia un'istanza della classe App
-		patient.setName(app.patient.getName_PATIENT());
-		patient.getAge().setValue(Double.parseDouble(app.patient.getAge_PATIENT()), TimeUnit.yr);
-		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
-		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
-		patient.getBodyFatFraction().setValue(Double.parseDouble(app.patient.getBodyFatFraction_PATIENT()));
-		patient.getHeartRateBaseline().setValue(Double.parseDouble(app.patient.getHeartRate_PATIENT()), FrequencyUnit.Per_min);
-		patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getDiastolicPressure_PATIENT()), PressureUnit.mmHg);
-		patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getSystolicPressure_PATIENT()), PressureUnit.mmHg);
-		patient.getRespirationRateBaseline().setValue(Double.parseDouble(app.patient.getRespirationRate_PATIENT()), FrequencyUnit.Per_min);
-		patient.getBasalMetabolicRate().setValue(Double.parseDouble(app.patient.getBasalMetabolicRate_PATIENT()), PowerUnit.kcal_Per_day);
-		if (app.patient.getSex_PATIENT().equals("Male")) {
-		    patient.setSex(eSex.Male);
-		} else {
-		    patient.setSex(eSex.Female);
+		String patientFilePath = app.patient.getSelectedFilePath();
+		 
+		if (patientFilePath == null || patientFilePath.isEmpty()) {
+			
+			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
+			SEPatient patient = patient_configuration.getPatient();
+			setPatientParameter(patient);
+			pe.initializeEngine(patient_configuration, dataRequests);
+			
+			/*
+			//PER DEBUG
+			pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
+			//Controllo se è riuscito a caricare il file
+			SEPatient initialPatient = new SEPatient();
+			pe.getInitialPatient(initialPatient);
+			*/
+		}
+		else {
+			pe.serializeFromFile(patientFilePath, dataRequests);
+			//Controllo se è riuscito a caricare il file
+			SEPatient initialPatient = new SEPatient();
+			pe.getInitialPatient(initialPatient);
 		}
 
-        // Inizializzazione del motore Pulse con la configurazione del paziente e le richieste di dati
         
-        pe.initializeEngine(patient_configuration, dataRequests);
-        
-        //SOLO PER DEBUG
-//        pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
-//        SEPatient initialPatient = new SEPatient();
-//        pe.getInitialPatient(initialPatient);
-
-
-        /*
-        SEAcuteRespiratoryDistressSyndromeExacerbation ards = new SEAcuteRespiratoryDistressSyndromeExacerbation();
-        ards.getSeverity(eLungCompartment.LeftLung).setValue(0.5);
-        ards.getSeverity(eLungCompartment.RightLung).setValue(0.5);
-        pe.processAction(ards);
-        
-        SEDyspnea dyspnea = new SEDyspnea();
-        dyspnea.getTidalVolumeSeverity().setValue(1.0);
-        pe.processAction(dyspnea);   
-        */
-        
-        //Creo i ventilatori
+        //Creazione ventilatori
         SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
         SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         SEMechanicalVentilatorVolumeControl vc = new SEMechanicalVentilatorVolumeControl();
         
+        
+        //Partenza simulazione
         publish("Started\n");
-        // Avanzamento temporale e gestione degli errori
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
         while (!stopRequested) {
         	
@@ -128,6 +108,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 return null;
             }
             
+            //Gestione ventilatori
             if(ventilationDisconnectRequest) {
             	ventilationDisconnectRequest = false;
             	if(app.ventilator.isPCACConnected()){ 
@@ -155,38 +136,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         	    }
             }
 
-    	        
-            // Estrazione e scrittura dei dati
-            List<Double> dataValues = pe.pullData();
-            dataRequests.writeData(dataValues);
-            publish("---------------------------\n");
-            for(int i = 0; i < (dataValues.size()); i++ ) {
-                publish(requestList[i] + ": " + dataValues.get(i) + "\n");
-            }
-            
-            List<SEAction> actions = new ArrayList<SEAction>();
-            pe.getActiveActions(actions);
-            for(SEAction any : actions)
-            {
-              Log.info(any.toString());
-              publish(any.toString()+ "\n");
-            }
-
-            //Stampe dei dati nei grafici
-            double x = dataValues.get(0);
-            double y = 0;
-            for (int i = 1; i <= 4; i++) {
-                y = dataValues.get(i);
-                app.charts.getChartsPanel()[i - 1].addPoint(x, y);
-            }
-
+            //Scrittura dei dati a schermo (log e grafici)
+            dataPrint();
 
             time.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
         
-	    started = false;
         // Pulizia finale e chiusura della simulazione
+	    started = false;
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
@@ -194,6 +152,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         return null;
     }
 
+    
     @Override
     protected void process(java.util.List<String> chunks) {
         for (String chunk : chunks) {
@@ -207,6 +166,41 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         app.log.getResultArea().append("Simulazione fermata.\n");
     }
     
+    private void setDataRequests(SEDataRequestManager dataRequests) {
+    	String[] requestList = {"SimTime",
+				"HeartRate",
+				"TotalLungVolume",
+				"RespirationRate",
+				"Lead3ElectricPotential"
+				};
+    	
+    	this.requestList = requestList;
+    	dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
+        dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
+        dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
+        dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
+        
+      //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
+    }
+    
+    private void setPatientParameter(SEPatient patient) {
+		patient.setName(app.patient.getName_PATIENT());
+		patient.getAge().setValue(Double.parseDouble(app.patient.getAge_PATIENT()), TimeUnit.yr);
+		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
+		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
+		patient.getBodyFatFraction().setValue(Double.parseDouble(app.patient.getBodyFatFraction_PATIENT()));
+		patient.getHeartRateBaseline().setValue(Double.parseDouble(app.patient.getHeartRate_PATIENT()), FrequencyUnit.Per_min);
+		patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getDiastolicPressure_PATIENT()), PressureUnit.mmHg);
+		patient.getSystolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getSystolicPressure_PATIENT()), PressureUnit.mmHg);
+		patient.getRespirationRateBaseline().setValue(Double.parseDouble(app.patient.getRespirationRate_PATIENT()), FrequencyUnit.Per_min);
+		patient.getBasalMetabolicRate().setValue(Double.parseDouble(app.patient.getBasalMetabolicRate_PATIENT()), PowerUnit.kcal_Per_day);
+		if (app.patient.getSex_PATIENT().equals("Male")) {
+		    patient.setSex(eSex.Male);
+		} else {
+		    patient.setSex(eSex.Female);
+		}
+
+    }
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
     	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
@@ -264,5 +258,33 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private void stop_vc(SEMechanicalVentilatorVolumeControl vc) {
         vc.setConnection(eSwitch.Off);
         pe.processAction(vc);
+    }
+    
+
+    private void dataPrint() {
+    	//Estrazione e scrittura dei dati
+    	List<Double> dataValues = pe.pullData();
+        dataRequests.writeData(dataValues);
+        publish("---------------------------\n");
+        for(int i = 0; i < (dataValues.size()); i++ ) {
+            publish(requestList[i] + ": " + dataValues.get(i) + "\n");
+        }
+        
+        List<SEAction> actions = new ArrayList<SEAction>();
+        pe.getActiveActions(actions);
+        for(SEAction any : actions)
+        {
+          Log.info(any.toString());
+          publish(any.toString()+ "\n");
+        }
+
+        //Stampe dei dati nei grafici
+        double x = dataValues.get(0);
+        double y = 0;
+        for (int i = 1; i <= 4; i++) {
+            y = dataValues.get(i);
+            app.charts.getChartsPanel()[i - 1].addPoint(x, y);
+        }
+
     }
 }

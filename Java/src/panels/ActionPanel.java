@@ -23,8 +23,8 @@ public class ActionPanel {
         actions = new Action[] {
                 new Action(
                     "ARDS Exacerbation",
-                    new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
-                    new JLabel("Right Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+                    new JLabel("LLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                    new JLabel("RLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
                 ),
                 new Action(
                     "Airway Obstruction",
