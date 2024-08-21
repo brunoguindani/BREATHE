@@ -107,8 +107,8 @@ public class PatientPanel {
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
                 startFromFileButton.setEnabled(false);
+                startButton.doClick();
             }
-            startButton.doClick();
         });
         
     }

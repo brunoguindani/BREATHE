@@ -36,6 +36,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private final App app;
     public static PulseEngine pe;
     private String[] requestList;
+    private SEDataRequestManager dataRequests;
     private static volatile boolean stopRequested = false;
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
@@ -61,7 +62,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         
 
         // Creazione e configurazione delle richieste di dati
-        SEDataRequestManager dataRequests = new SEDataRequestManager();
+        dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
 
         
@@ -89,15 +90,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		}
 
         
-
-        
         //Creazione ventilatori
         SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
         SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         SEMechanicalVentilatorVolumeControl vc = new SEMechanicalVentilatorVolumeControl();
         
+        
+        //Partenza simulazione
         publish("Started\n");
-        // Avanzamento temporale e gestione degli errori
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
         while (!stopRequested) {
         	
@@ -106,6 +106,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 return null;
             }
             
+            //Gestione ventilatori
             if(ventilationDisconnectRequest) {
             	ventilationDisconnectRequest = false;
             	if(app.ventilator.isPCACConnected()){ 
@@ -133,38 +134,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         	    }
             }
 
-    	        
-            // Estrazione e scrittura dei dati
-            List<Double> dataValues = pe.pullData();
-            dataRequests.writeData(dataValues);
-            publish("---------------------------\n");
-            for(int i = 0; i < (dataValues.size()); i++ ) {
-                publish(requestList[i] + ": " + dataValues.get(i) + "\n");
-            }
-            
-            List<SEAction> actions = new ArrayList<SEAction>();
-            pe.getActiveActions(actions);
-            for(SEAction any : actions)
-            {
-              Log.info(any.toString());
-              publish(any.toString()+ "\n");
-            }
-
-            //Stampe dei dati nei grafici
-            double x = dataValues.get(0);
-            double y = 0;
-            for (int i = 1; i <= 4; i++) {
-                y = dataValues.get(i);
-                app.charts.getChartsPanel()[i - 1].addPoint(x, y);
-            }
-
+            //Scrittura dei dati a schermo (log e grafici)
+            dataPrint();
 
             time.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
         
-	    started = false;
         // Pulizia finale e chiusura della simulazione
+	    started = false;
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
@@ -172,6 +150,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         return null;
     }
 
+    
     @Override
     protected void process(java.util.List<String> chunks) {
         for (String chunk : chunks) {
@@ -280,4 +259,30 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
 
+    private void dataPrint() {
+    	//Estrazione e scrittura dei dati
+    	List<Double> dataValues = pe.pullData();
+        dataRequests.writeData(dataValues);
+        publish("---------------------------\n");
+        for(int i = 0; i < (dataValues.size()); i++ ) {
+            publish(requestList[i] + ": " + dataValues.get(i) + "\n");
+        }
+        
+        List<SEAction> actions = new ArrayList<SEAction>();
+        pe.getActiveActions(actions);
+        for(SEAction any : actions)
+        {
+          Log.info(any.toString());
+          publish(any.toString()+ "\n");
+        }
+
+        //Stampe dei dati nei grafici
+        double x = dataValues.get(0);
+        double y = 0;
+        for (int i = 1; i <= 4; i++) {
+            y = dataValues.get(i);
+            app.charts.getChartsPanel()[i - 1].addPoint(x, y);
+        }
+
+    }
 }
