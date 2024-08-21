@@ -1,10 +1,12 @@
 package utilities;
 
 import javax.swing.JPanel;
+
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
-import java.awt.geom.Point2D;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ public class LineChart extends JPanel {
     /**
 	 * 
 	 */
-	private final List<Point2D.Double> points = new ArrayList<>();
+	private final List<Point> points = new ArrayList<>();
     private int maxXValue = 150;  
     private int maxYValue;  
     private int yStep;      
@@ -64,9 +66,9 @@ public class LineChart extends JPanel {
             g2.setStroke(new java.awt.BasicStroke(2f));
 
             for (int i = Math.max(0, points.size() - maxXValue); i < points.size() - 1; i++) {
-                Point2D.Double p1 = points.get(i);
-                Point2D.Double p2 = points.get(i + 1);
-                g2.drawLine(prevX, (int)p1.y, (int)(p2.x - p1.x + prevX), (int)p2.y);
+                Point p1 = points.get(i);
+                Point p2 = points.get(i + 1);
+                g2.drawLine(prevX, p1.y, p2.x - p1.x + prevX, p2.y);
                 prevX = (int)(p2.x - p1.x + prevX);
             }
         }
@@ -89,8 +91,8 @@ public class LineChart extends JPanel {
         }
     }
 
-    public void addPoint(double x, double y) {
-        points.add(new Point2D.Double(x, y));
+    public void addPoint(int x, int y) {
+    	points.add(new Point(x, y));
         System.out.println("Adding points: "+this.title+"("+ x + ";"+ y+")");
         repaint(); 
     }
