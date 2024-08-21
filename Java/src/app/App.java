@@ -26,8 +26,6 @@ public class App extends JFrame {
 	public LogPanel log = new LogPanel();
 	public ChartsPanel charts = new ChartsPanel();
 	public LineChart[] chartPanels;
-	
-
     
     public static JButton connectButton = new JButton("Connect");
    
