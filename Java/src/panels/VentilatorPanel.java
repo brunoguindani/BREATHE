@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 
 import app.App;
 import app.SimulationWorker;
-import utilities.VentilationMode;
+import utils.VentilationMode;
 
 public class VentilatorPanel {
 	JPanel ventilatorPanel = new JPanel(new BorderLayout());

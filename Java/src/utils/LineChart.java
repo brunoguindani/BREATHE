@@ -1,6 +1,9 @@
-package utilities;
+package utils;
 
 import javax.swing.JPanel;
+
+import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,15 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineChart extends JPanel {
-    private final List<Point> points = new ArrayList<>();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private final List<Point> points = new ArrayList<>();
     private int maxXValue = 1000;  
     private int maxYValue;  
     private int minYValue = 0;  
     private int yStep;      
     private String title;
+    private Unit unit;
+    private double currentYValue;  // Variabile per memorizzare l'ultimo valore di Y
 
-    public LineChart(String title) {
+    public LineChart(String title, Unit unit) {
         this.title = title;
+        this.unit = unit;
         this.setMaxY();
         setPreferredSize(new Dimension(600, 300));
         setBackground(Color.BLACK); 
@@ -32,10 +42,27 @@ public class LineChart extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (title != null && !title.isEmpty()) {
+            // Disegna il titolo con font grande
             g2.setFont(g2.getFont().deriveFont(20f)); 
             g2.setColor(Color.WHITE); 
             int titleWidth = g2.getFontMetrics().stringWidth(title);
-            g2.drawString(title, (getWidth() - titleWidth) / 2, 30); 
+            g2.drawString(title, (getWidth() - titleWidth) / 2, 20);
+
+            // Disegna l'unità di misura con font più piccolo
+            if (unit != null) {
+                g2.setFont(g2.getFont().deriveFont(16f)); // Font leggermente più piccolo per l'unità
+                String unitStr = "(" + unit.toString() + ")";
+                int unitWidth = g2.getFontMetrics().stringWidth(unitStr);
+                g2.drawString(unitStr, (getWidth() + titleWidth) / 2 + 5, 20); // Posiziona l'unità accanto al titolo
+            }
+        }
+
+        // Disegna il valore corrente di y vicino al titolo
+        if (!points.isEmpty()) {
+            g2.setFont(g2.getFont().deriveFont(14f));
+            g2.setColor(Color.WHITE);
+            String yValueStr = String.format("%.2f", currentYValue);
+            g2.drawString(yValueStr, (getWidth() - g2.getFontMetrics().stringWidth(yValueStr)) / 2, 40);
         }
 
         g2.setColor(Color.WHITE); 
@@ -66,18 +93,18 @@ public class LineChart extends JPanel {
         }
     }
 
+
+
     private void drawGrid(Graphics2D g2) {
         int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
         int labelInterval = 100; // Intervallo per le etichette sull'asse X
 
-        // Disegna linee della griglia verticali allineate alle etichette X
         int startXValue = Math.max(0, points.size() - maxXValue);
         for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
             int x = 50 + ((i - startXValue) * chartWidth / maxXValue);
             g2.drawLine(x, 50, x, 250);
         }
 
-        // Disegna linee della griglia orizzontali
         for (int i = minYValue; i <= maxYValue; i += yStep) {
             int y = 250 - ((i - minYValue) * 200 / (maxYValue - minYValue)); 
             g2.drawLine(50, y, 550, y);
@@ -88,10 +115,9 @@ public class LineChart extends JPanel {
         g2.setColor(Color.WHITE); 
         g2.setFont(g2.getFont().deriveFont(12f)); 
 
-        int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
-        int labelInterval = 100; // Intervallo per le etichette sull'asse X
+        int chartWidth = getWidth() - 100; 
+        int labelInterval = 100; 
 
-        // Calcola l'inizio del range di X attualmente visibile
         int startXValue = Math.max(0, points.size() - maxXValue);
         
         for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
@@ -109,9 +135,9 @@ public class LineChart extends JPanel {
 
     public void addPoint(double x, double y) {
         int x1 = (int) (x * 50 + 50);
-        int y1 = (int) (250 - y * 200 / maxYValue);
+        int y1 = (int) (250 - ((y - minYValue) * 200 / (maxYValue - minYValue)));
         points.add(new Point(x1, y1));
-        //System.out.println("Adding points: " + this.title + "(" + x1 + ";" + y1 + ")");
+        currentYValue = y;  // Aggiorna il valore corrente di Y
         repaint(); 
     }
 
@@ -128,8 +154,8 @@ public class LineChart extends JPanel {
                 this.yStep = 20;  
                 break;
             case "Total Lung Volume":
-                this.maxYValue = 3000;
-                this.minYValue = 1000;
+                this.maxYValue = 3500;
+                this.minYValue = 1500;
                 this.yStep = 400;  
                 break;
             case "Respiratory Rate":
@@ -139,7 +165,7 @@ public class LineChart extends JPanel {
                 break;
             case "ECG":
                 this.maxYValue = 1;
-                this.minYValue = 0;
+                this.minYValue = -1;
                 this.yStep = 1;   
                 break;
             default:
@@ -156,6 +182,6 @@ public class LineChart extends JPanel {
 
     public void setMinYValue(int minYValue) {
         this.minYValue = minYValue;
-        repaint();  // Ridisegna il grafico con il nuovo valore minimo
+        repaint();  
     }
 }

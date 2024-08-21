@@ -68,7 +68,7 @@ public class PatientPanel {
         startButton.addActionListener(e -> {
             startButton.setEnabled(false);
             stopButton.setEnabled(true);
-            app.connectButton.setEnabled(true);
+            App.connectButton.setEnabled(true);
             for (int i =0; i< app.chartPanels.length ;i++) {
             	app.chartPanels[i].clear();
             }
@@ -81,7 +81,7 @@ public class PatientPanel {
             SimulationWorker.requestStop(); 
             startButton.setEnabled(true);
             stopButton.setEnabled(false);
-            app.connectButton.setEnabled(false);
+            App.connectButton.setEnabled(false);
         });
         
     }

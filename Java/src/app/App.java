@@ -7,7 +7,7 @@ import panels.ChartsPanel;
 import panels.LogPanel;
 import panels.PatientPanel;
 import panels.VentilatorPanel;
-import utilities.LineChart;
+import utils.LineChart;
 
 import java.awt.*;
 
