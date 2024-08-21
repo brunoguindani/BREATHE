@@ -1,8 +1,6 @@
 package utilities;
 
 import javax.swing.JPanel;
-
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,13 +9,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+
 public class LineChart extends JPanel {
-    /**
-	 * 
-	 */
-	private final List<Point> points = new ArrayList<>();
-    private int maxXValue = 150;  
+    private final List<Point> points = new ArrayList<>();
+    private int maxXValue = 1000;  
     private int maxYValue;  
+    private int minYValue = 0;  
     private int yStep;      
     private String title;
 
@@ -49,16 +46,9 @@ public class LineChart extends JPanel {
         g2.setColor(new Color(255, 255, 255, 80)); 
         g2.setStroke(new java.awt.BasicStroke(0.5f)); 
 
-        for (int i = 50; i <= 550; i += 30) {
-            g2.drawLine(i, 50, i, 250);
-        }
+        drawGrid(g2);  // Disegna la griglia
 
-        for (int i = 0; i <= maxYValue; i += yStep) {
-            int y = 250 - (i * 200 / maxYValue);
-            g2.drawLine(50, y, 550, y);
-        }
-
-        drawAxisLabels(g2);
+        drawAxisLabels(g2);  // Disegna le etichette
 
         if (points.size() > 1) {
             int prevX = 50;
@@ -68,9 +58,29 @@ public class LineChart extends JPanel {
             for (int i = Math.max(0, points.size() - maxXValue); i < points.size() - 1; i++) {
                 Point p1 = points.get(i);
                 Point p2 = points.get(i + 1);
-                g2.drawLine(prevX, p1.y, p2.x - p1.x + prevX, p2.y);
+                int y1 = p1.y;
+                int y2 = p2.y;
+                g2.drawLine(prevX, y1, p2.x - p1.x + prevX, y2);
                 prevX = (int)(p2.x - p1.x + prevX);
             }
+        }
+    }
+
+    private void drawGrid(Graphics2D g2) {
+        int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
+        int labelInterval = 100; // Intervallo per le etichette sull'asse X
+
+        // Disegna linee della griglia verticali allineate alle etichette X
+        int startXValue = Math.max(0, points.size() - maxXValue);
+        for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
+            int x = 50 + ((i - startXValue) * chartWidth / maxXValue);
+            g2.drawLine(x, 50, x, 250);
+        }
+
+        // Disegna linee della griglia orizzontali
+        for (int i = minYValue; i <= maxYValue; i += yStep) {
+            int y = 250 - ((i - minYValue) * 200 / (maxYValue - minYValue)); 
+            g2.drawLine(50, y, 550, y);
         }
     }
 
@@ -78,22 +88,30 @@ public class LineChart extends JPanel {
         g2.setColor(Color.WHITE); 
         g2.setFont(g2.getFont().deriveFont(12f)); 
 
-        for (int i = 0; i <= maxXValue; i += 10) {
-            int x = 50 + (i * 3); 
-            int y = 265; 
-            g2.drawString(String.valueOf(i), x - 10, y + 15);
+        int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
+        int labelInterval = 100; // Intervallo per le etichette sull'asse X
+
+        // Calcola l'inizio del range di X attualmente visibile
+        int startXValue = Math.max(0, points.size() - maxXValue);
+        
+        for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {
+            int x = 50 + ((i - startXValue) * chartWidth / maxXValue);
+            int y = 265;
+            g2.drawString(String.valueOf(i / 100), x - 10, y + 15);
         }
 
-        for (int i = 0; i <= maxYValue; i += yStep) {
+        for (int i = minYValue; i <= maxYValue; i += yStep) {
             int x = 30; 
-            int y = 250 - (i * 200 / maxYValue); 
+            int y = 250 - ((i - minYValue) * 200 / (maxYValue - minYValue)); 
             g2.drawString(String.valueOf(i), x - 10, y + 5);
         }
     }
 
-    public void addPoint(int x, int y) {
-    	points.add(new Point(x, y));
-        System.out.println("Adding points: "+this.title+"("+ x + ";"+ y+")");
+    public void addPoint(double x, double y) {
+        int x1 = (int) (x * 50 + 50);
+        int y1 = (int) (250 - y * 200 / maxYValue);
+        points.add(new Point(x1, y1));
+        //System.out.println("Adding points: " + this.title + "(" + x1 + ";" + y1 + ")");
         repaint(); 
     }
 
@@ -106,28 +124,38 @@ public class LineChart extends JPanel {
         switch(this.title){
             case "Heart Rate":
                 this.maxYValue = 150;
+                this.minYValue = 0;
                 this.yStep = 20;  
                 break;
             case "Total Lung Volume":
                 this.maxYValue = 3000;
+                this.minYValue = 1000;
                 this.yStep = 400;  
                 break;
             case "Respiratory Rate":
                 this.maxYValue = 30;
+                this.minYValue = 0;
                 this.yStep = 5;   
                 break;
             case "ECG":
-                this.maxYValue = 7000;
-                this.yStep = 500;   
+                this.maxYValue = 1;
+                this.minYValue = 0;
+                this.yStep = 1;   
                 break;
             default:
                 this.maxYValue = 100;
+                this.minYValue = 0;
                 this.yStep = 20;  
                 break;
         }
     }
     
     public int getMaxY() {
-    	return this.maxYValue;
+        return this.maxYValue;
+    }
+
+    public void setMinYValue(int minYValue) {
+        this.minYValue = minYValue;
+        repaint();  // Ridisegna il grafico con il nuovo valore minimo
     }
 }
