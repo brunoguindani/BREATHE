@@ -2,7 +2,8 @@ package panels;
 
 import java.awt.*;
 import javax.swing.*;
-import utilities.Action;
+
+import utils.Action;
 
 public class ActionPanel {
     private JPanel sectionsPanel = new JPanel();  

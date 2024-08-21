@@ -9,22 +9,12 @@ import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
-import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
-import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
-import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
-import com.kitware.pulse.cdm.patient.actions.SEAcuteRespiratoryDistressSyndromeExacerbation;
-import com.kitware.pulse.cdm.patient.actions.SEDyspnea;
 import com.kitware.pulse.cdm.properties.CommonUnits.ElectricPotentialUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.LengthUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.MassUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.PowerUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.PressureTimePerVolumeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
-import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerPressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
@@ -176,6 +166,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
               publish(any.toString()+ "\n");
             }
 
+            //Stampe dei dati nei grafici
             double x = dataValues.get(0);
             double y = 0;
             for (int i = 1; i <= 4; i++) {
