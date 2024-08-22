@@ -123,6 +123,7 @@ public class PatientPanel {
 
                     String name = rootNode.path("CurrentPatient").path("Name").asText();
                     String sex = rootNode.path("CurrentPatient").path("Sex").asText(); 
+                    if(sex.isBlank()) sex = "Male";
                     int age = rootNode.path("CurrentPatient").path("Age").path("ScalarTime").path("Value").asInt();
                     double weight = rootNode.path("CurrentPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
                     int height = rootNode.path("CurrentPatient").path("Height").path("ScalarLength").path("Value").asInt();
