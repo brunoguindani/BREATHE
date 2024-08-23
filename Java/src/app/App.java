@@ -33,16 +33,15 @@ public class App extends JFrame {
    
 
     public App() {
+    	
         setTitle("Pulse Simulation");
         setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Imposta il colore di sfondo della finestra principale
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
-        getContentPane().add(panel);
-
+        getContentPane().setBackground(Color.LIGHT_GRAY);
+        
         // Pannello per gli input (centro)
         JPanel patientPanel = patient.getPatientPanel();
         JPanel conditionPanel = condition.getConditionPanel();
@@ -51,13 +50,13 @@ public class App extends JFrame {
         JScrollPane scrollLogPane = log.getLogScrollPane();
         
         switchTabbedPane = new JTabbedPane();
-        switchTabbedPane.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient", patientPanel);
+        switchTabbedPane.addTab("Patient",patientPanel);
         switchTabbedPane.addTab("Condition", conditionPanel);
         switchTabbedPane.addTab("Action", actionPanel);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
+        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 5, Color.DARK_GRAY)); // Bordo a destra
         
         // Pannello per il grafico (destra)
         JPanel chartPanel = charts.getChartPanel();

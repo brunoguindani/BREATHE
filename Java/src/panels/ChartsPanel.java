@@ -25,6 +25,7 @@ public class ChartsPanel {
     private JCheckBox[] chartCheckboxes;
     
     public ChartsPanel() {
+    	
         String[] chartNames = {"Heart Rate", "Total Lung Volume", "Respiratory Rate", "ECG"};
         Unit[] chartUnits = {FrequencyUnit.Per_min, VolumeUnit.mL, FrequencyUnit.Per_min, ElectricPotentialUnit.mV};
         chartPanels = new LineChart[chartNames.length];
@@ -78,6 +79,7 @@ public class ChartsPanel {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.add(selectionPanel);
         mainPanel.add(scrollChartPane);
+        mainPanel.setBackground(Color.BLACK);
         return mainPanel;
     }
     
