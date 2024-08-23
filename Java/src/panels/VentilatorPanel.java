@@ -58,8 +58,11 @@ public class VentilatorPanel {
          ventilatorCardPanel = new JPanel(ventilatorCardLayout);
 
          JPanel pcPanel = new JPanel(new GridBagLayout());
+         pcPanel.setBackground(Color.LIGHT_GRAY);
          JPanel cpapPanel = new JPanel(new GridBagLayout());
+         cpapPanel.setBackground(Color.LIGHT_GRAY);
          JPanel vcPanel = new JPanel(new GridBagLayout());
+         vcPanel.setBackground(Color.LIGHT_GRAY);
      
          // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (PCAC)
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
@@ -99,6 +102,7 @@ public class VentilatorPanel {
          ventilatori.add(vc);
 
          JPanel radioPanel = new JPanel(new GridLayout(1, 3));
+         radioPanel.setBackground(Color.LIGHT_GRAY);
          radioPanel.add(pc);
          radioPanel.add(cpap);
          radioPanel.add(vc);
@@ -118,6 +122,7 @@ public class VentilatorPanel {
          buttonPanel.setLayout(new GridLayout(2, 1)); 
          buttonPanel.add(App.connectButton);
          buttonPanel.add(disconnectButton);
+         buttonPanel.setBackground(Color.LIGHT_GRAY);
          
          
          ventilatorPanel.add(radioPanel, BorderLayout.NORTH);

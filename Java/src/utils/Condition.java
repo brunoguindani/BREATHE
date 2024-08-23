@@ -17,8 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import com.kitware.pulse.utilities.Log;
+import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.conditions.SECondition;
-import com.kitware.pulse.cdm.patient.conditions.SEChronicAnemia;
+import com.kitware.pulse.cdm.patient.conditions.*;
 
 import app.SimulationWorker;
 
@@ -35,8 +36,8 @@ public class Condition {
         
         sectionPanel = new JPanel();
         sectionPanel.setLayout(new BorderLayout());
-        sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
-        sectionPanel.setBackground(Color.WHITE);
+        //sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
+        sectionPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
@@ -50,7 +51,7 @@ public class Condition {
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setLayout(new GridBagLayout());
         fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  
-        fieldsPanel.setBackground(Color.WHITE);
+        fieldsPanel.setBackground(Color.LIGHT_GRAY);
         fieldsPanel.setVisible(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -67,6 +68,8 @@ public class Condition {
                 gridX++;
             } else {
                 this.components.add(component);
+                component.setPreferredSize(new Dimension(100, 40)); // Imposta dimensione preferita
+                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Aggiungi padding interno
                 gbc.gridx = gridX;
                 gbc.gridwidth = GridBagConstraints.REMAINDER;
                 fieldsPanel.add(component, gbc);
@@ -111,23 +114,129 @@ public class Condition {
 
                 if (!SimulationWorker.started) {
                     boolean success = false;
+                    JSpinner field;
+                    double value;
 
                     switch (title) {
 	                    case "Anemia":
-	                        SEChronicAnemia anemia = new SEChronicAnemia();
-	                        anemia.getReductionFactor().setValue(0.3);
-	                        
-	                        if (components.get(0) instanceof JSpinner) {
-	                            JSpinner redFactorField = (JSpinner) components.get(0);
-	                            try {
-	                                double redFactorValue = (double) redFactorField.getValue();
-	                                anemia.getReductionFactor().setValue(redFactorValue);
-	                                success = sendAction(anemia);
-	                            } catch (NumberFormatException ex) {
-	                                Log.error("Invalid input for severity value");
-	                            }
-	                        }
+	                        SEChronicAnemia anemia = new SEChronicAnemia();	                        
+                            try {
+                                field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                anemia.getReductionFactor().setValue(value);
+                                success = sendAction(anemia);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
 	                        break;
+	                    case "ARDS":
+	                        SEAcuteRespiratoryDistressSyndrome ARDS = new SEAcuteRespiratoryDistressSyndrome();   
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                ARDS.getSeverity(eLungCompartment.LeftLung).setValue(value);
+                            	field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                ARDS.getSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = sendAction(ARDS);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;
+	                    case "COPD":
+	                        SEChronicObstructivePulmonaryDisease COPD = new SEChronicObstructivePulmonaryDisease();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                COPD.getBronchitisSeverity().setValue(value);
+                            	field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                COPD.getEmphysemaSeverity(eLungCompartment.LeftLung).setValue(value);
+                            	field = (JSpinner) components.get(2);
+                                value = (double) field.getValue();
+                                COPD.getEmphysemaSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = sendAction(COPD);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;   
+	                    case "Pericardial Effusion":
+	                        SEChronicPericardialEffusion CPE = new SEChronicPericardialEffusion();	                        
+                            try {
+                                field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                CPE.getAccumulatedVolume().setValue(value);
+                                success = sendAction(CPE);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break; 
+	                    case "Renal Stenosis":
+	                        SEChronicRenalStenosis Stenosis = new SEChronicRenalStenosis();   
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                Stenosis.getLeftKidneySeverity().setValue(value);
+                            	field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                Stenosis.getRightKidneySeverity().setValue(value);
+                                success = sendAction(Stenosis);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;	  
+	                    case "Ventricular Systolic Disfunction":
+	                        SEChronicVentricularSystolicDysfunction VSD = new SEChronicVentricularSystolicDysfunction();   
+                            try {
+                                success = sendAction(VSD);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;	
+	                    case "Impaired Alveolar Exchange":
+	                        SEImpairedAlveolarExchange IAE = new SEImpairedAlveolarExchange();   
+                            try {
+                                success = sendAction(IAE);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;		  
+	                    case "Pneumonia":
+	                        SEPneumonia Pneumonia = new SEPneumonia();   
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                Pneumonia.getSeverity(eLungCompartment.LeftLung).setValue(value);
+                            	field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                Pneumonia.getSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = sendAction(Pneumonia);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;
+	                    case "Pulmonary Fibrosis":
+	                        SEPulmonaryFibrosis fibrosis = new SEPulmonaryFibrosis();	                        
+                            try {
+                                field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                fibrosis.getSeverity().setValue(value);
+                                success = sendAction(fibrosis);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;
+	                    case "Pulmonary Shunt":
+	                        SEPulmonaryFibrosis shunt = new SEPulmonaryFibrosis();	                        
+                            try {
+                                field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                shunt.getSeverity().setValue(value);
+                                success = sendAction(shunt);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input");
+                            }	                        
+	                        break;	                        
                     }                 
                 } 
             }

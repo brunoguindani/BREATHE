@@ -20,6 +20,7 @@ import javax.swing.Timer;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import app.SimulationWorker;
 
 public class Action {
@@ -33,8 +34,8 @@ public class Action {
         
         sectionPanel = new JPanel();
         sectionPanel.setLayout(new BorderLayout());
-        sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
-        sectionPanel.setBackground(Color.WHITE);
+        //sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
+        sectionPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
@@ -48,7 +49,7 @@ public class Action {
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setLayout(new GridBagLayout());
         fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));  
-        fieldsPanel.setBackground(Color.WHITE);
+        fieldsPanel.setBackground(Color.LIGHT_GRAY);
         fieldsPanel.setVisible(false);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -65,6 +66,8 @@ public class Action {
                 gridX++;
             } else {
                 this.components.add(component);
+                component.setPreferredSize(new Dimension(100, 40)); // Imposta dimensione preferita
+                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Aggiungi padding interno
                 gbc.gridx = gridX;
                 gbc.gridwidth = GridBagConstraints.REMAINDER;
                 fieldsPanel.add(component, gbc);
@@ -109,48 +112,183 @@ public class Action {
 
                 if (SimulationWorker.started) {
                     boolean success = false;
+                    JSpinner field;
+                    double value;
+
 
                     switch (title) {
+                    	case "ARDS Exacerbation":
+	                        SEAcuteRespiratoryDistressSyndromeExacerbation ards = new SEAcuteRespiratoryDistressSyndromeExacerbation();	                        
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                ards.getSeverity(eLungCompartment.LeftLung).setValue(value);
+                                field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                ards.getSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = SimulationWorker.pe.processAction(ards);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Acute Stress":
+                            SEAcuteStress stress = new SEAcuteStress();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                stress.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(stress);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
                         case "Airway Obstruction":
-                            SEAirwayObstruction h1 = new SEAirwayObstruction();
-                            if (components.get(0) instanceof JSpinner) {
-                                JSpinner severityField = (JSpinner) components.get(0);
-                                try {
-                                    double severityValue = (double) severityField.getValue();
-                                    h1.getSeverity().setValue(severityValue);
-                                    success = SimulationWorker.pe.processAction(h1);
-                                } catch (NumberFormatException ex) {
-                                    Log.error("Invalid input for severity value");
-                                }
+                            SEAirwayObstruction obstruction = new SEAirwayObstruction();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                obstruction.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(obstruction);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Ashtma Attack":
+                            SEAcuteStress ashtma = new SEAcuteStress();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                ashtma.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(ashtma);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Brain Injury":
+                            SEAcuteStress brainInjury = new SEAcuteStress();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                brainInjury.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(brainInjury);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Bronchoconstriction":
+                            SEBronchoconstriction bronchoconstriction = new SEBronchoconstriction();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                bronchoconstriction.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(bronchoconstriction);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                    	case "COPD Exacerbation":
+	                        SEChronicObstructivePulmonaryDiseaseExacerbation copd = new SEChronicObstructivePulmonaryDiseaseExacerbation();	                        
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                copd.getBronchitisSeverity().setValue(value);
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                copd.getEmphysemaSeverity(eLungCompartment.LeftLung).setValue(value);
+                                field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                copd.getEmphysemaSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = SimulationWorker.pe.processAction(copd);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
                             }
                             break;
                         case "Dyspnea":
-                            SEDyspnea h2 = new SEDyspnea();
-                            if (components.get(0) instanceof JSpinner) {
-                                JSpinner severityField = (JSpinner) components.get(0);
-                                try {
-                                    double severityValue = (double) severityField.getValue();
-                                    h2.getTidalVolumeSeverity().setValue(severityValue);
-                                    success = SimulationWorker.pe.processAction(h2);
-                                } catch (NumberFormatException ex) {
-                                    Log.error("Invalid input for severity value");
-                                }
+                            SEDyspnea dyspnea = new SEDyspnea();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                dyspnea.getRespirationRateSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(dyspnea);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
                             }
                             break;
-                        case "ARDS Exacerbation":
-                            SEAcuteRespiratoryDistressSyndromeExacerbation h3 = new SEAcuteRespiratoryDistressSyndromeExacerbation();
-                            if (components.get(0) instanceof JSpinner && components.get(1) instanceof JSpinner) {
-                                JSpinner leftLungField = (JSpinner) components.get(0);
-                                JSpinner rightLungField = (JSpinner) components.get(1);
-                                try {
-                                    double leftLungValue = (double) leftLungField.getValue();
-                                    double rightLungValue = (double) rightLungField.getValue();
-                                    h3.getSeverity(eLungCompartment.LeftLung).setValue(leftLungValue);
-                                    h3.getSeverity(eLungCompartment.RightLung).setValue(rightLungValue);
-                                    success = SimulationWorker.pe.processAction(h3);
-                                } catch (NumberFormatException ex) {
-                                    Log.error("Invalid input for severity value");
-                                }
+                        case "Exercise":
+                            SEExercise exercise = new SEExercise();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                exercise.getIntensity().setValue(value);
+                                success = SimulationWorker.pe.processAction(exercise);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Pericardial Effusion":
+                            SEPericardialEffusion effusion = new SEPericardialEffusion();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                effusion.getEffusionRate().setValue(value);
+                                success = SimulationWorker.pe.processAction(effusion);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                    	case "Pneumonia Exacerbation":
+	                        SEPneumoniaExacerbation pneumonia = new SEPneumoniaExacerbation();	                        
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                pneumonia.getSeverity(eLungCompartment.LeftLung).setValue(value);
+                                field = (JSpinner) components.get(1);
+                                value = (double) field.getValue();
+                                pneumonia.getSeverity(eLungCompartment.RightLung).setValue(value);
+                                success = SimulationWorker.pe.processAction(pneumonia);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Pulmonary Shunt Exacerbation":
+                            SEPulmonaryShuntExacerbation shunt = new SEPulmonaryShuntExacerbation();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                shunt.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(shunt);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Respiratory Fatigue":
+                            SERespiratoryFatigue fatigue = new SERespiratoryFatigue();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                fatigue.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(fatigue);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Urinate":
+                            SEUrinate urinate = new SEUrinate();
+                            try {
+                                success = SimulationWorker.pe.processAction(urinate);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
+                            }
+                            break;
+                        case "Ventilator Leak":
+                            SEMechanicalVentilatorLeak leak = new SEMechanicalVentilatorLeak();
+                            try {
+                            	field = (JSpinner) components.get(0);
+                                value = (double) field.getValue();
+                                leak.getSeverity().setValue(value);
+                                success = SimulationWorker.pe.processAction(leak);
+                            } catch (NumberFormatException ex) {
+                                Log.error("Invalid input for severity value");
                             }
                             break;
                     }

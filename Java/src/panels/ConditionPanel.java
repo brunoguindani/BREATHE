@@ -28,9 +28,50 @@ public class ConditionPanel {
         
         conditions.add(new Condition(
                 "Anemia",
-                new JLabel("Red. Factor"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+                new JLabel("Reduction Factor"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
             ));
-        
+        conditions.add(new Condition(
+                "ARDS",
+                new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Right Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+            ));
+        conditions.add(new Condition(
+                "COPD",
+                new JLabel("Bronchitis Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Emphysema Left Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Emphysema Right Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+            ));
+        conditions.add(new Condition(
+                "Pericardial Effusion",
+                new JLabel("Accumulated Volume (mL)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 1))
+            ));
+        conditions.add(new Condition(
+                "Renal Stenosis",
+                new JLabel("Left Kidney Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Right Kidney Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+        	));
+        conditions.add(new Condition(
+                "Ventricular Systolic Disfunction"
+        	));
+        conditions.add(new Condition( //Questo qui è un po' da sistemare
+                "Impaired Alveolar Exchange TODO",
+                new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Impaired Faction"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Impaired Surface Area (m^2)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 1))
+        	));  
+        conditions.add(new Condition(
+                "Pneumonia",
+                new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+                new JLabel("Right Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+            )); 
+        conditions.add(new Condition(
+                "Pulmonary Fibrosis",
+                new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+            )); 
+        conditions.add(new Condition(
+                "Pulmonary Shunt",
+                new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+            )); 
         for (Condition condition : conditions) {
             sectionsPanel.add(condition.sectionPanel);
         }
