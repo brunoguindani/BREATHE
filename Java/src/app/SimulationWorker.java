@@ -10,6 +10,7 @@ import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
 import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
+import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
@@ -41,6 +42,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
+    private static List<SECondition> conditions = new ArrayList<>();
     
 
     public SimulationWorker(App appTest) {
@@ -74,15 +76,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
-			pe.initializeEngine(patient_configuration, dataRequests);
+
+	        for(SECondition any : conditions)
+	        {
+	          patient_configuration.getConditions().add(any);
+	        }
 			
-			/*
-			//PER DEBUG
-			pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests);
-			//Controllo se è riuscito a caricare il file
-			SEPatient initialPatient = new SEPatient();
-			pe.getInitialPatient(initialPatient);
-			*/
+			pe.initializeEngine(patient_configuration, dataRequests);
 		}
 		else {
 			pe.serializeFromFile(patientFilePath, dataRequests);
@@ -262,7 +262,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
 
     private void dataPrint() {
-    	//Estrazione e scrittura dei dati
+
+        pe.getConditions(conditions);
+        for(SECondition any : conditions)
+        {
+            Log.info(any.toString());
+            publish(any.toString()+ "\n");
+        }
+        
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
         publish("---------------------------\n");
@@ -285,6 +292,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             y = dataValues.get(i);
             app.charts.getChartsPanel()[i - 1].addPoint(x, y);
         }
-
+    }
+    
+    public static boolean addCondition(SECondition e) {
+    	return conditions.add(e);
+    }
+    
+    public static boolean removeCondition(SECondition e) {
+    	return conditions.remove(e);
     }
 }

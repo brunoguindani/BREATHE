@@ -2,6 +2,7 @@ package app;
 
 import javax.swing.*;
 
+import panels.ConditionPanel;
 import panels.ActionPanel;
 import panels.ChartsPanel;
 import panels.LogPanel;
@@ -23,6 +24,7 @@ public class App extends JFrame {
 	public PatientPanel patient = new PatientPanel(this);
 	public VentilatorPanel ventilator = new VentilatorPanel();
 	public ActionPanel action = new ActionPanel();
+	public ConditionPanel condition = new ConditionPanel();
 	public LogPanel log = new LogPanel();
 	public ChartsPanel charts = new ChartsPanel();
 	public LineChart[] chartPanels;
@@ -41,6 +43,7 @@ public class App extends JFrame {
 
         // Pannello per gli input (centro)
         JPanel patientPanel = patient.getPatientPanel();
+        JPanel conditionPanel = condition.getConditionPanel();
         JPanel ventilatorPanel = ventilator.getVentilatorPanel();	
         JPanel actionPanel = action.getActionPanel();
         JScrollPane scrollLogPane = log.getLogScrollPane();
@@ -48,6 +51,7 @@ public class App extends JFrame {
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
         switchTabbedPane.addTab("Patient", patientPanel);
+        switchTabbedPane.addTab("Condition", conditionPanel);
         switchTabbedPane.addTab("Action", actionPanel);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);

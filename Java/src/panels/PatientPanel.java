@@ -95,6 +95,7 @@ public class PatientPanel {
             }
             app.log.getResultArea().setText("");
             app.action.enableButtonStates();
+            app.condition.disableButtonStates();
             new SimulationWorker(app).execute(); 
             });
 
@@ -106,6 +107,7 @@ public class PatientPanel {
             stopButton.setEnabled(false);
             App.connectButton.setEnabled(false);
             app.action.disableButtonStates();
+            app.condition.enableButtonStates();
             setFieldsEnabled(true);
         });
         

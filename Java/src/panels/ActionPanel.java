@@ -1,6 +1,9 @@
 package panels;
 
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 import utils.Action;
@@ -9,7 +12,7 @@ public class ActionPanel {
     private JPanel sectionsPanel = new JPanel();  
     private JScrollPane scrollActionPane;
     private JPanel actionPanel;  
-    private Action[] actions;
+    private List<Action> actions = new ArrayList<>();
 
     public ActionPanel() {
         // Configurazione del pannello delle sezioni
@@ -20,27 +23,29 @@ public class ActionPanel {
         /*
          * AZIONI
          */
-        actions = new Action[] {
-                new Action(
-                    "ARDS Exacerbation",
-                    new JLabel("LLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
-                    new JLabel("RLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-                ),
-                new Action(
-                    "Airway Obstruction",
-                    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-                ),
-                new Action(
-                    "Dyspnea",
-                    new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
-                )
-            };
-
-            for (Action action : actions) {
-                sectionsPanel.add(action.sectionPanel);
-            }
+        actions = new ArrayList<>();
+        
+        actions.add(new Action(
+            "ARDS Exacerbation",
+            new JLabel("LLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
+            new JLabel("RLung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+        ));
+        
+        actions.add(new Action(
+            "Airway Obstruction",
+            new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+        ));
+        
+        actions.add(new Action(
+            "Dyspnea",
+            new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
+        ));
+        
+        for (Action action : actions) {
+            sectionsPanel.add(action.sectionPanel);
+        }
             
-            sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10 * actions.length))); // da rimuovere piu avanti
+       sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10 * actions.size()))); // da rimuovere piu avanti
             
         /*
          * FINE AZIONI
