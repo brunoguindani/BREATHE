@@ -39,7 +39,9 @@ public class App extends JFrame {
         setLayout(new BorderLayout());
 
         // Imposta il colore di sfondo della finestra principale
-        getContentPane().setBackground(Color.LIGHT_GRAY);
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        getContentPane().add(panel);
 
         // Pannello per gli input (centro)
         JPanel patientPanel = patient.getPatientPanel();
@@ -49,6 +51,7 @@ public class App extends JFrame {
         JScrollPane scrollLogPane = log.getLogScrollPane();
         
         switchTabbedPane = new JTabbedPane();
+        switchTabbedPane.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
         switchTabbedPane.addTab("Patient", patientPanel);
         switchTabbedPane.addTab("Condition", conditionPanel);
