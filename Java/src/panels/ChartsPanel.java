@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 
 import com.kitware.pulse.cdm.properties.CommonUnits.ElectricPotentialUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 
@@ -26,8 +27,18 @@ public class ChartsPanel {
     
     public ChartsPanel() {
     	
-        String[] chartNames = {"Heart Rate", "Total Lung Volume", "Respiratory Rate", "ECG"};
-        Unit[] chartUnits = {FrequencyUnit.Per_min, VolumeUnit.mL, FrequencyUnit.Per_min, ElectricPotentialUnit.mV};
+        String[] chartNames = {
+        		"Heart Rate", 
+        		"Total Lung Volume", 
+        		"Respiratory Rate", 
+        		"ECG",
+        		"Carbon Dioxide"};
+        Unit[] chartUnits = {
+        		FrequencyUnit.Per_min, 
+        		VolumeUnit.mL, 
+        		FrequencyUnit.Per_min, 
+        		ElectricPotentialUnit.mV,
+        		PressureUnit.mmHg};
         chartPanels = new LineChart[chartNames.length];
         chartCheckboxes = new JCheckBox[chartNames.length];
         

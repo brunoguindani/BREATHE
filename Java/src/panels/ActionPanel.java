@@ -39,7 +39,7 @@ public class ActionPanel {
             new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         ));        
         actions.add(new Action(
-            "Ashtma Attack",
+            "Asthma Attack",
             new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         ));   
         actions.add(new Action(

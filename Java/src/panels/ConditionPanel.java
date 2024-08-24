@@ -54,7 +54,7 @@ public class ConditionPanel {
                 "Ventricular Systolic Disfunction"
         	));
         conditions.add(new Condition( //Questo qui è un po' da sistemare
-                "Impaired Alveolar Exchange TODO",
+                "Impaired Alveolar Exchange (Not implemented yet)",
                 new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
                 new JLabel("Impaired Faction"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
                 new JLabel("Impaired Surface Area (m^2)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 1))
