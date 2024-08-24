@@ -67,7 +67,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
 
-        
+
         //Paziente
 		String patientFilePath = app.patient.getSelectedFilePath();
 		 
@@ -184,10 +184,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     private void setPatientParameter(SEPatient patient) {
+    	
 		patient.setName(app.patient.getName_PATIENT());
 		patient.getAge().setValue(Double.parseDouble(app.patient.getAge_PATIENT()), TimeUnit.yr);
-		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
-		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
 		patient.getBodyFatFraction().setValue(Double.parseDouble(app.patient.getBodyFatFraction_PATIENT()));
 		patient.getHeartRateBaseline().setValue(Double.parseDouble(app.patient.getHeartRate_PATIENT()), FrequencyUnit.Per_min);
 		patient.getDiastolicArterialPressureBaseline().setValue(Double.parseDouble(app.patient.getDiastolicPressure_PATIENT()), PressureUnit.mmHg);
@@ -200,6 +199,23 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		    patient.setSex(eSex.Female);
 		}
 
+		//Peso
+    	if(app.patient.getWeight_PATIENT().equals("kg"))
+    		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.kg);
+    	else
+    		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
+    	
+    	//Altezza
+    	if(app.patient.getHeight_PATIENT().equals("inches"))
+    		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
+    	else if(app.patient.getHeight_PATIENT().equals("m"))
+    		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.m);
+    	else if(app.patient.getHeight_PATIENT().equals("cm"))
+    		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.cm);
+    	else
+    		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.ft);
+    	
+		
     }
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
