@@ -82,9 +82,9 @@ public class LineChart extends JPanel {
             g2.setColor(Color.GREEN);
             g2.setStroke(new java.awt.BasicStroke(2f));
 
-            for (int i = Math.max(0, points.size() - maxXValue); i < points.size() - 1; i++) {
+            for (int i = Math.max(0, points.size() - maxXValue); i < points.size() - 1; i++) {          	
                 Point p1 = points.get(i);
-                Point p2 = points.get(i + 1);
+                Point p2 = points.get(i + 1);          
                 int y1 = p1.y;
                 int y2 = p2.y;
                 g2.drawLine(prevX, y1, p2.x - p1.x + prevX, y2);
@@ -134,15 +134,23 @@ public class LineChart extends JPanel {
     }
 
     public void addPoint(double x, double y) {
+        if(minYValue > y) {
+        	minYValue = (int) Math.floor(y);
+        };
+        if(maxYValue < y) {
+        	maxYValue = (int) Math.floor(y);
+        };
+    	
         int x1 = (int) (x * 50 + 50);
         int y1 = (int) (250 - ((y - minYValue) * 200 / (maxYValue - minYValue)));
         points.add(new Point(x1, y1));
-        currentYValue = y;  // Aggiorna il valore corrente di Y
+        currentYValue = y;  
         repaint(); 
     }
 
     public void clear() {
         points.clear(); 
+        setMaxY();
         repaint();
     }
     
@@ -167,6 +175,11 @@ public class LineChart extends JPanel {
                 this.maxYValue = 1;
                 this.minYValue = -1;
                 this.yStep = 1;   
+                break;
+            case "Carbon Dioxide":
+                this.maxYValue = 50;
+                this.minYValue = 0;
+                this.yStep = 5;   
                 break;
             default:
                 this.maxYValue = 100;

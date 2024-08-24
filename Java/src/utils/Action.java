@@ -153,8 +153,8 @@ public class Action {
                                 Log.error("Invalid input for severity value");
                             }
                             break;
-                        case "Ashtma Attack":
-                            SEAcuteStress ashtma = new SEAcuteStress();
+                        case "Asthma Attack":
+                            SEAsthmaAttack ashtma = new SEAsthmaAttack();
                             try {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();

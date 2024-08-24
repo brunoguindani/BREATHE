@@ -171,7 +171,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 				"HeartRate",
 				"TotalLungVolume",
 				"RespirationRate",
-				"Lead3ElectricPotential"
+				"Lead3ElectricPotential",
+				"CarbonDioxide",
+				"Oxygen"
 				};
     	
     	this.requestList = requestList;
@@ -179,7 +181,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
-        
+        dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
       //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
     }
     
@@ -304,7 +306,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         //Stampe dei dati nei grafici
         double x = dataValues.get(0);
         double y = 0;
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i < (dataValues.size()); i++) {
             y = dataValues.get(i);
             app.charts.getChartsPanel()[i - 1].addPoint(x, y);
         }
