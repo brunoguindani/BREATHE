@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import com.kitware.pulse.cdm.conditions.SECondition;
+
 import utils.Condition;
 
 public class ConditionPanel {
@@ -17,6 +19,7 @@ public class ConditionPanel {
     private JPanel sectionsPanel = new JPanel();  
     private JScrollPane scrollConditionPane;
     private List<Condition> conditions = new ArrayList<>();
+    private static List<SECondition> activeConditions = new ArrayList<>();
 
     public ConditionPanel() {
     	// base
@@ -107,4 +110,19 @@ public class ConditionPanel {
         	condition.disableButtonState();
         }
     }
+    
+    public static boolean addCondition(SECondition e) {
+    	return activeConditions.add(e);
+    }
+    
+    public static boolean removeCondition(SECondition e) {
+    	return activeConditions.remove(e);
+    }
+    
+    //return the lists of active conditions
+    public List<SECondition> getActiveConditions() {
+    	return activeConditions;
+    }
+    
+
 }

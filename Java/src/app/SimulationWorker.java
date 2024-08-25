@@ -45,7 +45,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
-    private static List<SECondition> conditions = new ArrayList<>();
+
     
 
     public SimulationWorker(App appTest) {
@@ -80,7 +80,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
 
-	        for(SECondition any : conditions)
+	        for(SECondition any : app.condition.getActiveConditions())
 	        {
 	          patient_configuration.getConditions().add(any);
 	        }
@@ -109,33 +109,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 return null;
             }
             
-            //Handling Ventilators
-            if(ventilationDisconnectRequest) {
-            	ventilationDisconnectRequest = false;
-            	if(app.ventilator.isPCConnected()){ 
-                	stop_pc(pc);
-                }
-                else if(app.ventilator.isCPAPConnected()){
-        	        stop_cpap(cpap);
-        	    }
-                else if(app.ventilator.isVCConnected()){
-        	        stop_vc(vc);
-        	    }
-            	
-            }
-            else if(ventilationSwitchRequest) {
-            	ventilationSwitchRequest = false;
-            	
-                if(app.ventilator.isPCConnected()){ 
-                	start_pc(pc);
-                }
-                else if(app.ventilator.isCPAPConnected()){
-        	        start_cpap(cpap);
-        	    }
-                else if(app.ventilator.isVCConnected()){
-        	        start_vc(vc);
-        	    }
-            }
+            handilngVentilator(pc,cpap,vc);
 
             //Log and data printing
             dataPrint();
@@ -228,6 +202,35 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		
     }
     
+  //Handling Ventilators
+    private void handilngVentilator(SEMechanicalVentilatorPressureControl pc, SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap, SEMechanicalVentilatorVolumeControl vc) {
+    	if(ventilationDisconnectRequest) {
+        	ventilationDisconnectRequest = false;
+        	if(app.ventilator.isPCConnected()){ 
+            	stop_pc(pc);
+            }
+            else if(app.ventilator.isCPAPConnected()){
+    	        stop_cpap(cpap);
+    	    }
+            else if(app.ventilator.isVCConnected()){
+    	        stop_vc(vc);
+    	    }
+        }
+        else if(ventilationSwitchRequest) {
+        	ventilationSwitchRequest = false;
+        	
+            if(app.ventilator.isPCConnected()){ 
+            	start_pc(pc);
+            }
+            else if(app.ventilator.isCPAPConnected()){
+    	        start_cpap(cpap);
+    	    }
+            else if(app.ventilator.isVCConnected()){
+    	        start_vc(vc);
+    	    }
+        }
+    }
+    
     //Set and Starts of Ventilators
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -292,8 +295,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private void dataPrint() {
 
     	//print conditions
-        pe.getConditions(conditions);
-        for(SECondition any : conditions)
+        pe.getConditions(app.condition.getActiveConditions());
+        for(SECondition any : app.condition.getActiveConditions())
         {
             Log.info(any.toString());
             publish(any.toString()+ "\n");
@@ -325,11 +328,5 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         }
     }
     
-    public static boolean addCondition(SECondition e) {
-    	return conditions.add(e);
-    }
-    
-    public static boolean removeCondition(SECondition e) {
-    	return conditions.remove(e);
-    }
+
 }

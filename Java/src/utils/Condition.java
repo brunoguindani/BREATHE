@@ -22,6 +22,7 @@ import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.patient.conditions.*;
 
 import app.SimulationWorker;
+import panels.ConditionPanel;
 
 public class Condition {
 	/*
@@ -245,17 +246,17 @@ public class Condition {
         };
     }
     
-    //Add or remove conditions from pe
+    //Add or remove conditions from activeCondition
     private boolean sendAction(SECondition e) {
     	boolean success = false;
         if(!enabled) {
-            success = SimulationWorker.addCondition(e);
+            success = ConditionPanel.addCondition(e);
             enabled = !enabled;
             disableFields();
             applySectionButton.setText("Remove");
             condition = e;
         }else {
-            success = SimulationWorker.removeCondition(condition);
+            success = ConditionPanel.removeCondition(condition);
             enabled = !enabled;
             enableFields();
             applySectionButton.setText("Apply");
