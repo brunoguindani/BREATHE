@@ -9,19 +9,23 @@ import javax.swing.*;
 import utils.Action;
 
 public class ActionPanel {
+	
+	/*
+	 * Panel to activate an action during simulation
+	 */
+	
     private JPanel sectionsPanel = new JPanel();  
-    private JScrollPane scrollActionPane;
-    private JPanel actionPanel;  
+    private JScrollPane scrollActionPane;  
     private List<Action> actions = new ArrayList<>();
 
     public ActionPanel() {
-        // Configurazione del pannello delle sezioni
+    	//base
         sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
         sectionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         sectionsPanel.setBackground(Color.LIGHT_GRAY);
 
         /*
-         * AZIONI
+         * ACTIONS
          */
         actions = new ArrayList<>();
         
@@ -92,27 +96,18 @@ public class ActionPanel {
             sectionsPanel.add(action.sectionPanel);
         }
             
-       sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10 * actions.size()))); // da rimuovere piu avanti
-            
         /*
-         * FINE AZIONI
+         * END ACTIONS
          */
-        // Aggiungi lo scroll pane
+        
+        // Add scrollPane
         scrollActionPane = new JScrollPane(sectionsPanel);
         scrollActionPane.setPreferredSize(new Dimension(400, 600));
         scrollActionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollActionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        // Nuovo pannello che contiene lo scroll pane e il pannello del pulsante "Applica"
-        actionPanel = new JPanel();
-        actionPanel.setLayout(new BorderLayout());
-        actionPanel.add(scrollActionPane, BorderLayout.CENTER);
-    }
-
-    public JPanel getActionPanel() {
-        return actionPanel;
     }
     
+    //method to return the panel
     public JScrollPane getActionScrollPane() {
         return scrollActionPane;
     }

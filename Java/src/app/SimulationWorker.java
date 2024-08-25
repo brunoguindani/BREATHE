@@ -33,6 +33,9 @@ import com.kitware.pulse.utilities.JNIBridge;
 
 public class SimulationWorker extends SwingWorker<Void, String> {
 
+	/*
+	 * Class with the pulseEngine that controls the simulation
+	 */
 	
     private final App app;
     public static PulseEngine pe;
@@ -58,17 +61,17 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         stopRequested = false;
         started = true;
         
-        // Inizializzazione di JNIBridge e PulseEngine
+        // Initialize JNIBridge and PulseEngine
         JNIBridge.initialize();
         pe = new PulseEngine();
         
 
-        // Creazione e configurazione delle richieste di dati
+        // Creation of Data Request
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
 
 
-        //Paziente
+        //Paztient data depending on PatientPanel config
 		String patientFilePath = app.patient.getSelectedFilePath();
 		 
 		if (patientFilePath == null || patientFilePath.isEmpty()) {
@@ -86,19 +89,17 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		}
 		else {
 			pe.serializeFromFile(patientFilePath, dataRequests);
-			//Controllo se è riuscito a caricare il file
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
 		}
 
         
-        //Creazione ventilatori
+        //Ventilators
         SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
         SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         SEMechanicalVentilatorVolumeControl vc = new SEMechanicalVentilatorVolumeControl();
         
-        
-        //Partenza simulazione
+        //Start Simulation
         publish("Started\n");
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
         while (!stopRequested) {
@@ -108,16 +109,16 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 return null;
             }
             
-            //Gestione ventilatori
+            //Handling Ventilators
             if(ventilationDisconnectRequest) {
             	ventilationDisconnectRequest = false;
-            	if(app.ventilator.isPCACConnected()){ 
+            	if(app.ventilator.isPCConnected()){ 
                 	stop_pc(pc);
                 }
                 else if(app.ventilator.isCPAPConnected()){
         	        stop_cpap(cpap);
         	    }
-                else if(app.ventilator.isVCACConnected()){
+                else if(app.ventilator.isVCConnected()){
         	        stop_vc(vc);
         	    }
             	
@@ -125,25 +126,25 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             else if(ventilationSwitchRequest) {
             	ventilationSwitchRequest = false;
             	
-                if(app.ventilator.isPCACConnected()){ 
+                if(app.ventilator.isPCConnected()){ 
                 	start_pc(pc);
                 }
                 else if(app.ventilator.isCPAPConnected()){
         	        start_cpap(cpap);
         	    }
-                else if(app.ventilator.isVCACConnected()){
+                else if(app.ventilator.isVCConnected()){
         	        start_vc(vc);
         	    }
             }
 
-            //Scrittura dei dati a schermo (log e grafici)
+            //Log and data printing
             dataPrint();
 
             time.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+time+"...");
         }
         
-        // Pulizia finale e chiusura della simulazione
+        // Final Cleaning
 	    started = false;
         pe.clear();
         pe.cleanUp();
@@ -167,6 +168,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     private void setDataRequests(SEDataRequestManager dataRequests) {
+    	//list of data requests.
+    	//SimTime is mandatory, since it is always retrieved
+    	//order is important
     	String[] requestList = {"SimTime",
 				"HeartRate",
 				"TotalLungVolume",
@@ -177,18 +181,19 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 				};
     	
     	this.requestList = requestList;
+    	
+    	//create the requests
     	dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
         dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
         dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
         dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
-        
-      //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
     }
     
     private void setPatientParameter(SEPatient patient) {
     	
+    	//retrieved patient field and set them (not from file)
 		patient.setName(app.patient.getName_PATIENT());
 		patient.getAge().setValue(Double.parseDouble(app.patient.getAge_PATIENT()), TimeUnit.yr);
 		patient.getBodyFatFraction().setValue(Double.parseDouble(app.patient.getBodyFatFraction_PATIENT()));
@@ -203,14 +208,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		    patient.setSex(eSex.Female);
 		}
 
-		//Peso
+		//Weight
 		String weightUnit = app.patient.getWeightUnit_PATIENT();
     	if(weightUnit.equals("kg"))
     		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.kg);
     	else
     		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
     	
-    	//Altezza
+    	//Height
     	String heightUnit = app.patient.getHeightUnit_PATIENT();
     	if(heightUnit.equals("inches"))
     		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
@@ -223,6 +228,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		
     }
     
+    //Set and Starts of Ventilators
+    
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
     	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
     		pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
@@ -230,12 +237,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pc.setMode(MechanicalVentilatorPressureControlData.eMode.ContinuousMandatoryVentilation);
 		}
         pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
-        pc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_PCAC()));
-        pc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriodValue_PCAC()),TimeUnit.s);
-        pc.getInspiratoryPressure().setValue(Double.parseDouble(app.ventilator.getInspiratoryPressureValue_PCAC()), PressureUnit.cmH2O);
-        pc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_PCAC()), PressureUnit.cmH2O);
-        pc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRateValue_PCAC()), FrequencyUnit.Per_min);
-        pc.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_PCAC()), TimeUnit.s);
+        pc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_PC()));
+        pc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriodValue_PC()),TimeUnit.s);
+        pc.getInspiratoryPressure().setValue(Double.parseDouble(app.ventilator.getInspiratoryPressureValue_PC()), PressureUnit.cmH2O);
+        pc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_PC()), PressureUnit.cmH2O);
+        pc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRateValue_PC()), FrequencyUnit.Per_min);
+        pc.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_PC()), TimeUnit.s);
         pc.setConnection(eSwitch.On);
         pe.processAction(pc);
     }
@@ -266,12 +273,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			vc.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
 		}
     	vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
-        vc.getFlow().setValue(Double.parseDouble(app.ventilator.getFlow_VCAC()), VolumePerTimeUnit.L_Per_min);
-        vc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_VCAC()));
-        vc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriod_VCAC()), TimeUnit.s);
-        vc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPres_VCAC()), PressureUnit.cmH2O);
-        vc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRate_VCAC()), FrequencyUnit.Per_min);
-        vc.getTidalVolume().setValue(Double.parseDouble(app.ventilator.getTidalVol_VCAC()), VolumeUnit.mL);
+        vc.getFlow().setValue(Double.parseDouble(app.ventilator.getFlow_VC()), VolumePerTimeUnit.L_Per_min);
+        vc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_VC()));
+        vc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriod_VC()), TimeUnit.s);
+        vc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPres_VC()), PressureUnit.cmH2O);
+        vc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRate_VC()), FrequencyUnit.Per_min);
+        vc.getTidalVolume().setValue(Double.parseDouble(app.ventilator.getTidalVol_VC()), VolumeUnit.mL);
         vc.setConnection(eSwitch.On);
         pe.processAction(vc);
     }
@@ -281,9 +288,10 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.processAction(vc);
     }
     
-
+    //Print data in console and log Panel and Charts
     private void dataPrint() {
 
+    	//print conditions
         pe.getConditions(conditions);
         for(SECondition any : conditions)
         {
@@ -291,6 +299,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             publish(any.toString()+ "\n");
         }
         
+        //print requested data
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
         publish("---------------------------\n");
@@ -298,6 +307,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             publish(requestList[i] + ": " + dataValues.get(i) + "\n");
         }
         
+        //print actions
         List<SEAction> actions = new ArrayList<SEAction>();
         pe.getActiveActions(actions);
         for(SEAction any : actions)
@@ -306,7 +316,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
           publish(any.toString()+ "\n");
         }
 
-        //Stampe dei dati nei grafici
+        //send data to graphs to be printed
         double x = dataValues.get(0);
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {

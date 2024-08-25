@@ -25,12 +25,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PatientPanel {
+	
+	/*
+	 * Panel to manage patient data
+	 */
+	
     private JTextField nameField_Patient, ageField_Patient, weightField_Patient, heightField_Patient, bodyFatField_Patient;
     private JTextField heartRateField_Patient, diastolicField_Patient, systolicField_Patient, respirationRateField_Patient, basalMetabolicRateField_Patient;
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JComboBox<String> weightUnitComboBox, heightUnitComboBox;
-    
-    
+      
     private JPanel patientPanel = new JPanel();
     private String selectedFilePath;
     
@@ -46,37 +50,20 @@ public class PatientPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-             
-        
+                
+        //adding data selectors 
         addLabelAndField("Name:", nameField_Patient = new JTextField("Standard", 20), patientPanel, gbc);
-        addLabelAndField("Sex:", sexComboBox_Patient, patientPanel, gbc); 
-        
+        addLabelAndField("Sex:", sexComboBox_Patient, patientPanel, gbc);        
         addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"),new JLabel("yr"), patientPanel, gbc);
-
-        // JComboBox per peso
         weightUnitComboBox = new JComboBox<>(new String[]{"lbs", "kg"});
         addLabelFieldAndUnit("Weight:", weightField_Patient = new JTextField("170"), weightUnitComboBox, patientPanel, gbc);
-
-        // JComboBox per altezza
         heightUnitComboBox = new JComboBox<>(new String[]{"inches", "m", "cm", "ft"});
         addLabelFieldAndUnit("Height:", heightField_Patient = new JTextField("71"), heightUnitComboBox, patientPanel, gbc);
-
-        // JLabel per body fat fraction
         addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel("%"), patientPanel, gbc);
-
-        // JLabel per heart rate
         addLabelFieldAndUnit("Heart Rate Baseline:", heartRateField_Patient = new JTextField("72"), new JLabel("mmHg"), patientPanel, gbc);
-
-        // JLabel per diastolic pressure
         addLabelFieldAndUnit("Diastolic Pressure:", diastolicField_Patient = new JTextField("72"), new JLabel("mmHg"), patientPanel, gbc);
-        
-        // JLabel per systolic pressure
         addLabelFieldAndUnit("Systolic Pressure:", systolicField_Patient = new JTextField("114"), new JLabel("mmHg"), patientPanel, gbc);
-
-        // JLabel per respiration rate
         addLabelFieldAndUnit("Respiration Rate Baseline:", respirationRateField_Patient = new JTextField("16"), new JLabel("breaths/min"), patientPanel, gbc);
-
-        // JLabel per basal metabolic rate
         addLabelFieldAndUnit("Basal Metabolic Rate:", basalMetabolicRateField_Patient = new JTextField("1600"), new JLabel("kcal/day"), patientPanel, gbc);
 
         gbc.gridx = 0;
@@ -85,12 +72,16 @@ public class PatientPanel {
         gbc.weightx = 1.0;  
         gbc.fill = GridBagConstraints.HORIZONTAL; 
 
+        //button to start simulation from a pre loaded file
         JButton startFromFileButton = new JButton("Start From File");
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
         patientPanel.add(startFromFileButton, gbc);
 
+        //button to start simulation from given data
+        //this will take much longer than pre loaded file
+        //because the engine must first stabilize the new patient
         JButton startButton = new JButton("Start Simulation");
         startButton.setBackground(new Color(0, 122, 255)); 
         startButton.setForeground(Color.WHITE);
@@ -98,6 +89,7 @@ public class PatientPanel {
         gbc.gridy++;
         patientPanel.add(startButton, gbc);
 
+        //stop simulation
         JButton stopButton = new JButton("Stop Simulation");
         stopButton.setEnabled(false); 
         stopButton.setBackground(new Color(255, 59, 48));
@@ -106,30 +98,32 @@ public class PatientPanel {
         gbc.gridy++;
         patientPanel.add(stopButton, gbc);
         
-
-
+        /*
+         * ACTIONS for buttons
+         */
+        
         startButton.addActionListener(e -> {
-        	setFieldsEnabled(false);
-            startButton.setEnabled(false);
-            startFromFileButton.setEnabled(false);
-            stopButton.setEnabled(true);
-            App.connectButton.setEnabled(true);
+        	setFieldsEnabled(false); //disable changing of parameters 
+            startButton.setEnabled(false); // disable starting buttons
+            startFromFileButton.setEnabled(false); 
+            stopButton.setEnabled(true); // enable stop button
             for (int i =0; i< app.chartPanels.length ;i++) {
-            	app.chartPanels[i].clear();
+            	app.chartPanels[i].clear(); //restart panels
             }
-            app.log.getResultArea().setText("");
-            app.action.enableButtonStates();
-            app.condition.disableButtonStates();
-            new SimulationWorker(app).execute(); 
+            app.ventilator.connectButton.setEnabled(true); //enable ventilators
+            app.log.getResultArea().setText(""); //empty log
+            app.action.enableButtonStates(); //enable actions
+            app.condition.disableButtonStates(); //disable conditions changes
+            new SimulationWorker(app).execute(); //start simulation
             });
 
         stopButton.addActionListener(e -> {
-            SimulationWorker.requestStop(); 
+            SimulationWorker.requestStop(); //stop simulation
             startButton.setEnabled(true);
             startFromFileButton.setEnabled(true);
             selectedFilePath = null;
             stopButton.setEnabled(false);
-            App.connectButton.setEnabled(false);
+            app.ventilator.connectButton.setEnabled(false);
             app.action.disableButtonStates();
             app.condition.enableButtonStates();
             setFieldsEnabled(true);
@@ -138,15 +132,15 @@ public class PatientPanel {
         
         startFromFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser("./states/");
-            int returnValue = fileChooser.showOpenDialog(null);
+            int returnValue = fileChooser.showOpenDialog(null); //pick a file
             if (returnValue == JFileChooser.APPROVE_OPTION) {
             	selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
             	
-                //Imposto i fields come presente nel file
-                try {
+                try { 
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode rootNode = mapper.readTree(new File(selectedFilePath));
-
+                    
+                    //Retrieve patient data from selected file
                     String name = rootNode.path("CurrentPatient").path("Name").asText();
                     String sex = rootNode.path("CurrentPatient").path("Sex").asText(); 
                     if(sex.isBlank()) sex = "Male";
@@ -162,7 +156,7 @@ public class PatientPanel {
                     int respirationRate = rootNode.path("CurrentPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
                     double basalMetabolicRate = rootNode.path("CurrentPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
                     
-                    // Aggiorna i campi con i valori del file
+                    //Set them to the proper field 
                     nameField_Patient.setText(name);
                     sexComboBox_Patient.setSelectedItem(sex);
                     ageField_Patient.setText(String.valueOf(age));
@@ -176,11 +170,8 @@ public class PatientPanel {
                     systolicField_Patient.setText(String.format("%.2f", systolicPressure));
                     respirationRateField_Patient.setText(String.valueOf(respirationRate));
                     basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
-                    
-                    
-                    
 
-                    startButton.doClick();
+                    startButton.doClick();//start simulation
                     startFromFileButton.setEnabled(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -191,7 +182,7 @@ public class PatientPanel {
         
     }
     
-
+    //selection weight unit
     private String convertWeightUnitToComboBoxValue(String unit) {
         switch (unit) {
             case "lb":
@@ -199,10 +190,11 @@ public class PatientPanel {
             case "kg":
                 return "kg";
             default:
-                return "lbs"; // Valore di default
+                return "lbs";
         }
     }
 
+    //selection height unit
     private String convertHeightUnitToComboBoxValue(String unit) {
         switch (unit) {
             case "in":
@@ -214,27 +206,27 @@ public class PatientPanel {
             case "ft":
                 return "ft";
             default:
-                return "inches"; // Valore di default
+                return "inches";
         }
     }
     
+    
+    //method to add visual to panel
     private void addLabelAndField(String labelText, JComponent component, JPanel panel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        gbc.weightx = 0; // Il label non espande lo spazio
+        gbc.weightx = 0; 
         panel.add(new JLabel(labelText), gbc);
         
         gbc.gridx = 1;
-        gbc.gridwidth = GridBagConstraints.REMAINDER; // Il campo di testo si espande orizzontalmente
-        gbc.weightx = 1.0; // Il campo di testo espande per occupare lo spazio disponibile
+        gbc.gridwidth = GridBagConstraints.REMAINDER; 
+        gbc.weightx = 1.0; 
         panel.add(component, gbc);
         
         gbc.gridy++;
     }
-
-    
-    
-    
+  
+    //method to add visual to panel
     private void addLabelFieldAndUnit(String labelText, JComponent component, JComponent unitComponent, JPanel panel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
@@ -246,7 +238,6 @@ public class PatientPanel {
         gbc.gridy++;
     }
 
-    
     private void setFieldsEnabled(boolean enabled) {
         nameField_Patient.setEnabled(enabled);
         ageField_Patient.setEnabled(enabled);
@@ -261,16 +252,17 @@ public class PatientPanel {
         sexComboBox_Patient.setEnabled(enabled);
     }
     
+    //method to return panel
     public JPanel getPatientPanel() {
     	return patientPanel;
     }
     
-    //Get del file (se selezionato)
+    //Get file 
     public String getSelectedFilePath() {
         return selectedFilePath;
     }
     
-    //Get dati paziente
+    //Get patient data
     public String getName_PATIENT() {
         return nameField_Patient.getText();
     }

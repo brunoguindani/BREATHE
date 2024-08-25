@@ -15,15 +15,15 @@ import java.awt.*;
 public class App extends JFrame {
 
 	/*
-	 * 
-	 * 
-	 * 
+	 * Main Panel containing all the other Panels
 	 */
 	
 	private static final long serialVersionUID = 1L;
 
+	//tab to select other panels
 	private JTabbedPane switchTabbedPane;
 	
+	//all available panels
 	public PatientPanel patient = new PatientPanel(this);
 	public VentilatorPanel ventilator = new VentilatorPanel();
 	public ActionPanel action = new ActionPanel();
@@ -31,42 +31,40 @@ public class App extends JFrame {
 	public LogPanel log = new LogPanel();
 	public ChartsPanel charts = new ChartsPanel();
 	public LineChart[] chartPanels;
-    
-    public static JButton connectButton = new JButton("Connect");
-   
 
     public App() {
     	
+    	//main panel
         setTitle("Pulse Simulation");
         setSize(1000, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Imposta il colore di sfondo della finestra principale
         getContentPane().setBackground(Color.LIGHT_GRAY);
         
-        // Pannello per gli input (centro)
+        //retrieving panels
         JPanel patientPanel = patient.getPatientPanel();
-        JPanel conditionPanel = condition.getConditionPanel();
+        JScrollPane scrollConditionPane = condition.getConditionScrollPane();
         JPanel ventilatorPanel = ventilator.getVentilatorPanel();	
-        JPanel actionPanel = action.getActionPanel();
+        JScrollPane scrollActionPane = action.getActionScrollPane();
         JScrollPane scrollLogPane = log.getLogScrollPane();
         
+        //adding to the switch
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
         switchTabbedPane.addTab("Patient",patientPanel);
-        switchTabbedPane.addTab("Condition", conditionPanel);
-        switchTabbedPane.addTab("Action", actionPanel);
+        switchTabbedPane.addTab("Condition", scrollConditionPane);
+        switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
-        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 5, Color.DARK_GRAY)); // Bordo a destra
+        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 5, Color.DARK_GRAY));
         
-        // Pannello per il grafico (destra)
+        //panel for the charts
         JPanel chartPanel = charts.getChartPanel();
         chartPanels = charts.getChartsPanel();      
        
-        // Aggiungi i pannelli al layout principale
-        add(switchTabbedPane, BorderLayout.CENTER);  // Pannello input al centro
-        add(chartPanel, BorderLayout.EAST);   // Pannello del grafico a destra
+        //splitting view
+        add(switchTabbedPane, BorderLayout.CENTER);  
+        add(chartPanel, BorderLayout.EAST);   
     }
 }

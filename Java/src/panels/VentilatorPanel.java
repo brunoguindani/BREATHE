@@ -19,23 +19,33 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import app.App;
 import app.SimulationWorker;
 import utils.VentilationMode;
 
 public class VentilatorPanel {
+	
+	/*
+	 * Panel to manage ventilators data and connection
+	 * we have 3 different ventilators: PC, VC and CPAP.
+	 * PC and VC can be either AC or CMV. 
+	 */
+	
 	JPanel ventilatorPanel = new JPanel(new BorderLayout());
 	
     private CardLayout ventilatorCardLayout;
     private JPanel ventilatorCardPanel;
+    public JButton connectButton = new JButton("Connect");
 
+    //data for PC ventilator
     private JRadioButton pc;
     public JTextField fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
     JComboBox<String> AMComboBox_PC = new JComboBox<>(new String[]{"AC", "CMV"});
     
+    //data for CPAP ventilator
     private JRadioButton cpap;
     public JTextField fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
     
+    //data for VC ventilator
     private JRadioButton vc;
     public JTextField flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
     JComboBox<String> AMComboBox_VC = new JComboBox<>(new String[]{"AC", "CMV"});
@@ -57,6 +67,7 @@ public class VentilatorPanel {
          ventilatorCardLayout = new CardLayout();
          ventilatorCardPanel = new JPanel(ventilatorCardLayout);
 
+         // create different types of Ventilators
          JPanel pcPanel = new JPanel(new GridBagLayout());
          pcPanel.setBackground(Color.LIGHT_GRAY);
          JPanel cpapPanel = new JPanel(new GridBagLayout());
@@ -64,7 +75,7 @@ public class VentilatorPanel {
          JPanel vcPanel = new JPanel(new GridBagLayout());
          vcPanel.setBackground(Color.LIGHT_GRAY);
      
-         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (PCAC)
+         // MechanicalVentilatorContinuousPositiveAirwayPressure (PC)
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
          addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriodPCField = new JTextField("1"), pcPanel, gbc);
          addLabelAndField("Inspiratory Pressure - Pinsp", inspiratoryPressurePCField = new JTextField("19"), pcPanel, gbc);
@@ -73,13 +84,13 @@ public class VentilatorPanel {
          addLabelAndField("Slope", slopePCField = new JTextField("0.2"), pcPanel, gbc);
          addLabelAndField("Assisted Mode", AMComboBox_PC, pcPanel, gbc);
          
-         // Campi per ventilatore MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
+         // MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenCPAPField = new JTextField("0.21"), cpapPanel, gbc);
          addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
          addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
          addLabelAndField("Slope", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
          
-         // Campi per ventilatore SEMechanicalVentilatorVolumeControl (VCAC)
+         // SEMechanicalVentilatorVolumeControl (VC)
          addLabelAndField("Flow", flowVCField = new JTextField("60"), vcPanel, gbc);
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenVCField = new JTextField("0.21"), vcPanel, gbc);
          addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresVCField = new JTextField("5"), vcPanel, gbc);
@@ -107,11 +118,10 @@ public class VentilatorPanel {
          radioPanel.add(cpap);
          radioPanel.add(vc);
          
-         
-         
-         App.connectButton.setEnabled(false);  
-         App.connectButton.setForeground(Color.BLACK);
-         App.connectButton.setFocusPainted(false);
+         //buttons to manage the selected ventilator
+         connectButton.setEnabled(false);  
+         connectButton.setForeground(Color.BLACK);
+         connectButton.setFocusPainted(false);
          
          JButton disconnectButton = new JButton("Disconnect all");
          disconnectButton.setEnabled(false); 
@@ -120,15 +130,15 @@ public class VentilatorPanel {
          
          JPanel buttonPanel = new JPanel();
          buttonPanel.setLayout(new GridLayout(2, 1)); 
-         buttonPanel.add(App.connectButton);
+         buttonPanel.add(connectButton);
          buttonPanel.add(disconnectButton);
          buttonPanel.setBackground(Color.LIGHT_GRAY);
-         
-         
+                 
          ventilatorPanel.add(radioPanel, BorderLayout.NORTH);
          ventilatorPanel.add(buttonPanel, BorderLayout.SOUTH);
          ventilatorPanel.add(ventilatorCardPanel, BorderLayout.CENTER);
          
+         //switch between ventilators        
          pc.addActionListener(e -> {
          	ventilatorCardLayout.show(ventilatorCardPanel, "PC");
          	selectedVentilationMode = VentilationMode.PC;
@@ -142,7 +152,8 @@ public class VentilatorPanel {
          	selectedVentilationMode = VentilationMode.VC;
          });
 
-         App.connectButton.addActionListener(e -> {
+         //actions for buttons
+         connectButton.addActionListener(e -> {
          	if(!SimulationWorker.ventilationSwitchRequest)
          		SimulationWorker.ventilationSwitchRequest = true;
          	else
@@ -159,10 +170,12 @@ public class VentilatorPanel {
          });
     }
     
+    //method to return the panel
     public JPanel getVentilatorPanel() {
     	return ventilatorPanel;
     }
     
+    //adding visual to panel
     private void addLabelAndField(String labelText, JComponent component, JPanel panel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
@@ -172,32 +185,32 @@ public class VentilatorPanel {
         gbc.gridy++;
     }
     
-    //Get ventilatore PCAC
-    public boolean isPCACConnected() {
+    //Get ventilator data (PC)
+    public boolean isPCConnected() {
     	return selectedVentilationMode == VentilationMode.PC;
     }
     
-    public String getInspiratoryPeriodValue_PCAC() {
+    public String getInspiratoryPeriodValue_PC() {
         return inspiratoryPeriodPCField.getText();
     }
 
-    public String getInspiratoryPressureValue_PCAC() {
+    public String getInspiratoryPressureValue_PC() {
         return inspiratoryPressurePCField.getText();
     }
 
-    public String getRespirationRateValue_PCAC() {
+    public String getRespirationRateValue_PC() {
         return respirationRatePCField.getText();
     }
 
-    public String getFractionInspOxygenValue_PCAC() {
+    public String getFractionInspOxygenValue_PC() {
         return fractionInspOxygenPCField.getText();
     }
 
-    public String getPositiveEndExpPresValue_PCAC() {
+    public String getPositiveEndExpPresValue_PC() {
         return positiveEndExpPresPCField.getText();
     }
 
-    public String getSlopeValue_PCAC() {
+    public String getSlopeValue_PC() {
         return slopePCField.getText();
     }
 
@@ -205,7 +218,7 @@ public class VentilatorPanel {
         return (String) AMComboBox_PC.getSelectedItem();
     }
     
-  //Get ventilatore CPAP
+    //Get ventilator data (CPAP)
     public boolean isCPAPConnected() {
         return selectedVentilationMode == VentilationMode.CPAP;
     }
@@ -226,32 +239,32 @@ public class VentilatorPanel {
         return slopeCPAPField.getText();
     }
     
-  //Get ventilatore VCAC
-    public boolean isVCACConnected() {
+    //Get ventilator data (VC)
+    public boolean isVCConnected() {
         return selectedVentilationMode == VentilationMode.VC;
     }
     
-    public String getFractionInspOxygenValue_VCAC() {
+    public String getFractionInspOxygenValue_VC() {
         return fractionInspOxygenVCField.getText();
     }
     
-    public String getFlow_VCAC() {
+    public String getFlow_VC() {
         return flowVCField.getText();
     }
 
-    public String getInspiratoryPeriod_VCAC() {
+    public String getInspiratoryPeriod_VC() {
         return inspiratoryPeriodVCField.getText();
     }
 
-    public String getTidalVol_VCAC() {
+    public String getTidalVol_VC() {
         return tidalVolVCField.getText();
     }
     
-    public String getRespirationRate_VCAC() {
+    public String getRespirationRate_VC() {
         return respirationRateVCField.getText();
     }
     
-    public String getPositiveEndExpPres_VCAC() {
+    public String getPositiveEndExpPres_VC() {
         return positiveEndExpPresVCField.getText();
     }
     

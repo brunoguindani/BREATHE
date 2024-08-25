@@ -25,7 +25,7 @@ public class LineChart extends JPanel {
     private int yStep;      
     private String title;
     private Unit unit;
-    private double currentYValue;  // Variabile per memorizzare l'ultimo valore di Y
+    private double currentYValue; 
 
     public LineChart(String title, Unit unit) {
         this.title = title;
