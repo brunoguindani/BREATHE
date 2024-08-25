@@ -32,12 +32,15 @@ public class ChartsPanel {
         		"Total Lung Volume", 
         		"Respiratory Rate", 
         		"ECG",
-        		"Carbon Dioxide"};
+        		"CO2",
+        		"Pleth"};
+        
         Unit[] chartUnits = {
         		FrequencyUnit.Per_min, 
         		VolumeUnit.mL, 
         		FrequencyUnit.Per_min, 
         		ElectricPotentialUnit.mV,
+        		PressureUnit.mmHg,
         		PressureUnit.mmHg};
         chartPanels = new LineChart[chartNames.length];
         chartCheckboxes = new JCheckBox[chartNames.length];
@@ -52,7 +55,7 @@ public class ChartsPanel {
             chartPanels[i] = new LineChart(chartNames[i], chartUnits[i]); 
             chartCheckboxes[i] = new JCheckBox(chartNames[i]);
             
-            if (i == 1 || i == 3) {
+            if (i == 1 || i == 3 || i==5) {
                 chartCheckboxes[i].setSelected(true);
             } else {
                 chartCheckboxes[i].setSelected(false);

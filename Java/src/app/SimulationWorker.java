@@ -173,7 +173,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 				"RespirationRate",
 				"Lead3ElectricPotential",
 				"CarbonDioxide",
-				"Oxygen"
+				"ArterialPressure"
 				};
     	
     	this.requestList = requestList;
@@ -182,6 +182,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
         dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
+        dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
+        
       //dataRequests.setResultsFilename("./test_results/HowTo_EngineUse.java.csv");
     }
     
