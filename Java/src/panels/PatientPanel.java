@@ -51,7 +51,8 @@ public class PatientPanel {
         
         addLabelAndField("Name:", nameField_Patient = new JTextField("Standard", 20), patientPanel, gbc);
         addLabelAndField("Sex:", sexComboBox_Patient, patientPanel, gbc); 
-        addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"),new JLabel(""), patientPanel, gbc);
+        
+        addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"),new JLabel("yr"), patientPanel, gbc);
 
         // JComboBox per peso
         weightUnitComboBox = new JComboBox<>(new String[]{"lbs", "kg"});
@@ -62,7 +63,7 @@ public class PatientPanel {
         addLabelFieldAndUnit("Height:", heightField_Patient = new JTextField("71"), heightUnitComboBox, patientPanel, gbc);
 
         // JLabel per body fat fraction
-        addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel(""), patientPanel, gbc);
+        addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel("%"), patientPanel, gbc);
 
         // JLabel per heart rate
         addLabelFieldAndUnit("Heart Rate Baseline:", heartRateField_Patient = new JTextField("72"), new JLabel("mmHg"), patientPanel, gbc);
@@ -81,20 +82,22 @@ public class PatientPanel {
 
         gbc.gridx = 0;
         gbc.gridy++;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = GridBagConstraints.REMAINDER;  
+        gbc.weightx = 1.0;  
+        gbc.fill = GridBagConstraints.HORIZONTAL; 
+
         JButton startFromFileButton = new JButton("Start From File");
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
         patientPanel.add(startFromFileButton, gbc);
-        
+
         JButton startButton = new JButton("Start Simulation");
         startButton.setBackground(new Color(0, 122, 255)); 
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
         gbc.gridy++;
         patientPanel.add(startButton, gbc);
-
 
         JButton stopButton = new JButton("Stop Simulation");
         stopButton.setEnabled(false); 

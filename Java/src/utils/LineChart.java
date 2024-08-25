@@ -176,10 +176,15 @@ public class LineChart extends JPanel {
                 this.minYValue = -1;
                 this.yStep = 1;   
                 break;
-            case "Carbon Dioxide":
+            case "CO2":
                 this.maxYValue = 50;
                 this.minYValue = 0;
                 this.yStep = 5;   
+                break;
+            case "Pleth":
+                this.maxYValue = 150;
+                this.minYValue = 50;
+                this.yStep = 20;   
                 break;
             default:
                 this.maxYValue = 100;
