@@ -6,23 +6,26 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import utils.Action;
 import utils.Condition;
 
 public class ConditionPanel {
+	
+	/*
+	 * Panel to activate a condition before simulation
+	 */
+	
     private JPanel sectionsPanel = new JPanel();  
     private JScrollPane scrollConditionPane;
-    private JPanel conditionPanel;  
     private List<Condition> conditions = new ArrayList<>();
 
     public ConditionPanel() {
-        // Configurazione del pannello delle sezioni
+    	// base
         sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
         sectionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         sectionsPanel.setBackground(Color.LIGHT_GRAY);
 
         /*
-         * CONDIZIONI
+         * CONDITIONS
          */
         conditions = new ArrayList<>();
         
@@ -53,7 +56,7 @@ public class ConditionPanel {
         conditions.add(new Condition(
                 "Ventricular Systolic Disfunction"
         	));
-        conditions.add(new Condition( //Questo qui è un po' da sistemare
+        conditions.add(new Condition( //To fix
                 "Impaired Alveolar Exchange (Not implemented yet)",
                 new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
                 new JLabel("Impaired Faction"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
@@ -75,29 +78,20 @@ public class ConditionPanel {
         for (Condition condition : conditions) {
             sectionsPanel.add(condition.sectionPanel);
         }
-            
-       sectionsPanel.add(Box.createVerticalStrut(Math.max(0, 560 - 10 * conditions.size()))); // da rimuovere piu avanti
-            
+                        
         /*
-         * FINE CONDIZIONI
+         * END CONDITIONS
          */
        
-        // Aggiungi lo scroll pane
+        // Add scrollPane
         scrollConditionPane = new JScrollPane(sectionsPanel);
         scrollConditionPane.setPreferredSize(new Dimension(400, 600));
-        scrollConditionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollConditionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollConditionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        // Nuovo pannello che contiene lo scroll pane e il pannello del pulsante "Applica"
-        conditionPanel = new JPanel();
-        conditionPanel.setLayout(new BorderLayout());
-        conditionPanel.add(scrollConditionPane, BorderLayout.CENTER);
-    }
-
-    public JPanel getConditionPanel() {
-        return conditionPanel;
     }
     
+    //method to return the panel
     public JScrollPane getConditionScrollPane() {
         return scrollConditionPane;
     }

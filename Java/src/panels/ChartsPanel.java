@@ -19,6 +19,11 @@ import utils.LineChart;
 import javax.swing.JCheckBox;
 
 public class ChartsPanel {
+	
+	/*
+	 * Panel to manage graphs visualization
+	 */
+	
 	public LineChart[] chartPanels;
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
@@ -27,6 +32,8 @@ public class ChartsPanel {
     
     public ChartsPanel() {
     	
+    	//Names for the charts, order is important
+    	//this is important when setting the dimension on LineChart
         String[] chartNames = {
         		"Heart Rate", 
         		"Total Lung Volume", 
@@ -35,6 +42,7 @@ public class ChartsPanel {
         		"CO2",
         		"Pleth"};
         
+        //Units for the charts, order must match the names
         Unit[] chartUnits = {
         		FrequencyUnit.Per_min, 
         		VolumeUnit.mL, 
@@ -42,6 +50,7 @@ public class ChartsPanel {
         		ElectricPotentialUnit.mV,
         		PressureUnit.mmHg,
         		PressureUnit.mmHg};
+        
         chartPanels = new LineChart[chartNames.length];
         chartCheckboxes = new JCheckBox[chartNames.length];
         
@@ -51,10 +60,12 @@ public class ChartsPanel {
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
 
+        // Add selection boxes
         for (int i = 0; i < chartNames.length; i++) {
             chartPanels[i] = new LineChart(chartNames[i], chartUnits[i]); 
             chartCheckboxes[i] = new JCheckBox(chartNames[i]);
             
+            // Pick starting graphs
             if (i == 1 || i == 3 || i==5) {
                 chartCheckboxes[i].setSelected(true);
             } else {
@@ -71,7 +82,7 @@ public class ChartsPanel {
             });
             selectionPanel.add(chartCheckboxes[i]);
             
-            // Aggiungi solo i grafici selezionati
+            // Add only selected graphs
             if (chartCheckboxes[i].isSelected()) {
                 chartsPanel.add(chartPanels[i]);
             }
@@ -83,11 +94,12 @@ public class ChartsPanel {
         scrollChartPane.setBorder(null);
     }
 
-    
+    // method to return list of charts
     public LineChart[] getChartsPanel() {
         return chartPanels;
     }
     
+    // method to return the panel
     public JPanel getChartPanel() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -97,6 +109,7 @@ public class ChartsPanel {
         return mainPanel;
     }
     
+    // update view depending on selected panels
     private void updateChartsPanel() {
         chartsPanel.removeAll();
         for (int i = 0; i < chartCheckboxes.length; i++) {

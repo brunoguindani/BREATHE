@@ -16,7 +16,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.Timer;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
@@ -24,17 +23,20 @@ import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import app.SimulationWorker;
 
 public class Action {
+	/*
+	 * Handling of different Actions subPanel
+	 */
     public JPanel sectionPanel;
     private String title;
     private ArrayList<JComponent> components = new ArrayList<JComponent>();
     private JButton applySectionButton;
 
     public Action(String title, JComponent... components) {
+    	//This method is only for GUI
         this.title = title;
         
         sectionPanel = new JPanel();
         sectionPanel.setLayout(new BorderLayout());
-        //sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
         sectionPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel headerPanel = new JPanel(new BorderLayout());
@@ -66,8 +68,8 @@ public class Action {
                 gridX++;
             } else {
                 this.components.add(component);
-                component.setPreferredSize(new Dimension(100, 40)); // Imposta dimensione preferita
-                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Aggiungi padding interno
+                component.setPreferredSize(new Dimension(100, 40)); 
+                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
                 gbc.gridx = gridX;
                 gbc.gridwidth = GridBagConstraints.REMAINDER;
                 fieldsPanel.add(component, gbc);
@@ -105,16 +107,14 @@ public class Action {
     }
 
     private ActionListener buttonAction() {
+    	//Changes action completed at button pression depending on action name
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JButton sourceButton = (JButton) e.getSource();
 
                 if (SimulationWorker.started) {
-                    boolean success = false;
                     JSpinner field;
                     double value;
-
 
                     switch (title) {
                     	case "ARDS Exacerbation":
@@ -126,7 +126,7 @@ public class Action {
                                 field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 ards.getSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = SimulationWorker.pe.processAction(ards);
+                                SimulationWorker.pe.processAction(ards);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -137,7 +137,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 stress.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(stress);
+                                SimulationWorker.pe.processAction(stress);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -148,7 +148,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 obstruction.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(obstruction);
+                                SimulationWorker.pe.processAction(obstruction);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -159,7 +159,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 ashtma.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(ashtma);
+                                SimulationWorker.pe.processAction(ashtma);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -170,7 +170,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 brainInjury.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(brainInjury);
+                                SimulationWorker.pe.processAction(brainInjury);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -181,7 +181,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 bronchoconstriction.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(bronchoconstriction);
+                                SimulationWorker.pe.processAction(bronchoconstriction);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -198,7 +198,7 @@ public class Action {
                                 field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 copd.getEmphysemaSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = SimulationWorker.pe.processAction(copd);
+                                SimulationWorker.pe.processAction(copd);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -209,7 +209,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 dyspnea.getRespirationRateSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(dyspnea);
+                                SimulationWorker.pe.processAction(dyspnea);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -220,7 +220,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 exercise.getIntensity().setValue(value);
-                                success = SimulationWorker.pe.processAction(exercise);
+                                SimulationWorker.pe.processAction(exercise);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -231,7 +231,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 effusion.getEffusionRate().setValue(value);
-                                success = SimulationWorker.pe.processAction(effusion);
+                                SimulationWorker.pe.processAction(effusion);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -245,7 +245,7 @@ public class Action {
                                 field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 pneumonia.getSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = SimulationWorker.pe.processAction(pneumonia);
+                                SimulationWorker.pe.processAction(pneumonia);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -256,7 +256,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 shunt.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(shunt);
+                                SimulationWorker.pe.processAction(shunt);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -267,7 +267,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 fatigue.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(fatigue);
+                                SimulationWorker.pe.processAction(fatigue);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -275,7 +275,7 @@ public class Action {
                         case "Urinate":
                             SEUrinate urinate = new SEUrinate();
                             try {
-                                success = SimulationWorker.pe.processAction(urinate);
+                                SimulationWorker.pe.processAction(urinate);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -286,7 +286,7 @@ public class Action {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 leak.getSeverity().setValue(value);
-                                success = SimulationWorker.pe.processAction(leak);
+                                SimulationWorker.pe.processAction(leak);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -295,12 +295,6 @@ public class Action {
                 } 
             }
         };
-    }
-
-    private void setButtonColor(JButton button, Color color) {
-        button.setBackground(color);
-        button.setOpaque(true);
-        button.repaint();
     }
 
     // Metodo per aggiornare lo stato del bottone

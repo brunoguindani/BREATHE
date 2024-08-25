@@ -6,9 +6,15 @@ import javax.swing.UIManager;
 import app.App;
 
 public class Main {
+	
+	/*
+	 * MAIN CLASS TO LAUNCH THE APP
+	 */
+	
     public static void main(String[] args) {
-    	
+    		
         SwingUtilities.invokeLater(() -> {
+        	//GUI design
         	try { 
         		UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         	} catch (Exception e) {

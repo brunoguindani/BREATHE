@@ -24,6 +24,9 @@ import com.kitware.pulse.cdm.patient.conditions.*;
 import app.SimulationWorker;
 
 public class Condition {
+	/*
+	 * Handling of different Conditions subPanel
+	 */
     public JPanel sectionPanel;
     private String title;
     private ArrayList<JComponent> components = new ArrayList<JComponent>();
@@ -32,11 +35,11 @@ public class Condition {
     private SECondition condition;
 
     public Condition(String title, JComponent... components) {
+    	//This method is only for GUI
         this.title = title;
         
         sectionPanel = new JPanel();
-        sectionPanel.setLayout(new BorderLayout());
-        //sectionPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));  
+        sectionPanel.setLayout(new BorderLayout()); 
         sectionPanel.setBackground(Color.LIGHT_GRAY);
 
         JPanel headerPanel = new JPanel(new BorderLayout());
@@ -107,13 +110,12 @@ public class Condition {
     }
 
     private ActionListener buttonAction() {
+    	//Changes action completed at button pression depending on action name
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JButton sourceButton = (JButton) e.getSource();
 
                 if (!SimulationWorker.started) {
-                    boolean success = false;
                     JSpinner field;
                     double value;
 
@@ -124,7 +126,7 @@ public class Condition {
                                 field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 anemia.getReductionFactor().setValue(value);
-                                success = sendAction(anemia);
+                                sendAction(anemia);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -138,7 +140,7 @@ public class Condition {
                             	field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 ARDS.getSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = sendAction(ARDS);
+                                sendAction(ARDS);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -155,7 +157,7 @@ public class Condition {
                             	field = (JSpinner) components.get(2);
                                 value = (double) field.getValue();
                                 COPD.getEmphysemaSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = sendAction(COPD);
+                                sendAction(COPD);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -166,7 +168,7 @@ public class Condition {
                                 field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 CPE.getAccumulatedVolume().setValue(value);
-                                success = sendAction(CPE);
+                                sendAction(CPE);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -180,7 +182,7 @@ public class Condition {
                             	field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 Stenosis.getRightKidneySeverity().setValue(value);
-                                success = sendAction(Stenosis);
+                                sendAction(Stenosis);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -188,7 +190,7 @@ public class Condition {
 	                    case "Ventricular Systolic Disfunction":
 	                        SEChronicVentricularSystolicDysfunction VSD = new SEChronicVentricularSystolicDysfunction();   
                             try {
-                                success = sendAction(VSD);
+                                sendAction(VSD);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -196,7 +198,7 @@ public class Condition {
 	                    case "Impaired Alveolar Exchange":
 	                        SEImpairedAlveolarExchange IAE = new SEImpairedAlveolarExchange();   
                             try {
-                                success = sendAction(IAE);
+                                sendAction(IAE);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -210,7 +212,7 @@ public class Condition {
                             	field = (JSpinner) components.get(1);
                                 value = (double) field.getValue();
                                 Pneumonia.getSeverity(eLungCompartment.RightLung).setValue(value);
-                                success = sendAction(Pneumonia);
+                                sendAction(Pneumonia);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -221,7 +223,7 @@ public class Condition {
                                 field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 fibrosis.getSeverity().setValue(value);
-                                success = sendAction(fibrosis);
+                                sendAction(fibrosis);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -232,7 +234,7 @@ public class Condition {
                                 field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
                                 shunt.getSeverity().setValue(value);
-                                success = sendAction(shunt);
+                                sendAction(shunt);
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");
                             }	                        
@@ -242,13 +244,8 @@ public class Condition {
             }
         };
     }
-
-    private void setButtonColor(JButton button, Color color) {
-        button.setBackground(color);
-        button.setOpaque(true);
-        button.repaint();
-    }
     
+    //Add or remove conditions from pe
     private boolean sendAction(SECondition e) {
     	boolean success = false;
         if(!enabled) {
@@ -266,7 +263,6 @@ public class Condition {
         return success;
     }
 
-    // Metodo per aggiornare lo stato del bottone
     public void enableButtonState() {
         applySectionButton.setEnabled(true);
     }
