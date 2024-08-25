@@ -204,21 +204,22 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		}
 
 		//Peso
-    	if(app.patient.getWeight_PATIENT().equals("kg"))
+		String weightUnit = app.patient.getWeightUnit_PATIENT();
+    	if(weightUnit.equals("kg"))
     		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.kg);
     	else
     		patient.getWeight().setValue(Double.parseDouble(app.patient.getWeight_PATIENT()), MassUnit.lb);
     	
     	//Altezza
-    	if(app.patient.getHeight_PATIENT().equals("inches"))
+    	String heightUnit = app.patient.getHeightUnit_PATIENT();
+    	if(heightUnit.equals("inches"))
     		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.in);
-    	else if(app.patient.getHeight_PATIENT().equals("m"))
+    	else if(heightUnit.equals("m"))
     		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.m);
-    	else if(app.patient.getHeight_PATIENT().equals("cm"))
+    	else if(heightUnit.equals("cm"))
     		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.cm);
-    	else
+    	else 
     		patient.getHeight().setValue(Double.parseDouble(app.patient.getHeight_PATIENT()), LengthUnit.ft);
-    	
 		
     }
     
