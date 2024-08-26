@@ -13,6 +13,7 @@ import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.patient.SEPatient;
+import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.properties.CommonUnits.ElectricPotentialUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
@@ -23,10 +24,12 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.SEMechanicalVentilator;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
+import com.kitware.pulse.cdm.properties.SEScalarVolumePerTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.utilities.JNIBridge;
@@ -45,6 +48,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
+    private boolean ext_running = false;
 
     
 
@@ -98,7 +102,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
         SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         SEMechanicalVentilatorVolumeControl vc = new SEMechanicalVentilatorVolumeControl();
-        
+        SEMechanicalVentilation ext = new SEMechanicalVentilation();
+    	
         //Start Simulation
         publish("Started\n");
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
@@ -109,7 +114,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
                 return null;
             }
             
-            handilngVentilator(pc,cpap,vc);
+            handilngVentilator(ext,pc,cpap,vc);
 
             //Log and data printing
             dataPrint();
@@ -123,7 +128,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
-        
+
         return null;
     }
 
@@ -203,7 +208,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
   //Handling Ventilators
-    private void handilngVentilator(SEMechanicalVentilatorPressureControl pc, SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap, SEMechanicalVentilatorVolumeControl vc) {
+    private void handilngVentilator(SEMechanicalVentilation ext, SEMechanicalVentilatorPressureControl pc, SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap, SEMechanicalVentilatorVolumeControl vc) {
     	if(ventilationDisconnectRequest) {
         	ventilationDisconnectRequest = false;
         	if(app.ventilator.isPCConnected()){ 
@@ -214,6 +219,10 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	    }
             else if(app.ventilator.isVCConnected()){
     	        stop_vc(vc);
+    	    }
+            else if(app.ventilator.isEXTConnected()){
+            	ext_running = false;
+    	        stop_ext(ext);
     	    }
         }
         else if(ventilationSwitchRequest) {
@@ -228,10 +237,19 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             else if(app.ventilator.isVCConnected()){
     	        start_vc(vc);
     	    }
+            else if(app.ventilator.isEXTConnected()){
+    	        manage_ext(ext);
+    	        ext_running = true;
+    	        return;
+    	    }
         }
+    	
+    	if(ext_running)
+    		manage_ext(ext);
     }
     
-    //Set and Starts of Ventilators
+
+	//Set and Starts of Ventilators
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
     	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
@@ -289,6 +307,27 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private void stop_vc(SEMechanicalVentilatorVolumeControl vc) {
         vc.setConnection(eSwitch.Off);
         pe.processAction(vc);
+    }
+    
+
+    // method to set the volume/pressure from external ventilator
+	private void manage_ext(SEMechanicalVentilation ext) {
+		double pressure = 0;
+		double volume = 0;
+		
+		ext.getFlow().setValue(pressure, VolumePerTimeUnit.mL_Per_s);
+    	ext.getPressure().setValue(volume,PressureUnit.mmHg);
+    	
+    	app.ventilator.setPressureLabel_EXT(pressure);
+    	app.ventilator.setVolumeLabel_EXT(volume);
+    	
+    	ext.setState(eSwitch.On);
+    	pe.processAction(ext);
+	}
+	
+    private void stop_ext(SEMechanicalVentilation ext) {
+    	ext.setState(eSwitch.Off);
+    	pe.processAction(ext);
     }
     
     //Print data in console and log Panel and Charts
