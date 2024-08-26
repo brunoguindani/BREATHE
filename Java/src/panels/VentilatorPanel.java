@@ -50,6 +50,11 @@ public class VentilatorPanel {
     public JTextField flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
     JComboBox<String> AMComboBox_VC = new JComboBox<>(new String[]{"AC", "CMV"});
     
+    //data for External ventilator
+    private JRadioButton ext;
+    public JLabel pressureEXTLabel, volumeEXTLabel;
+    
+    
     ButtonGroup ventilatori = new ButtonGroup();
     private VentilationMode selectedVentilationMode = VentilationMode.PC;
     
@@ -74,6 +79,8 @@ public class VentilatorPanel {
          cpapPanel.setBackground(Color.LIGHT_GRAY);
          JPanel vcPanel = new JPanel(new GridBagLayout());
          vcPanel.setBackground(Color.LIGHT_GRAY);
+         JPanel extPanel = new JPanel(new GridBagLayout());
+         extPanel.setBackground(Color.LIGHT_GRAY);
      
          // MechanicalVentilatorContinuousPositiveAirwayPressure (PC)
          addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
@@ -99,24 +106,32 @@ public class VentilatorPanel {
          addLabelAndField("Tidal Volume - VT", tidalVolVCField = new JTextField("900"), vcPanel, gbc);
          addLabelAndField("Assisted Mode", AMComboBox_VC, vcPanel, gbc);
          
+         // SEMechanicalVentilation (for external ventilators)
+         addLabelAndField("Pressure", pressureEXTLabel = new JLabel(""), extPanel, gbc);
+         addLabelAndField("Volume", volumeEXTLabel = new JLabel(""), extPanel, gbc);
+         
          ventilatorCardPanel.add(pcPanel, "PC");
          ventilatorCardPanel.add(cpapPanel, "CPAP");
          ventilatorCardPanel.add(vcPanel, "VC");
+         ventilatorCardPanel.add(extPanel, "EXT");
 
          pc = new JRadioButton("PC");
          pc.setSelected(true);
          cpap = new JRadioButton("CPAP");
          vc = new JRadioButton("VC");
+         ext = new JRadioButton("EXT");
 
          ventilatori.add(pc);
          ventilatori.add(cpap);
          ventilatori.add(vc);
+         ventilatori.add(ext);
 
          JPanel radioPanel = new JPanel(new GridLayout(1, 3));
          radioPanel.setBackground(Color.LIGHT_GRAY);
          radioPanel.add(pc);
          radioPanel.add(cpap);
          radioPanel.add(vc);
+         radioPanel.add(ext);
          
          //buttons to manage the selected ventilator
          connectButton.setEnabled(false);  
@@ -151,6 +166,10 @@ public class VentilatorPanel {
          	ventilatorCardLayout.show(ventilatorCardPanel, "VC");
          	selectedVentilationMode = VentilationMode.VC;
          });
+         ext.addActionListener(e -> {
+          	ventilatorCardLayout.show(ventilatorCardPanel, "EXT");
+          	selectedVentilationMode = VentilationMode.EXT;
+          });
 
          //actions for buttons
          connectButton.addActionListener(e -> {
@@ -271,4 +290,20 @@ public class VentilatorPanel {
     public String getAssistedMode_VC() {
         return (String) AMComboBox_VC.getSelectedItem();
     }
+    
+    // set ext ventilator data
+    public boolean isEXTConnected() {
+        return selectedVentilationMode == VentilationMode.EXT;
+    }
+    
+    public void setPressureLabel_EXT(double pressure) {
+    	pressureEXTLabel.setText(""+pressure);
+    }
+    
+    public void setVolumeLabel_EXT(double volume) {
+    	volumeEXTLabel.setText(""+volume);
+    }
+    
+
+    
 }
