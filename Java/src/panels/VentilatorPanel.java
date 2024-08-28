@@ -138,7 +138,7 @@ public class VentilatorPanel {
          connectButton.setForeground(Color.BLACK);
          connectButton.setFocusPainted(false);
          
-         JButton disconnectButton = new JButton("Disconnect all");
+         JButton disconnectButton = new JButton("Disconnect");
          disconnectButton.setEnabled(false); 
          disconnectButton.setForeground(Color.RED);
          disconnectButton.setFocusPainted(false);
@@ -173,11 +173,13 @@ public class VentilatorPanel {
 
          //actions for buttons
          connectButton.addActionListener(e -> {
-         	if(!SimulationWorker.ventilationSwitchRequest)
-         		SimulationWorker.ventilationSwitchRequest = true;
+         	if(!SimulationWorker.ventilationStartRequest)
+         		SimulationWorker.ventilationStartRequest = true;
          	else
-         		SimulationWorker.ventilationSwitchRequest = false;
+         		SimulationWorker.ventilationStartRequest = false;
          	disconnectButton.setEnabled(true);
+         	disconnectButton.setText("Disconnect " + selectedVentilationMode);
+         	connectButton.setEnabled(false);
          });
 
          disconnectButton.addActionListener(e -> {
@@ -186,6 +188,8 @@ public class VentilatorPanel {
          	else
          		SimulationWorker.ventilationDisconnectRequest = false;
          	disconnectButton.setEnabled(false);
+         	disconnectButton.setText("Disconnect");
+         	connectButton.setEnabled(true);
          });
     }
     
