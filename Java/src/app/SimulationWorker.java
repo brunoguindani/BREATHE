@@ -32,6 +32,9 @@ import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.cdm.properties.SEScalarVolumePerTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
+
+import zeroMQ.ZeroServer;
+
 import com.kitware.pulse.utilities.JNIBridge;
 
 public class SimulationWorker extends SwingWorker<Void, String> {
@@ -48,9 +51,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     public static volatile boolean ventilationSwitchRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
-    private boolean ext_running = false;
-
-    
+    private static boolean ext_running = false;
+    private static ZeroServer zmqServer;   
 
     public SimulationWorker(App appTest) {
         this.app = appTest;
@@ -58,6 +60,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
     public static void requestStop() {
         stopRequested = true;
+        if(ext_running)
+			try {
+				zmqServer.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
     }
 
     @Override
@@ -238,14 +246,23 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	        start_vc(vc);
     	    }
             else if(app.ventilator.isEXTConnected()){
-    	        manage_ext(ext);
-    	        ext_running = true;
-    	        return;
+            	try {
+					start_ext();
+	    	        manage_ext(ext);
+	    	        ext_running = true;
+	    	        return;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
     	    }
         }
     	
     	if(ext_running)
-    		manage_ext(ext);
+			try {
+				manage_ext(ext);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
     }
     
 
@@ -311,23 +328,35 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
 
     // method to set the volume/pressure from external ventilator
-	private void manage_ext(SEMechanicalVentilation ext) {
-		double pressure = 0;
-		double volume = 0;
-		
-		ext.getFlow().setValue(pressure, VolumePerTimeUnit.mL_Per_s);
-    	ext.getPressure().setValue(volume,PressureUnit.mmHg);
+    private void start_ext() throws Exception {
+    	zmqServer = new ZeroServer();
+    	zmqServer.connect();
+		zmqServer.startReceiving();
+    }
+    
+	private void manage_ext(SEMechanicalVentilation ext) throws Exception {
+		//here change to add ZeroMQ call		
+		setVolume(ext);
+    	//ext.getPressure().setValue(pressure,PressureUnit.mmHg);
     	
-    	app.ventilator.setPressureLabel_EXT(pressure);
-    	app.ventilator.setVolumeLabel_EXT(volume);
+    	//app.ventilator.setPressureLabel_EXT(pressure);
     	
     	ext.setState(eSwitch.On);
     	pe.processAction(ext);
 	}
 	
+	private void setVolume(SEMechanicalVentilation ext) {
+		double volume = zmqServer.getVolume();
+		ext.getFlow().setValue(volume, VolumePerTimeUnit.mL_Per_s);
+    	app.ventilator.setVolumeLabel_EXT(volume);
+
+
+	}
+	
     private void stop_ext(SEMechanicalVentilation ext) {
     	ext.setState(eSwitch.Off);
     	pe.processAction(ext);
+    	zmqServer.close();
     }
     
     //Print data in console and log Panel and Charts

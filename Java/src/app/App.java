@@ -11,6 +11,8 @@ import panels.VentilatorPanel;
 import utils.LineChart;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class App extends JFrame {
 
@@ -41,6 +43,13 @@ public class App extends JFrame {
         setLayout(new BorderLayout());
 
         getContentPane().setBackground(Color.LIGHT_GRAY);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                SimulationWorker.requestStop();
+            }
+        });
         
         //retrieving panels
         JPanel patientPanel = patient.getPatientPanel();
@@ -67,4 +76,6 @@ public class App extends JFrame {
         add(switchTabbedPane, BorderLayout.CENTER);  
         add(chartPanel, BorderLayout.EAST);   
     }
+    
+    
 }
