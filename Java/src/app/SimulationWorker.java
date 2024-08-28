@@ -24,12 +24,10 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
-import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.SEMechanicalVentilator;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
-import com.kitware.pulse.cdm.properties.SEScalarVolumePerTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
 
@@ -48,11 +46,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private String[] requestList;
     private SEDataRequestManager dataRequests;
     private static volatile boolean stopRequested = false;
-    public static volatile boolean ventilationSwitchRequest = false;
+    public static volatile boolean ventilationStartRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
+    
+    private static ZeroServer zmqServer;  
     private static boolean ext_running = false;
-    private static ZeroServer zmqServer;   
+    private enum extMode { VOLUME, PRESSURE }
+    private extMode currentEXTMode;
 
     public SimulationWorker(App appTest) {
         this.app = appTest;
@@ -233,8 +234,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	        stop_ext(ext);
     	    }
         }
-        else if(ventilationSwitchRequest) {
-        	ventilationSwitchRequest = false;
+        else if(ventilationStartRequest) {
+        	ventilationStartRequest = false;
         	
             if(app.ventilator.isPCConnected()){ 
             	start_pc(pc);
@@ -334,25 +335,51 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		zmqServer.startReceiving();
     }
     
-	private void manage_ext(SEMechanicalVentilation ext) throws Exception {
-		//here change to add ZeroMQ call		
-		setVolume(ext);
-    	//ext.getPressure().setValue(pressure,PressureUnit.mmHg);
-    	
-    	//app.ventilator.setPressureLabel_EXT(pressure);
-    	
-    	ext.setState(eSwitch.On);
-    	pe.processAction(ext);
-	}
+	private void manage_ext(SEMechanicalVentilation ext){
+		if(zmqServer.isConnectionStable()) {
+			setEXTMode(zmqServer.getSelectedMode());
+			//here change to add ZeroMQ call	
+			if (currentEXTMode == extMode.VOLUME) {
+	            setVolume(ext);
+	        } else if (currentEXTMode == extMode.PRESSURE) {
+	            setPressure(ext);
+	        }
+	        ext.setState(eSwitch.On);
+	        pe.processAction(ext);
+		}
+		else{
+			disconnectEXTClient(ext);
+		}
+			
+    }
 	
 	private void setVolume(SEMechanicalVentilation ext) {
 		double volume = zmqServer.getVolume();
 		ext.getFlow().setValue(volume, VolumePerTimeUnit.mL_Per_s);
     	app.ventilator.setVolumeLabel_EXT(volume);
-
-
 	}
 	
+	private void setPressure(SEMechanicalVentilation ext) {
+		double pressure = zmqServer.getPressure();
+		ext.getPressure().setValue(pressure,PressureUnit.mmHg);
+    	app.ventilator.setPressureLabel_EXT(pressure);
+	}
+	
+    public void setEXTMode(String mode) {
+        if (mode.equalsIgnoreCase("VOLUME")) {
+        	currentEXTMode = extMode.VOLUME;
+        } else {
+        	currentEXTMode = extMode.PRESSURE;
+        }
+    }
+    
+    public void disconnectEXTClient(SEMechanicalVentilation ext) {
+    	ext.setState(eSwitch.Off);
+        pe.processAction(ext);
+        app.ventilator.setPressureLabel_EXT(Double.NaN);
+        app.ventilator.setVolumeLabel_EXT(Double.NaN);
+    }
+    
     private void stop_ext(SEMechanicalVentilation ext) {
     	ext.setState(eSwitch.Off);
     	pe.processAction(ext);
