@@ -46,7 +46,7 @@ public class ZeroServer {
             if (receivedData.equals("disconnect")) {
                 System.out.println("Disconnect message received.");
                 connectionStable = false;
-                socket.send("Disconnect acknowledged".getBytes(ZMQ.CHARSET), 0);
+                //socket.send("Disconnect acknowledged".getBytes(ZMQ.CHARSET), 0);
 
             } else if (receivedData.equals("requestData")) {
                 // Risponde con i dati attualmente disponibili
