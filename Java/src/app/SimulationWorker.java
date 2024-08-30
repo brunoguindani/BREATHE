@@ -126,7 +126,10 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             handilngVentilator(ext,pc,cpap,vc);
 
             //Log and data printing
-            dataPrint();
+            if(ext_running)
+            	zmqServer.setSimulationData(dataPrint());
+            else
+            	dataPrint();
 
             time.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+time+"...");
@@ -387,14 +390,16 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     //Print data in console and log Panel and Charts
-    private void dataPrint() {
-
+    private ArrayList<String> dataPrint() {
+    	ArrayList<String> data = new ArrayList<String>();
+    	
     	//print conditions
         pe.getConditions(app.condition.getActiveConditions());
         for(SECondition any : app.condition.getActiveConditions())
         {
             Log.info(any.toString());
             publish(any.toString()+ "\n");
+            data.add(any.toString());
         }
         
         //print requested data
@@ -403,6 +408,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         publish("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
             publish(requestList[i] + ": " + dataValues.get(i) + "\n");
+            data.add(requestList[i] + ": " + dataValues.get(i));
         }
         
         //print actions
@@ -412,6 +418,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         {
           Log.info(any.toString());
           publish(any.toString()+ "\n");
+          
+          //Ext ventilator doesn't need the data actions
+          //data.add(any.toString());
         }
 
         //send data to graphs to be printed
@@ -421,6 +430,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             y = dataValues.get(i);
             app.charts.getChartsPanel()[i - 1].addPoint(x, y);
         }
+        
+        return data;
     }
     
 

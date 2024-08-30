@@ -190,6 +190,8 @@ public class VentilatorPanel {
          	disconnectButton.setEnabled(false);
          	disconnectButton.setText("Disconnect");
          	connectButton.setEnabled(true);
+         	pressureEXTLabel.setText(Double.NaN+"");
+         	volumeEXTLabel.setText(Double.NaN+"");
          });
     }
     
