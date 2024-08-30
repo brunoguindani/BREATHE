@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ZeroClient {
     private JFrame frame;
@@ -22,8 +24,11 @@ public class ZeroClient {
     private boolean isConnected = false;
     private Thread communicationThread;
 
+    private Map<String, Double> receivedDataMap;
     
     public ZeroClient() {
+    	receivedDataMap = new HashMap<>();
+    	
         frame = new JFrame("ZeroMQ Client");
         frame.setSize(400, 350);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // Prevent default close operation
@@ -47,14 +52,14 @@ public class ZeroClient {
     private void placeComponents(JPanel panel) {
         panel.setLayout(null);
 
-        connectButton = new JButton("Connetti");
+        connectButton = new JButton("Connect");
         connectButton.setBounds(50, 20, 100, 25);
         connectButton.setBackground(new Color(0, 122, 255)); 
         connectButton.setForeground(Color.WHITE);
         connectButton.setFocusPainted(false);
         panel.add(connectButton);
 
-        disconnectButton = new JButton("Disconnetti");
+        disconnectButton = new JButton("Disconnect");
         disconnectButton.setBounds(200, 20, 120, 25);
         disconnectButton.setBackground(new Color(255, 59, 48));
         disconnectButton.setForeground(Color.WHITE);
@@ -139,20 +144,34 @@ public class ZeroClient {
 
         communicationThread = new Thread(() -> {
             while (isConnected) {
-                double value = 0;
-                if (selectedOption.equals("Volume"))
-                    value = Math.random();
-                else
-                    value = Math.random() * 20;
-                String request = selectedOption + ": " + value;
-                outputArea.append("Sending " + request + "\n");
-                socket.send(request.getBytes(ZMQ.CHARSET), 0);
-
-                byte[] reply = socket.recv(0);
-                outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
-
                 try {
+                    // Il client richiede i dati
+                    socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
+                    byte[] reply = socket.recv(0);
+                    String receivedData = new String(reply, ZMQ.CHARSET);
+                    outputArea.append("Received: " + receivedData + "\n");
+                    
+                    // Processa i dati ricevuti e li salva nella mappa
+                    storeData(receivedData);
+                    
+                    // Con questi dati, decide quale valore di pressione o volume inviare
+                    double value = 0;
+                    if (selectedOption.equals("Volume"))
+                        value = processVolume();
+                    else
+                        value = processPressure();
+                    
+                    String request = selectedOption + ": " + value;
+                    outputArea.append("Sending: " + request + "\n");
+                    socket.send(request.getBytes(ZMQ.CHARSET), 0);
+
+                    // Riceviamo la conferma del server dopo aver inviato il valore
+                    reply = socket.recv(0);
+                    outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
+
+                    // Attendere un po' di tempo prima di inviare un'altra richiesta
                     Thread.sleep(200);
+
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
@@ -160,8 +179,41 @@ public class ZeroClient {
         });
         communicationThread.start();
     }
+
     
+
+	private void storeData(String data) {
+        String[] pairs = data.split(";");  // Divide i dati ricevuti in coppie chiave-valore
+        for (String pair : pairs) {
+            String[] keyValue = pair.split(":");  // Divide ogni coppia in chiave e valore
+            if (keyValue.length == 2) {
+                try {
+                    String key = keyValue[0].trim();
+                    double value = Double.parseDouble(keyValue[1].trim());
+                    receivedDataMap.put(key, value);  // Salva nella mappa
+                } catch (NumberFormatException e) {
+                    System.err.println("Errore nella conversione del valore: " + keyValue[1]);
+                }
+            }
+        }
+    }
     
+	//Logica nel caso festisca la pressione
+    private double processPressure() {
+    	double pressure = 0;
+		return pressure;
+	}
+
+    //Logica nel caso che gestisca il volume
+	private double processVolume() {
+		double volume = 0;
+		
+		if(receivedDataMap.get("TotalLungVolume") < 2000)
+			volume = 20;
+		
+		return volume;
+	}
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ZeroClient::new);
     }
