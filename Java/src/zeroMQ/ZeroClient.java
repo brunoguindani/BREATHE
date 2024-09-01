@@ -163,28 +163,24 @@ public class ZeroClient {
         socket = context.createSocket(SocketType.REQ);
         socket.connect("tcp://localhost:5555");
         isConnected = true;
-        canDisconnect = false;
-
+        canDisconnect = false;   
+        
         communicationThread = new Thread(() -> {
             while (isConnected) {
-            	canDisconnect = false;
-            
+            	
+                canDisconnect = false;
+
                 // Il client richiede i dati
                 socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
                 byte[] reply = socket.recv(0);
                 String receivedData = new String(reply, ZMQ.CHARSET);
                 outputArea.append("Received: " + receivedData + "\n");
-                
+
                 // Processa i dati ricevuti e li salva nella mappa
                 storeData(receivedData);
-                
-                // Con questi dati, decide quale valore di pressione o volume inviare
-                double value = 0;
-                if (selectedOption.equals("Volume"))
-                    value = processVolume();
-                else
-                    value = processPressure();
-                
+
+                double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
+
                 String request = selectedOption + ": " + value;
                 outputArea.append("Sending: " + request + "\n");
                 socket.send(request.getBytes(ZMQ.CHARSET), 0);
@@ -193,19 +189,17 @@ public class ZeroClient {
                 reply = socket.recv(0);
                 outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
 
+                canDisconnect = true;
                 try {
                     Thread.sleep(200);
-                    canDisconnect = true;
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 }
-
             }
         });
-        communicationThread.start();
-    }
+        communicationThread.start();        	
 
-    
+    }
 
 	private void storeData(String data) {
         String[] pairs = data.split(";");  // Divide i dati ricevuti in coppie chiave-valore
