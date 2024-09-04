@@ -35,6 +35,7 @@ public class VentilatorPanel {
     private CardLayout ventilatorCardLayout;
     private JPanel ventilatorCardPanel;
     public JButton connectButton = new JButton("Connect");
+    public JButton disconnectButton;
 
     //data for PC ventilator
     private JRadioButton pc;
@@ -138,7 +139,7 @@ public class VentilatorPanel {
          connectButton.setForeground(Color.BLACK);
          connectButton.setFocusPainted(false);
          
-         JButton disconnectButton = new JButton("Disconnect");
+         disconnectButton = new JButton("Disconnect");
          disconnectButton.setEnabled(false); 
          disconnectButton.setForeground(Color.RED);
          disconnectButton.setFocusPainted(false);
