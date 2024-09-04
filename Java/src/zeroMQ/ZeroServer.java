@@ -12,15 +12,16 @@ public class ZeroServer {
     private Thread receiveThread;
     private boolean running = false;
     private boolean connectionStable = false;
-    
+    private boolean disconnecting = false;
+
     private String selectedMode;
     private double volume;
     private double pressure;
-    
-    ArrayList<String> data;
-    
+
+    private ArrayList<String> data;
+
     public void connect() throws Exception {
-        context = new ZContext();  // Inizializzazione del contesto
+        context = new ZContext();
         socket = context.createSocket(SocketType.REP);
         socket.bind("tcp://*:5555");
     }
@@ -43,29 +44,33 @@ public class ZeroServer {
             String receivedData = new String(reply, ZMQ.CHARSET);
             System.out.println("Received: [" + receivedData + "]");
 
-            if (receivedData.equals("disconnect")) {
-                System.out.println("Disconnect message received.");
-                connectionStable = false;
-                //socket.send("Disconnect acknowledged".getBytes(ZMQ.CHARSET), 0);
+            switch (receivedData) {
+                case "disconnect":
+                    System.out.println("Disconnect message received.");
+                    connectionStable = false;
+                    disconnecting = true;
+                    break;
 
-            } else if (receivedData.equals("requestData")) {
-                // Risponde con i dati attualmente disponibili
-                sendData();
-                connectionStable = true;
+                case "requestData":
+                    connectionStable = true;
+                    sendData();
+                    break;
 
-            } else if (receivedData.startsWith("Volume")) {
-                selectedMode = "Volume";
-                volume = Double.parseDouble(receivedData.split(": ")[1]);
-                socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
-                connectionStable = true;
-
-            } else if (receivedData.startsWith("Pressure")) {
-                selectedMode = "Pressure";
-                pressure = Double.parseDouble(receivedData.split(": ")[1]);
-                socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
-                connectionStable = true;
-            } else {
-                socket.send("Unknown command".getBytes(ZMQ.CHARSET), 0);
+                default:
+                    if (receivedData.startsWith("Volume")) {
+                        connectionStable = true;
+                        selectedMode = "Volume";
+                        volume = Double.parseDouble(receivedData.split(": ")[1]);
+                        socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
+                    } else if (receivedData.startsWith("Pressure")) {
+                        connectionStable = true;
+                        selectedMode = "Pressure";
+                        pressure = Double.parseDouble(receivedData.split(": ")[1]);
+                        socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
+                    } else {
+                        socket.send("Unknown command".getBytes(ZMQ.CHARSET), 0);
+                    }
+                    break;
             }
         }
     }
@@ -88,29 +93,31 @@ public class ZeroServer {
     }
 
     private void sendData() {
-    	if (data != null && !data.isEmpty()) {
-            // Concatenate all elements in the data ArrayList into a single string
+        if (data != null && !data.isEmpty()) {
             StringBuilder dataBuilder = new StringBuilder();
             for (String datum : data) {
-                dataBuilder.append(datum).append(";"); // Use a semicolon or another delimiter of your choice
+                dataBuilder.append(datum).append(";");
             }
-            
-            // Remove the last delimiter
             if (dataBuilder.length() > 0) {
                 dataBuilder.setLength(dataBuilder.length() - 1);
             }
-            
-            // Send the concatenated data string over the socket
-            socket.send(dataBuilder.toString().getBytes(ZMQ.CHARSET), 0);
+            String tosend = "Patient Data:" + dataBuilder.toString();
+            socket.send(tosend.getBytes(ZMQ.CHARSET), 0);
         } else {
-            // Handle the case where data is null or empty
             socket.send("No data available".getBytes(ZMQ.CHARSET), 0);
         }
     }
-    
-    
+
     public boolean isConnectionStable() {
         return connectionStable;
+    }
+    
+    public boolean isDisconnecting() {
+    	return disconnecting;
+    }
+    
+    public void setDisconnecting() {
+    	disconnecting = false;
     }
 
     public String getSelectedMode() {
@@ -118,15 +125,22 @@ public class ZeroServer {
     }
 
     public double getVolume() {
-        System.out.println(volume);
         return volume;
+    }
+
+    public void setPressure(double p) {
+        pressure = p;
+    }
+    
+    public void setVolume(double v) {
+    	volume = v;
     }
 
     public double getPressure() {
         return pressure;
     }
-    
-    public void setSimulationData(ArrayList<String> data){
-    	this.data = data;
+
+    public void setSimulationData(ArrayList<String> data) {
+        this.data = data;
     }
 }

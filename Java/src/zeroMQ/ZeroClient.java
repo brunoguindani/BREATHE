@@ -2,10 +2,10 @@ package zeroMQ;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
+import org.zeromq.ZMQException;
 import org.zeromq.ZContext;
 
 import javax.swing.*;
-
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,29 +17,31 @@ public class ZeroClient {
     private JButton connectButton, disconnectButton;
     private JRadioButton volumeButton, pressureButton;
     private JTextArea outputArea;
-    
+
     private ZMQ.Socket socket;
     private ZContext context;
     private String selectedOption;
     private boolean isConnected = false;
     private Thread communicationThread;
     private boolean canDisconnect = false;
-    
+
     private Map<String, Double> receivedDataMap;
-    
+
+    private int temp = 0;
+
     public ZeroClient() {
-    	receivedDataMap = new HashMap<>();
-    	
+        receivedDataMap = new HashMap<>();
+
         frame = new JFrame("ZeroMQ Client");
         frame.setSize(400, 350);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // Prevent default close operation
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Call the disconnect method before closing the window
-            	if(disconnectButton.isEnabled())
-            		disconnectFromServer();
-                frame.dispose(); // Close the application window
+                if (disconnectButton.isEnabled()) {
+                    disconnectFromServer();
+                }
+                frame.dispose();
             }
         });
 
@@ -55,7 +57,7 @@ public class ZeroClient {
 
         connectButton = new JButton("Connect");
         connectButton.setBounds(50, 20, 100, 25);
-        connectButton.setBackground(new Color(0, 122, 255)); 
+        connectButton.setBackground(new Color(0, 122, 255));
         connectButton.setForeground(Color.WHITE);
         connectButton.setFocusPainted(false);
         panel.add(connectButton);
@@ -71,8 +73,8 @@ public class ZeroClient {
         outputArea = new JTextArea();
         outputArea.setBounds(50, 120, 300, 180);
         panel.add(outputArea);
-        outputArea.setLineWrap(true); // Attiva il line wrap
-        outputArea.setWrapStyleWord(true); // Avvolge le parole intere
+        outputArea.setLineWrap(true);
+        outputArea.setWrapStyleWord(true);
         outputArea.setEditable(false);
 
         JScrollPane scrollPane = new JScrollPane(outputArea);
@@ -106,11 +108,14 @@ public class ZeroClient {
         disconnectButton.addActionListener(e -> {
             if (isConnected) {
                 disconnectFromServer();
+                //connectToServerWithTimer();
+                //disconnectFromServer();
                 volumeButton.setEnabled(true);
                 pressureButton.setEnabled(true);
                 connectButton.setEnabled(true);
                 disconnectButton.setEnabled(false);
                 outputArea.append("Disconnected.\n");
+                frame.dispose(); 
             }
         });
 
@@ -118,120 +123,182 @@ public class ZeroClient {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 outputArea.setCaretPosition(outputArea.getDocument().getLength());
             }
+
             public void removeUpdate(javax.swing.event.DocumentEvent e) {
                 outputArea.setCaretPosition(outputArea.getDocument().getLength());
             }
+
             public void changedUpdate(javax.swing.event.DocumentEvent e) {
                 outputArea.setCaretPosition(outputArea.getDocument().getLength());
             }
         });
-        
     }
 
+    private void connectToServerWithTimer() {
+        synchronized (this) {
+            context = new ZContext();
+            socket = context.createSocket(SocketType.REQ);
+        }
+
+        outputArea.append("Connecting to server...\n");
+
+        try {
+            socket.connect("tcp://localhost:5555");
+        } catch (ZMQException ex) {
+            outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
+            return; // Esci se la connessione fallisce
+        }
+
+        synchronized (this) {
+            isConnected = true;
+            canDisconnect = false;
+        }
+
+        // Ricrea il thread di comunicazione
+        communicationThread = new Thread(() -> {
+            outputArea.append("Thread started. Entering while loop...\n"); // Log di debug
+            try {
+                while (isConnected && !Thread.currentThread().isInterrupted()) {
+                    synchronized (this) {
+                        canDisconnect = false;
+                    }
+
+                    outputArea.append("Thread is running inside the while loop...\n"); // Log di debug
+
+                    socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
+                    outputArea.append("Request Sent\n"); // Log di debug
+                    
+                    byte[] reply = socket.recv(0);  
+                    String receivedData = new String(reply, ZMQ.CHARSET);
+                    outputArea.append("Received: " + receivedData + "\n");
+
+                    outputArea.append("Data Received\n"); // Log di debug
+                    
+                    storeData(receivedData);
+
+                    double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
+
+                    String request = selectedOption + ": " + value;
+                    outputArea.append("Sending: " + request + "\n");
+                    socket.send(request.getBytes(ZMQ.CHARSET), 0);
+
+                    reply = socket.recv(0);
+                    outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
+
+                    synchronized (this) {
+                        canDisconnect = true;
+                    }
+
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt(); // Reimposta lo stato di interruzione del thread
+                outputArea.append("Thread was interrupted.\n"); // Log di debug
+            } catch (ZMQException ex) {
+                if (ex.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
+                    outputArea.append("ZMQ context terminated.\n");
+                } else if (ex.getErrorCode() == ZMQ.Error.EINTR.getCode()) {
+                    outputArea.append("Socket interrupted during recv.\n");
+                } else {
+                    throw ex;  // Propaga eccezioni non gestite
+                }
+            } finally {
+                synchronized (this) {
+                    if (socket != null) {
+                        socket.close();
+                        socket = null;
+                    }
+                    if (context != null) {
+                        context.close();
+                        context = null;
+                    }
+                }
+                outputArea.append("Resources cleaned up after interruption.\n");
+            }
+        });
+
+        communicationThread.start();
+    }
 
     private void disconnectFromServer() {
         outputArea.append("Disconnecting from server...\n");
-        isConnected = false;       	
-    	if(canDisconnect) {
-            try {
-                // Send a disconnect message to the server
-                socket.send("disconnect".getBytes(ZMQ.CHARSET), 0);        		
-                // Wait for a short period to ensure the message is sent
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            } finally {
-                if (communicationThread != null && communicationThread.isAlive()) {
-                    communicationThread.interrupt();
-                }
-                if (socket != null) {
-                    socket.close();
-                }
-                if (context != null) {
-                    context.close();
-                }
+
+        new Thread(() -> {
+            synchronized (this) {
+                isConnected = false; // Segnala al thread di comunicazione di fermarsi
             }
-    	}
-    }
-    
-    
-    //Non utilizzato per ora
-    private void connectToServerWithTimer() {
-        context = new ZContext();
-        outputArea.append("Connecting to server...\n");
+           
+            try {
+                // Invia il messaggio di disconnessione al server
+                if (socket != null) {
+                    socket.send("disconnect".getBytes(ZMQ.CHARSET), 0);
+                    outputArea.append("Disconnect message sent to server.\n");
+                }
+            } catch (ZMQException ex) {
+                outputArea.append("Failed to send disconnect message: " + ex.getMessage() + "\n");
+            }
 
-        socket = context.createSocket(SocketType.REQ);
-        socket.connect("tcp://localhost:5555");
-        isConnected = true;
-        canDisconnect = false;   
-        
-        communicationThread = new Thread(() -> {
-            while (isConnected) {
-            	
-                canDisconnect = false;
-
-                // Il client richiede i dati
-                socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
-                byte[] reply = socket.recv(0);
-                String receivedData = new String(reply, ZMQ.CHARSET);
-                outputArea.append("Received: " + receivedData + "\n");
-
-                // Processa i dati ricevuti e li salva nella mappa
-                storeData(receivedData);
-
-                double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
-
-                String request = selectedOption + ": " + value;
-                outputArea.append("Sending: " + request + "\n");
-                socket.send(request.getBytes(ZMQ.CHARSET), 0);
-
-                // Riceviamo la conferma del server dopo aver inviato il valore
-                reply = socket.recv(0);
-                outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
-
-                canDisconnect = true;
+            // Attendi la terminazione del thread di comunicazione
+            if (communicationThread != null) {
                 try {
-                    Thread.sleep(200);
-                } catch (InterruptedException ex) {
+                    communicationThread.join(); // Attendi la fine del thread
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
-        });
-        communicationThread.start();        	
 
+            // Pulizia delle risorse
+            synchronized (this) {
+                if (socket != null) {
+                    socket.close();
+                    socket = null; // Azzera il riferimento per sicurezza
+                }
+                if (context != null) {
+                    context.close();
+                    context = null; // Azzera il riferimento per sicurezza
+                }
+            }
+
+            outputArea.append("Disconnected from server and cleaned up resources.\n");
+        }).start();
     }
 
-	private void storeData(String data) {
-        String[] pairs = data.split(";");  // Divide i dati ricevuti in coppie chiave-valore
+
+
+    private void storeData(String data) {
+        String[] pairs = data.split(";");
         for (String pair : pairs) {
-            String[] keyValue = pair.split(":");  // Divide ogni coppia in chiave e valore
+            String[] keyValue = pair.split(":");
             if (keyValue.length == 2) {
                 try {
                     String key = keyValue[0].trim();
                     double value = Double.parseDouble(keyValue[1].trim());
-                    receivedDataMap.put(key, value);  // Salva nella mappa
+                    receivedDataMap.put(key, value);
                 } catch (NumberFormatException e) {
-                    System.err.println("Errore nella conversione del valore: " + keyValue[1]);
+                    System.err.println("Error converting value: " + keyValue[1]);
                 }
             }
         }
     }
-    
-	//Logica nel caso festisca la pressione
-    private double processPressure() {
-    	double pressure = 0;
-		return pressure;
-	}
 
-    //Logica nel caso che gestisca il volume
-	private double processVolume() {
-		double volume = 0;
-		
-		if(receivedDataMap.get("TotalLungVolume") < 2000)
-			volume = 20;
-		
-		return volume;
-	}
+    private double processPressure() {
+        double pressure = 0;
+        // Process pressure logic here
+        return pressure;
+    }
+
+    private double processVolume() {
+        double volume = 0;
+        if (receivedDataMap.getOrDefault("TotalLungVolume", 0.0) < 2000) {
+            volume = 20;
+        }
+
+        volume = temp + 1;
+        temp++;
+        if (temp > 10) temp = 0;
+
+        return volume;
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ZeroClient::new);

@@ -381,6 +381,12 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.processAction(ext);
         app.ventilator.setPressureLabel_EXT(Double.NaN);
         app.ventilator.setVolumeLabel_EXT(Double.NaN);
+        //NEW press button when client disconnects
+        if(zmqServer.isDisconnecting()) {
+        	zmqServer.setDisconnecting();
+            app.ventilator.disconnectButton.doClick();
+        }
+
     }
     
     private void stop_ext(SEMechanicalVentilation ext) {
