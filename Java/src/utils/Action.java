@@ -21,6 +21,7 @@ import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import app.SimulationWorker;
+import panels.MiniLogPanel;
 
 public class Action {
 	/*
@@ -127,6 +128,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 ards.getSeverity(eLungCompartment.RightLung).setValue(value);
                                 SimulationWorker.pe.processAction(ards);
+                                MiniLogPanel.append("ARDS Exacerbation applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -138,6 +140,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 stress.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(stress);
+                                MiniLogPanel.append("Acute Stress applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -149,6 +152,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 obstruction.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(obstruction);
+                                MiniLogPanel.append("Airway Obstruction applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -160,6 +164,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 ashtma.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(ashtma);
+                                MiniLogPanel.append("Asthma Attack applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -171,6 +176,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 brainInjury.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(brainInjury);
+                                MiniLogPanel.append("Brain Injury applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -182,6 +188,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 bronchoconstriction.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(bronchoconstriction);
+                                MiniLogPanel.append("Bronchoconstriction applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -199,6 +206,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 copd.getEmphysemaSeverity(eLungCompartment.RightLung).setValue(value);
                                 SimulationWorker.pe.processAction(copd);
+                                MiniLogPanel.append("COPD Exacerbation applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -210,6 +218,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 dyspnea.getRespirationRateSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(dyspnea);
+                                MiniLogPanel.append("Dyspnea applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -221,6 +230,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 exercise.getIntensity().setValue(value);
                                 SimulationWorker.pe.processAction(exercise);
+                                MiniLogPanel.append("Exercise applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -232,6 +242,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 effusion.getEffusionRate().setValue(value);
                                 SimulationWorker.pe.processAction(effusion);
+                                MiniLogPanel.append("Pericardial Effusion applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -246,6 +257,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 pneumonia.getSeverity(eLungCompartment.RightLung).setValue(value);
                                 SimulationWorker.pe.processAction(pneumonia);
+                                MiniLogPanel.append("Pneumonia Exacerbation applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -257,6 +269,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 shunt.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(shunt);
+                                MiniLogPanel.append("Pulmonary Shunt Exacerbation applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -268,6 +281,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 fatigue.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(fatigue);
+                                MiniLogPanel.append("Respiratory Fatigue applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -276,6 +290,7 @@ public class Action {
                             SEUrinate urinate = new SEUrinate();
                             try {
                                 SimulationWorker.pe.processAction(urinate);
+                                MiniLogPanel.append("Urinate applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }
@@ -287,6 +302,7 @@ public class Action {
                                 value = (double) field.getValue();
                                 leak.getSeverity().setValue(value);
                                 SimulationWorker.pe.processAction(leak);
+                                MiniLogPanel.append("Ventilator Leak applied");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input for severity value");
                             }

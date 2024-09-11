@@ -52,7 +52,7 @@ public class LineChart extends JPanel {
             if (unit != null) {
                 g2.setFont(g2.getFont().deriveFont(16f)); // Font leggermente più piccolo per l'unità
                 String unitStr = "(" + unit.toString() + ")";
-                int unitWidth = g2.getFontMetrics().stringWidth(unitStr);
+                //int unitWidth = g2.getFontMetrics().stringWidth(unitStr);
                 g2.drawString(unitStr, (getWidth() + titleWidth) / 2 + 5, 20); // Posiziona l'unità accanto al titolo
             }
         }

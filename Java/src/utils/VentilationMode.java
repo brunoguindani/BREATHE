@@ -1,5 +1,5 @@
 package utils;
 
 public enum VentilationMode {
-	PC, CPAP, VC, EXT
+	PC, CPAP, VC, EXTERNAL
 }
