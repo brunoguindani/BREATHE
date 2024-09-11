@@ -23,7 +23,8 @@ public class ZeroClient {
     private String selectedOption;
     private boolean isConnected = false;
     private Thread communicationThread;
-    private boolean canDisconnect = false;
+    @SuppressWarnings("unused")
+	private boolean canDisconnect = false;
 
     private Map<String, Double> receivedDataMap;
 

@@ -124,5 +124,7 @@ public class ConditionPanel {
     	return activeConditions;
     }
     
-
+    public int getNumActiveCondition() {
+    	return activeConditions.size();
+    }
 }

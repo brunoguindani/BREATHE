@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 
 import app.SimulationWorker;
 import utils.VentilationMode;
+import zeroMQ.ZeroServer;
 
 public class VentilatorPanel {
 	
@@ -58,6 +59,7 @@ public class VentilatorPanel {
     
     ButtonGroup ventilatori = new ButtonGroup();
     private VentilationMode selectedVentilationMode = VentilationMode.PC;
+    private VentilationMode runningVentilationMode;
     
     public VentilatorPanel() {
          ventilatorPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -169,7 +171,7 @@ public class VentilatorPanel {
          });
          ext.addActionListener(e -> {
           	ventilatorCardLayout.show(ventilatorCardPanel, "EXT");
-          	selectedVentilationMode = VentilationMode.EXT;
+          	selectedVentilationMode = VentilationMode.EXTERNAL;
           });
 
          //actions for buttons
@@ -180,12 +182,16 @@ public class VentilatorPanel {
          		SimulationWorker.ventilationStartRequest = false;
          	disconnectButton.setEnabled(true);
          	disconnectButton.setText("Disconnect " + selectedVentilationMode);
+         	runningVentilationMode = selectedVentilationMode;
          	connectButton.setEnabled(false);
          });
 
          disconnectButton.addActionListener(e -> {
-         	if(!SimulationWorker.ventilationDisconnectRequest)
+         	if(!SimulationWorker.ventilationDisconnectRequest) {
          		SimulationWorker.ventilationDisconnectRequest = true;
+         		if(!(runningVentilationMode == VentilationMode.EXTERNAL))
+         			MiniLogPanel.append(runningVentilationMode + " ventilator disconnected");
+         	}
          	else
          		SimulationWorker.ventilationDisconnectRequest = false;
          	disconnectButton.setEnabled(false);
@@ -300,7 +306,7 @@ public class VentilatorPanel {
     
     // set ext ventilator data
     public boolean isEXTConnected() {
-        return selectedVentilationMode == VentilationMode.EXT;
+        return selectedVentilationMode == VentilationMode.EXTERNAL;
     }
     
     public void setPressureLabel_EXT(double pressure) {

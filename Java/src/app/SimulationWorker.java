@@ -31,6 +31,7 @@ import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
 
+import panels.MiniLogPanel;
 import zeroMQ.ZeroServer;
 
 import com.kitware.pulse.utilities.JNIBridge;
@@ -52,6 +53,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
     private static ZeroServer zmqServer;  
     private static boolean ext_running = false;
+    private boolean firstConnection = true;
     private enum extMode { VOLUME, PRESSURE }
     private extMode currentEXTMode;
 
@@ -89,6 +91,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		 
 		if (patientFilePath == null || patientFilePath.isEmpty()) {
 			
+			MiniLogPanel.append("Loading...");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
@@ -101,6 +104,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pe.initializeEngine(patient_configuration, dataRequests);
 		}
 		else {
+			MiniLogPanel.append("Starting from file...");
+			if(app.condition.getNumActiveCondition() != 0)
+				MiniLogPanel.append("Reseting condition...");
 			pe.serializeFromFile(patientFilePath, dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
@@ -114,12 +120,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         SEMechanicalVentilation ext = new SEMechanicalVentilation();
     	
         //Start Simulation
+        MiniLogPanel.append("Simulation started");
         publish("Started\n");
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
         while (!stopRequested) {
         	
             if (!pe.advanceTime(time)) {
                 publish("Something bad happened\n");
+                MiniLogPanel.append("!!!Error, simulation stopped!!!");
                 return null;
             }
             
@@ -140,6 +148,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
+        MiniLogPanel.append("Simulation stopped");
 
         return null;
     }
@@ -287,6 +296,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pc.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_PC()), TimeUnit.s);
         pc.setConnection(eSwitch.On);
         pe.processAction(pc);
+        MiniLogPanel.append("PC ventilator connected");
     }
     
     private void stop_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -301,6 +311,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         cpap.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_CPAP()), TimeUnit.s);
         cpap.setConnection(eSwitch.On);
         pe.processAction(cpap);
+        MiniLogPanel.append("CPAP ventilator connected");
     }
     
     private void stop_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
@@ -323,6 +334,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         vc.getTidalVolume().setValue(Double.parseDouble(app.ventilator.getTidalVol_VC()), VolumeUnit.mL);
         vc.setConnection(eSwitch.On);
         pe.processAction(vc);
+        MiniLogPanel.append("VC ventilator connected");
     }
    
     private void stop_vc(SEMechanicalVentilatorVolumeControl vc) {
@@ -336,10 +348,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	zmqServer = new ZeroServer();
     	zmqServer.connect();
 		zmqServer.startReceiving();
+		MiniLogPanel.append("Searching for EXTERNAL ventilator");
     }
     
 	private void manage_ext(SEMechanicalVentilation ext){
 		if(zmqServer.isConnectionStable()) {
+			if(firstConnection) {
+				MiniLogPanel.append("EXTERNAL ventilator connected");
+				firstConnection = false;
+			}
 			setEXTMode(zmqServer.getSelectedMode());
 			//here change to add ZeroMQ call	
 			if (currentEXTMode == extMode.VOLUME) {
@@ -350,7 +367,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        ext.setState(eSwitch.On);
 	        pe.processAction(ext);
 		}
-		else{
+		else if(!firstConnection){
 			disconnectEXTClient(ext);
 		}
 			
@@ -385,14 +402,17 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         if(zmqServer.isDisconnecting()) {
         	zmqServer.setDisconnecting();
             app.ventilator.disconnectButton.doClick();
+            MiniLogPanel.append("EXTERNAL ventilator disconnected");
         }
-
+        firstConnection = true;
+        
     }
     
     private void stop_ext(SEMechanicalVentilation ext) {
     	ext.setState(eSwitch.Off);
     	pe.processAction(ext);
     	zmqServer.close();
+    	MiniLogPanel.append("EXTERNAL ventilator server closed");
     }
     
     //Print data in console and log Panel and Charts
