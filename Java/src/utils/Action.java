@@ -19,6 +19,8 @@ import javax.swing.JSpinner;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
+import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import app.SimulationWorker;
 import panels.MiniLogPanel;
@@ -240,7 +242,7 @@ public class Action {
                             try {
                             	field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
-                                effusion.getEffusionRate().setValue(value);
+                                effusion.getEffusionRate().setValue(value, VolumePerTimeUnit.mL_Per_min);
                                 SimulationWorker.pe.processAction(effusion);
                                 MiniLogPanel.append("Pericardial Effusion applied");
                             } catch (NumberFormatException ex) {

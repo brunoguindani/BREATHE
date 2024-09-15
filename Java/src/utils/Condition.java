@@ -20,6 +20,8 @@ import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.patient.conditions.*;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 
 import app.SimulationWorker;
 import panels.ConditionPanel;
@@ -169,7 +171,7 @@ public class Condition {
                             try {
                                 field = (JSpinner) components.get(0);
                                 value = (double) field.getValue();
-                                CPE.getAccumulatedVolume().setValue(value);
+                                CPE.getAccumulatedVolume().setValue(value, VolumeUnit.mL);
                                 sendAction(CPE, "Pericardial Effusion");
                             } catch (NumberFormatException ex) {
                                 Log.error("Invalid input");

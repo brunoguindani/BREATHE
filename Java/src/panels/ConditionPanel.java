@@ -49,7 +49,7 @@ public class ConditionPanel {
             ));
         conditions.add(new Condition(
                 "Pericardial Effusion",
-                new JLabel("Accumulated Volume (mL)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 1))
+                new JLabel("Accumulated Volume (mL)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 0.01))
             ));
         conditions.add(new Condition(
                 "Renal Stenosis",
