@@ -70,7 +70,7 @@ public class App extends JFrame {
         switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
-        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 5, 5, Color.DARK_GRAY));
+        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
 
         //panel for the charts
         JPanel chartPanel = charts.getChartPanel();

@@ -58,13 +58,13 @@ public class ConditionPanel {
         	));
         conditions.add(new Condition(
                 "Ventricular Systolic Disfunction"
-        	));
+        	));/*
         conditions.add(new Condition( //To fix
                 "Impaired Alveolar Exchange (Not implemented yet)",
                 new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
                 new JLabel("Impaired Faction"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
                 new JLabel("Impaired Surface Area (m^2)"), new JSpinner(new SpinnerNumberModel(0, 0, 100, 1))
-        	));  
+        	));  */
         conditions.add(new Condition(
                 "Pneumonia",
                 new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
