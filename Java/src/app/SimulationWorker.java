@@ -106,7 +106,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		else {
 			MiniLogPanel.append("Starting from file...");
 			if(app.condition.getNumActiveCondition() != 0)
-				MiniLogPanel.append("Reseting condition...");
+				MiniLogPanel.append("Resetting condition...");
 			pe.serializeFromFile(patientFilePath, dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
