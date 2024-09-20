@@ -269,24 +269,35 @@ public class Condition {
         return success;
     }
 
-    public void enableButtonState() {
+    private void enableButtonState() {
         applySectionButton.setEnabled(true);
     }
     
-    public void disableButtonState() {
+    private void disableButtonState() {
         applySectionButton.setEnabled(false);
     }
     
-    public void enableFields() {
+    private void enableFields() {
         for (JComponent component : components) {
         	component.setEnabled(true);
         }
     }
     
-    public void disableFields() {
+    private void disableFields() {
         for (JComponent component : components) {
         	component.setEnabled(false);
         }
     }
     
+    public void enable() {
+    	enableFields();
+    	enableButtonState();
+    	applySectionButton.setText("Apply");
+    }
+    
+    public void disable() {
+    	disableFields();
+    	disableButtonState();
+    	applySectionButton.setText("Remove");
+    }
 }

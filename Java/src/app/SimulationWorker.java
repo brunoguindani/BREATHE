@@ -120,6 +120,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         SEMechanicalVentilation ext = new SEMechanicalVentilation();
     	
         //Start Simulation
+        app.patient.enableExportButton();
         MiniLogPanel.append("Simulation started");
         publish("Started\n");
         SEScalarTime time = new SEScalarTime(0, TimeUnit.s);

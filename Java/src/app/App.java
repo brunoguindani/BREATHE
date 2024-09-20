@@ -100,7 +100,7 @@ public class App extends JFrame {
         //adding to the switch
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient/Condition", switchPanel);
+        switchTabbedPane.addTab("Patient", switchPanel);
         switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);

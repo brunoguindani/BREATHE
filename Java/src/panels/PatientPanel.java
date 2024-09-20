@@ -41,6 +41,8 @@ public class PatientPanel {
     private JPanel mainPanel = new JPanel();
     private String selectedFilePath;
     
+    JButton exportButton;
+    
     public PatientPanel(App app) {
     	
     	mainPanel.setBackground(Color.LIGHT_GRAY);
@@ -84,6 +86,7 @@ public class PatientPanel {
         JButton startFromFileButton = new JButton("Start From File");
         JButton startButton = new JButton("Start Simulation");
         JButton stopButton = new JButton("Stop Simulation");
+        exportButton = new JButton("Export Simulation");
        
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
@@ -104,10 +107,17 @@ public class PatientPanel {
         stopButton.setFocusPainted(false);
         gbc.gridy++;
 
+        exportButton.setEnabled(false); 
+        exportButton.setBackground(new Color(0, 128, 0));
+        exportButton.setForeground(Color.WHITE);
+        exportButton.setFocusPainted(false);
+        gbc.gridy++;
+        
         // Configurazione dei pulsanti
         buttonPanel.add(startFromFileButton);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
+        buttonPanel.add(exportButton);
         
         // Aggiungi il pannello dei pulsanti al pannello principale
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -134,6 +144,7 @@ public class PatientPanel {
         stopButton.addActionListener(e -> {
             SimulationWorker.requestStop(); //stop simulation
             startButton.setEnabled(true);
+            exportButton.setEnabled(false);
             startFromFileButton.setEnabled(true);
             selectedFilePath = null;
             stopButton.setEnabled(false);
@@ -163,7 +174,7 @@ public class PatientPanel {
                     String weightUnit = rootNode.path("CurrentPatient").path("Weight").path("ScalarMass").path("Unit").asText();
                     int height = rootNode.path("CurrentPatient").path("Height").path("ScalarLength").path("Value").asInt();
                     String heightUnit = rootNode.path("CurrentPatient").path("Height").path("ScalarLength").path("Unit").asText();
-                     double bodyFat = rootNode.path("CurrentPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+                    double bodyFat = rootNode.path("CurrentPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
                     double heartRate = rootNode.path("CurrentPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
                     double diastolicPressure = rootNode.path("CurrentPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
                     double systolicPressure = rootNode.path("CurrentPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
@@ -194,6 +205,55 @@ public class PatientPanel {
             }
         });
         
+        exportButton.addActionListener(e -> {
+            String defaultFileName = "./states/exported/" + nameField_Patient.getText() + ".json";
+            JFileChooser fileChooser = new JFileChooser("./states/exported/");
+            fileChooser.setDialogTitle("Export simulation");
+            fileChooser.setSelectedFile(new File(defaultFileName)); // Pre-set default filename
+            fileChooser.setApproveButtonText("Export");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
+            boolean validFileName = false; // Flag to track valid filename
+
+            while (!validFileName) {
+                int userSelection = fileChooser.showSaveDialog(null);
+                
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = fileChooser.getSelectedFile();
+                    String fileName = fileToSave.getAbsolutePath();
+                    
+                    // Ensure the file ends with .json
+                    if (!fileName.endsWith(".json")) {
+                        fileName += ".json";
+                    }
+                    
+                    File file = new File(fileName);
+                    
+                    // Check if file exists and ask for overwrite confirmation
+                    if (file.exists()) {
+                        int response = JOptionPane.showConfirmDialog(null, 
+                            "File already exists. Do you want to overwrite it?", 
+                            "Overwrite Confirmation", 
+                            JOptionPane.YES_NO_OPTION, 
+                            JOptionPane.WARNING_MESSAGE);
+                        
+                        if (response == JOptionPane.YES_OPTION) {
+                            SimulationWorker.pe.serializeToFile(fileName); 
+                            validFileName = true; // Exit loop
+                        }
+                        // If the user selects NO, the loop continues
+                    } else {
+                        SimulationWorker.pe.serializeToFile(fileName); 
+                        validFileName = true; 
+                    }
+                } else {
+                    // User cancelled the operation
+                    validFileName = true; 
+                }
+            }
+        });
+
+
     }
     
     //selection weight unit
@@ -327,5 +387,9 @@ public class PatientPanel {
     
     public String getHeightUnit_PATIENT() {
     	return (String) heightUnitComboBox.getSelectedItem();
+    }
+    
+    public void enableExportButton() {
+    	exportButton.setEnabled(true);
     }
 }

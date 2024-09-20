@@ -101,13 +101,13 @@ public class ConditionPanel {
     
     public void enableButtonStates() {
         for (Condition condition : conditions) {
-        	condition.enableButtonState();
+        	condition.enable();
         }
     }
     
     public void disableButtonStates() {
         for (Condition condition : conditions) {
-        	condition.disableButtonState();
+        	condition.disable();
         }
     }
     
