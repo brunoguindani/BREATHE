@@ -35,14 +35,20 @@ public class App extends JFrame {
     public MiniLogPanel mlog = new MiniLogPanel();
     public ChartsPanel charts = new ChartsPanel();
     public LineChart[] chartPanels;
-   
+
+    // Panel for switching between patient and condition
+    private JPanel patientConditionPanel;
+    private CardLayout cardLayout;
+    private JRadioButton patientRadioButton;
+    private JRadioButton conditionRadioButton;
 
     public App() {
     	
     	//main panel
         setTitle("Pulse Simulation");
-        setSize(1000, 700);
+        setSize(1100, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
         setLayout(new BorderLayout());
 
         getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -62,11 +68,39 @@ public class App extends JFrame {
         JScrollPane scrollLogPane = log.getLogScrollPane();
         JPanel miniLogPanel = mlog.getMiniLogPanel();
 
+        // Creare i RadioButton per cambiare tra paziente e condizione
+        patientRadioButton = new JRadioButton("Patient");
+        conditionRadioButton = new JRadioButton("Condition");
+        ButtonGroup group = new ButtonGroup();
+        group.add(patientRadioButton);
+        group.add(conditionRadioButton);
+        patientRadioButton.setSelected(true);  // Di default, il pannello del paziente è selezionato
+        
+        // Aggiungere i RadioButton a un pannello
+        JPanel radioPanel = new JPanel();
+        radioPanel.setBackground(Color.LIGHT_GRAY); // Cambia il colore di sfondo
+        radioPanel.add(patientRadioButton);
+        radioPanel.add(conditionRadioButton);
+
+        // Creare il pannello con CardLayout per contenere entrambi i pannelli
+        cardLayout = new CardLayout();
+        patientConditionPanel = new JPanel(cardLayout);
+        patientConditionPanel.add(patientPanel, "Patient");
+        patientConditionPanel.add(scrollConditionPane, "Condition");
+
+        // Aggiungere un ActionListener ai RadioButton per cambiare pannello
+        patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
+        conditionRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
+
+        // Creare un pannello per includere i RadioButton e il pannello con CardLayout
+        JPanel switchPanel = new JPanel(new BorderLayout());
+        switchPanel.add(radioPanel, BorderLayout.NORTH);
+        switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
+
         //adding to the switch
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient", patientPanel);
-        switchTabbedPane.addTab("Condition", scrollConditionPane);
+        switchTabbedPane.addTab("Patient/Condition", switchPanel);
         switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
