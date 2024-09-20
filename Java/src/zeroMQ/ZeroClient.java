@@ -283,10 +283,33 @@ public class ZeroClient {
     }
 
     private double processPressure() {
-        double pressure = 0;
-        // Process pressure logic here
-        return pressure;
+        // Parameters
+        int respiratoryRate = 12; // RR in cicli al minuto
+        double ieRatio = 2.0 / 3.0; // I:E ratio
+        double pinsp = 20.0; // Pressure during inspiration (e.g., in cm H2O)
+        double peep = 5.0; // Positive End-Expiratory Pressure (e.g., in cm H2O)
+
+        // Calculate total cycle duration in seconds
+        double totalCycleDuration = 60.0 / respiratoryRate; // in seconds
+        double inspiratoryTime = totalCycleDuration * (ieRatio / (1 + ieRatio)); // duration of inspiration
+        double expiratoryTime = totalCycleDuration * (1 / (1 + ieRatio)); // duration of expiration
+
+        // Simulate one complete cycle (inspiration followed by expiration)
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime % (long) (totalCycleDuration * 1000); // elapsed time in the current cycle
+
+        double pressure;
+        if (elapsedTime < inspiratoryTime * 1000) {
+            // Inspiration phase
+            pressure = pinsp; // Pressure during inspiration
+        } else {
+            // Expiration phase
+            pressure = peep; // Pressure during expiration
+        }
+
+        return pressure; // Return the current pressure value
     }
+
 
     private double processVolume() {
         double volume = 0;
