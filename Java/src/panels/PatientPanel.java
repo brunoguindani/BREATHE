@@ -1,5 +1,6 @@
 package panels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -16,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import app.App;
@@ -35,68 +37,80 @@ public class PatientPanel {
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JComboBox<String> weightUnitComboBox, heightUnitComboBox;
       
-    private JPanel patientPanel = new JPanel();
+    private JScrollPane  patientPanel = new JScrollPane ();
+    private JPanel mainPanel = new JPanel();
     private String selectedFilePath;
     
     public PatientPanel(App app) {
     	
-        patientPanel.setLayout(new GridBagLayout());
-        patientPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        patientPanel.setPreferredSize(new Dimension(250, 0));
-        patientPanel.setBackground(Color.LIGHT_GRAY);
+    	mainPanel.setBackground(Color.LIGHT_GRAY);
+    	
+        patientPanel = new JScrollPane();
+        JPanel innerPanel = new JPanel(); // Crea un pannello interno per contenere i componenti
+        innerPanel.setLayout(new GridBagLayout());
+        innerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        innerPanel.setBackground(Color.LIGHT_GRAY);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-                
-        //adding data selectors 
-        addLabelAndField("Name:", nameField_Patient = new JTextField("Standard", 20), patientPanel, gbc);
-        addLabelAndField("Sex:", sexComboBox_Patient, patientPanel, gbc);        
-        addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"),new JLabel("yr"), patientPanel, gbc);
+        
+        // Aggiungi i selettori di dati al pannello interno
+        addLabelAndField("Name:", nameField_Patient = new JTextField("Standard", 20), innerPanel, gbc);
+        addLabelAndField("Sex:", sexComboBox_Patient, innerPanel, gbc);
+        addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"), new JLabel("yr"), innerPanel, gbc);
         weightUnitComboBox = new JComboBox<>(new String[]{"lbs", "kg"});
-        addLabelFieldAndUnit("Weight:", weightField_Patient = new JTextField("170"), weightUnitComboBox, patientPanel, gbc);
+        addLabelFieldAndUnit("Weight:", weightField_Patient = new JTextField("170"), weightUnitComboBox, innerPanel, gbc);
         heightUnitComboBox = new JComboBox<>(new String[]{"inches", "m", "cm", "ft"});
-        addLabelFieldAndUnit("Height:", heightField_Patient = new JTextField("71"), heightUnitComboBox, patientPanel, gbc);
-        addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel("%"), patientPanel, gbc);
-        addLabelFieldAndUnit("Heart Rate Baseline:", heartRateField_Patient = new JTextField("72"), new JLabel("mmHg"), patientPanel, gbc);
-        addLabelFieldAndUnit("Diastolic Pressure:", diastolicField_Patient = new JTextField("72"), new JLabel("mmHg"), patientPanel, gbc);
-        addLabelFieldAndUnit("Systolic Pressure:", systolicField_Patient = new JTextField("114"), new JLabel("mmHg"), patientPanel, gbc);
-        addLabelFieldAndUnit("Respiration Rate Baseline:", respirationRateField_Patient = new JTextField("16"), new JLabel("breaths/min"), patientPanel, gbc);
-        addLabelFieldAndUnit("Basal Metabolic Rate:", basalMetabolicRateField_Patient = new JTextField("1600"), new JLabel("kcal/day"), patientPanel, gbc);
+        addLabelFieldAndUnit("Height:", heightField_Patient = new JTextField("71"), heightUnitComboBox, innerPanel, gbc);
+        addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel("%"), innerPanel, gbc);
+        addLabelFieldAndUnit("Heart Rate Baseline:", heartRateField_Patient = new JTextField("72"), new JLabel("heartbeats/min"), innerPanel, gbc);
+        addLabelFieldAndUnit("Diastolic Pressure:", diastolicField_Patient = new JTextField("72"), new JLabel("mmHg"), innerPanel, gbc);
+        addLabelFieldAndUnit("Systolic Pressure:", systolicField_Patient = new JTextField("114"), new JLabel("mmHg"), innerPanel, gbc);
+        addLabelFieldAndUnit("Respiration Rate Baseline:", respirationRateField_Patient = new JTextField("16"), new JLabel("breaths/min"), innerPanel, gbc);
+        addLabelFieldAndUnit("Basal Metabolic Rate:", basalMetabolicRateField_Patient = new JTextField("1600"), new JLabel("kcal/day"), innerPanel, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = GridBagConstraints.REMAINDER;  
-        gbc.weightx = 1.0;  
-        gbc.fill = GridBagConstraints.HORIZONTAL; 
-
+        // Aggiungi il pannello interno al JScrollPane
+        patientPanel.setViewportView(innerPanel);
+        patientPanel.setPreferredSize(new Dimension(450, 450)); // Dimensione appropriata
+        patientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        
+        mainPanel.add(patientPanel, BorderLayout.CENTER);
         //button to start simulation from a pre loaded file
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.LIGHT_GRAY);
         JButton startFromFileButton = new JButton("Start From File");
+        JButton startButton = new JButton("Start Simulation");
+        JButton stopButton = new JButton("Stop Simulation");
+       
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
-        patientPanel.add(startFromFileButton, gbc);
 
         //button to start simulation from given data
         //this will take much longer than pre loaded file
         //because the engine must first stabilize the new patient
-        JButton startButton = new JButton("Start Simulation");
         startButton.setBackground(new Color(0, 122, 255)); 
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
         gbc.gridy++;
-        patientPanel.add(startButton, gbc);
 
         //stop simulation
-        JButton stopButton = new JButton("Stop Simulation");
         stopButton.setEnabled(false); 
         stopButton.setBackground(new Color(255, 59, 48));
         stopButton.setForeground(Color.WHITE);
         stopButton.setFocusPainted(false);
         gbc.gridy++;
-        patientPanel.add(stopButton, gbc);
+
+        // Configurazione dei pulsanti
+        buttonPanel.add(startFromFileButton);
+        buttonPanel.add(startButton);
+        buttonPanel.add(stopButton);
+        
+        // Aggiungi il pannello dei pulsanti al pannello principale
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         /*
          * ACTIONS for buttons
@@ -212,29 +226,29 @@ public class PatientPanel {
     
     
     //method to add visual to panel
-    private void addLabelAndField(String labelText, JComponent component, JPanel panel, GridBagConstraints gbc) {
+    private void addLabelAndField(String labelText, JComponent component, JPanel innerPanel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         gbc.weightx = 0; 
-        panel.add(new JLabel(labelText), gbc);
+        innerPanel.add(new JLabel(labelText), gbc);
         
         gbc.gridx = 1;
         gbc.gridwidth = GridBagConstraints.REMAINDER; 
         gbc.weightx = 1.0; 
-        panel.add(component, gbc);
+        innerPanel.add(component, gbc);
         
         gbc.gridy++;
     }
   
     //method to add visual to panel
-    private void addLabelFieldAndUnit(String labelText, JComponent component, JComponent unitComponent, JPanel panel, GridBagConstraints gbc) {
+    private void addLabelFieldAndUnit(String labelText, JComponent component, JComponent unitComponent, JPanel innerPanel, GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridwidth = 1;
-        panel.add(new JLabel(labelText), gbc);
+        innerPanel.add(new JLabel(labelText), gbc);
         gbc.gridx = 1;
-        panel.add(component, gbc);
+        innerPanel.add(component, gbc);
         gbc.gridx = 2;
-        panel.add(unitComponent, gbc);
+        innerPanel.add(unitComponent, gbc);
         gbc.gridy++;
     }
 
@@ -254,7 +268,7 @@ public class PatientPanel {
     
     //method to return panel
     public JPanel getPatientPanel() {
-    	return patientPanel;
+    	return mainPanel;
     }
     
     //Get file 
