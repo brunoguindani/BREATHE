@@ -19,7 +19,6 @@ import javax.swing.JSpinner;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
-import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import app.SimulationWorker;

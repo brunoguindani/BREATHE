@@ -25,22 +25,9 @@ Ventilator Pressure Control
 
 TODO in ordine di importanza
 
-!!!!!!!!!!!!BUG CONDIZIONI!!!!!!!!!!!!!
-	Provato a:
-		*Metterne una
-		*Start simulazione normale
-		*Stop sim
-	Da qui non si riescono più applicare
-	
-(Ho iniziato a sistemare il bug ma per ora cambia solo il nome dei bottoni e viene riabilitato tutto,
-il problema è che il bottone in se rimane sminchiato anche se cambia il testo
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-*Ho messo una logica veloce nel ventilatore esterno tipo quella che ci ha dato il garga
-	bisogna aggiungere interfaccia grafica per i valori magari, comunque già cosi non sembra male
-
 *Aggiungere che se carico un file con condizioni queste vengono aggiornate graficamente
-	(nel file nell'export c'è un paziente con due condizioni e infatti nel json ci sono anche con la loro severity :) quindi dovrebbe essere facile da fare)
+	(nel file nell'export c'è un paziente con due condizioni e infatti nel json ci sono anche con la loro severity :) 
+	quindi dovrebbe essere facile da fare)
 	Proverei a creare un paziente con tutte le condizioni per vedere ognuna come viene creata nel json
 
 *Modificare commenti classe APP

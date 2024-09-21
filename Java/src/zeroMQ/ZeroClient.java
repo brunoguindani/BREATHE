@@ -17,6 +17,7 @@ public class ZeroClient {
     private JButton connectButton, disconnectButton;
     private JRadioButton volumeButton, pressureButton;
     private JTextArea outputArea;
+    private JSpinner rrSpinner, ieRatioSpinner, pinspSpinner, vtSpinner, peepSpinner;
 
     private ZMQ.Socket socket;
     private ZContext context;
@@ -24,17 +25,15 @@ public class ZeroClient {
     private boolean isConnected = false;
     private Thread communicationThread;
     @SuppressWarnings("unused")
-	private boolean canDisconnect = false;
+    private boolean canDisconnect = false;
 
     private Map<String, Double> receivedDataMap;
-
-    private int temp = 0;
 
     public ZeroClient() {
         receivedDataMap = new HashMap<>();
 
         frame = new JFrame("ZeroMQ Client");
-        frame.setSize(400, 350);
+        frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -72,28 +71,90 @@ public class ZeroClient {
         panel.add(disconnectButton);
 
         outputArea = new JTextArea();
-        outputArea.setBounds(50, 120, 300, 180);
+        outputArea.setBounds(50, 160, 300, 180);
         panel.add(outputArea);
         outputArea.setLineWrap(true);
         outputArea.setWrapStyleWord(true);
         outputArea.setEditable(false);
 
         JScrollPane scrollPane = new JScrollPane(outputArea);
-        scrollPane.setBounds(50, 120, 300, 180);
+        scrollPane.setBounds(50, 160, 300, 180);
         panel.add(scrollPane);
 
         volumeButton = new JRadioButton("Volume");
         volumeButton.setBounds(50, 60, 100, 25);
-        volumeButton.setSelected(true);
         panel.add(volumeButton);
 
         pressureButton = new JRadioButton("Pressure");
         pressureButton.setBounds(160, 60, 100, 25);
+        pressureButton.setSelected(true); // Default selezionato Pressione
         panel.add(pressureButton);
 
         ButtonGroup group = new ButtonGroup();
         group.add(volumeButton);
         group.add(pressureButton);
+
+        // Spinner per Respiratory Rate (RR)
+        JLabel rrLabel = new JLabel("RR:");
+        rrLabel.setBounds(50, 90, 100, 25);
+        panel.add(rrLabel);
+
+        rrSpinner = new JSpinner(new SpinnerNumberModel(12, 6, 30, 1)); // default 12, min 6, max 30
+        rrSpinner.setBounds(100, 90, 50, 25);
+        panel.add(rrSpinner);
+
+        // Spinner per I:E Ratio
+        JLabel ieLabel = new JLabel("I:E Ratio:");
+        ieLabel.setBounds(160, 90, 100, 25);
+        panel.add(ieLabel);
+
+        ieRatioSpinner = new JSpinner(new SpinnerNumberModel(0.67, 0.1, 2.0, 0.01)); // default 2/3
+        ieRatioSpinner.setBounds(220, 90, 60, 25);
+        panel.add(ieRatioSpinner);
+
+        // Spinner per Pinsp (mostrato solo se selezionato Pressure)
+        JLabel pinspLabel = new JLabel("P insp:");
+        pinspLabel.setBounds(50, 120, 100, 25);
+        panel.add(pinspLabel);
+
+        pinspSpinner = new JSpinner(new SpinnerNumberModel(20.0, 10.0, 40.0, 1.0)); // default 20
+        pinspSpinner.setBounds(100, 120, 50, 25);
+        panel.add(pinspSpinner);
+
+        // Spinner per Vt (mostrato solo se selezionato Volume)
+        JLabel vtLabel = new JLabel("Vt:");
+        vtLabel.setBounds(50, 120, 100, 25);
+        panel.add(vtLabel);
+
+        vtSpinner = new JSpinner(new SpinnerNumberModel(500.0, 200.0, 1000.0, 50.0)); // default 500
+        vtSpinner.setBounds(100, 120, 50, 25);
+        vtLabel.setVisible(false); // Nascondi inizialmente
+        vtSpinner.setVisible(false); // Nascondi inizialmente
+        panel.add(vtSpinner);
+
+        // Spinner per PEEP
+        JLabel peepLabel = new JLabel("PEEP:");
+        peepLabel.setBounds(160, 120, 100, 25);
+        panel.add(peepLabel);
+
+        peepSpinner = new JSpinner(new SpinnerNumberModel(5.0, 0.0, 20.0, 0.5)); // default 5
+        peepSpinner.setBounds(220, 120, 60, 25);
+        panel.add(peepSpinner);
+
+        // Listener per cambiare la visualizzazione dei componenti in base alla selezione
+        volumeButton.addActionListener(e -> {
+            vtSpinner.setVisible(true); // Mostra Vt
+            vtLabel.setVisible(true);
+            pinspSpinner.setVisible(false); // Nascondi Pinsp
+            pinspLabel.setVisible(false);
+        });
+
+        pressureButton.addActionListener(e -> {
+            vtSpinner.setVisible(false); // Nascondi Vt
+            vtLabel.setVisible(false);
+            pinspSpinner.setVisible(true); // Mostra Pinsp
+            pinspLabel.setVisible(true);
+        });
 
         connectButton.addActionListener(e -> {
             if (!isConnected) {
@@ -109,14 +170,12 @@ public class ZeroClient {
         disconnectButton.addActionListener(e -> {
             if (isConnected) {
                 disconnectFromServer();
-                //connectToServerWithTimer();
-                //disconnectFromServer();
                 volumeButton.setEnabled(true);
                 pressureButton.setEnabled(true);
                 connectButton.setEnabled(true);
                 disconnectButton.setEnabled(false);
                 outputArea.append("Disconnected.\n");
-                frame.dispose(); 
+                frame.dispose();
             }
         });
 
@@ -135,6 +194,7 @@ public class ZeroClient {
         });
     }
 
+
     private void connectToServerWithTimer() {
         synchronized (this) {
             context = new ZContext();
@@ -147,7 +207,7 @@ public class ZeroClient {
             socket.connect("tcp://localhost:5555");
         } catch (ZMQException ex) {
             outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
-            return; // Esci se la connessione fallisce
+            return;
         }
 
         synchronized (this) {
@@ -155,26 +215,22 @@ public class ZeroClient {
             canDisconnect = false;
         }
 
-        // Ricrea il thread di comunicazione
         communicationThread = new Thread(() -> {
-            outputArea.append("Thread started. Entering while loop...\n"); // Log di debug
+            outputArea.append("Thread started. Entering while loop...\n");
+
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
                     synchronized (this) {
                         canDisconnect = false;
                     }
 
-                    outputArea.append("Thread is running inside the while loop...\n"); // Log di debug
-
                     socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
-                    outputArea.append("Request Sent\n"); // Log di debug
-                    
-                    byte[] reply = socket.recv(0);  
+                    outputArea.append("Request Sent\n");
+
+                    byte[] reply = socket.recv(0);
                     String receivedData = new String(reply, ZMQ.CHARSET);
                     outputArea.append("Received: " + receivedData + "\n");
 
-                    outputArea.append("Data Received\n"); // Log di debug
-                    
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
@@ -193,15 +249,15 @@ public class ZeroClient {
                     Thread.sleep(200);
                 }
             } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt(); // Reimposta lo stato di interruzione del thread
-                outputArea.append("Thread was interrupted.\n"); // Log di debug
+                Thread.currentThread().interrupt();
+                outputArea.append("Thread was interrupted.\n");
             } catch (ZMQException ex) {
                 if (ex.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
                     outputArea.append("ZMQ context terminated.\n");
                 } else if (ex.getErrorCode() == ZMQ.Error.EINTR.getCode()) {
                     outputArea.append("Socket interrupted during recv.\n");
                 } else {
-                    throw ex;  // Propaga eccezioni non gestite
+                    throw ex;
                 }
             } finally {
                 synchronized (this) {
@@ -226,11 +282,10 @@ public class ZeroClient {
 
         new Thread(() -> {
             synchronized (this) {
-                isConnected = false; // Segnala al thread di comunicazione di fermarsi
+                isConnected = false;
             }
-           
+
             try {
-                // Invia il messaggio di disconnessione al server
                 if (socket != null) {
                     socket.send("disconnect".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Disconnect message sent to server.\n");
@@ -239,60 +294,58 @@ public class ZeroClient {
                 outputArea.append("Failed to send disconnect message: " + ex.getMessage() + "\n");
             }
 
-            // Attendi la terminazione del thread di comunicazione
             if (communicationThread != null) {
                 try {
-                    communicationThread.join(); // Attendi la fine del thread
+                    communicationThread.join();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
 
-            // Pulizia delle risorse
             synchronized (this) {
                 if (socket != null) {
                     socket.close();
-                    socket = null; // Azzera il riferimento per sicurezza
+                    socket = null;
                 }
                 if (context != null) {
                     context.close();
-                    context = null; // Azzera il riferimento per sicurezza
+                    context = null;
                 }
+                isConnected = false;
             }
 
-            outputArea.append("Disconnected from server and cleaned up resources.\n");
+            outputArea.append("Disconnected.\n");
         }).start();
     }
 
-
-
     private void storeData(String data) {
-        String[] pairs = data.split(";");
-        for (String pair : pairs) {
-            String[] keyValue = pair.split(":");
+        String[] parts = data.split(",");
+        for (String part : parts) {
+            String[] keyValue = part.split(":");
             if (keyValue.length == 2) {
-                try {
-                    String key = keyValue[0].trim();
-                    double value = Double.parseDouble(keyValue[1].trim());
-                    receivedDataMap.put(key, value);
-                } catch (NumberFormatException e) {
-                    System.err.println("Error converting value: " + keyValue[1]);
-                }
+                String key = keyValue[0].trim();
+                double value = Double.parseDouble(keyValue[1].trim());
+                receivedDataMap.put(key, value);
             }
         }
     }
 
+    private double processVolume() {
+        double volume = 20;
+
+        return volume; // Return the current pressure value
+    }
+
     private double processPressure() {
-        // Parameters
-        int respiratoryRate = 12; // RR in cicli al minuto
-        double ieRatio = 2.0 / 3.0; // I:E ratio
-        double pinsp = 20.0; // Pressure during inspiration (e.g., in cm H2O)
-        double peep = 5.0; // Positive End-Expiratory Pressure (e.g., in cm H2O)
+        // Retrieve values from spinners
+        int respiratoryRate = (int) rrSpinner.getValue(); // RR in cicli al minuto
+        double ieRatio = (double) ieRatioSpinner.getValue(); // I:E ratio
+        double pinsp = (double) pinspSpinner.getValue(); // Pressure during inspiration (cm H2O)
+        double peep = (double) peepSpinner.getValue(); // PEEP (cm H2O)
 
         // Calculate total cycle duration in seconds
         double totalCycleDuration = 60.0 / respiratoryRate; // in seconds
         double inspiratoryTime = totalCycleDuration * (ieRatio / (1 + ieRatio)); // duration of inspiration
-        double expiratoryTime = totalCycleDuration * (1 / (1 + ieRatio)); // duration of expiration
 
         // Simulate one complete cycle (inspiration followed by expiration)
         long currentTime = System.currentTimeMillis();
@@ -308,20 +361,6 @@ public class ZeroClient {
         }
 
         return pressure; // Return the current pressure value
-    }
-
-
-    private double processVolume() {
-        double volume = 0;
-        if (receivedDataMap.getOrDefault("TotalLungVolume", 0.0) < 2000) {
-            volume = 20;
-        }
-
-        volume = temp + 1;
-        temp++;
-        if (temp > 10) temp = 0;
-
-        return volume;
     }
 
     public static void main(String[] args) {
