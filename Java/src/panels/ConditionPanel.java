@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import com.kitware.pulse.cdm.conditions.SECondition;
+import com.kitware.pulse.cdm.patient.conditions.*;
 
 import utils.Condition;
 
@@ -33,7 +34,7 @@ public class ConditionPanel {
         conditions = new ArrayList<>();
         
         conditions.add(new Condition(
-                "Anemia",
+                "Chronic Anemia",
                 new JLabel("Reduction Factor"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
             ));
         conditions.add(new Condition(
@@ -57,7 +58,7 @@ public class ConditionPanel {
                 new JLabel("Right Kidney Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         	));
         conditions.add(new Condition(
-                "Ventricular Systolic Disfunction"
+                "Chronic Ventricular Systolic Disfunction"
         	));/*
         conditions.add(new Condition( //To fix
                 "Impaired Alveolar Exchange (Not implemented yet)",
@@ -129,9 +130,56 @@ public class ConditionPanel {
     
     /*SETTING INITIAL CONDITIONS FROM FILE*/
     
-    public void setInitialConditions() {
+    public void setInitialConditions(SECondition any) {
+        String name = "";
+
+        switch (any.getClass().getSimpleName()) {
+            case "SEChronicAnemia":
+                SEChronicAnemia ca = (SEChronicAnemia) any;
+                name = "Chronic Anemia";
+                break;
+            case "SEAcuteRespiratoryDistressSyndrome":
+            	SEAcuteRespiratoryDistressSyndrome ards = (SEAcuteRespiratoryDistressSyndrome) any;
+            	name = "ARDS";
+            	break;
+            case "SEChronicObstructivePulmonaryDisease":
+            	SEChronicObstructivePulmonaryDisease copd = (SEChronicObstructivePulmonaryDisease) any;
+            	name = "COPD";
+            	break;
+            case "SEChronicPericardialEffusion":
+            	SEChronicPericardialEffusion cpe = (SEChronicPericardialEffusion) any;
+            	name = "Pericardial Effusion";
+            	break;
+            case "SEChronicRenalStenosis":
+            	SEChronicRenalStenosis crs = (SEChronicRenalStenosis) any;
+            	name = "Renal Stenosis";
+            	break;
+            case "SEChronicVentricularSystolicDysfunction":
+            	SEChronicVentricularSystolicDysfunction cvsd = (SEChronicVentricularSystolicDysfunction) any;
+            	name = "Chronic Ventricular Systolic Disfunction";
+            	break;
+            case "SEImpairedAlveolarExchange":
+            	SEImpairedAlveolarExchange iae = (SEImpairedAlveolarExchange) any;
+            	name = "Impaired Alveolar Exchange";
+            	break;
+            case "SEPneumonia":
+            	SEPneumonia p = (SEPneumonia) any;
+            	name = "Pneumonia";
+            	break;
+            case "SEPulmonaryFibrosis":
+            	SEPulmonaryFibrosis pf = (SEPulmonaryFibrosis) any;
+            	name = "Pulmonary Fibrosis";
+            	break;
+            case "SEPulmonaryShunt":
+            	SEPulmonaryShunt ps = (SEPulmonaryShunt) any;
+            	name = "Pulmonary Shunt";
+            	break;
+        }
+        
         for (Condition condition : conditions) {
-        	
+        	if(condition.getTitle().equals(name)) {
+        		
+        	}
         }
     }
     

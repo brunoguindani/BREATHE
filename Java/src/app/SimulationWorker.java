@@ -120,8 +120,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        pe.getConditions(app.condition.getActiveConditions());
 	        for(SECondition any : app.condition.getActiveConditions())
 	        {
-	        	// al posto di stampare, chiama il metodo di conditionPanel e condition
-	            //Log.info(any.toString());
+	        	app.condition.setInitialConditions(any);
 	        }
 		}
 		

@@ -123,7 +123,7 @@ public class Condition {
                     double value;
 
                     switch (title) {
-	                    case "Anemia":
+	                    case "Chronic Anemia":
 	                        SEChronicAnemia anemia = new SEChronicAnemia();	                        
                             try {
                                 field = (JSpinner) components.get(0);
@@ -190,7 +190,7 @@ public class Condition {
                                 Log.error("Invalid input");
                             }	                        
 	                        break;	  
-	                    case "Ventricular Systolic Disfunction":
+	                    case "Chronic Ventricular Systolic Disfunction":
 	                        SEChronicVentricularSystolicDysfunction VSD = new SEChronicVentricularSystolicDysfunction();   
                             try {
                                 sendAction(VSD,"Ventricular Systolic Disfunction");
