@@ -8,6 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -163,23 +166,23 @@ public class PatientPanel {
             	
                 try { 
                     ObjectMapper mapper = new ObjectMapper();
-                    JsonNode rootNode = mapper.readTree(new File(selectedFilePath));
+                    JsonNode rootNode = mapper.readTree(new File(selectedFilePath));            
                     
                     //Retrieve patient data from selected file
-                    String name = rootNode.path("CurrentPatient").path("Name").asText();
-                    String sex = rootNode.path("CurrentPatient").path("Sex").asText(); 
+                    String name = rootNode.path("InitialPatient").path("Name").asText();
+                    String sex = rootNode.path("InitialPatient").path("Sex").asText(); 
                     if(sex.isBlank()) sex = "Male";
-                    int age = rootNode.path("CurrentPatient").path("Age").path("ScalarTime").path("Value").asInt();
-                    double weight = rootNode.path("CurrentPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
-                    String weightUnit = rootNode.path("CurrentPatient").path("Weight").path("ScalarMass").path("Unit").asText();
-                    int height = rootNode.path("CurrentPatient").path("Height").path("ScalarLength").path("Value").asInt();
-                    String heightUnit = rootNode.path("CurrentPatient").path("Height").path("ScalarLength").path("Unit").asText();
-                    double bodyFat = rootNode.path("CurrentPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
-                    double heartRate = rootNode.path("CurrentPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
-                    double diastolicPressure = rootNode.path("CurrentPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    double systolicPressure = rootNode.path("CurrentPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    int respirationRate = rootNode.path("CurrentPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
-                    double basalMetabolicRate = rootNode.path("CurrentPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
+                    int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
+                    double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
+                    String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+                    int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
+                    String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+                    double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+                    double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+                    double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                    double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                    int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
+                    double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
                     
                     //Set them to the proper field 
                     nameField_Patient.setText(name);
@@ -195,9 +198,9 @@ public class PatientPanel {
                     systolicField_Patient.setText(String.format("%.2f", systolicPressure));
                     respirationRateField_Patient.setText(String.valueOf(respirationRate));
                     basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
-
-                    startButton.doClick();//start simulation
-                    startFromFileButton.setEnabled(false);
+                    
+                   startButton.doClick();//start simulation
+                   startFromFileButton.setEnabled(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);

@@ -50,6 +50,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     public static volatile boolean ventilationStartRequest = false;
     public static volatile boolean ventilationDisconnectRequest = false;
     public static volatile boolean started = false; 
+    public static volatile boolean engineStabilized = false; 
     
     private static ZeroServer zmqServer;  
     private static boolean ext_running = false;
@@ -63,6 +64,11 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
     public static void requestStop() {
         stopRequested = true;
+        if(!engineStabilized) {
+        	started = false;
+            pe.clear();
+            pe.cleanUp();
+        }
         if(ext_running)
 			try {
 				zmqServer.close();
@@ -110,8 +116,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pe.serializeFromFile(patientFilePath, dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
+			
+	        pe.getConditions(app.condition.getActiveConditions());
+	        for(SECondition any : app.condition.getActiveConditions())
+	        {
+	        	// al posto di stampare, chiama il metodo di conditionPanel e condition
+	            //Log.info(any.toString());
+	        }
 		}
-
+		
         
         //Ventilators
         SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
@@ -120,6 +133,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         SEMechanicalVentilation ext = new SEMechanicalVentilation();
     	
         //Start Simulation
+        engineStabilized = true;
         app.patient.enableExportButton();
         MiniLogPanel.append("Simulation started");
         publish("Started\n");

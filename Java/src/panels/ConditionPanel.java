@@ -119,7 +119,6 @@ public class ConditionPanel {
     	return activeConditions.remove(e);
     }
     
-    //return the lists of active conditions
     public List<SECondition> getActiveConditions() {
     	return activeConditions;
     }
@@ -127,4 +126,13 @@ public class ConditionPanel {
     public int getNumActiveCondition() {
     	return activeConditions.size();
     }
+    
+    /*SETTING INITIAL CONDITIONS FROM FILE*/
+    
+    public void setInitialConditions() {
+        for (Condition condition : conditions) {
+        	
+        }
+    }
+    
 }
