@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.patient.conditions.*;
 
@@ -27,7 +28,20 @@ public class ConditionPanel {
         sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
         sectionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         sectionsPanel.setBackground(Color.LIGHT_GRAY);
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(Color.LIGHT_GRAY); 
+        
+        JButton removeAllConditions = new JButton("Remove all conditions");
+        removeAllConditions.setPreferredSize(new Dimension(150, 30));
+        removeAllConditions.setBackground(new Color(0, 122, 255)); 
+        removeAllConditions.setForeground(Color.WHITE);
+        removeAllConditions.setFocusPainted(false);
+        removeAllConditions.setMargin(new Insets(0, 0, 0, 0));  
+        buttonPanel.add(removeAllConditions);
 
+
+        sectionsPanel.add(buttonPanel);
         /*
          * CONDITIONS
          */
@@ -93,6 +107,20 @@ public class ConditionPanel {
         scrollConditionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollConditionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+        
+        removeAllConditions.addActionListener(e -> {
+            for (Condition condition : conditions) {
+            	if(condition.isActive()) {
+            		if(condition.getActiveCondition() != null) {
+                        removeCondition(condition.getActiveCondition());
+                        MiniLogPanel.append(condition.getTitle()+" removed");            			
+            		}
+                    condition.switchActive();
+                    condition.enable();
+            	}
+            }
+        });
+
     }
     
     //method to return the panel
@@ -132,27 +160,37 @@ public class ConditionPanel {
     
     public void setInitialConditions(SECondition any) {
         String name = "";
+        ArrayList<Double> values = new ArrayList<Double>();
 
         switch (any.getClass().getSimpleName()) {
             case "SEChronicAnemia":
                 SEChronicAnemia ca = (SEChronicAnemia) any;
                 name = "Chronic Anemia";
+                values.add(ca.getReductionFactor().getValue());
                 break;
             case "SEAcuteRespiratoryDistressSyndrome":
             	SEAcuteRespiratoryDistressSyndrome ards = (SEAcuteRespiratoryDistressSyndrome) any;
             	name = "ARDS";
+            	values.add(ards.getSeverity(eLungCompartment.LeftLung).getValue());
+            	values.add(ards.getSeverity(eLungCompartment.RightLung).getValue());
             	break;
             case "SEChronicObstructivePulmonaryDisease":
             	SEChronicObstructivePulmonaryDisease copd = (SEChronicObstructivePulmonaryDisease) any;
             	name = "COPD";
+            	values.add(copd.getBronchitisSeverity().getValue());
+            	values.add(copd.getEmphysemaSeverity(eLungCompartment.LeftLung).getValue());
+            	values.add(copd.getEmphysemaSeverity(eLungCompartment.RightLung).getValue());
             	break;
             case "SEChronicPericardialEffusion":
             	SEChronicPericardialEffusion cpe = (SEChronicPericardialEffusion) any;
             	name = "Pericardial Effusion";
+            	values.add(cpe.getAccumulatedVolume().getValue());
             	break;
             case "SEChronicRenalStenosis":
             	SEChronicRenalStenosis crs = (SEChronicRenalStenosis) any;
             	name = "Renal Stenosis";
+            	values.add(crs.getLeftKidneySeverity().getValue());
+            	values.add(crs.getRightKidneySeverity().getValue());
             	break;
             case "SEChronicVentricularSystolicDysfunction":
             	SEChronicVentricularSystolicDysfunction cvsd = (SEChronicVentricularSystolicDysfunction) any;
@@ -165,20 +203,24 @@ public class ConditionPanel {
             case "SEPneumonia":
             	SEPneumonia p = (SEPneumonia) any;
             	name = "Pneumonia";
+            	values.add(p.getSeverity(eLungCompartment.LeftLung).getValue());
+            	values.add(p.getSeverity(eLungCompartment.RightLung).getValue());
             	break;
             case "SEPulmonaryFibrosis":
             	SEPulmonaryFibrosis pf = (SEPulmonaryFibrosis) any;
             	name = "Pulmonary Fibrosis";
+            	values.add(pf.getSeverity().getValue());
             	break;
             case "SEPulmonaryShunt":
             	SEPulmonaryShunt ps = (SEPulmonaryShunt) any;
             	name = "Pulmonary Shunt";
+            	values.add(ps.getSeverity().getValue());
             	break;
         }
         
         for (Condition condition : conditions) {
         	if(condition.getTitle().equals(name)) {
-        		
+        		condition.setLoadedCondition(values);
         	}
         }
     }

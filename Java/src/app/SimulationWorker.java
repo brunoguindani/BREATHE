@@ -66,8 +66,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         stopRequested = true;
         if(!engineStabilized) {
         	started = false;
-            pe.clear();
-            pe.cleanUp();
+            // pe.clear(); tolti se no crasha il simulatore
+            // pe.cleanUp();
         }
         if(ext_running)
 			try {

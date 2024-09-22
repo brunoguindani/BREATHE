@@ -25,11 +25,6 @@ Ventilator Pressure Control
 
 TODO in ordine di importanza
 
-*Aggiungere che se carico un file con condizioni queste vengono aggiornate graficamente
-	(nel file nell'export c'è un paziente con due condizioni e infatti nel json ci sono anche con la loro severity :) 
-	quindi dovrebbe essere facile da fare)
-	Proverei a creare un paziente con tutte le condizioni per vedere ognuna come viene creata nel json
-
 *Modificare commenti classe APP
 
 *Capire quali cartelle si possono eliminare (resource e states sicuro no!)
