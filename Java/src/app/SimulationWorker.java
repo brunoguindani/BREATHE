@@ -66,8 +66,6 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         stopRequested = true;
         if(!engineStabilized) {
         	started = false;
-            // pe.clear(); tolti se no crasha il simulatore
-            // pe.cleanUp();
         }
         if(ext_running)
 			try {
@@ -92,7 +90,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         setDataRequests(dataRequests);
 
 
-        //Paztient data depending on PatientPanel config
+        //Patient data depending on PatientPanel config
 		String patientFilePath = app.patient.getSelectedFilePath();
 		 
 		if (patientFilePath == null || patientFilePath.isEmpty()) {
@@ -118,6 +116,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pe.getInitialPatient(initialPatient);
 			
 	        pe.getConditions(app.condition.getActiveConditions());
+	        app.condition.setInitialConditionsTo0();
 	        for(SECondition any : app.condition.getActiveConditions())
 	        {
 	        	app.condition.setInitialConditions(any);

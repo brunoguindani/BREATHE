@@ -317,13 +317,24 @@ public class Condition {
     
     public void setLoadedCondition(ArrayList<Double> values) {
     	int i=0;
+		enabled = true;
+		applySectionButton.setText("Remove");
     	for (JComponent component : components) {
-    		enabled = true;
-    		applySectionButton.setText("Remove");
+
     	    if (component instanceof JSpinner) {
-    	        ((JSpinner) component).setValue(values.get(i));  // nuovoValore può essere qualsiasi valore che il modello di JSpinner accetta
+    	        ((JSpinner) component).setValue(values.get(i));  
     	    }  	   
     	    i++;
+    	}
+    }
+    
+    public void setUnloadedCondition() {
+		enabled = false;
+		applySectionButton.setText("Apply");
+    	for (JComponent component : components) {
+    	    if (component instanceof JSpinner) {
+    	        ((JSpinner) component).setValue(0);  
+    	    }  	   
     	}
     }
 }

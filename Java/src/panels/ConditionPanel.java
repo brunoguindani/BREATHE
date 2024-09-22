@@ -18,7 +18,8 @@ public class ConditionPanel {
 	 * Panel to activate a condition before simulation
 	 */
 	
-    private JPanel sectionsPanel = new JPanel();  
+    private JPanel sectionsPanel = new JPanel(); 
+    private JButton resetConditions;
     private JScrollPane scrollConditionPane;
     private List<Condition> conditions = new ArrayList<>();
     private static List<SECondition> activeConditions = new ArrayList<>();
@@ -32,13 +33,13 @@ public class ConditionPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(Color.LIGHT_GRAY); 
         
-        JButton removeAllConditions = new JButton("Remove all conditions");
-        removeAllConditions.setPreferredSize(new Dimension(150, 30));
-        removeAllConditions.setBackground(new Color(0, 122, 255)); 
-        removeAllConditions.setForeground(Color.WHITE);
-        removeAllConditions.setFocusPainted(false);
-        removeAllConditions.setMargin(new Insets(0, 0, 0, 0));  
-        buttonPanel.add(removeAllConditions);
+        resetConditions = new JButton("Reset conditions");
+        resetConditions.setPreferredSize(new Dimension(150, 30));
+        resetConditions.setBackground(new Color(0, 122, 255)); 
+        resetConditions.setForeground(Color.WHITE);
+        resetConditions.setFocusPainted(false);
+        resetConditions.setMargin(new Insets(0, 0, 0, 0));  
+        buttonPanel.add(resetConditions);
 
 
         sectionsPanel.add(buttonPanel);
@@ -108,7 +109,7 @@ public class ConditionPanel {
         scrollConditionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         
-        removeAllConditions.addActionListener(e -> {
+        resetConditions.addActionListener(e -> {
             for (Condition condition : conditions) {
             	if(condition.isActive()) {
             		if(condition.getActiveCondition() != null) {
@@ -118,6 +119,7 @@ public class ConditionPanel {
                     condition.switchActive();
                     condition.enable();
             	}
+                condition.setUnloadedCondition();
             }
         });
 
@@ -132,12 +134,14 @@ public class ConditionPanel {
         for (Condition condition : conditions) {
         	condition.enable();
         }
+        resetConditions.setEnabled(true);
     }
     
     public void disableButtonStates() {
         for (Condition condition : conditions) {
         	condition.disable();
         }
+        resetConditions.setEnabled(false);
     }
     
     public static boolean addCondition(SECondition e) {
@@ -154,6 +158,10 @@ public class ConditionPanel {
     
     public int getNumActiveCondition() {
     	return activeConditions.size();
+    }
+    
+    public JButton getRemoveAllConditionsButton() {
+    	return resetConditions;
     }
     
     /*SETTING INITIAL CONDITIONS FROM FILE*/
@@ -193,11 +201,11 @@ public class ConditionPanel {
             	values.add(crs.getRightKidneySeverity().getValue());
             	break;
             case "SEChronicVentricularSystolicDysfunction":
-            	SEChronicVentricularSystolicDysfunction cvsd = (SEChronicVentricularSystolicDysfunction) any;
+            	//SEChronicVentricularSystolicDysfunction cvsd = (SEChronicVentricularSystolicDysfunction) any;
             	name = "Chronic Ventricular Systolic Disfunction";
             	break;
             case "SEImpairedAlveolarExchange":
-            	SEImpairedAlveolarExchange iae = (SEImpairedAlveolarExchange) any;
+            	//SEImpairedAlveolarExchange iae = (SEImpairedAlveolarExchange) any;
             	name = "Impaired Alveolar Exchange";
             	break;
             case "SEPneumonia":
@@ -225,4 +233,9 @@ public class ConditionPanel {
         }
     }
     
+    public void setInitialConditionsTo0() {
+        for (Condition condition : conditions) {
+        	condition.setUnloadedCondition();
+        }
+    }
 }
