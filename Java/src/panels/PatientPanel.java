@@ -8,9 +8,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -154,7 +151,7 @@ public class PatientPanel {
             app.ventilator.connectButton.setEnabled(false);
             app.action.disableButtonStates();
             app.condition.enableButtonStates();
-            setFieldsEnabled(true);
+            setFieldsEnabled(true);           
         });
         
         
@@ -165,41 +162,42 @@ public class PatientPanel {
             	selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
             	
                 try { 
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode rootNode = mapper.readTree(new File(selectedFilePath));            
+                   ObjectMapper mapper = new ObjectMapper();
+                   JsonNode rootNode = mapper.readTree(new File(selectedFilePath));            
                     
-                    //Retrieve patient data from selected file
-                    String name = rootNode.path("InitialPatient").path("Name").asText();
-                    String sex = rootNode.path("InitialPatient").path("Sex").asText(); 
-                    if(sex.isBlank()) sex = "Male";
-                    int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
-                    double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
-                    String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
-                    int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
-                    String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
-                    double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
-                    double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
-                    double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
-                    double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
+                   //Retrieve patient data from selected file
+                   String name = rootNode.path("InitialPatient").path("Name").asText();
+                   String sex = rootNode.path("InitialPatient").path("Sex").asText(); 
+                   if(sex.isBlank()) sex = "Male";
+                   int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
+                   double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
+                   String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+                   int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
+                   String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+                   double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+                   double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+                   double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                   double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                   int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
+                   double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
                     
-                    //Set them to the proper field 
-                    nameField_Patient.setText(name);
-                    sexComboBox_Patient.setSelectedItem(sex);
-                    ageField_Patient.setText(String.valueOf(age));
-                    weightField_Patient.setText(String.format("%.2f", weight));
-                    weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
-                    heightField_Patient.setText(String.valueOf(height));
-                    heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
-                    bodyFatField_Patient.setText(String.format("%.2f", bodyFat));
-                    heartRateField_Patient.setText(String.format("%.2f", heartRate));
-                    diastolicField_Patient.setText(String.format("%.2f", diastolicPressure));
-                    systolicField_Patient.setText(String.format("%.2f", systolicPressure));
-                    respirationRateField_Patient.setText(String.valueOf(respirationRate));
-                    basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
+                   //Set them to the proper field 
+                   nameField_Patient.setText(name);
+                   sexComboBox_Patient.setSelectedItem(sex);
+                   ageField_Patient.setText(String.valueOf(age));
+                   weightField_Patient.setText(String.format("%.2f", weight));
+                   weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
+                   heightField_Patient.setText(String.valueOf(height));
+                   heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
+                   bodyFatField_Patient.setText(String.format("%.2f", bodyFat));
+                   heartRateField_Patient.setText(String.format("%.2f", heartRate));
+                   diastolicField_Patient.setText(String.format("%.2f", diastolicPressure));
+                   systolicField_Patient.setText(String.format("%.2f", systolicPressure));
+                   respirationRateField_Patient.setText(String.valueOf(respirationRate));
+                   basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
                     
-                   startButton.doClick();//start simulation
+                   app.condition.getRemoveAllConditionsButton().doClick();
+                   startButton.doClick();
                    startFromFileButton.setEnabled(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
