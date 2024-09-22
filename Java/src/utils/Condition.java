@@ -265,7 +265,6 @@ public class Condition {
             enableFields();
             applySectionButton.setText("Apply");
         }	
-    	System.out.println(success);
         return success;
     }
 
@@ -301,5 +300,30 @@ public class Condition {
     
     public String getTitle() {
     	return title;
+    }
+    
+    public boolean isActive() {
+    	return enabled;
+    }
+    
+    public void switchActive() {
+    	enabled = !enabled;
+    	applySectionButton.setText("Apply");
+    }
+    
+    public SECondition getActiveCondition() {
+    	return condition;
+    }
+    
+    public void setLoadedCondition(ArrayList<Double> values) {
+    	int i=0;
+    	for (JComponent component : components) {
+    		enabled = true;
+    		applySectionButton.setText("Remove");
+    	    if (component instanceof JSpinner) {
+    	        ((JSpinner) component).setValue(values.get(i));  // nuovoValore può essere qualsiasi valore che il modello di JSpinner accetta
+    	    }  	   
+    	    i++;
+    	}
     }
 }
