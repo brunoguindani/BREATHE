@@ -96,14 +96,14 @@ public class App extends JFrame {
         conditionRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 
         // Creare un pannello per includere i RadioButton e il pannello con CardLayout
-        JPanel patientAndConditionPanel = new JPanel(new BorderLayout());
-        patientAndConditionPanel.add(radioPanel, BorderLayout.NORTH);
-        patientAndConditionPanel.add(patientConditionPanel, BorderLayout.CENTER);
+        JPanel switchPanel = new JPanel(new BorderLayout());
+        switchPanel.add(radioPanel, BorderLayout.NORTH);
+        switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
 
         //adding to the switch
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient", patientAndConditionPanel);
+        switchTabbedPane.addTab("Patient", switchPanel);
         switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
         switchTabbedPane.addTab("Scenario", scenarioPanel);
