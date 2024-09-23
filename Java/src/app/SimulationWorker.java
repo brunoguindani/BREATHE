@@ -125,12 +125,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        }
 		}
 		else { //TEMPORANEO, BOTTONE SCENARIO
-			
-			PulseScenarioExec execOpts = new PulseScenarioExec();
-			execOpts.setScenarioFilename("./scenario/test.json");
-			
+			SEScenario sce = new SEScenario();
+			sce.readFile("./scenario/test.json");
+			pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests); //Qua sarà da prendere dal file json
+			pe.initializeEngine(sce.getPatientConfiguration(), dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
+			
 			pe.getConditions(app.condition.getActiveConditions());
 	        app.condition.setInitialConditionsTo0();
 	        for(SECondition any : app.condition.getActiveConditions())
