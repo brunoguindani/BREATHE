@@ -122,7 +122,7 @@ public class PatientPanel {
         gbc.gridy++;
         
         
-        //buttonPanel.add(startFromSimulationButton);
+        buttonPanel.add(startFromSimulationButton);
         buttonPanel.add(startFromFileButton);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);

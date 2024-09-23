@@ -68,7 +68,7 @@ public class ScenarioPanel {
       sce.getActions().add(ards);
       
       sce.writeFile("./scenario/test.json"); //Aggiunto da me, non penso sia il modo di esportare
-      execOpts.setScenarioFilename("./scenario/test.json");
+      //execOpts.setScenarioFilename("./scenario/test.json");
       //execOpts.setScenarioContent(sce.toJSON()); ->Questo in teoria fa la stessa cosa del comando qua sopra
       //execOpts.execute(); ->Esegue lo scenario
     }
