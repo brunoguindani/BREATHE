@@ -68,31 +68,28 @@ public class App extends JFrame {
         JScrollPane scrollLogPane = log.getLogScrollPane();
         JPanel miniLogPanel = mlog.getMiniLogPanel();
 
-        // Creare i RadioButton per cambiare tra paziente e condizione
+        // Create RadioButtons to swtich between patient and conditions
         patientRadioButton = new JRadioButton("Patient");
         conditionRadioButton = new JRadioButton("Condition");
         ButtonGroup group = new ButtonGroup();
         group.add(patientRadioButton);
         group.add(conditionRadioButton);
-        patientRadioButton.setSelected(true);  // Di default, il pannello del paziente è selezionato
+        patientRadioButton.setSelected(true);  
         
-        // Aggiungere i RadioButton a un pannello
         JPanel radioPanel = new JPanel();
-        radioPanel.setBackground(Color.LIGHT_GRAY); // Cambia il colore di sfondo
+        radioPanel.setBackground(Color.LIGHT_GRAY); 
         radioPanel.add(patientRadioButton);
         radioPanel.add(conditionRadioButton);
 
-        // Creare il pannello con CardLayout per contenere entrambi i pannelli
         cardLayout = new CardLayout();
         patientConditionPanel = new JPanel(cardLayout);
         patientConditionPanel.add(patientPanel, "Patient");
         patientConditionPanel.add(scrollConditionPane, "Condition");
 
-        // Aggiungere un ActionListener ai RadioButton per cambiare pannello
+        // Switch between setup panels
         patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
         conditionRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 
-        // Creare un pannello per includere i RadioButton e il pannello con CardLayout
         JPanel switchPanel = new JPanel(new BorderLayout());
         switchPanel.add(radioPanel, BorderLayout.NORTH);
         switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
