@@ -97,7 +97,14 @@ public class ConditionPanel {
         for (Condition condition : conditions) {
             sectionsPanel.add(condition.sectionPanel);
         }
-                        
+        
+        JPanel spacePanel = new JPanel();
+        spacePanel.setLayout(new BorderLayout()); 
+        spacePanel.setPreferredSize(new Dimension(150, 230));
+        spacePanel.setBackground(Color.LIGHT_GRAY);
+        sectionsPanel.add(spacePanel);
+
+                          
         /*
          * END CONDITIONS
          */
