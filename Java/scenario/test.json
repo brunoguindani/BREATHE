@@ -1,24 +1,11 @@
 {
-  "Name": "HowTo_StaticEngine",
-  "Description": "Simple Scenario to demonstraight building a scenario by the CDM API",
+  "Name": "Test",
   "EngineStateFile": "./states/StandardMale@0s.json",
   "DataRequestManager": {
     "DataRequest": [{
       "Category": "Physiology",
       "PropertyName": "HeartRate",
       "Unit": "1/min"
-    }, {
-      "Category": "Physiology",
-      "PropertyName": "TotalLungVolume",
-      "Unit": "mL"
-    }, {
-      "Category": "Physiology",
-      "PropertyName": "RespirationRate",
-      "Unit": "1/min"
-    }, {
-      "Category": "Physiology",
-      "PropertyName": "BloodVolume",
-      "Unit": "mL"
     }]
   },
   "AnyAction": [{
@@ -27,26 +14,1112 @@
       },
       "Time": {
         "ScalarTime": {
-          "Value": 1.0,
-          "Unit": "min"
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 0.02,
+          "Unit": "s"
         }
       }
     }
   }, {
     "PatientAction": {
-      "AcuteRespiratoryDistressSyndromeExacerbation": {
+      "AirwayObstruction": {
         "PatientAction": {
           "Action": {
           }
         },
-        "Severity": [{
-          "Compartment": "RightLung",
-          "Severity": {
-            "Scalar0To1": {
-              "Value": 0.5
-            }
+        "Severity": {
+          "Scalar0To1": {
+            "Value": 1.0
           }
-        }]
+        }
       }
     }
   }]
