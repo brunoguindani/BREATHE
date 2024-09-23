@@ -24,11 +24,13 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
+import com.kitware.pulse.cdm.scenario.SEScenario;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
+import com.kitware.pulse.engine.PulseScenarioExec;
 import com.kitware.pulse.utilities.Log;
 
 import panels.MiniLogPanel;
@@ -93,7 +95,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         //Patient data depending on PatientPanel config
 		String patientFilePath = app.patient.getSelectedFilePath();
 		 
-		if (patientFilePath == null || patientFilePath.isEmpty()) {
+		if ((patientFilePath == null || patientFilePath.isEmpty()) && !app.patient.scenario) {
 			
 			MiniLogPanel.append("Loading...");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
@@ -107,7 +109,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
 			pe.initializeEngine(patient_configuration, dataRequests);
 		}
-		else {
+		else if (!app.patient.scenario){
 			MiniLogPanel.append("Starting from file...");
 			if(app.condition.getNumActiveCondition() != 0)
 				MiniLogPanel.append("Resetting condition...");
@@ -116,6 +118,20 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pe.getInitialPatient(initialPatient);
 			
 	        pe.getConditions(app.condition.getActiveConditions());
+	        app.condition.setInitialConditionsTo0();
+	        for(SECondition any : app.condition.getActiveConditions())
+	        {
+	        	app.condition.setInitialConditions(any);
+	        }
+		}
+		else { //TEMPORANEO, BOTTONE SCENARIO
+			
+			PulseScenarioExec execOpts = new PulseScenarioExec();
+			execOpts.setScenarioFilename("./scenario/test.json");
+			
+			SEPatient initialPatient = new SEPatient();
+			pe.getInitialPatient(initialPatient);
+			pe.getConditions(app.condition.getActiveConditions());
 	        app.condition.setInitialConditionsTo0();
 	        for(SECondition any : app.condition.getActiveConditions())
 	        {

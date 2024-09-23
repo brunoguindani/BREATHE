@@ -1,0 +1,53 @@
+{
+  "Name": "HowTo_StaticEngine",
+  "Description": "Simple Scenario to demonstraight building a scenario by the CDM API",
+  "EngineStateFile": "./states/StandardMale@0s.json",
+  "DataRequestManager": {
+    "DataRequest": [{
+      "Category": "Physiology",
+      "PropertyName": "HeartRate",
+      "Unit": "1/min"
+    }, {
+      "Category": "Physiology",
+      "PropertyName": "TotalLungVolume",
+      "Unit": "mL"
+    }, {
+      "Category": "Physiology",
+      "PropertyName": "RespirationRate",
+      "Unit": "1/min"
+    }, {
+      "Category": "Physiology",
+      "PropertyName": "BloodVolume",
+      "Unit": "mL"
+    }]
+  },
+  "AnyAction": [{
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "min"
+        }
+      }
+    }
+  }, {
+    "PatientAction": {
+      "AcuteRespiratoryDistressSyndromeExacerbation": {
+        "PatientAction": {
+          "Action": {
+          }
+        },
+        "Severity": [{
+          "Compartment": "RightLung",
+          "Severity": {
+            "Scalar0To1": {
+              "Value": 0.5
+            }
+          }
+        }]
+      }
+    }
+  }]
+}

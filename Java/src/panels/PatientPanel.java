@@ -43,6 +43,9 @@ public class PatientPanel {
     
     JButton exportButton;
     
+    
+    public boolean scenario = false;
+    
     public PatientPanel(App app) {
     	
     	mainPanel.setBackground(Color.LIGHT_GRAY);
@@ -84,10 +87,15 @@ public class PatientPanel {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.LIGHT_GRAY);
         JButton startFromFileButton = new JButton("Start From File");
+        JButton startFromSimulationButton = new JButton("Start From Scenario");
         JButton startButton = new JButton("Start Simulation");
         JButton stopButton = new JButton("Stop Simulation");
         exportButton = new JButton("Export Simulation");
        
+        startFromSimulationButton.setBackground(new Color(0, 122, 255)); 
+        startFromSimulationButton.setForeground(Color.WHITE);
+        startFromSimulationButton.setFocusPainted(false);
+        
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
@@ -113,13 +121,13 @@ public class PatientPanel {
         exportButton.setFocusPainted(false);
         gbc.gridy++;
         
-        // Configurazione dei pulsanti
+        
+        //buttonPanel.add(startFromSimulationButton);
         buttonPanel.add(startFromFileButton);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
         buttonPanel.add(exportButton);
         
-        // Aggiungi il pannello dei pulsanti al pannello principale
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         /*
@@ -254,6 +262,10 @@ public class PatientPanel {
             }
         });
 
+        startFromSimulationButton.addActionListener(e -> {
+        	scenario = true;
+        	startButton.doClick();
+        });
 
     }
     
