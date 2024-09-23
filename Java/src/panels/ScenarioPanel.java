@@ -1,12 +1,15 @@
 package panels;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.JTextField;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.kitware.pulse.cdm.actions.SEAdvanceTime;
-import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
-import com.kitware.pulse.cdm.patient.actions.SEAcuteRespiratoryDistressSyndromeExacerbation;
+import com.kitware.pulse.cdm.patient.actions.SEAirwayObstruction;
 import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
@@ -14,67 +17,83 @@ import com.kitware.pulse.cdm.scenario.SEScenario;
 import com.kitware.pulse.engine.PulseScenarioExec;
 import com.kitware.pulse.utilities.JNIBridge;
 
-import app.SimulationWorker;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 public class ScenarioPanel {
 
     private JPanel scenarioPanel;
     private JButton createScenarioButton;
+    private JTextField scenarioNameField; 
+    private JTextField scenarioDescriptionField; 
     static PulseScenarioExec execOpts;
 
     public ScenarioPanel() {
-    	scenarioPanel = new JPanel();
+        scenarioPanel = new JPanel();
+        scenarioPanel.setLayout(new GridBagLayout()); 
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        scenarioNameField = new JTextField(25); 
+        scenarioDescriptionField = new JTextField(25); 
         createScenarioButton = new JButton("Create Scenario");
 
-        createScenarioButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	JNIBridge.initialize();
-                example();
-            }
-        });
+        // Aggiungi i campi di testo con le etichette
+        addLabelAndField("Name:", scenarioNameField, scenarioPanel, gbc, 0);
+        addLabelAndField("Description:", scenarioDescriptionField, scenarioPanel, gbc, 1);
 
-        scenarioPanel.add(createScenarioButton);
+        
+        gbc.gridx = 0; 
+        gbc.gridy = 2; 
+        gbc.gridwidth = 2; 
+        scenarioPanel.add(createScenarioButton, gbc);
+        
+        createScenarioButton.addActionListener(e -> {
+            JNIBridge.initialize();
+            createScenario();
+        });
     }
     
-    public static void example()
-    {
-      execOpts = new PulseScenarioExec();
-      
-      // Create and run a scenario
-      execOpts.clear();
-      SEScenario sce = new SEScenario();
-      sce.setName("HowTo_StaticEngine");
-      sce.setDescription("Simple Scenario to demonstraight building a scenario by the CDM API");
-      sce.setEngineState("./states/StandardMale@0s.json");
-      // When filling out a data request, units are optional
-      // The units will be set to whatever units the engine uses.
-      SEDataRequestManager dataRequests = sce.getDataRequestManager();
-      dataRequests.createPhysiologyDataRequest("HeartRate", FrequencyUnit.Per_min);
-      dataRequests.createPhysiologyDataRequest("TotalLungVolume", VolumeUnit.mL);
-      dataRequests.createPhysiologyDataRequest("RespirationRate", FrequencyUnit.Per_min);
-      dataRequests.createPhysiologyDataRequest("BloodVolume", VolumeUnit.mL);
-      // Let's just run for 1 minutes
-      SEAdvanceTime adv = new SEAdvanceTime();
-      adv.getTime().setValue(1,TimeUnit.min);
-      sce.getActions().add(adv);
-      
-      //Test azione
-      SEAcuteRespiratoryDistressSyndromeExacerbation ards = new SEAcuteRespiratoryDistressSyndromeExacerbation();
-      ards.getSeverity(eLungCompartment.RightLung).setValue(0.5);
-      sce.getActions().add(ards);
-      
-      sce.writeFile("./scenario/test.json"); //Aggiunto da me, non penso sia il modo di esportare
-      //execOpts.setScenarioFilename("./scenario/test.json");
-      //execOpts.setScenarioContent(sce.toJSON()); ->Questo in teoria fa la stessa cosa del comando qua sopra
-      //execOpts.execute(); ->Esegue lo scenario
+    private void addLabelAndField(String labelText, JTextField textField, JPanel panel, GridBagConstraints gbc, int row) {
+        gbc.gridx = 0;
+        gbc.gridy = row; 
+        gbc.insets = new Insets(5, 5, 5, 5); 
+        panel.add(new JLabel(labelText), gbc); 
+        
+        gbc.gridx = 1; 
+        panel.add(textField, gbc); 
     }
 
+    
+    public void createScenario() {
+        SEScenario sce = new SEScenario();
+        String scenarioName = scenarioNameField.getText(); 
+        String scenarioDescription = scenarioDescriptionField.getText();
+        sce.setName(scenarioName);
+        sce.setDescription(scenarioDescription);
+        JFileChooser fileChooser = new JFileChooser("./states/");
+        int returnValue = fileChooser.showOpenDialog(null); //pick a file
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+        	String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+        	sce.setEngineState(selectedFilePath);
+
+	        SEAdvanceTime adv = new SEAdvanceTime();
+	        adv.getTime().setValue(0.02, TimeUnit.s);
+	        for (int i = 0; i < 100; i++) {
+	            sce.getActions().add(adv);
+	        }
+	
+	        SEAirwayObstruction obstruction = new SEAirwayObstruction();
+	        obstruction.getSeverity().setValue(1);
+	        sce.getActions().add(obstruction);
+	
+	        sce.writeFile("./scenario/"+scenarioName+".json");
+	        MiniLogPanel.append("Scenario exported");
+        }
+    }
+
+    
     public JPanel getScenarioPanel() {
         return scenarioPanel;
     }
-    
 }

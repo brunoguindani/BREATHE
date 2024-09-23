@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class PatientPanel {
       
     private JScrollPane  patientPanel = new JScrollPane ();
     private JPanel mainPanel = new JPanel();
-    private String selectedFilePath;
+    private String selectedPatientFilePath;
     
     JButton exportButton;
     
@@ -79,7 +80,7 @@ public class PatientPanel {
 
         // Aggiungi il pannello interno al JScrollPane
         patientPanel.setViewportView(innerPanel);
-        patientPanel.setPreferredSize(new Dimension(450, 450)); // Dimensione appropriata
+        patientPanel.setPreferredSize(new Dimension(450, 400)); // Dimensione appropriata
         patientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         mainPanel.add(patientPanel, BorderLayout.CENTER);
@@ -121,13 +122,15 @@ public class PatientPanel {
         exportButton.setFocusPainted(false);
         gbc.gridy++;
         
+        buttonPanel.setLayout(new GridLayout(2, 3, 10, 10));
         
         buttonPanel.add(startFromSimulationButton);
         buttonPanel.add(startFromFileButton);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
         buttonPanel.add(exportButton);
-        
+
+
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         /*
@@ -138,6 +141,7 @@ public class PatientPanel {
         	setFieldsEnabled(false); //disable changing of parameters 
             startButton.setEnabled(false); // disable starting buttons
             startFromFileButton.setEnabled(false); 
+            startFromSimulationButton.setEnabled(false);
             stopButton.setEnabled(true); // enable stop button
             for (int i =0; i< app.chartPanels.length ;i++) {
             	app.chartPanels[i].clear(); //restart panels
@@ -152,9 +156,10 @@ public class PatientPanel {
         stopButton.addActionListener(e -> {
             SimulationWorker.requestStop(); //stop simulation
             startButton.setEnabled(true);
+            startFromSimulationButton.setEnabled(true);
             exportButton.setEnabled(false);
             startFromFileButton.setEnabled(true);
-            selectedFilePath = null;
+            selectedPatientFilePath = null;
             stopButton.setEnabled(false);
             app.ventilator.connectButton.setEnabled(false);
             app.action.disableButtonStates();
@@ -167,11 +172,11 @@ public class PatientPanel {
             JFileChooser fileChooser = new JFileChooser("./states/");
             int returnValue = fileChooser.showOpenDialog(null); //pick a file
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-            	selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+            	selectedPatientFilePath = fileChooser.getSelectedFile().getAbsolutePath();
             	
                 try { 
                    ObjectMapper mapper = new ObjectMapper();
-                   JsonNode rootNode = mapper.readTree(new File(selectedFilePath));            
+                   JsonNode rootNode = mapper.readTree(new File(selectedPatientFilePath));            
                     
                    //Retrieve patient data from selected file
                    String name = rootNode.path("InitialPatient").path("Name").asText();
@@ -206,7 +211,6 @@ public class PatientPanel {
                     
                    app.condition.getRemoveAllConditionsButton().doClick();
                    startButton.doClick();
-                   startFromFileButton.setEnabled(false);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -263,8 +267,55 @@ public class PatientPanel {
         });
 
         startFromSimulationButton.addActionListener(e -> {
-        	scenario = true;
-        	startButton.doClick();
+        	 JFileChooser fileChooser = new JFileChooser("./scenario/");
+             int returnValue = fileChooser.showOpenDialog(null); //pick a file
+             if (returnValue == JFileChooser.APPROVE_OPTION) {
+             	String selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+             	
+                 try { 
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode rootNode_scenario = mapper.readTree(new File(selectedScenarioFilePath)); 
+                    selectedPatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
+                    JsonNode rootNode_patient = mapper.readTree(new File(selectedPatientFilePath));   
+                    //Retrieve patient data from selected file
+                    String name = rootNode_patient.path("InitialPatient").path("Name").asText();
+                    String sex = rootNode_patient.path("InitialPatient").path("Sex").asText(); 
+                    if(sex.isBlank()) sex = "Male";
+                    int age = rootNode_patient.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
+                    double weight = rootNode_patient.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
+                    String weightUnit = rootNode_patient.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+                    int height = rootNode_patient.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
+                    String heightUnit = rootNode_patient.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+                    double bodyFat = rootNode_patient.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+                    double heartRate = rootNode_patient.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+                    double diastolicPressure = rootNode_patient.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                    double systolicPressure = rootNode_patient.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+                    int respirationRate = rootNode_patient.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
+                    double basalMetabolicRate = rootNode_patient.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
+                     
+                    //Set them to the proper field 
+                    nameField_Patient.setText(name);
+                    sexComboBox_Patient.setSelectedItem(sex);
+                    ageField_Patient.setText(String.valueOf(age));
+                    weightField_Patient.setText(String.format("%.2f", weight));
+                    weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
+                    heightField_Patient.setText(String.valueOf(height));
+                    heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
+                    bodyFatField_Patient.setText(String.format("%.2f", bodyFat));
+                    heartRateField_Patient.setText(String.format("%.2f", heartRate));
+                    diastolicField_Patient.setText(String.format("%.2f", diastolicPressure));
+                    systolicField_Patient.setText(String.format("%.2f", systolicPressure));
+                    respirationRateField_Patient.setText(String.valueOf(respirationRate));
+                    basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
+                     
+                    app.condition.getRemoveAllConditionsButton().doClick(); 
+                    scenario = true;
+                    startButton.doClick();
+                 } catch (IOException ex) {
+                     ex.printStackTrace();
+                     JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+                 }
+             }
         });
 
     }
@@ -345,8 +396,8 @@ public class PatientPanel {
     }
     
     //Get file 
-    public String getSelectedFilePath() {
-        return selectedFilePath;
+    public String getSelectedPatientFilePath() {
+        return selectedPatientFilePath;
     }
     
     //Get patient data

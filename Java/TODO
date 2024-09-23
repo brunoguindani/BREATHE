@@ -23,7 +23,13 @@ Ventilator Pressure Control
 
 TODO in ordine di importanza
 
-*Scenari
+########Scenari########
+Per ora è possibile creare scenari impostando nome scenario, descrizione scenario e il paziente dello scenario (si apre la selezione prima della creazione)
+
+per il resto lo scenario va, bisogna fare tutta la parte di creazione in se con interfaccia grafica, la mia è una bozza
+#######################
+
+*Spostare tasto reset condition in fondo (tipo patient panel)
 
 *Sistemare commenti patientFile
 

@@ -5,7 +5,9 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.kitware.pulse.cdm.actions.SEAction;
+import com.kitware.pulse.cdm.actions.SEAdvanceTime;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
@@ -59,7 +61,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     private boolean firstConnection = true;
     private enum extMode { VOLUME, PRESSURE }
     private extMode currentEXTMode;
+    
+    SEScalarTime stime;
 
+    SEMechanicalVentilatorPressureControl pc;
+    SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap;
+    SEMechanicalVentilatorVolumeControl vc;
+    SEMechanicalVentilation ext;
+    
     public SimulationWorker(App appTest) {
         this.app = appTest;
     }
@@ -93,10 +102,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
 
         //Patient data depending on PatientPanel config
-		String patientFilePath = app.patient.getSelectedFilePath();
+		String patientFilePath = app.patient.getSelectedPatientFilePath();
 		 
 		if ((patientFilePath == null || patientFilePath.isEmpty()) && !app.patient.scenario) {
-			
 			MiniLogPanel.append("Loading...");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
@@ -124,41 +132,37 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        	app.condition.setInitialConditions(any);
 	        }
 		}
-		else { //TEMPORANEO, BOTTONE SCENARIO
-			SEScenario sce = new SEScenario();
-			sce.readFile("./scenario/test.json");
-			pe.serializeFromFile("./states/StandardMale@0s.json", dataRequests); //Qua sarà da prendere dal file json
-			pe.initializeEngine(sce.getPatientConfiguration(), dataRequests);
-			SEPatient initialPatient = new SEPatient();
-			pe.getInitialPatient(initialPatient);
-			
-			pe.getConditions(app.condition.getActiveConditions());
-	        app.condition.setInitialConditionsTo0();
-	        for(SECondition any : app.condition.getActiveConditions())
-	        {
-	        	app.condition.setInitialConditions(any);
-	        }
+		else { 
+			run_scenario(patientFilePath);
+			simulation(true);
+			return null;
 		}
-		
         
-        //Ventilators
-        SEMechanicalVentilatorPressureControl pc = new SEMechanicalVentilatorPressureControl();
-        SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
-        SEMechanicalVentilatorVolumeControl vc = new SEMechanicalVentilatorVolumeControl();
-        SEMechanicalVentilation ext = new SEMechanicalVentilation();
-    	
-        //Start Simulation
-        engineStabilized = true;
-        app.patient.enableExportButton();
-        MiniLogPanel.append("Simulation started");
-        publish("Started\n");
-        SEScalarTime time = new SEScalarTime(0, TimeUnit.s);
+        simulation(false);
+        return null;
+    }
+
+    private void simulation(boolean scenario) {
+    	if(!scenario) {
+	    	//Ventilators
+	        pc = new SEMechanicalVentilatorPressureControl();
+	        cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
+	        vc = new SEMechanicalVentilatorVolumeControl();
+	        ext = new SEMechanicalVentilation();
+	    	
+	        //Start Simulation
+	        engineStabilized = true;
+	        app.patient.enableExportButton();
+	        MiniLogPanel.append("Simulation started");
+	        publish("Started\n");
+	        stime = new SEScalarTime(0, TimeUnit.s);
+    	}
         while (!stopRequested) {
         	
-            if (!pe.advanceTime(time)) {
+            if (!pe.advanceTime(stime)) {
                 publish("Something bad happened\n");
                 MiniLogPanel.append("!!!Error, simulation stopped!!!");
-                return null;
+                return;
             }
             
             handilngVentilator(ext,pc,cpap,vc);
@@ -169,8 +173,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             else
             	dataPrint();
 
-            time.setValue(0.02, TimeUnit.s);
-            Log.info("Advancing "+time+"...");
+            stime.setValue(0.02, TimeUnit.s);
+            Log.info("Advancing "+stime+"...");
         }
         
         // Final Cleaning
@@ -180,11 +184,60 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         publish("Simulation Complete\n");
         MiniLogPanel.append("Simulation stopped");
 
-        return null;
+        return;
     }
-
     
-    @Override
+    
+    private void run_scenario(String patientFilePath) {
+    	SEScenario sce = new SEScenario();
+		try {
+			sce.readFile("./scenario/test.json");
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(sce.hasEngineState()) {
+			if(!pe.serializeFromFile(patientFilePath, dataRequests));
+		} else if(sce.hasPatientConfiguration()) {
+			if(!pe.initializeEngine(sce.getPatientConfiguration(), dataRequests));
+		}
+		
+		SEPatient initialPatient = new SEPatient();
+		pe.getInitialPatient(initialPatient);
+		pc = new SEMechanicalVentilatorPressureControl();
+        cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
+        vc = new SEMechanicalVentilatorVolumeControl();
+        ext = new SEMechanicalVentilation();
+        
+		SEAdvanceTime adv = null;  
+		for (SEAction a : sce.getActions()) {
+		    if (a instanceof SEAdvanceTime) {
+		        adv = (SEAdvanceTime) a;
+		        if (!pe.advanceTime(adv.getTime())) {
+	                publish("Something bad happened\n");
+	                MiniLogPanel.append("!!!Error, simulation stopped!!!");
+	            }
+	            
+	            handilngVentilator(ext,pc,cpap,vc);
+
+	            //Log and data printing
+	            if(ext_running)
+	            	zmqServer.setSimulationData(dataPrint());
+	            else
+	            	dataPrint();
+	            Log.info("Advancing "+adv.getTime()+"...");
+		    } else {
+		        pe.processAction(a);
+		        MiniLogPanel.append(a.toString()+" applied");
+		    }
+		    if(stopRequested)
+		    	return;
+		}
+		stime = adv.getTime();
+	}
+    
+    
+	@Override
     protected void process(java.util.List<String> chunks) {
         for (String chunk : chunks) {
             app.log.getResultArea().append(chunk);
