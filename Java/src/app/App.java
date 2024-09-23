@@ -8,6 +8,7 @@ import panels.ChartsPanel;
 import panels.LogPanel;
 import panels.MiniLogPanel;
 import panels.PatientPanel;
+import panels.ScenarioPanel;
 import panels.VentilatorPanel;
 import utils.LineChart;
 
@@ -31,6 +32,7 @@ public class App extends JFrame {
     public VentilatorPanel ventilator = new VentilatorPanel();
     public ActionPanel action = new ActionPanel();
     public ConditionPanel condition = new ConditionPanel();
+    public ScenarioPanel scenario = new ScenarioPanel();
     public LogPanel log = new LogPanel();
     public MiniLogPanel mlog = new MiniLogPanel();
     public ChartsPanel charts = new ChartsPanel();
@@ -65,6 +67,7 @@ public class App extends JFrame {
         JScrollPane scrollConditionPane = condition.getConditionScrollPane();
         JPanel ventilatorPanel = ventilator.getVentilatorPanel();
         JScrollPane scrollActionPane = action.getActionScrollPane();
+        JPanel scenarioPanel = scenario.getScenarioPanel();
         JScrollPane scrollLogPane = log.getLogScrollPane();
         JPanel miniLogPanel = mlog.getMiniLogPanel();
 
@@ -93,16 +96,17 @@ public class App extends JFrame {
         conditionRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 
         // Creare un pannello per includere i RadioButton e il pannello con CardLayout
-        JPanel switchPanel = new JPanel(new BorderLayout());
-        switchPanel.add(radioPanel, BorderLayout.NORTH);
-        switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
+        JPanel patientAndConditionPanel = new JPanel(new BorderLayout());
+        patientAndConditionPanel.add(radioPanel, BorderLayout.NORTH);
+        patientAndConditionPanel.add(patientConditionPanel, BorderLayout.CENTER);
 
         //adding to the switch
         switchTabbedPane = new JTabbedPane();
         switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient", switchPanel);
+        switchTabbedPane.addTab("Patient", patientAndConditionPanel);
         switchTabbedPane.addTab("Action", scrollActionPane);
         switchTabbedPane.addTab("Ventilator", ventilatorPanel);
+        switchTabbedPane.addTab("Scenario", scenarioPanel);
         switchTabbedPane.addTab("Log", scrollLogPane);
         switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
 
