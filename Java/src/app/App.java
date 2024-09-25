@@ -2,6 +2,8 @@ package app;
 
 import javax.swing.*;
 
+import com.kitware.pulse.utilities.JNIBridge;
+
 import panels.ConditionPanel;
 import panels.ActionPanel;
 import panels.ChartsPanel;
@@ -25,12 +27,12 @@ public class App extends JFrame {
     private static final long serialVersionUID = 1L;
 
     //tab to select other panels
-    private JTabbedPane switchTabbedPane;
+    public JTabbedPane switchTabbedPane;
 
     //all available panels
     public PatientPanel patient = new PatientPanel(this);
     public VentilatorPanel ventilator = new VentilatorPanel();
-    public ActionPanel action = new ActionPanel();
+    public ActionPanel action = new ActionPanel(this);
     public ConditionPanel condition = new ConditionPanel();
     public ScenarioPanel scenario = new ScenarioPanel();
     public LogPanel log = new LogPanel();
@@ -45,7 +47,7 @@ public class App extends JFrame {
     private JRadioButton conditionRadioButton;
 
     public App() {
-    	
+        JNIBridge.initialize();
     	//main panel
         setTitle("Pulse Simulation");
         setSize(1100, 700);
