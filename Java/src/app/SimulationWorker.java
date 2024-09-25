@@ -103,7 +103,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		String scenarioFilePath = app.patient.getSelectedScenarioFilePath();
 		 
 		if ((patientFilePath == null || patientFilePath.isEmpty()) && (scenarioFilePath == null || scenarioFilePath.isEmpty())) {
-			MiniLogPanel.append("Loading...");
+			MiniLogPanel.append("Loading...\n");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
@@ -116,9 +116,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			pe.initializeEngine(patient_configuration, dataRequests);
 		}
 		else if ((scenarioFilePath == null || scenarioFilePath.isEmpty())){
-			MiniLogPanel.append("Starting from file...");
+			MiniLogPanel.append("Starting from file...\n");
 			if(app.condition.getNumActiveCondition() != 0)
-				MiniLogPanel.append("Resetting condition...");
+				MiniLogPanel.append("Resetting condition...\n");
 			pe.serializeFromFile(patientFilePath, dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
@@ -131,12 +131,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        }
 		}
 		else if(!(scenarioFilePath == null || scenarioFilePath.isEmpty())){ 
+			MiniLogPanel.append("Starting from scenario...\n");
+			if(app.condition.getNumActiveCondition() != 0)
+				MiniLogPanel.append("Resetting condition...\n");
 			run_scenario(patientFilePath,scenarioFilePath);
 			simulation(true);
 			return null;
 		}
 		else {
-			MiniLogPanel.append("!!!Error!!!");
+			MiniLogPanel.append("!!!Error!!!\n");
 			return null;
 		}
         
@@ -155,7 +158,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        //Start Simulation
 	        engineStabilized = true;
 	        app.patient.enableExportButton();
-	        MiniLogPanel.append("Simulation started");
+	        MiniLogPanel.append("Simulation started\n");
 	        publish("Started\n");
 	        stime.setValue(0, TimeUnit.s);
     	}
@@ -163,7 +166,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         	
             if (!pe.advanceTime(stime)) {
                 publish("Something bad happened\n");
-                MiniLogPanel.append("!!!Error, simulation stopped!!!");
+                MiniLogPanel.append("!!!Error, simulation stopped!!!\n");
                 return;
             }
             
@@ -184,7 +187,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
-        MiniLogPanel.append("Simulation stopped");
+        MiniLogPanel.append("Simulation stopped\\n");
 
         return;
     }
@@ -211,7 +214,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         vc = new SEMechanicalVentilatorVolumeControl();
         ext = new SEMechanicalVentilation();
-
+        
+        MiniLogPanel.append("Simulation started\\n");
 		for (SEAction a : sce.getActions()) {
 		    if (a instanceof SEAdvanceTime) {
 		        
@@ -236,7 +240,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
 		    } else {
 		        pe.processAction(a);
-		        MiniLogPanel.append("APPLYING \n" + a.toString());
+		        MiniLogPanel.append("APPLYING \n" + a.toString()+"\n");
 		    }
 		    if(stopRequested)
 		    	return;
@@ -386,7 +390,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	manage_pc(pc);
         pc.setConnection(eSwitch.On);
         pe.processAction(pc);
-        MiniLogPanel.append("PC ventilator connected");
+        MiniLogPanel.append("PC ventilator connected\n");
     }
     
     private void manage_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -414,7 +418,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         manage_cpap(cpap);
         cpap.setConnection(eSwitch.On);
         pe.processAction(cpap);
-        MiniLogPanel.append("CPAP ventilator connected");
+        MiniLogPanel.append("CPAP ventilator connected\n");
     }
     
     private void manage_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
@@ -434,7 +438,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	manage_vc(vc);
         vc.setConnection(eSwitch.On);
         pe.processAction(vc);
-        MiniLogPanel.append("VC ventilator connected");
+        MiniLogPanel.append("VC ventilator connected\n");
     }
    
     private void manage_vc(SEMechanicalVentilatorVolumeControl vc) {
@@ -464,13 +468,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	zmqServer = new ZeroServer();
     	zmqServer.connect();
 		zmqServer.startReceiving();
-		MiniLogPanel.append("Searching for EXTERNAL ventilator");
+		MiniLogPanel.append("Searching for EXTERNAL ventilator\n");
     }
     
 	private void manage_ext(SEMechanicalVentilation ext){
 		if(zmqServer.isConnectionStable()) {
 			if(firstConnection) {
-				MiniLogPanel.append("EXTERNAL ventilator connected");
+				MiniLogPanel.append("EXTERNAL ventilator connected\n");
 				firstConnection = false;
 			}
 			setEXTMode(zmqServer.getSelectedMode());
@@ -518,7 +522,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         if(zmqServer.isDisconnecting()) {
         	zmqServer.setDisconnecting();
             app.ventilator.disconnectButton.doClick();
-            MiniLogPanel.append("EXTERNAL ventilator disconnected");
+            MiniLogPanel.append("EXTERNAL ventilator disconnected\n");
         }
         firstConnection = true;
         
@@ -528,7 +532,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	ext.setState(eSwitch.Off);
     	pe.processAction(ext);
     	zmqServer.close();
-    	MiniLogPanel.append("EXTERNAL ventilator server closed");
+    	MiniLogPanel.append("EXTERNAL ventilator server closed\n");
     }
     
     //Print data in console and log Panel and Charts

@@ -21,17 +21,34 @@ Ventilator Hold
 Ventilator Pressure Control
 
 
-TODO in ordine di importanza
 
-*Grafica panel scenario
 
-*Sistemare minilog
+TODO ORDINE IMPORTANZA
+
+*Se carico da scenario le condizioni non si colorano
+
+*Quando il programma crasha non stampiamo niente a schermo
+	esempio: ventilatore pc se metto peep troppo alto
+
+*Sarebbe bello vedere i dati del paziente prima di lanciarli
+	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
+	far partire la simulazione dal file sneaky sneaky
+
+
+*Grafica panel scenario (allineare un po le cose)
+
+*Sistemare bordo minipanel, deve essere uguale ai pannelli sopra
+
+*JSpinner ventilatori:
+	-ingrandirne alcuni
+	-Controllare i valori minimi e massimi
+	
+*Capire quali cartelle si possono eliminare (resource e states sicuro no!)
 
 *Sistemare commenti patientFile
 
-*Controllare ventilatori
+*aggiungere grafici? Si puo sistemare anche come vengono selezionati
 
-*Sistemare log azioni da scenario
 
-*Capire quali cartelle si possono eliminare (resource e states sicuro no!)
-
+	
+*Sistemare stampa azioni minilog (sia scenario che normale)????

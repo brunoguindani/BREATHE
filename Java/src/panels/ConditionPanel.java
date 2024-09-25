@@ -121,7 +121,7 @@ public class ConditionPanel {
             	if(condition.isActive()) {
             		if(condition.getActiveCondition() != null) {
                         removeCondition(condition.getActiveCondition());
-                        MiniLogPanel.append(condition.getTitle()+" removed");            			
+                        MiniLogPanel.append(condition.getTitle()+" removed\n");            			
             		}
                     condition.switchActive();
                     condition.enable();

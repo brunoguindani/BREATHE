@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import com.kitware.pulse.utilities.JNIBridge;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
@@ -91,23 +90,23 @@ public class Action {
         
         JLabel timeLabel = new JLabel("Time (hh:mm:ss)");
 
-        time[0] = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1)); // ore
-        time[1] = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1)); // minuti
-        time[2] = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1)); // secondi
+        time[0] = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1)); 
+        time[1] = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1)); 
+        time[2] = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1)); 
 
         for (JComponent spinner : time) {
-            spinner.setPreferredSize(new Dimension(60, 30));
+            spinner.setPreferredSize(new Dimension(40, 30));
         }
 
         JButton plusButton = new JButton("+");
-        plusButton.setPreferredSize(new Dimension(45, 30));
+        plusButton.setPreferredSize(new Dimension(40, 30));
         plusButton.setFocusPainted(false);
         plusButton.setToolTipText("Add to Scenario");
         
         plusButton.addActionListener(e -> {
             int totalSeconds = getTotalTimeInSeconds();
             app.scenario.addAction(getAction(), totalSeconds);
-            app.switchTabbedPane.setSelectedIndex(3);
+            app.rightTabbedPane.setSelectedIndex(1);
         });
 
         JPanel timePanel = new JPanel(new GridBagLayout());
@@ -137,7 +136,7 @@ public class Action {
         gbc.gridx--;
         fieldsPanel.add(timePanel, gbc);
 
-        applySectionButton = new JButton("Apply Now");
+        applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
         applySectionButton.setBackground(new Color(0, 122, 255)); 
         applySectionButton.setForeground(Color.WHITE);
@@ -172,7 +171,7 @@ public class Action {
             public void actionPerformed(ActionEvent e) { 
             	SEAction action = getAction();
             	SimulationWorker.pe.processAction(action);
-            	MiniLogPanel.append("Applying\n" + action.toString());
+            	MiniLogPanel.append("Applying\n" + action.toString()+"\n");
             }
         };
     }
@@ -374,7 +373,7 @@ public class Action {
         int minutes = (Integer) time[1].getValue();
         int seconds = (Integer) time[2].getValue();
         
-        // Converti tutto in secondi
+        // Convertion in seconds
         return hours * 3600 + minutes * 60 + seconds;
     }
     
