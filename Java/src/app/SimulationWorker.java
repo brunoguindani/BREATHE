@@ -37,7 +37,6 @@ import com.kitware.pulse.utilities.Log;
 import panels.MiniLogPanel;
 import zeroMQ.ZeroServer;
 
-import com.kitware.pulse.utilities.JNIBridge;
 
 public class SimulationWorker extends SwingWorker<Void, String> {
 
@@ -336,6 +335,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             	ext_running = false;
     	        stop_ext(ext);
     	    }
+        	app.ventilator.setNullRunningVentilationMode();
         }
         else if(ventilationStartRequest) {
         	ventilationStartRequest = false;
@@ -359,6 +359,16 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 					e.printStackTrace();
 				}
     	    }
+        } else {
+        	if(app.ventilator.isPCConnected()){ 
+            	manage_pc(pc);
+            }
+            else if(app.ventilator.isCPAPConnected()){
+    	        manage_cpap(cpap);
+    	    }
+            else if(app.ventilator.isVCConnected()){
+    	        manage_vc(vc);
+    	    }
         }
     	
     	if(ext_running)
@@ -373,21 +383,26 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	//Set and Starts of Ventilators
     
     private void start_pc(SEMechanicalVentilatorPressureControl pc) {
+    	manage_pc(pc);
+        pc.setConnection(eSwitch.On);
+        pe.processAction(pc);
+        MiniLogPanel.append("PC ventilator connected");
+    }
+    
+    private void manage_pc(SEMechanicalVentilatorPressureControl pc) {
     	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
     		pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
 		} else {
 			pc.setMode(MechanicalVentilatorPressureControlData.eMode.ContinuousMandatoryVentilation);
 		}
         pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
-        pc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_PC()));
-        pc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriodValue_PC()),TimeUnit.s);
-        pc.getInspiratoryPressure().setValue(Double.parseDouble(app.ventilator.getInspiratoryPressureValue_PC()), PressureUnit.cmH2O);
-        pc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_PC()), PressureUnit.cmH2O);
-        pc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRateValue_PC()), FrequencyUnit.Per_min);
-        pc.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_PC()), TimeUnit.s);
-        pc.setConnection(eSwitch.On);
+        pc.getInspiratoryPeriod().setValue(app.ventilator.getInspiratoryPeriodValue_PC(),TimeUnit.s);
+        pc.getFractionInspiredOxygen().setValue(app.ventilator.getFractionInspOxygenValue_PC());
+        pc.getInspiratoryPressure().setValue(app.ventilator.getInspiratoryPressureValue_PC(), PressureUnit.cmH2O);
+        pc.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPresValue_PC(), PressureUnit.cmH2O);
+        pc.getRespirationRate().setValue(app.ventilator.getRespirationRateValue_PC(), FrequencyUnit.Per_min);
+        pc.getSlope().setValue(app.ventilator.getSlopeValue_PC(), TimeUnit.s);
         pe.processAction(pc);
-        MiniLogPanel.append("PC ventilator connected");
     }
     
     private void stop_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -396,13 +411,18 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     private void start_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
-        cpap.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_CPAP()));
-        cpap.getDeltaPressureSupport().setValue(Double.parseDouble(app.ventilator.getDeltaPressureSupValue_CPAP()), PressureUnit.cmH2O);
-        cpap.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPresValue_CPAP()), PressureUnit.cmH2O);
-        cpap.getSlope().setValue(Double.parseDouble(app.ventilator.getSlopeValue_CPAP()), TimeUnit.s);
+        manage_cpap(cpap);
         cpap.setConnection(eSwitch.On);
         pe.processAction(cpap);
         MiniLogPanel.append("CPAP ventilator connected");
+    }
+    
+    private void manage_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
+    	cpap.getFractionInspiredOxygen().setValue(app.ventilator.getFractionInspOxygenValue_CPAP());
+        cpap.getDeltaPressureSupport().setValue(app.ventilator.getDeltaPressureSupValue_CPAP(), PressureUnit.cmH2O);
+        cpap.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPresValue_CPAP(), PressureUnit.cmH2O);
+        cpap.getSlope().setValue(app.ventilator.getSlopeValue_CPAP(), TimeUnit.s);
+        pe.processAction(cpap);
     }
     
     private void stop_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
@@ -411,23 +431,28 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     private void start_vc(SEMechanicalVentilatorVolumeControl vc) {
+    	manage_vc(vc);
+        vc.setConnection(eSwitch.On);
+        pe.processAction(vc);
+        MiniLogPanel.append("VC ventilator connected");
+    }
+   
+    private void manage_vc(SEMechanicalVentilatorVolumeControl vc) {
     	if (app.ventilator.getAssistedMode_PC().equals("AC")) {
     		vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
 		} else {
 			vc.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
 		}
     	vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
-        vc.getFlow().setValue(Double.parseDouble(app.ventilator.getFlow_VC()), VolumePerTimeUnit.L_Per_min);
-        vc.getFractionInspiredOxygen().setValue(Double.parseDouble(app.ventilator.getFractionInspOxygenValue_VC()));
-        vc.getInspiratoryPeriod().setValue(Double.parseDouble(app.ventilator.getInspiratoryPeriod_VC()), TimeUnit.s);
-        vc.getPositiveEndExpiratoryPressure().setValue(Double.parseDouble(app.ventilator.getPositiveEndExpPres_VC()), PressureUnit.cmH2O);
-        vc.getRespirationRate().setValue(Double.parseDouble(app.ventilator.getRespirationRate_VC()), FrequencyUnit.Per_min);
-        vc.getTidalVolume().setValue(Double.parseDouble(app.ventilator.getTidalVol_VC()), VolumeUnit.mL);
-        vc.setConnection(eSwitch.On);
+        vc.getFlow().setValue(app.ventilator.getFlow_VC(), VolumePerTimeUnit.L_Per_min);
+        vc.getFractionInspiredOxygen().setValue(app.ventilator.getFractionInspOxygenValue_VC());
+        vc.getInspiratoryPeriod().setValue(app.ventilator.getInspiratoryPeriod_VC(), TimeUnit.s);
+        vc.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPres_VC(), PressureUnit.cmH2O);
+        vc.getRespirationRate().setValue(app.ventilator.getRespirationRate_VC(), FrequencyUnit.Per_min);
+        vc.getTidalVolume().setValue(app.ventilator.getTidalVol_VC(), VolumeUnit.mL);
         pe.processAction(vc);
-        MiniLogPanel.append("VC ventilator connected");
     }
-   
+    
     private void stop_vc(SEMechanicalVentilatorVolumeControl vc) {
         vc.setConnection(eSwitch.Off);
         pe.processAction(vc);
