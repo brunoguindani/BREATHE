@@ -21,17 +21,15 @@ Ventilator Hold
 Ventilator Pressure Control
 
 
-
 TODO in ordine di importanza
 
 *Grafica panel scenario
 
-*Sistemare minilog in stampa azione
+*Sistemare minilog
 
 *Sistemare commenti patientFile
 
-*Quando il programma crasha non stampiamo niente a schermo
-	esempio: ventilatore pc se metto peep troppo alto
+*Controllare ventilatori
 
 *Sistemare log azioni da scenario
 

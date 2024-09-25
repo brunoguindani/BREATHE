@@ -41,8 +41,6 @@ public class ConditionPanel {
         resetConditions.setMargin(new Insets(0, 0, 0, 0));  
         buttonPanel.add(resetConditions);
 
-
-        sectionsPanel.add(buttonPanel);
         /*
          * CONDITIONS
          */
@@ -102,6 +100,8 @@ public class ConditionPanel {
         spacePanel.setLayout(new BorderLayout()); 
         spacePanel.setPreferredSize(new Dimension(150, 230));
         spacePanel.setBackground(Color.LIGHT_GRAY);
+
+        sectionsPanel.add(buttonPanel);
         sectionsPanel.add(spacePanel);
 
                           
