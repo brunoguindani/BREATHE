@@ -41,11 +41,10 @@ public class PatientPanel {
     private JScrollPane  patientPanel = new JScrollPane ();
     private JPanel mainPanel = new JPanel();
     private String selectedPatientFilePath;
+    private String selectedScenarioFilePath;
     
     JButton exportButton;
     
-    
-    public boolean scenario = false;
     
     public PatientPanel(App app) {
     	
@@ -160,6 +159,7 @@ public class PatientPanel {
             exportButton.setEnabled(false);
             startFromFileButton.setEnabled(true);
             selectedPatientFilePath = null;
+            selectedScenarioFilePath = null;
             stopButton.setEnabled(false);
             app.ventilator.connectButton.setEnabled(false);
             app.action.disableButtonStates();
@@ -270,7 +270,7 @@ public class PatientPanel {
         	 JFileChooser fileChooser = new JFileChooser("./scenario/");
              int returnValue = fileChooser.showOpenDialog(null); //pick a file
              if (returnValue == JFileChooser.APPROVE_OPTION) {
-             	String selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+             	selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
              	
                  try { 
                     ObjectMapper mapper = new ObjectMapper();
@@ -309,7 +309,6 @@ public class PatientPanel {
                     basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
                      
                     app.condition.getRemoveAllConditionsButton().doClick(); 
-                    scenario = true;
                     startButton.doClick();
                  } catch (IOException ex) {
                      ex.printStackTrace();
@@ -400,6 +399,11 @@ public class PatientPanel {
         return selectedPatientFilePath;
     }
     
+
+	public String getSelectedScenarioFilePath() {
+		return selectedScenarioFilePath;
+	}
+	
     //Get patient data
     public String getName_PATIENT() {
         return nameField_Patient.getText();
@@ -456,4 +460,5 @@ public class PatientPanel {
     public void enableExportButton() {
     	exportButton.setEnabled(true);
     }
+
 }
