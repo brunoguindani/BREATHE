@@ -21,6 +21,7 @@ public class MiniLogPanel {
     public MiniLogPanel() {
         miniLogPanel = new JPanel();
         miniLogPanel.setBackground(Color.LIGHT_GRAY);  
+        
         miniLogPanel.setLayout(new BorderLayout());
         
         logTextArea = new JTextArea(3, 20);  

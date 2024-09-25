@@ -254,7 +254,7 @@ public class Condition {
     	boolean success = false;
         if(!enabled) {
             success = ConditionPanel.addCondition(e);
-            MiniLogPanel.append(name+" applied");
+            MiniLogPanel.append(name+" applied\n");
             enabled = !enabled;
             headerButton.setBackground(new Color(76, 175, 80));
             disableFields();
@@ -262,7 +262,7 @@ public class Condition {
             condition = e;
         }else {
             success = ConditionPanel.removeCondition(condition);
-            MiniLogPanel.append(name+" removed");
+            MiniLogPanel.append(name+" removed\n");
             headerButton.setBackground(Color.DARK_GRAY);
             enabled = !enabled;
             enableFields();

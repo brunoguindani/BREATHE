@@ -193,7 +193,7 @@ public class VentilatorPanel {
          	if(!SimulationWorker.ventilationDisconnectRequest) {
          		SimulationWorker.ventilationDisconnectRequest = true;
          		if(!(runningVentilationMode == VentilationMode.EXTERNAL))
-         			MiniLogPanel.append(runningVentilationMode + " ventilator disconnected");
+         			MiniLogPanel.append(runningVentilationMode + " ventilator disconnected\n");
          	}
          	else
          		SimulationWorker.ventilationDisconnectRequest = false;

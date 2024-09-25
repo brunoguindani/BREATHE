@@ -40,6 +40,9 @@ public class PatientPanel {
       
     private JScrollPane  patientPanel = new JScrollPane ();
     private JPanel mainPanel = new JPanel();
+    JComboBox<String> fileComboBox = new JComboBox<>();
+    
+    
     private String selectedPatientFilePath;
     private String selectedScenarioFilePath;
     
@@ -316,7 +319,6 @@ public class PatientPanel {
                  }
              }
         });
-
     }
     
     //selection weight unit

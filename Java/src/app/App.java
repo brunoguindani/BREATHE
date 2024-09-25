@@ -27,7 +27,8 @@ public class App extends JFrame {
     private static final long serialVersionUID = 1L;
 
     //tab to select other panels
-    public JTabbedPane switchTabbedPane;
+    public JTabbedPane leftTabbedPane;
+    public JTabbedPane rightTabbedPane; 
 
     //all available panels
     public PatientPanel patient = new PatientPanel(this);
@@ -43,8 +44,8 @@ public class App extends JFrame {
     // Panel for switching between patient and condition
     private JPanel patientConditionPanel;
     private CardLayout cardLayout;
-    private JRadioButton patientRadioButton;
-    private JRadioButton conditionRadioButton;
+    
+   
 
     public App() {
         JNIBridge.initialize();
@@ -72,10 +73,11 @@ public class App extends JFrame {
         JPanel scenarioPanel = scenario.getScenarioPanel();
         JScrollPane scrollLogPane = log.getLogScrollPane();
         JPanel miniLogPanel = mlog.getMiniLogPanel();
-
-        // Create RadioButtons to swtich between patient and conditions
-        patientRadioButton = new JRadioButton("Patient");
-        conditionRadioButton = new JRadioButton("Condition");
+        JPanel chartPanel = charts.getChartPanel(); 
+        chartPanels = charts.getChartsPanel();
+        
+        JRadioButton patientRadioButton = new JRadioButton("Patient");
+        JRadioButton conditionRadioButton = new JRadioButton("Condition");
         ButtonGroup group = new ButtonGroup();
         group.add(patientRadioButton);
         group.add(conditionRadioButton);
@@ -91,7 +93,6 @@ public class App extends JFrame {
         patientConditionPanel.add(patientPanel, "Patient");
         patientConditionPanel.add(scrollConditionPane, "Condition");
 
-        // Switch between setup panels
         patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
         conditionRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 
@@ -99,27 +100,25 @@ public class App extends JFrame {
         switchPanel.add(radioPanel, BorderLayout.NORTH);
         switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
 
-        //adding to the switch
-        switchTabbedPane = new JTabbedPane();
-        switchTabbedPane.setBackground(Color.LIGHT_GRAY);
-        switchTabbedPane.addTab("Patient", switchPanel);
-        switchTabbedPane.addTab("Action", scrollActionPane);
-        switchTabbedPane.addTab("Ventilator", ventilatorPanel);
-        switchTabbedPane.addTab("Scenario", scenarioPanel);
-        switchTabbedPane.addTab("Log", scrollLogPane);
-        switchTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
+        rightTabbedPane = new JTabbedPane();
+        rightTabbedPane.addTab("Charts", chartPanel);
+        rightTabbedPane.addTab("Scenario", scenarioPanel);
+        rightTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
 
-        //panel for the charts
-        JPanel chartPanel = charts.getChartPanel();
-        chartPanels = charts.getChartsPanel();
-
-        JPanel centralPanel = new JPanel();
-        centralPanel.setLayout(new BorderLayout());
-        centralPanel.add(switchTabbedPane, BorderLayout.CENTER);  
-        centralPanel.add(miniLogPanel, BorderLayout.SOUTH);        
+        leftTabbedPane = new JTabbedPane();
+        leftTabbedPane.addTab("Patient", switchPanel);
+        leftTabbedPane.addTab("Action", scrollActionPane);
+        leftTabbedPane.addTab("Ventilator", ventilatorPanel);
+        leftTabbedPane.addTab("Log", scrollLogPane);
+        leftTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
+        
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BorderLayout());
+        leftPanel.add(leftTabbedPane, BorderLayout.CENTER);  
+        leftPanel.add(miniLogPanel, BorderLayout.SOUTH);        
 
         //splitting view
-        add(centralPanel, BorderLayout.CENTER);  
-        add(chartPanel, BorderLayout.EAST);      
+        add(leftPanel, BorderLayout.CENTER);  
+        add(rightTabbedPane, BorderLayout.EAST);  // Right TabbedPane with charts and scenario
     }
 }
