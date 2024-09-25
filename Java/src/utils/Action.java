@@ -361,7 +361,6 @@ public class Action {
         return null;
     }
 
-    // Metodo per aggiornare lo stato del bottone
     public void enableButtonState() {
         applySectionButton.setEnabled(true);
     }

@@ -36,6 +36,7 @@ public class Condition {
     private JButton applySectionButton;
     private boolean enabled = false;
     private SECondition condition;
+    JButton headerButton;
 
     public Condition(String title, JComponent... components) {
     	//This method is only for GUI
@@ -47,7 +48,7 @@ public class Condition {
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
-        JButton headerButton = new JButton(title);
+        headerButton = new JButton(title);
         headerButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         headerButton.setBackground(Color.DARK_GRAY);
         headerButton.setForeground(Color.WHITE);
@@ -102,7 +103,7 @@ public class Condition {
         headerButton.addActionListener(e -> {
             boolean isVisible = !fieldsPanel.isVisible();
             fieldsPanel.setVisible(isVisible);
-            headerButton.setText(isVisible ? title + " (Chiudi)" : title);
+            headerButton.setText(isVisible ? title + " (Close)" : title);
             sectionPanel.revalidate();
             sectionPanel.repaint();
         });
@@ -255,12 +256,14 @@ public class Condition {
             success = ConditionPanel.addCondition(e);
             MiniLogPanel.append(name+" applied");
             enabled = !enabled;
+            headerButton.setBackground(new Color(76, 175, 80));
             disableFields();
             applySectionButton.setText("Remove");
             condition = e;
         }else {
             success = ConditionPanel.removeCondition(condition);
             MiniLogPanel.append(name+" removed");
+            headerButton.setBackground(Color.DARK_GRAY);
             enabled = !enabled;
             enableFields();
             applySectionButton.setText("Apply");
@@ -308,6 +311,7 @@ public class Condition {
     
     public void switchActive() {
     	enabled = !enabled;
+        headerButton.setBackground(Color.DARK_GRAY);
     	applySectionButton.setText("Apply");
     }
     
@@ -319,6 +323,7 @@ public class Condition {
     	int i=0;
 		enabled = true;
 		applySectionButton.setText("Remove");
+        headerButton.setBackground(new Color(76, 175, 80));
     	for (JComponent component : components) {
 
     	    if (component instanceof JSpinner) {
@@ -331,9 +336,10 @@ public class Condition {
     public void setUnloadedCondition() {
 		enabled = false;
 		applySectionButton.setText("Apply");
+        headerButton.setBackground(Color.DARK_GRAY);
     	for (JComponent component : components) {
     	    if (component instanceof JSpinner) {
-    	        ((JSpinner) component).setValue(0);  
+    	        ((JSpinner) component).setValue(0.0);  
     	    }  	   
     	}
     }
