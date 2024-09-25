@@ -3,6 +3,8 @@ package main;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.kitware.pulse.utilities.JNIBridge;
+
 import app.App;
 
 public class Main {

@@ -32,7 +32,6 @@ import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMe
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
-import com.kitware.pulse.engine.PulseScenarioExec;
 import com.kitware.pulse.utilities.Log;
 
 import panels.MiniLogPanel;
@@ -92,10 +91,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         started = true;
         
         // Initialize JNIBridge and PulseEngine
-        JNIBridge.initialize();
         pe = new PulseEngine();
+        stime = new SEScalarTime(0, TimeUnit.s);
         
-
         // Creation of Data Request
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
@@ -160,7 +158,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        app.patient.enableExportButton();
 	        MiniLogPanel.append("Simulation started");
 	        publish("Started\n");
-	        stime = new SEScalarTime(0, TimeUnit.s);
+	        stime.setValue(0, TimeUnit.s);
     	}
         while (!stopRequested) {
         	
@@ -214,32 +212,36 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         vc = new SEMechanicalVentilatorVolumeControl();
         ext = new SEMechanicalVentilation();
-        
-		SEAdvanceTime adv = null;  
+
 		for (SEAction a : sce.getActions()) {
 		    if (a instanceof SEAdvanceTime) {
-		        adv = (SEAdvanceTime) a;
-		        if (!pe.advanceTime(adv.getTime())) {
-	                publish("Something bad happened\n");
-	                MiniLogPanel.append("!!!Error, simulation stopped!!!");
-	            }
-	            
-	            handilngVentilator(ext,pc,cpap,vc);
+		        
+		        for(int i = 0; i<50; i++){		  
+		            if (!pe.advanceTime(stime)) {
+		                publish("Something bad happened\n");
+		                MiniLogPanel.append("!!!Error, simulation stopped!!!");
+		                return;
+		            }
+		            
+		            handilngVentilator(ext,pc,cpap,vc);
 
-	            //Log and data printing
-	            if(ext_running)
-	            	zmqServer.setSimulationData(dataPrint());
-	            else
-	            	dataPrint();
-	            Log.info("Advancing "+adv.getTime()+"...");
+		            //Log and data printing
+		            if(ext_running)
+		            	zmqServer.setSimulationData(dataPrint());
+		            else
+		            	dataPrint();
+
+		            stime.setValue(0.02, TimeUnit.s);
+		            Log.info("Advancing "+stime+"...");  	
+		        }
+
 		    } else {
 		        pe.processAction(a);
-		        MiniLogPanel.append(a.toString()+" applied");
+		        MiniLogPanel.append("APPLYING \n" + a.toString());
 		    }
 		    if(stopRequested)
 		    	return;
 		}
-		stime = adv.getTime();
 	}
     
     
@@ -548,6 +550,5 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         
         return data;
     }
-    
 
 }

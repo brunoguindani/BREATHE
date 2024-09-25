@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
+import app.App;
 import utils.Action;
 
 public class ActionPanel {
@@ -17,8 +18,8 @@ public class ActionPanel {
     private JPanel sectionsPanel = new JPanel();  
     private JScrollPane scrollActionPane;  
     private List<Action> actions = new ArrayList<>();
-
-    public ActionPanel() {
+    
+    public ActionPanel(App app) {
     	//base
         sectionsPanel.setLayout(new BoxLayout(sectionsPanel, BoxLayout.Y_AXIS));
         sectionsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -34,7 +35,7 @@ public class ActionPanel {
             new JLabel("Left Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)),
             new JLabel("Right Lung Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         ));
-        actions.add(new Action(
+        actions.add(new Action(    		
             "Acute Stress",
             new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         ));  
@@ -92,7 +93,9 @@ public class ActionPanel {
             "Ventilator Leak",
             new JLabel("Severity"), new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01))
         ));
+        
         for (Action action : actions) {
+        	action.setApp(app);
             sectionsPanel.add(action.sectionPanel);
         }
             
