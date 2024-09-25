@@ -17,7 +17,9 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import app.SimulationWorker;
 import utils.VentilationMode;
@@ -40,16 +42,17 @@ public class VentilatorPanel {
 
     //data for PC ventilator
     private JRadioButton pc;
-    public JTextField fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
+
+	public JSpinner fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
     JComboBox<String> AMComboBox_PC = new JComboBox<>(new String[]{"AC", "CMV"});
     
     //data for CPAP ventilator
     private JRadioButton cpap;
-    public JTextField fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
+    public JSpinner fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
     
     //data for VC ventilator
     private JRadioButton vc;
-    public JTextField flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
+    public JSpinner flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
     JComboBox<String> AMComboBox_VC = new JComboBox<>(new String[]{"AC", "CMV"});
     
     //data for External ventilator
@@ -86,27 +89,27 @@ public class VentilatorPanel {
          extPanel.setBackground(Color.LIGHT_GRAY);
      
          // MechanicalVentilatorContinuousPositiveAirwayPressure (PC)
-         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JTextField("0.21"), pcPanel, gbc);
-         addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriodPCField = new JTextField("1"), pcPanel, gbc);
-         addLabelAndField("Inspiratory Pressure - Pinsp", inspiratoryPressurePCField = new JTextField("19"), pcPanel, gbc);
-         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresPCField = new JTextField("5"), pcPanel, gbc);
-         addLabelAndField("Respiration Rate - RR", respirationRatePCField = new JTextField("12"), pcPanel, gbc);
-         addLabelAndField("Slope", slopePCField = new JTextField("0.2"), pcPanel, gbc);
+         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenPCField = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), pcPanel, gbc);
+         addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriodPCField = new JSpinner(new SpinnerNumberModel(1, 0, 10, 0.1)), pcPanel, gbc);
+         addLabelAndField("Inspiratory Pressure - Pinsp", inspiratoryPressurePCField = new JSpinner(new SpinnerNumberModel(19, 0, 100, 1)), pcPanel, gbc);
+         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresPCField = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), pcPanel, gbc);
+         addLabelAndField("Respiration Rate - RR", respirationRatePCField = new JSpinner(new SpinnerNumberModel(12, 0, 60, 1)), pcPanel, gbc);
+         addLabelAndField("Slope", slopePCField = new JSpinner(new SpinnerNumberModel(0.2, 0, 2, 0.1)), pcPanel, gbc);
          addLabelAndField("Assisted Mode", AMComboBox_PC, pcPanel, gbc);
          
          // MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
-         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenCPAPField = new JTextField("0.21"), cpapPanel, gbc);
-         addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSupCPAPField = new JTextField("10"), cpapPanel, gbc);
-         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresCPAPField = new JTextField("5"), cpapPanel, gbc);
-         addLabelAndField("Slope", slopeCPAPField = new JTextField("0.2"), cpapPanel, gbc);
+         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenCPAPField = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), cpapPanel, gbc);
+         addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSupCPAPField = new JSpinner(new SpinnerNumberModel(10, 0, 50, 1)), cpapPanel, gbc);
+         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresCPAPField = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), cpapPanel, gbc);
+         addLabelAndField("Slope", slopeCPAPField = new JSpinner(new SpinnerNumberModel(0.2, 0, 2, 0.1)), cpapPanel, gbc);
          
          // SEMechanicalVentilatorVolumeControl (VC)
-         addLabelAndField("Flow", flowVCField = new JTextField("60"), vcPanel, gbc);
-         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenVCField = new JTextField("0.21"), vcPanel, gbc);
-         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresVCField = new JTextField("5"), vcPanel, gbc);
-         addLabelAndField("Inspiratory Period", inspiratoryPeriodVCField = new JTextField("1"), vcPanel, gbc);
-         addLabelAndField("Respiration Rate - RR", respirationRateVCField = new JTextField("12"), vcPanel, gbc);
-         addLabelAndField("Tidal Volume - VT", tidalVolVCField = new JTextField("900"), vcPanel, gbc);
+         addLabelAndField("Flow", flowVCField = new JSpinner(new SpinnerNumberModel(60, 0, 120, 1)), vcPanel, gbc);
+         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygenVCField = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), vcPanel, gbc);
+         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPresVCField = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), vcPanel, gbc);
+         addLabelAndField("Inspiratory Period", inspiratoryPeriodVCField = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 10.0, 0.1)), vcPanel, gbc);
+         addLabelAndField("Respiration Rate - RR", respirationRateVCField = new JSpinner(new SpinnerNumberModel(12, 0, 60, 1)), vcPanel, gbc);
+         addLabelAndField("Tidal Volume - VT", tidalVolVCField = new JSpinner(new SpinnerNumberModel(900, 0, 2000, 10)), vcPanel, gbc);
          addLabelAndField("Assisted Mode", AMComboBox_VC, vcPanel, gbc);
          
          // SEMechanicalVentilation (for external ventilators)
@@ -199,6 +202,7 @@ public class VentilatorPanel {
          	connectButton.setEnabled(true);
          	pressureEXTLabel.setText(Double.NaN+"");
          	volumeEXTLabel.setText(Double.NaN+"");
+         	
          });
     }
     
@@ -219,31 +223,31 @@ public class VentilatorPanel {
     
     //Get ventilator data (PC)
     public boolean isPCConnected() {
-    	return selectedVentilationMode == VentilationMode.PC;
+    	return runningVentilationMode == VentilationMode.PC;
     }
     
-    public String getInspiratoryPeriodValue_PC() {
-        return inspiratoryPeriodPCField.getText();
+    public Double getInspiratoryPeriodValue_PC() {
+        return (Double) inspiratoryPeriodPCField.getValue();
     }
 
-    public String getInspiratoryPressureValue_PC() {
-        return inspiratoryPressurePCField.getText();
+    public int getInspiratoryPressureValue_PC() {
+        return (Integer) inspiratoryPressurePCField.getValue();
     }
 
-    public String getRespirationRateValue_PC() {
-        return respirationRatePCField.getText();
+    public int getRespirationRateValue_PC() {
+        return (Integer) respirationRatePCField.getValue();
     }
 
-    public String getFractionInspOxygenValue_PC() {
-        return fractionInspOxygenPCField.getText();
+    public Double getFractionInspOxygenValue_PC() {
+        return (Double) fractionInspOxygenPCField.getValue();
     }
 
-    public String getPositiveEndExpPresValue_PC() {
-        return positiveEndExpPresPCField.getText();
+    public int getPositiveEndExpPresValue_PC() {
+        return (Integer) positiveEndExpPresPCField.getValue();
     }
 
-    public String getSlopeValue_PC() {
-        return slopePCField.getText();
+    public Double getSlopeValue_PC() {
+        return (Double) slopePCField.getValue();
     }
 
     public String getAssistedMode_PC() {
@@ -252,52 +256,53 @@ public class VentilatorPanel {
     
     //Get ventilator data (CPAP)
     public boolean isCPAPConnected() {
-        return selectedVentilationMode == VentilationMode.CPAP;
+        return runningVentilationMode == VentilationMode.CPAP;
     }
     
-    public String getFractionInspOxygenValue_CPAP() {
-        return fractionInspOxygenCPAPField.getText();
-    }
-    
-    public String getDeltaPressureSupValue_CPAP() {
-        return deltaPressureSupCPAPField.getText();
+ // CPAP methods
+    public double getFractionInspOxygenValue_CPAP() {
+        return (double) fractionInspOxygenCPAPField.getValue();
     }
 
-    public String getPositiveEndExpPresValue_CPAP() {
-        return positiveEndExpPresCPAPField.getText();
+    public int getDeltaPressureSupValue_CPAP() {
+        return (int) deltaPressureSupCPAPField.getValue();
     }
 
-    public String getSlopeValue_CPAP() {
-        return slopeCPAPField.getText();
+    public int getPositiveEndExpPresValue_CPAP() {
+        return (int) positiveEndExpPresCPAPField.getValue();
     }
-    
-    //Get ventilator data (VC)
+
+    public double getSlopeValue_CPAP() {
+        return (double) slopeCPAPField.getValue();
+    }
+
+    // VC methods
     public boolean isVCConnected() {
-        return selectedVentilationMode == VentilationMode.VC;
+        return runningVentilationMode == VentilationMode.VC;
     }
     
-    public String getFractionInspOxygenValue_VC() {
-        return fractionInspOxygenVCField.getText();
-    }
-    
-    public String getFlow_VC() {
-        return flowVCField.getText();
+    public double getFractionInspOxygenValue_VC() {
+        return (double) fractionInspOxygenVCField.getValue();
     }
 
-    public String getInspiratoryPeriod_VC() {
-        return inspiratoryPeriodVCField.getText();
+    public int getFlow_VC() {
+        return (int) flowVCField.getValue();
     }
 
-    public String getTidalVol_VC() {
-        return tidalVolVCField.getText();
+    public double getInspiratoryPeriod_VC() {
+        return (double) inspiratoryPeriodVCField.getValue();
     }
-    
-    public String getRespirationRate_VC() {
-        return respirationRateVCField.getText();
+
+    public int getTidalVol_VC() {
+        return (int) tidalVolVCField.getValue();
     }
-    
-    public String getPositiveEndExpPres_VC() {
-        return positiveEndExpPresVCField.getText();
+
+    public int getRespirationRate_VC() {
+        return (int) respirationRateVCField.getValue();
+    }
+
+    public int getPositiveEndExpPres_VC() {
+        return (int) positiveEndExpPresVCField.getValue();
     }
     
     public String getAssistedMode_VC() {
@@ -306,7 +311,7 @@ public class VentilatorPanel {
     
     // set ext ventilator data
     public boolean isEXTConnected() {
-        return selectedVentilationMode == VentilationMode.EXTERNAL;
+        return runningVentilationMode == VentilationMode.EXTERNAL;
     }
     
     public void setPressureLabel_EXT(double pressure) {
@@ -317,6 +322,7 @@ public class VentilatorPanel {
     	volumeEXTLabel.setText(""+volume);
     }
     
-
-    
+    public void setNullRunningVentilationMode() {
+    	runningVentilationMode = null;
+    }
 }
