@@ -103,8 +103,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
         //Patient data depending on PatientPanel config
 		String patientFilePath = app.patient.getSelectedPatientFilePath();
+		String scenarioFilePath = app.patient.getSelectedScenarioFilePath();
 		 
-		if ((patientFilePath == null || patientFilePath.isEmpty()) && !app.patient.scenario) {
+		if ((patientFilePath == null || patientFilePath.isEmpty()) && (scenarioFilePath == null || scenarioFilePath.isEmpty())) {
 			MiniLogPanel.append("Loading...");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
@@ -117,7 +118,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
 			pe.initializeEngine(patient_configuration, dataRequests);
 		}
-		else if (!app.patient.scenario){
+		else if ((scenarioFilePath == null || scenarioFilePath.isEmpty())){
 			MiniLogPanel.append("Starting from file...");
 			if(app.condition.getNumActiveCondition() != 0)
 				MiniLogPanel.append("Resetting condition...");
@@ -132,9 +133,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        	app.condition.setInitialConditions(any);
 	        }
 		}
-		else { 
-			run_scenario(patientFilePath);
+		else if(!(scenarioFilePath == null || scenarioFilePath.isEmpty())){ 
+			run_scenario(patientFilePath,scenarioFilePath);
 			simulation(true);
+			return null;
+		}
+		else {
+			MiniLogPanel.append("!!!Error!!!");
 			return null;
 		}
         
@@ -188,10 +193,10 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     
-    private void run_scenario(String patientFilePath) {
+    private void run_scenario(String patientFilePath, String scenarioFilePath) {
     	SEScenario sce = new SEScenario();
 		try {
-			sce.readFile("./scenario/test.json");
+			sce.readFile(scenarioFilePath);
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -204,6 +209,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
+		
 		pc = new SEMechanicalVentilatorPressureControl();
         cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         vc = new SEMechanicalVentilatorVolumeControl();
