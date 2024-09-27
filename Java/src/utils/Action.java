@@ -95,7 +95,7 @@ public class Action {
         time[2] = new JSpinner(new SpinnerNumberModel(0, 0, 59, 1)); 
 
         for (JComponent spinner : time) {
-            spinner.setPreferredSize(new Dimension(40, 30));
+            spinner.setPreferredSize(new Dimension(60, 30));
         }
 
         JButton plusButton = new JButton("+");

@@ -86,6 +86,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
     @Override
     protected Void doInBackground() throws Exception {
+    	
         stopRequested = false;
         started = true;
         
@@ -134,6 +135,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			MiniLogPanel.append("Starting from scenario...\n");
 			if(app.condition.getNumActiveCondition() != 0)
 				MiniLogPanel.append("Resetting condition...\n");
+			
 			run_scenario(patientFilePath,scenarioFilePath);
 			simulation(true);
 			return null;
@@ -187,13 +189,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
-        MiniLogPanel.append("Simulation stopped\\n");
+        MiniLogPanel.append("Simulation stopped\n");
 
         return;
     }
     
     
     private void run_scenario(String patientFilePath, String scenarioFilePath) {
+    	
+    	//Load scenario
     	SEScenario sce = new SEScenario();
 		try {
 			sce.readFile(scenarioFilePath);
@@ -210,12 +214,20 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
+		//update conditions
+		pe.getConditions(app.condition.getActiveConditions());
+		for(SECondition any : app.condition.getActiveConditions())
+        {
+        	app.condition.setInitialConditions(any);
+        }
+		
+		//initialize ventilators
 		pc = new SEMechanicalVentilatorPressureControl();
         cpap = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
         vc = new SEMechanicalVentilatorVolumeControl();
         ext = new SEMechanicalVentilation();
         
-        MiniLogPanel.append("Simulation started\\n");
+        MiniLogPanel.append("Simulation started\n");
 		for (SEAction a : sce.getActions()) {
 		    if (a instanceof SEAdvanceTime) {
 		        
@@ -406,7 +418,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pc.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPresValue_PC(), PressureUnit.cmH2O);
         pc.getRespirationRate().setValue(app.ventilator.getRespirationRateValue_PC(), FrequencyUnit.Per_min);
         pc.getSlope().setValue(app.ventilator.getSlopeValue_PC(), TimeUnit.s);
-        pe.processAction(pc);
+        if(!pe.processAction(pc)) {
+        	MiniLogPanel.append("!!!Ventilator pc error, simulation stopped!!!\n");
+        }
     }
     
     private void stop_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -426,7 +440,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         cpap.getDeltaPressureSupport().setValue(app.ventilator.getDeltaPressureSupValue_CPAP(), PressureUnit.cmH2O);
         cpap.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPresValue_CPAP(), PressureUnit.cmH2O);
         cpap.getSlope().setValue(app.ventilator.getSlopeValue_CPAP(), TimeUnit.s);
-        pe.processAction(cpap);
+        if(!pe.processAction(cpap)) {
+        	MiniLogPanel.append("!!!Ventilator cpap error, simulation stopped!!!\n");
+        }
     }
     
     private void stop_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
@@ -454,7 +470,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         vc.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPres_VC(), PressureUnit.cmH2O);
         vc.getRespirationRate().setValue(app.ventilator.getRespirationRate_VC(), FrequencyUnit.Per_min);
         vc.getTidalVolume().setValue(app.ventilator.getTidalVol_VC(), VolumeUnit.mL);
-        pe.processAction(vc);
+        if(!pe.processAction(vc)) {
+        	MiniLogPanel.append("!!!Ventilator vc error, simulation stopped!!!\n");
+        }
     }
     
     private void stop_vc(SEMechanicalVentilatorVolumeControl vc) {
@@ -485,7 +503,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	            setPressure(ext);
 	        }
 	        ext.setState(eSwitch.On);
-	        pe.processAction(ext);
+	        if(!pe.processAction(ext)) {
+	        	MiniLogPanel.append("!!!Ventilator ext error, simulation stopped!!!\n");
+	        }
 		}
 		else if(!firstConnection){
 			disconnectEXTClient(ext);
