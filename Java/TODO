@@ -23,21 +23,31 @@ Ventilator Pressure Control
 
 
 
-TODO ORDINE IMPORTANZA
+#############################
+###TODO ORDINE IMPORTANZA###
+############################
 
-*Se carico da scenario le condizioni non si colorano
 
-*Quando il programma crasha non stampiamo niente a schermo
+#########################
+*Quando il programma crasha ho messo che stampa errore nel minilog, ma vorrei stampare quello che viene scritto in rosso in eclipse!! 
 	esempio: ventilatore pc se metto peep troppo alto
 
+Ci ho guardato tutta mattina ma non si riesce, il messaggio viene stampato da c++ tramite jni
+
+Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stampa ma in questi casi non funziona
+(Guarda in howtoscenario.java, la classe MyListener mettendo listen(true) e invece dei vari Log. metti MiniLogPanel.append(msg);
+##########################
+
+
+#########################
 *Sarebbe bello vedere i dati del paziente prima di lanciarli
 	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
 	far partire la simulazione dal file sneaky sneaky
+	
+CHIEDERE 
+#########################
 
-
-*Grafica panel scenario (allineare un po le cose)
-
-*Sistemare bordo minipanel, deve essere uguale ai pannelli sopra
+*Se spammo un po a caso sui grafici ad una certa si buggano
 
 *JSpinner ventilatori:
 	-ingrandirne alcuni
@@ -45,10 +55,10 @@ TODO ORDINE IMPORTANZA
 	
 *Capire quali cartelle si possono eliminare (resource e states sicuro no!)
 
-*Sistemare commenti patientFile
-
-*aggiungere grafici? Si puo sistemare anche come vengono selezionati
+*Sistemare commenti patientFile, linechart e aggiungerne a scenarioPanel
 
 
+
+*aggiungere grafici, Si puo sistemare anche come vengono selezionati?????
 	
 *Sistemare stampa azioni minilog (sia scenario che normale)????

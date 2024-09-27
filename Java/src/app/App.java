@@ -103,7 +103,6 @@ public class App extends JFrame {
         rightTabbedPane = new JTabbedPane();
         rightTabbedPane.addTab("Charts", chartPanel);
         rightTabbedPane.addTab("Scenario", scenarioPanel);
-        rightTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
 
         leftTabbedPane = new JTabbedPane();
         leftTabbedPane.addTab("Patient", switchPanel);
@@ -115,7 +114,9 @@ public class App extends JFrame {
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
         leftPanel.add(leftTabbedPane, BorderLayout.CENTER);  
-        leftPanel.add(miniLogPanel, BorderLayout.SOUTH);        
+        leftPanel.add(miniLogPanel, BorderLayout.SOUTH);     
+        miniLogPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
+
 
         //splitting view
         add(leftPanel, BorderLayout.CENTER);  
