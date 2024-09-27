@@ -43,12 +43,11 @@ Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stam
 *Sarebbe bello vedere i dati del paziente prima di lanciarli
 	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
 	far partire la simulazione dal file sneaky sneaky
+	
+CHIEDERE 
 #########################
 
-
-*Grafica panel scenario (allineare un po le cose)
-
-*Sistemare bordo minipanel, deve essere uguale ai pannelli sopra
+*Se spammo un po a caso sui grafici ad una certa si buggano
 
 *JSpinner ventilatori:
 	-ingrandirne alcuni
@@ -56,7 +55,7 @@ Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stam
 	
 *Capire quali cartelle si possono eliminare (resource e states sicuro no!)
 
-*Sistemare commenti patientFile e scenarioPanel
+*Sistemare commenti patientFile, linechart e aggiungerne a scenarioPanel
 
 
 

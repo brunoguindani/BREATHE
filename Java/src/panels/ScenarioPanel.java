@@ -18,6 +18,7 @@ import com.kitware.pulse.cdm.actions.SEAction;
 import java.util.ArrayList;
 import utils.Pair;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -45,7 +46,12 @@ public class ScenarioPanel {
 
         scenarioNameField = new JTextField(25);
         createScenarioButton = new JButton("Create Scenario");
-        removeActionButton = new JButton("Remove Selected Action"); 
+        createScenarioButton.setBackground(new Color(0, 122, 255)); 
+        createScenarioButton.setForeground(Color.WHITE);
+        
+        removeActionButton = new JButton("Remove Selected Actions"); 
+        removeActionButton.setBackground(new Color(255, 59, 48));
+        removeActionButton.setForeground(Color.WHITE);
 
         updatePatientFiles();
 
@@ -60,9 +66,11 @@ public class ScenarioPanel {
         updateActionsDisplay();
 
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.EAST;
         scenarioPanel.add(removeActionButton, gbc); 
         
         gbc.gridy++;
+        gbc.anchor = GridBagConstraints.CENTER;
         scenarioPanel.add(createScenarioButton, gbc);
 
         createScenarioButton.addActionListener(e -> {
@@ -70,30 +78,12 @@ public class ScenarioPanel {
         });
 
         removeActionButton.addActionListener(e -> {
-            int selectedRow = actionsTable.getSelectedRow();
-            if (selectedRow >= 0) {
-            	if (isEmptyRow(selectedRow)) {
-                    JOptionPane.showMessageDialog(null, "Please select an action to remove.", "No Action Selected", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            	Pair<SEAction, Integer> actionToRemove = getActionFromRow(selectedRow);
-                int confirm = JOptionPane.showConfirmDialog(null,
-                        "Are you sure you want to remove \n"+ actionToRemove.getKey().toString(),
-                        "Confirm Removal",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-
-                if (confirm == JOptionPane.YES_OPTION) {
-                    removeActionAndAssociatedRows(actionToRemove.getKey());
-                    updateActionsDisplay();
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "Please select an action to remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
-            }
+        	removeActionButtonAction();
         });
     }
 
-    private void updatePatientFiles() {
+
+	private void updatePatientFiles() {
         for (String dirPath : directories) {
             File dir = new File(dirPath);
             if (dir.isDirectory()) {
@@ -175,6 +165,47 @@ public class ScenarioPanel {
         updateActionsDisplay();
     }
 
+    private void removeActionButtonAction() {
+        int[] selectedRows = actionsTable.getSelectedRows(); 
+
+      //Check if at least one actions is selected
+        if (selectedRows.length > 0) {
+            StringBuilder confirmationMessage = new StringBuilder("Are you sure you want to remove the following actions?\n");
+
+            //Check if all the actions selected are not empty and create message
+            for (int row : selectedRows) {
+                if (isEmptyRow(row)) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid action to remove.", "Invalid Selection", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                Pair<SEAction, Integer> actionToRemove = getActionFromRow(row);
+                confirmationMessage.append("\n"+actionToRemove.getKey().toString()+"\nTime: "+formatTime(actionToRemove.getValue())+"\n");
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    confirmationMessage.toString(),
+                    "Confirm Removal",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+               
+            	 // Remove the selected actions, iterating backward
+                for (int i = selectedRows.length - 1; i >= 0; i--) { 
+                    int row = selectedRows[i]; 
+                    Pair<SEAction, Integer> actionToRemove = getActionFromRow(row);
+                    removeAction(actionToRemove.getKey());
+                }
+                
+                updateActionsDisplay(); 
+                actionsTable.clearSelection();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select actions to remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    
     private void updateActionsDisplay() {
         tableModel.setRowCount(0);
 
@@ -209,21 +240,21 @@ public class ScenarioPanel {
         int rowCount = 0;
 
         for (Pair<SEAction, Integer> action : actions) {
-            int lines = action.getKey().toString().split("\n").length + 1; // Aggiungiamo 1 per la riga principale
+            int lines = action.getKey().toString().split("\n").length + 1; 
 
             if (rowCount == row) {
-                return action; // Restituiamo l'azione
+                return action; 
             }
             if (rowCount + lines > row) {
-                return action; // Restituiamo l'azione se si trova nelle righe successive
+                return action; 
             }
-            rowCount += lines; // Aggiorniamo il conteggio delle righe
+            rowCount += lines; 
         }
-        return null; // Non trovato
+        return null; 
     }
 
-    // Metodo per rimuovere l'azione e tutte le righe associate
-    private void removeActionAndAssociatedRows(SEAction actionToRemove) {
+
+    private void removeAction(SEAction actionToRemove) {
         actions.removeIf(pair -> pair.getKey().equals(actionToRemove));
     }
     

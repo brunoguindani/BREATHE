@@ -16,7 +16,7 @@ import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 
 import utils.LineChart;
 
-import javax.swing.JCheckBox;
+import javax.swing.JToggleButton;
 
 public class ChartsPanel {
 	
@@ -28,7 +28,7 @@ public class ChartsPanel {
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
     JPanel selectionPanel;
-    private JCheckBox[] chartCheckboxes;
+    private JToggleButton[] chartToggleButtons;
     
     public ChartsPanel() {
     	
@@ -52,7 +52,7 @@ public class ChartsPanel {
         		PressureUnit.mmHg};
         
         chartPanels = new LineChart[chartNames.length];
-        chartCheckboxes = new JCheckBox[chartNames.length];
+        chartToggleButtons = new JToggleButton[chartNames.length];
         
         selectionPanel = new JPanel();
         selectionPanel.setBackground(Color.BLACK);
@@ -60,30 +60,30 @@ public class ChartsPanel {
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
 
-        // Add selection boxes
+        // Add selection buttons
         for (int i = 0; i < chartNames.length; i++) {
             chartPanels[i] = new LineChart(chartNames[i], chartUnits[i]); 
-            chartCheckboxes[i] = new JCheckBox(chartNames[i]);
+            chartToggleButtons[i] = new JToggleButton(chartNames[i]);
             
             // Pick starting graphs
             if (i == 1 || i == 3 || i==5) {
-                chartCheckboxes[i].setSelected(true);
+                chartToggleButtons[i].setSelected(true);
             } else {
-                chartCheckboxes[i].setSelected(false);
+                chartToggleButtons[i].setSelected(false);
             }
             
-            chartCheckboxes[i].setBackground(Color.BLACK);
-            chartCheckboxes[i].setForeground(Color.WHITE);
-            chartCheckboxes[i].addActionListener(new ActionListener() {
+            chartToggleButtons[i].setBackground(Color.BLACK);
+            chartToggleButtons[i].setForeground(Color.WHITE);
+            chartToggleButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     updateChartsPanel();
                 }
             });
-            selectionPanel.add(chartCheckboxes[i]);
+            selectionPanel.add(chartToggleButtons[i]);
             
             // Add only selected graphs
-            if (chartCheckboxes[i].isSelected()) {
+            if (chartToggleButtons[i].isSelected()) {
                 chartsPanel.add(chartPanels[i]);
             }
         }
@@ -112,8 +112,8 @@ public class ChartsPanel {
     // update view depending on selected panels
     private void updateChartsPanel() {
         chartsPanel.removeAll();
-        for (int i = 0; i < chartCheckboxes.length; i++) {
-            if (chartCheckboxes[i].isSelected()) {
+        for (int i = 0; i < chartToggleButtons.length; i++) {
+            if (chartToggleButtons[i].isSelected()) {
                 chartsPanel.add(chartPanels[i]);
             }
         }
