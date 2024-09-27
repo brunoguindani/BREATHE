@@ -594,7 +594,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
             y = dataValues.get(i);
-            app.charts.getChartsPanel()[i - 1].addPoint(x, y);
+            app.charts.addPointToChartsPanel(requestList[i],x, y);
         }
         
         return data;

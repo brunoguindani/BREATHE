@@ -145,8 +145,8 @@ public class PatientPanel {
             startFromFileButton.setEnabled(false); 
             startFromSimulationButton.setEnabled(false);
             stopButton.setEnabled(true); // enable stop button
-            for (int i =0; i< app.chartPanels.length ;i++) {
-            	app.chartPanels[i].clear(); //restart panels
+            for (String chartName : app.chartPanels.keySet()) {
+                app.chartPanels.get(chartName).clear(); // Restart panels
             }
             app.ventilator.connectButton.setEnabled(true); //enable ventilators
             app.log.getResultArea().setText(""); //empty log
