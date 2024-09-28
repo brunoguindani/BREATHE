@@ -1,9 +1,6 @@
 package utils;
 
-import javax.swing.JPanel;
-
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -13,7 +10,7 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LineChart extends JPanel {
+public class LineChart extends ItemDisplay {
     /**
 	 * 
 	 */
@@ -22,17 +19,11 @@ public class LineChart extends JPanel {
     private int maxXValue = 500;  
     private int maxYValue;  
     private int minYValue = 0;  
-    private int yStep;      
-    private String title;
-    private Unit unit;
-    private double currentYValue; 
+    private int yStep;       
 
     public LineChart(String title, Unit unit) {
-        this.title = title;
-        this.unit = unit;
+        super(title, unit, new Dimension(600, 300));  // Imposta le dimensioni di LineChart
         this.setMaxY();
-        setPreferredSize(new Dimension(600, 300));
-        setBackground(Color.BLACK); 
     }
 
     @Override
@@ -61,7 +52,7 @@ public class LineChart extends JPanel {
         if (!points.isEmpty()) {
             g2.setFont(g2.getFont().deriveFont(14f));
             g2.setColor(Color.WHITE);
-            String yValueStr = String.format("%.2f", currentYValue);
+            String yValueStr = String.format("%.2f", currentValue);
             g2.drawString(yValueStr, (getWidth() - g2.getFontMetrics().stringWidth(yValueStr)) / 2, 40);
         }
 
@@ -144,14 +135,8 @@ public class LineChart extends JPanel {
         int x1 = (int) (x * 50 + 50);
         int y1 = (int) (250 - ((y - minYValue) * 200 / (maxYValue - minYValue)));
         points.add(new Point(x1, y1));
-        currentYValue = y;  
+        currentValue = y;  
         repaint(); 
-    }
-
-    public void clear() {
-        points.clear(); 
-        setMaxY();
-        repaint();
     }
     
     private void setMaxY(){
@@ -194,12 +179,10 @@ public class LineChart extends JPanel {
         }
     }
     
-    private int getMaxY() {
-        return this.maxYValue;
+    public void clear() {
+        points.clear(); 
+        setMaxY();
+        repaint();
     }
-
-    private void setMinYValue(int minYValue) {
-        this.minYValue = minYValue;
-        repaint();  
-    }
+    
 }

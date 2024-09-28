@@ -12,7 +12,7 @@ import panels.MiniLogPanel;
 import panels.PatientPanel;
 import panels.ScenarioPanel;
 import panels.VentilatorPanel;
-import utils.LineChart;
+import utils.ItemDisplay;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -40,7 +40,7 @@ public class App extends JFrame {
     public LogPanel log = new LogPanel();
     public MiniLogPanel mlog = new MiniLogPanel();
     public ChartsPanel charts = new ChartsPanel();
-    public HashMap<String, LineChart> chartPanels;
+    public HashMap<String, ItemDisplay> chartPanels;
 
     // Panel for switching between patient and condition
     private JPanel patientConditionPanel;
