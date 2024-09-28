@@ -211,6 +211,7 @@ public class VentilatorPanel {
     
     //adding visual to panel
     private void addLabelAndField(String labelText, JComponent component, JPanel panel, GridBagConstraints gbc) {
+    	component.setPreferredSize(new Dimension(65, 25));
         gbc.gridx = 0;
         gbc.gridwidth = 1;
         panel.add(new JLabel(labelText), gbc);

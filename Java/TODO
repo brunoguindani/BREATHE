@@ -59,5 +59,7 @@ Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stam
 
 OPZIONALI:
 *aggiungere grafici, heart/respiratory rate magari fare pannellino?????
+
+*Aggiungere altre opzioni per paziente
 	
 *Sistemare stampa azioni minilog (sia scenario che normale)????
