@@ -582,8 +582,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
-          Log.info(any.toString());
-          publish(any.toString()+ "\n");
+        	Log.info(any.toString());
+        	publish(any.toString()+ "\n");
           
           //Ext ventilator doesn't need the data actions
           //data.add(any.toString());
@@ -593,7 +593,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         double x = dataValues.get(0);
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
-            y = dataValues.get(i);
+        	y = dataValues.get(i);
             app.charts.addPointToChartsPanel(requestList[i],x, y);
         }
         
