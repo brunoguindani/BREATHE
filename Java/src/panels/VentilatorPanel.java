@@ -18,12 +18,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import app.SimulationWorker;
 import utils.VentilationMode;
-import zeroMQ.ZeroServer;
 
 public class VentilatorPanel {
 	

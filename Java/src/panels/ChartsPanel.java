@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -51,9 +52,9 @@ public class ChartsPanel {
 
         String[] chartOrder = {
         	    "Total Lung Volume",
-        	    "ECG",
         	    "CO2",
         	    "Pleth",
+        	    "ECG",
         	    "Heart Rate",
         	    "Respiratory Rate"
         	};
@@ -62,6 +63,7 @@ public class ChartsPanel {
         for (String chartName : chartOrder) {
             LineChart chart = new LineChart(chartName, chartsMap.get(chartName));
             chartPanels.put(chartName, chart);
+            
             chartToggleButtons[i] = new JToggleButton(chartName);
             
             if (i < 4) {
