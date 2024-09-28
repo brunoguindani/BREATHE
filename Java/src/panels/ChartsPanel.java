@@ -3,7 +3,9 @@ package panels;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,11 +22,8 @@ import javax.swing.JToggleButton;
 
 public class ChartsPanel {
 	
-	/*
-	 * Panel to manage graphs visualization
-	 */
-	
-	public LineChart[] chartPanels;
+	private HashMap<String, Unit> chartsMap;
+	private HashMap<String, LineChart> chartPanels;
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
     JPanel selectionPanel;
@@ -32,27 +31,18 @@ public class ChartsPanel {
     
     public ChartsPanel() {
     	
-    	//Names for the charts, order is important
-    	//this is important when setting the dimension on LineChart
-        String[] chartNames = {
-        		"Heart Rate", 
-        		"Total Lung Volume", 
-        		"Respiratory Rate", 
-        		"ECG",
-        		"CO2",
-        		"Pleth"};
+    	chartsMap = new HashMap<>();
+       
+    	chartsMap.put("Total Lung Volume", VolumeUnit.mL);
+        chartsMap.put("ECG", ElectricPotentialUnit.mV);
+        chartsMap.put("CO2", PressureUnit.mmHg);
+        chartsMap.put("Pleth", PressureUnit.mmHg);
+        chartsMap.put("Heart Rate", FrequencyUnit.Per_min);
+        chartsMap.put("Respiratory Rate", FrequencyUnit.Per_min);
         
-        //Units for the charts, order must match the names
-        Unit[] chartUnits = {
-        		FrequencyUnit.Per_min, 
-        		VolumeUnit.mL, 
-        		FrequencyUnit.Per_min, 
-        		ElectricPotentialUnit.mV,
-        		PressureUnit.mmHg,
-        		PressureUnit.mmHg};
         
-        chartPanels = new LineChart[chartNames.length];
-        chartToggleButtons = new JToggleButton[chartNames.length];
+        chartPanels = new HashMap<>();
+        chartToggleButtons = new JToggleButton[chartsMap.size()];
         
         selectionPanel = new JPanel();
         selectionPanel.setBackground(Color.BLACK);
@@ -60,13 +50,23 @@ public class ChartsPanel {
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
 
-        // Add selection buttons
-        for (int i = 0; i < chartNames.length; i++) {
-            chartPanels[i] = new LineChart(chartNames[i], chartUnits[i]); 
-            chartToggleButtons[i] = new JToggleButton(chartNames[i]);
+        String[] chartOrder = {
+        	    "Total Lung Volume",
+        	    "CO2",
+        	    "Pleth",
+        	    "ECG",
+        	    "Heart Rate",
+        	    "Respiratory Rate"
+        	};
+        
+        int i = 0;
+        for (String chartName : chartOrder) {
+            LineChart chart = new LineChart(chartName, chartsMap.get(chartName));
+            chartPanels.put(chartName, chart);
             
-            // Pick starting graphs
-            if (i == 1 || i == 3 || i==5) {
+            chartToggleButtons[i] = new JToggleButton(chartName);
+            
+            if (i < 4) {
                 chartToggleButtons[i].setSelected(true);
             } else {
                 chartToggleButtons[i].setSelected(false);
@@ -82,10 +82,10 @@ public class ChartsPanel {
             });
             selectionPanel.add(chartToggleButtons[i]);
             
-            // Add only selected graphs
             if (chartToggleButtons[i].isSelected()) {
-                chartsPanel.add(chartPanels[i]);
+                chartsPanel.add(chartPanels.get(chartName));
             }
+            i++;
         }
         
         scrollChartPane = new JScrollPane(chartsPanel);
@@ -94,12 +94,10 @@ public class ChartsPanel {
         scrollChartPane.setBorder(null);
     }
 
-    // method to return list of charts
-    public LineChart[] getChartsPanel() {
+    public HashMap<String, LineChart> getChartsPanel() {
         return chartPanels;
     }
     
-    // method to return the panel
     public JPanel getChartPanel() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -109,15 +107,48 @@ public class ChartsPanel {
         return mainPanel;
     }
     
-    // update view depending on selected panels
     private void updateChartsPanel() {
         chartsPanel.removeAll();
-        for (int i = 0; i < chartToggleButtons.length; i++) {
-            if (chartToggleButtons[i].isSelected()) {
-                chartsPanel.add(chartPanels[i]);
+        for (JToggleButton toggleButton : chartToggleButtons) {
+            if (toggleButton.isSelected()) {
+                chartsPanel.add(chartPanels.get(toggleButton.getText()));
             }
         }
         chartsPanel.revalidate();
         chartsPanel.repaint();
     }
+    
+    
+    public void addPointToChartsPanel(String chartName, double x, double y) {
+        String mapChartName;
+
+        switch (chartName) {
+            case "HeartRate":
+            	mapChartName = "Heart Rate";
+                break;
+            case "TotalLungVolume":
+            	mapChartName = "Total Lung Volume";
+                break;
+            case "RespirationRate":
+            	mapChartName = "Respiratory Rate";
+                break;
+            case "Lead3ElectricPotential":
+            	mapChartName = "ECG";
+                break;
+            case "CarbonDioxide":
+            	mapChartName = "CO2";
+                break;
+            case "ArterialPressure":
+            	mapChartName = "Pleth";
+                break;
+            default:
+            	mapChartName = null; 
+                break;
+        }
+        
+        if (mapChartName != null) {
+            chartPanels.get(mapChartName).addPoint(x, y);
+        }
+    }
+
 }

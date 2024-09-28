@@ -17,6 +17,7 @@ import utils.LineChart;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
 
 public class App extends JFrame {
 	
@@ -39,7 +40,7 @@ public class App extends JFrame {
     public LogPanel log = new LogPanel();
     public MiniLogPanel mlog = new MiniLogPanel();
     public ChartsPanel charts = new ChartsPanel();
-    public LineChart[] chartPanels;
+    public HashMap<String, LineChart> chartPanels;
 
     // Panel for switching between patient and condition
     private JPanel patientConditionPanel;

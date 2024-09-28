@@ -28,6 +28,20 @@ Ventilator Pressure Control
 ############################
 
 
+*Se spammo un po a caso sui grafici ad una certa si buggano
+
+*JSpinner ventilatori:
+	-ingrandirne alcuni
+	-Controllare i valori minimi e massimi
+	
+#########################
+*Sarebbe bello vedere i dati del paziente prima di lanciarli
+	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
+	far partire la simulazione dal file sneaky sneaky
+	
+CHIEDERE 
+#########################
+
 #########################
 *Quando il programma crasha ho messo che stampa errore nel minilog, ma vorrei stampare quello che viene scritto in rosso in eclipse!! 
 	esempio: ventilatore pc se metto peep troppo alto
@@ -38,27 +52,12 @@ Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stam
 (Guarda in howtoscenario.java, la classe MyListener mettendo listen(true) e invece dei vari Log. metti MiniLogPanel.append(msg);
 ##########################
 
-
-#########################
-*Sarebbe bello vedere i dati del paziente prima di lanciarli
-	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
-	far partire la simulazione dal file sneaky sneaky
-	
-CHIEDERE 
-#########################
-
-*Se spammo un po a caso sui grafici ad una certa si buggano
-
-*JSpinner ventilatori:
-	-ingrandirne alcuni
-	-Controllare i valori minimi e massimi
-	
 *Capire quali cartelle si possono eliminare (resource e states sicuro no!)
 
 *Sistemare commenti patientFile, linechart e aggiungerne a scenarioPanel
 
 
-
-*aggiungere grafici, Si puo sistemare anche come vengono selezionati?????
+OPZIONALI:
+*aggiungere grafici, heart/respiratory rate magari fare pannellino?????
 	
 *Sistemare stampa azioni minilog (sia scenario che normale)????
