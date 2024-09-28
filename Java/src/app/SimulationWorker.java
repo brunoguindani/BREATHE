@@ -2,6 +2,7 @@ package app;
 
 import javax.swing.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		String scenarioFilePath = app.patient.getSelectedScenarioFilePath();
 		 
 		if ((patientFilePath == null || patientFilePath.isEmpty()) && (scenarioFilePath == null || scenarioFilePath.isEmpty())) {
-			MiniLogPanel.append("Loading...\n");
+			MiniLogPanel.append("Loading...");
 			SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
 			SEPatient patient = patient_configuration.getPatient();
 			setPatientParameter(patient);
@@ -115,11 +116,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        }
 			
 			pe.initializeEngine(patient_configuration, dataRequests);
+			exportInitialPatient();
+			pe.serializeToFile("./states/exported/"+app.patient.getName_PATIENT()+"@0s.json");
 		}
 		else if ((scenarioFilePath == null || scenarioFilePath.isEmpty())){
-			MiniLogPanel.append("Starting from file...\n");
+			MiniLogPanel.append("Starting from file...");
 			if(app.condition.getNumActiveCondition() != 0)
-				MiniLogPanel.append("Resetting condition...\n");
+				MiniLogPanel.append("Resetting condition...");
 			pe.serializeFromFile(patientFilePath, dataRequests);
 			SEPatient initialPatient = new SEPatient();
 			pe.getInitialPatient(initialPatient);
@@ -132,16 +135,16 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        }
 		}
 		else if(!(scenarioFilePath == null || scenarioFilePath.isEmpty())){ 
-			MiniLogPanel.append("Starting from scenario...\n");
+			MiniLogPanel.append("Starting from scenario...");
 			if(app.condition.getNumActiveCondition() != 0)
-				MiniLogPanel.append("Resetting condition...\n");
+				MiniLogPanel.append("Resetting condition...");
 			
 			run_scenario(patientFilePath,scenarioFilePath);
 			simulation(true);
 			return null;
 		}
 		else {
-			MiniLogPanel.append("!!!Error!!!\n");
+			MiniLogPanel.append("\n!!!Error!!!");
 			return null;
 		}
         
@@ -149,7 +152,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         return null;
     }
 
-    private void simulation(boolean scenario) {
+	private void simulation(boolean scenario) {
     	if(!scenario) {
 	    	//Ventilators
 	        pc = new SEMechanicalVentilatorPressureControl();
@@ -160,15 +163,15 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        //Start Simulation
 	        engineStabilized = true;
 	        app.patient.enableExportButton();
-	        MiniLogPanel.append("Simulation started\n");
+	        MiniLogPanel.append("Simulation started");
 	        publish("Started\n");
 	        stime.setValue(0, TimeUnit.s);
     	}
         while (!stopRequested) {
         	
             if (!pe.advanceTime(stime)) {
-                publish("Something bad happened\n");
-                MiniLogPanel.append("!!!Error, simulation stopped!!!\n");
+                publish("\nSomething bad happened");
+                MiniLogPanel.append("\n!!!Error, simulation stopped!!!");
                 return;
             }
             
@@ -189,7 +192,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
-        MiniLogPanel.append("Simulation stopped\n");
+        MiniLogPanel.append("\nSimulation stopped");
 
         return;
     }
@@ -227,14 +230,14 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         vc = new SEMechanicalVentilatorVolumeControl();
         ext = new SEMechanicalVentilation();
         
-        MiniLogPanel.append("Simulation started\n");
+        MiniLogPanel.append("\nSimulation started");
 		for (SEAction a : sce.getActions()) {
 		    if (a instanceof SEAdvanceTime) {
 		        
 		        for(int i = 0; i<50; i++){		  
 		            if (!pe.advanceTime(stime)) {
-		                publish("Something bad happened\n");
-		                MiniLogPanel.append("!!!Error, simulation stopped!!!");
+		                publish("\nSomething bad happened");
+		                MiniLogPanel.append("\n!!!Error, simulation stopped!!!");
 		                return;
 		            }
 		            
@@ -252,7 +255,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
 		    } else {
 		        pe.processAction(a);
-		        MiniLogPanel.append("APPLYING \n" + a.toString()+"\n");
+		        MiniLogPanel.append("\nApplying \n" + a.toString()+"");
 		    }
 		    if(stopRequested)
 		    	return;
@@ -334,6 +337,19 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		
     }
     
+    public void exportInitialPatient() {
+        String basePath = "./states/exported/";
+        String baseFileName = app.patient.getName_PATIENT() + "@0s.json";
+        String filePath = basePath + baseFileName;
+
+        int counter = 1;
+        while (new File(filePath).exists()) {
+            filePath = basePath + app.patient.getName_PATIENT() + counter + "@0s.json";
+            counter++;
+        }
+        pe.serializeToFile(filePath);
+    }
+    
   //Handling Ventilators
     private void handilngVentilator(SEMechanicalVentilation ext, SEMechanicalVentilatorPressureControl pc, SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap, SEMechanicalVentilatorVolumeControl vc) {
     	if(ventilationDisconnectRequest) {
@@ -402,7 +418,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	manage_pc(pc);
         pc.setConnection(eSwitch.On);
         pe.processAction(pc);
-        MiniLogPanel.append("PC ventilator connected\n");
+        MiniLogPanel.append("\nPC ventilator connected");
     }
     
     private void manage_pc(SEMechanicalVentilatorPressureControl pc) {
@@ -419,7 +435,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pc.getRespirationRate().setValue(app.ventilator.getRespirationRateValue_PC(), FrequencyUnit.Per_min);
         pc.getSlope().setValue(app.ventilator.getSlopeValue_PC(), TimeUnit.s);
         if(!pe.processAction(pc)) {
-        	MiniLogPanel.append("!!!Ventilator pc error, simulation stopped!!!\n");
+        	MiniLogPanel.append("\n!!!Ventilator pc error, simulation stopped!!!");
         }
     }
     
@@ -432,7 +448,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         manage_cpap(cpap);
         cpap.setConnection(eSwitch.On);
         pe.processAction(cpap);
-        MiniLogPanel.append("CPAP ventilator connected\n");
+        MiniLogPanel.append("\nCPAP ventilator connected");
     }
     
     private void manage_cpap(SEMechanicalVentilatorContinuousPositiveAirwayPressure cpap) {
@@ -441,7 +457,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         cpap.getPositiveEndExpiratoryPressure().setValue(app.ventilator.getPositiveEndExpPresValue_CPAP(), PressureUnit.cmH2O);
         cpap.getSlope().setValue(app.ventilator.getSlopeValue_CPAP(), TimeUnit.s);
         if(!pe.processAction(cpap)) {
-        	MiniLogPanel.append("!!!Ventilator cpap error, simulation stopped!!!\n");
+        	MiniLogPanel.append("\n!!!Ventilator cpap error, simulation stopped!!!");
         }
     }
     
@@ -454,7 +470,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	manage_vc(vc);
         vc.setConnection(eSwitch.On);
         pe.processAction(vc);
-        MiniLogPanel.append("VC ventilator connected\n");
+        MiniLogPanel.append("\nVC ventilator connected");
     }
    
     private void manage_vc(SEMechanicalVentilatorVolumeControl vc) {
@@ -471,7 +487,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         vc.getRespirationRate().setValue(app.ventilator.getRespirationRate_VC(), FrequencyUnit.Per_min);
         vc.getTidalVolume().setValue(app.ventilator.getTidalVol_VC(), VolumeUnit.mL);
         if(!pe.processAction(vc)) {
-        	MiniLogPanel.append("!!!Ventilator vc error, simulation stopped!!!\n");
+        	MiniLogPanel.append("\n!!!Ventilator vc error, simulation stopped!!!");
         }
     }
     
@@ -486,13 +502,13 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	zmqServer = new ZeroServer();
     	zmqServer.connect();
 		zmqServer.startReceiving();
-		MiniLogPanel.append("Searching for EXTERNAL ventilator\n");
+		MiniLogPanel.append("\nSearching for EXTERNAL ventilator");
     }
     
 	private void manage_ext(SEMechanicalVentilation ext){
 		if(zmqServer.isConnectionStable()) {
 			if(firstConnection) {
-				MiniLogPanel.append("EXTERNAL ventilator connected\n");
+				MiniLogPanel.append("\nEXTERNAL ventilator connected");
 				firstConnection = false;
 			}
 			setEXTMode(zmqServer.getSelectedMode());
@@ -504,7 +520,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	        }
 	        ext.setState(eSwitch.On);
 	        if(!pe.processAction(ext)) {
-	        	MiniLogPanel.append("!!!Ventilator ext error, simulation stopped!!!\n");
+	        	MiniLogPanel.append("\n!!!Ventilator ext error, simulation stopped!!!");
 	        }
 		}
 		else if(!firstConnection){
@@ -542,7 +558,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         if(zmqServer.isDisconnecting()) {
         	zmqServer.setDisconnecting();
             app.ventilator.disconnectButton.doClick();
-            MiniLogPanel.append("EXTERNAL ventilator disconnected\n");
+            MiniLogPanel.append("\nEXTERNAL ventilator disconnected");
         }
         firstConnection = true;
         
@@ -552,7 +568,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     	ext.setState(eSwitch.Off);
     	pe.processAction(ext);
     	zmqServer.close();
-    	MiniLogPanel.append("EXTERNAL ventilator server closed\n");
+    	MiniLogPanel.append("\nEXTERNAL ventilator server closed");
     }
     
     //Print data in console and log Panel and Charts

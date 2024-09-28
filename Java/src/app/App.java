@@ -77,9 +77,13 @@ public class App extends JFrame {
         JPanel chartPanel = charts.getChartPanel(); 
         chartPanels = charts.getChartsPanel();
         
-        JRadioButton patientRadioButton = new JRadioButton("Patient");
-        JRadioButton conditionRadioButton = new JRadioButton("Condition");
+        JToggleButton patientRadioButton = new JToggleButton("Patient");
+        JToggleButton conditionRadioButton = new JToggleButton("Condition");
+        Dimension buttonSize = new Dimension(150, 30); 
+        patientRadioButton.setPreferredSize(buttonSize);
+        conditionRadioButton.setPreferredSize(buttonSize);
         ButtonGroup group = new ButtonGroup();
+        
         group.add(patientRadioButton);
         group.add(conditionRadioButton);
         patientRadioButton.setSelected(true);  
