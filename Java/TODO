@@ -27,11 +27,11 @@ Ventilator Pressure Control
 ###TODO ORDINE IMPORTANZA###
 ############################
 
+*Paziente esporto paziente
 
 *Se spammo un po a caso sui grafici ad una certa si buggano
 
 *JSpinner ventilatori:
-	-ingrandirne alcuni
 	-Controllare i valori minimi e massimi
 	
 #########################
@@ -45,8 +45,6 @@ CHIEDERE
 #########################
 *Quando il programma crasha ho messo che stampa errore nel minilog, ma vorrei stampare quello che viene scritto in rosso in eclipse!! 
 	esempio: ventilatore pc se metto peep troppo alto
-
-Ci ho guardato tutta mattina ma non si riesce, il messaggio viene stampato da c++ tramite jni
 
 Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stampa ma in questi casi non funziona
 (Guarda in howtoscenario.java, la classe MyListener mettendo listen(true) e invece dei vari Log. metti MiniLogPanel.append(msg);
@@ -63,3 +61,5 @@ OPZIONALI:
 *Aggiungere altre opzioni per paziente
 	
 *Sistemare stampa azioni minilog (sia scenario che normale)????
+
+*Quando carico scenario lo vedo nel panel
