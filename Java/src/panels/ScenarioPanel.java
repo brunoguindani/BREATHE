@@ -1,5 +1,6 @@
 package panels;
 
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -56,10 +57,38 @@ public class ScenarioPanel {
         updatePatientFiles();
 
         addLabelAndField("Patient:", fileComboBox, scenarioPanel, gbc, 0);
-        addLabelAndField("Name:", scenarioNameField, scenarioPanel, gbc, 1);
+        addLabelAndField("Scenario Name:", scenarioNameField, scenarioPanel, gbc, 1);
 
-        tableModel = new DefaultTableModel(new Object[]{"Action", "Time"}, 0);
+        tableModel = new DefaultTableModel(new Object[]{"Action", "Time"}, 0) {
+
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         actionsTable = new JTable(tableModel);
+        DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            public void setSelectionInterval(int index0, int index1) {
+                // Permetti la selezione solo per le righe che non iniziano con "    " (indentate)
+                String action = (String) tableModel.getValueAt(index0, 0);
+                if (!action.startsWith("    ")) {
+                    super.setSelectionInterval(index0, index0); // Permetti solo la selezione della riga
+                } else {
+                    clearSelection(); // Altrimenti non selezionare
+                }
+            }
+        };
+
+        // Assegna il selection model alla tabella
+        actionsTable.setSelectionModel(selectionModel);
+        
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
         addLabelAndField("", actionsScrollPane, scenarioPanel, gbc, 2);
 
@@ -220,7 +249,7 @@ public class ScenarioPanel {
             for (int i = 1; i < lines.length; i++) {
                 tableModel.addRow(new Object[]{"    " + lines[i], ""});
             }
-            tableModel.addRow(new Object[]{"", ""});
+            tableModel.addRow(new Object[]{"    ", "    "});
         }
     }
 

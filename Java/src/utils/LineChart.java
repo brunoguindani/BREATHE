@@ -154,7 +154,7 @@ public class LineChart extends JPanel {
         repaint();
     }
     
-    public void setMaxY(){
+    private void setMaxY(){
         switch(this.title){
             case "Heart Rate":
                 this.maxYValue = 150;
@@ -194,11 +194,11 @@ public class LineChart extends JPanel {
         }
     }
     
-    public int getMaxY() {
+    private int getMaxY() {
         return this.maxYValue;
     }
 
-    public void setMinYValue(int minYValue) {
+    private void setMinYValue(int minYValue) {
         this.minYValue = minYValue;
         repaint();  
     }
