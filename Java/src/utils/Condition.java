@@ -75,8 +75,8 @@ public class Condition {
                 gridX++;
             } else {
                 this.components.add(component);
-                component.setPreferredSize(new Dimension(100, 40)); // Imposta dimensione preferita
-                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Aggiungi padding interno
+                component.setPreferredSize(new Dimension(100, 40)); 
+                component.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); 
                 gbc.gridx = gridX;
                 gbc.gridwidth = GridBagConstraints.REMAINDER;
                 fieldsPanel.add(component, gbc);
@@ -254,7 +254,7 @@ public class Condition {
     	boolean success = false;
         if(!enabled) {
             success = ConditionPanel.addCondition(e);
-            MiniLogPanel.append(name+" applied\n");
+            MiniLogPanel.append("\n"+name+" applied");
             enabled = !enabled;
             headerButton.setBackground(new Color(76, 175, 80));
             disableFields();
@@ -262,7 +262,7 @@ public class Condition {
             condition = e;
         }else {
             success = ConditionPanel.removeCondition(condition);
-            MiniLogPanel.append(name+" removed\n");
+            MiniLogPanel.append("\n"+name+" removed");
             headerButton.setBackground(Color.DARK_GRAY);
             enabled = !enabled;
             enableFields();

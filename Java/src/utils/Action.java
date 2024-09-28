@@ -171,7 +171,7 @@ public class Action {
             public void actionPerformed(ActionEvent e) { 
             	SEAction action = getAction();
             	SimulationWorker.pe.processAction(action);
-            	MiniLogPanel.append("Applying\n" + action.toString()+"");
+            	MiniLogPanel.append("\nApplying\n" + action.toString()+"");
             }
         };
     }

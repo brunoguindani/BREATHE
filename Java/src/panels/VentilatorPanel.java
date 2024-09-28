@@ -16,8 +16,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 
 import app.SimulationWorker;
@@ -39,22 +39,22 @@ public class VentilatorPanel {
     public JButton disconnectButton;
 
     //data for PC ventilator
-    private JRadioButton pc;
+    private JToggleButton pc;
 
 	public JSpinner fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
     JComboBox<String> AMComboBox_PC = new JComboBox<>(new String[]{"AC", "CMV"});
     
     //data for CPAP ventilator
-    private JRadioButton cpap;
+    private JToggleButton cpap;
     public JSpinner fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;
     
     //data for VC ventilator
-    private JRadioButton vc;
+    private JToggleButton vc;
     public JSpinner flowVCField, fractionInspOxygenVCField, inspiratoryPeriodVCField, positiveEndExpPresVCField, respirationRateVCField, tidalVolVCField;
     JComboBox<String> AMComboBox_VC = new JComboBox<>(new String[]{"AC", "CMV"});
     
     //data for External ventilator
-    private JRadioButton ext;
+    private JToggleButton ext;
     public JLabel pressureEXTLabel, volumeEXTLabel;
     
     
@@ -119,11 +119,11 @@ public class VentilatorPanel {
          ventilatorCardPanel.add(vcPanel, "VC");
          ventilatorCardPanel.add(extPanel, "EXT");
 
-         pc = new JRadioButton("PC");
+         pc = new JToggleButton("PC");
          pc.setSelected(true);
-         cpap = new JRadioButton("CPAP");
-         vc = new JRadioButton("VC");
-         ext = new JRadioButton("EXT");
+         cpap = new JToggleButton("CPAP");
+         vc = new JToggleButton("VC");
+         ext = new JToggleButton("EXT");
 
          ventilatori.add(pc);
          ventilatori.add(cpap);
@@ -139,12 +139,14 @@ public class VentilatorPanel {
          
          //buttons to manage the selected ventilator
          connectButton.setEnabled(false);  
-         connectButton.setForeground(Color.BLACK);
+         connectButton.setForeground(Color.WHITE);
+         connectButton.setBackground(new Color(0, 122, 255)); 
          connectButton.setFocusPainted(false);
          
          disconnectButton = new JButton("Disconnect");
          disconnectButton.setEnabled(false); 
-         disconnectButton.setForeground(Color.RED);
+         disconnectButton.setBackground(new Color(255, 59, 48));
+         disconnectButton.setForeground(Color.WHITE);
          disconnectButton.setFocusPainted(false);
          
          JPanel buttonPanel = new JPanel();
