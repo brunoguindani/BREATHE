@@ -262,6 +262,8 @@ public class PatientPanel {
                         SimulationWorker.pe.serializeToFile(fileName); 
                         validFileName = true; 
                     }
+                    
+                    app.scenario.updatePatientFiles();
                 } else {
                     // User cancelled the operation
                     validFileName = true; 

@@ -24,10 +24,8 @@ Ventilator Pressure Control
 
 
 #############################
-###TODO ORDINE IMPORTANZA###
+###TODO###
 ############################
-
-*Paziente esporto paziente
 
 *Se clicco tra i pulsanti di Chart Panel si sballa il layout.
 dovrei chiamare mainpanel.repaint() ma poi fa casino negli altri casi.
@@ -53,13 +51,11 @@ Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stam
 
 *Capire quali cartelle si possono eliminare (resource e states sicuro no!)
 
-*Sistemare commenti patientFile, linechart e aggiungerne a scenarioPanel
+*Sistemare commenti patientFile, linechart, infobox, panel charts... e aggiungerne a scenarioPanel
 
 
 OPZIONALI:
 
 *Aggiungere altre opzioni per paziente
-	
-*Sistemare stampa azioni minilog (sia scenario che normale)????
 
-*Quando carico scenario lo vedo nel panel
+*Quando carico scenario lo vedo nel panel (forse valutare se serve)
