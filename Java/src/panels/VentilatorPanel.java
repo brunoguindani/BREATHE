@@ -326,4 +326,9 @@ public class VentilatorPanel {
     public void setNullRunningVentilationMode() {
     	runningVentilationMode = null;
     }
+    
+    public void disableButton() {
+    	connectButton.setEnabled(false);
+    	disconnectButton.setEnabled(false);
+    }
 }

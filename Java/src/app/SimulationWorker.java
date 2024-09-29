@@ -117,7 +117,6 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
 			pe.initializeEngine(patient_configuration, dataRequests);
 			exportInitialPatient();
-			//pe.serializeToFile("./states/"+app.patient.getName_PATIENT()+"@0s.json");
 		}
 		else if ((scenarioFilePath == null || scenarioFilePath.isEmpty())){
 			MiniLogPanel.append("Starting from file...");
@@ -161,8 +160,9 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 	    	
 	        //Start Simulation
 	        engineStabilized = true;
-	        app.patient.enableExportButton();
 	        MiniLogPanel.append("Simulation started");
+	        app.patient.enableExportButton();
+	        app.patient.enableStopButton();
 	        publish("Started\n");
 	        stime.setValue(0, TimeUnit.s);
     	}
@@ -192,7 +192,8 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         pe.cleanUp();
         publish("Simulation Complete\n");
         MiniLogPanel.append("\nSimulation stopped");
-
+        
+        engineStabilized = false;
         return;
     }
     
@@ -229,7 +230,11 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         vc = new SEMechanicalVentilatorVolumeControl();
         ext = new SEMechanicalVentilation();
         
+        engineStabilized = true;
         MiniLogPanel.append("\nSimulation started");
+        app.patient.enableStopButton();
+        app.patient.enableExportButton();
+        
 		for (SEAction a : sce.getActions()) {
 		    if (a instanceof SEAdvanceTime) {
 		        
@@ -615,5 +620,4 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         
         return data;
     }
-
 }
