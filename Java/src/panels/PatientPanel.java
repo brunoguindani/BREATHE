@@ -144,7 +144,6 @@ public class PatientPanel {
             startButton.setEnabled(false); // disable starting buttons
             startFromFileButton.setEnabled(false); 
             startFromSimulationButton.setEnabled(false);
-            //stopButton.setEnabled(true); // enable stop button
             for (String chartName : app.chartPanels.keySet()) {
                 app.chartPanels.get(chartName).clear(); // Restart panels
             }
