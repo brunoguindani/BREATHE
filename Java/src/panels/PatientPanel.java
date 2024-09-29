@@ -46,7 +46,7 @@ public class PatientPanel {
     private String selectedPatientFilePath;
     private String selectedScenarioFilePath;
     
-    JButton exportButton;
+    JButton exportButton, stopButton;
     
     
     public PatientPanel(App app) {
@@ -92,7 +92,7 @@ public class PatientPanel {
         JButton startFromFileButton = new JButton("Start From File");
         JButton startFromSimulationButton = new JButton("Start From Scenario");
         JButton startButton = new JButton("Start Simulation");
-        JButton stopButton = new JButton("Stop Simulation");
+        stopButton = new JButton("Stop Simulation");
         exportButton = new JButton("Export Simulation");
        
         startFromSimulationButton.setBackground(new Color(0, 122, 255)); 
@@ -144,7 +144,7 @@ public class PatientPanel {
             startButton.setEnabled(false); // disable starting buttons
             startFromFileButton.setEnabled(false); 
             startFromSimulationButton.setEnabled(false);
-            stopButton.setEnabled(true); // enable stop button
+            //stopButton.setEnabled(true); // enable stop button
             for (String chartName : app.chartPanels.keySet()) {
                 app.chartPanels.get(chartName).clear(); // Restart panels
             }
@@ -156,7 +156,7 @@ public class PatientPanel {
             });
 
         stopButton.addActionListener(e -> {
-            SimulationWorker.requestStop(); //stop simulation
+        	SimulationWorker.requestStop(); //stop simulation
             startButton.setEnabled(true);
             startFromSimulationButton.setEnabled(true);
             exportButton.setEnabled(false);
@@ -164,7 +164,7 @@ public class PatientPanel {
             selectedPatientFilePath = null;
             selectedScenarioFilePath = null;
             stopButton.setEnabled(false);
-            app.ventilator.connectButton.setEnabled(false);
+            app.ventilator.disableButton();
             app.action.disableButtonStates();
             app.condition.enableButtonStates();
             setFieldsEnabled(true);           
@@ -465,4 +465,7 @@ public class PatientPanel {
     	exportButton.setEnabled(true);
     }
 
+    public void enableStopButton() {
+    	stopButton.setEnabled(true);
+    }
 }
