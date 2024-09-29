@@ -5,15 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.geom.RoundRectangle2D;
 
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 
 public class InfoBox extends ItemDisplay {
     private static final long serialVersionUID = 1L;
     
-    private static final Color BACKGROUND_COLOR = Color.BLACK;  // Colore di sfondo scuro
-    private static final Color BORDER_COLOR = Color.WHITE;  // Colore del bordo
     private static final Color TEXT_COLOR = Color.WHITE;    // Colore del testo
 
     public InfoBox(String title, Unit unit) {
@@ -26,14 +23,6 @@ public class InfoBox extends ItemDisplay {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        /*
-        // Disegna uno sfondo arrotondato
-        g2.setColor(BACKGROUND_COLOR);
-        g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-
-        // Disegna il bordo arrotondato
-        g2.setColor(BORDER_COLOR);
-        g2.drawRoundRect(0, 0, getWidth(), getHeight(), 20, 20);*/
 
         // Disegna il titolo al centro
         if (title != null && !title.isEmpty()) {
