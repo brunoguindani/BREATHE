@@ -117,7 +117,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
 			pe.initializeEngine(patient_configuration, dataRequests);
 			exportInitialPatient();
-			pe.serializeToFile("./states/exported/"+app.patient.getName_PATIENT()+"@0s.json");
+			//pe.serializeToFile("./states/"+app.patient.getName_PATIENT()+"@0s.json");
 		}
 		else if ((scenarioFilePath == null || scenarioFilePath.isEmpty())){
 			MiniLogPanel.append("Starting from file...");
@@ -147,7 +147,6 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			MiniLogPanel.append("\n!!!Error!!!");
 			return null;
 		}
-        
         simulation(false);
         return null;
     }
@@ -338,7 +337,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     }
     
     public void exportInitialPatient() {
-        String basePath = "./states/exported/";
+        String basePath = "./states/";
         String baseFileName = app.patient.getName_PATIENT() + "@0s.json";
         String filePath = basePath + baseFileName;
 
@@ -348,6 +347,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
             counter++;
         }
         pe.serializeToFile(filePath);
+        app.scenario.updatePatientFiles();
     }
     
   //Handling Ventilators

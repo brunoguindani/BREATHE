@@ -112,7 +112,7 @@ public class ScenarioPanel {
     }
 
 
-	private void updatePatientFiles() {
+	public void updatePatientFiles() {
         for (String dirPath : directories) {
             File dir = new File(dirPath);
             if (dir.isDirectory()) {
