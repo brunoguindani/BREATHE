@@ -66,7 +66,7 @@ public class App extends JFrame {
             }
         });
 
-        //retrieving panels
+        //retrieving all panels
         JPanel patientPanel = patient.getPatientPanel();
         JScrollPane scrollConditionPane = condition.getConditionScrollPane();
         JPanel ventilatorPanel = ventilator.getVentilatorPanel();
@@ -74,9 +74,11 @@ public class App extends JFrame {
         JPanel scenarioPanel = scenario.getScenarioPanel();
         JScrollPane scrollLogPane = log.getLogScrollPane();
         JPanel miniLogPanel = mlog.getMiniLogPanel();
+        miniLogPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
         JPanel chartPanel = charts.getChartPanel(); 
         chartPanels = charts.getChartsPanel();
         
+        //switch between patient and condition
         JToggleButton patientRadioButton = new JToggleButton("Patient");
         JToggleButton conditionRadioButton = new JToggleButton("Condition");
         Dimension buttonSize = new Dimension(150, 30); 
@@ -104,27 +106,31 @@ public class App extends JFrame {
         JPanel switchPanel = new JPanel(new BorderLayout());
         switchPanel.add(radioPanel, BorderLayout.NORTH);
         switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
-
+        
+        //Panel on the right with outputs
         rightTabbedPane = new JTabbedPane();
         rightTabbedPane.addTab("Charts", chartPanel);
         rightTabbedPane.addTab("Scenario", scenarioPanel);
+        rightTabbedPane.addTab("Log", scrollLogPane);
+        
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BorderLayout());
+        rightPanel.add(rightTabbedPane, BorderLayout.CENTER);
 
+        //Panels on the left with inputs
         leftTabbedPane = new JTabbedPane();
         leftTabbedPane.addTab("Patient", switchPanel);
         leftTabbedPane.addTab("Action", scrollActionPane);
         leftTabbedPane.addTab("Ventilator", ventilatorPanel);
-        leftTabbedPane.addTab("Log", scrollLogPane);
         leftTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
         
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
         leftPanel.add(leftTabbedPane, BorderLayout.CENTER);  
-        leftPanel.add(miniLogPanel, BorderLayout.SOUTH);     
-        miniLogPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 3, Color.DARK_GRAY));
-
+        leftPanel.add(miniLogPanel, BorderLayout.SOUTH);          
 
         //splitting view
         add(leftPanel, BorderLayout.CENTER);  
-        add(rightTabbedPane, BorderLayout.EAST);  // Right TabbedPane with charts and scenario
+        add(rightPanel, BorderLayout.EAST);  // Right TabbedPane with charts and scenario
     }
 }
