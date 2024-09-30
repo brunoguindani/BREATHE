@@ -29,7 +29,7 @@ public class MiniLogPanel {
         
         logTextArea = new JTextArea(3, 20);
         logTextArea.setEditable(false);
-        logTextArea.setFont(new Font("Monospaced", Font.PLAIN, 11)); // Font più piccolo
+        logTextArea.setFont(new Font("Monospaced", Font.PLAIN, 11)); 
         logTextArea.setBackground(new Color(240, 240, 240));
         logTextArea.setLineWrap(true);
         logTextArea.setWrapStyleWord(true);

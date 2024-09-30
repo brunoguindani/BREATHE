@@ -24,8 +24,6 @@ public class ZeroClient {
     private String selectedOption;
     private boolean isConnected = false;
     private Thread communicationThread;
-    @SuppressWarnings("unused")
-    private boolean canDisconnect = false;
 
     private Map<String, Double> receivedDataMap;
 
@@ -212,7 +210,6 @@ public class ZeroClient {
 
         synchronized (this) {
             isConnected = true;
-            canDisconnect = false;
         }
 
         communicationThread = new Thread(() -> {
@@ -220,9 +217,6 @@ public class ZeroClient {
 
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
-                    synchronized (this) {
-                        canDisconnect = false;
-                    }
 
                     socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
@@ -241,10 +235,6 @@ public class ZeroClient {
 
                     reply = socket.recv(0);
                     outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
-
-                    synchronized (this) {
-                        canDisconnect = true;
-                    }
 
                     Thread.sleep(200);
                 }

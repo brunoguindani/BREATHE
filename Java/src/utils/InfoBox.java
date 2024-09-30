@@ -9,12 +9,14 @@ import java.awt.Dimension;
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 
 public class InfoBox extends ItemDisplay {
+	//Item to display last value received
+	
     private static final long serialVersionUID = 1L;
     
-    private static final Color TEXT_COLOR = Color.WHITE;    // Colore del testo
+    private static final Color TEXT_COLOR = Color.WHITE;   
 
     public InfoBox(String title, Unit unit) {
-        super(title, unit, new Dimension(150, 150));  // Imposta le dimensioni di InfoBox
+        super(title, unit, new Dimension(150, 150));  
     }
 
     @Override
@@ -24,7 +26,7 @@ public class InfoBox extends ItemDisplay {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 
-        // Disegna il titolo al centro
+        // Add title
         if (title != null && !title.isEmpty()) {
             g2.setFont(g2.getFont().deriveFont(16f));
             g2.setColor(TEXT_COLOR);
@@ -32,14 +34,14 @@ public class InfoBox extends ItemDisplay {
             g2.drawString(title, (getWidth() - titleWidth) / 2, 25);  // Posiziona il titolo
         }
 
-        // Disegna il valore corrente al centro
+        // Add value
         g2.setFont(g2.getFont().deriveFont(24f));
         g2.setColor(TEXT_COLOR);
         String valueStr = String.format("%.2f", currentValue);
         int valueWidth = g2.getFontMetrics().stringWidth(valueStr);
         g2.drawString(valueStr, (getWidth() - valueWidth) / 2, getHeight() / 2);  // Posiziona il valore
 
-        // Disegna l'unità di misura sotto il valore
+        // Add unit
         if (unit != null) {
             g2.setFont(g2.getFont().deriveFont(14f));
             String unitStr = "(" + unit.toString() + ")";

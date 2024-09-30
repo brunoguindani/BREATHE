@@ -9,6 +9,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -32,9 +34,8 @@ public class PatientPanel {
 	/*
 	 * Panel to manage patient data
 	 */
-	
-    private JTextField nameField_Patient, ageField_Patient, weightField_Patient, heightField_Patient, bodyFatField_Patient;
-    private JTextField heartRateField_Patient, diastolicField_Patient, systolicField_Patient, respirationRateField_Patient, basalMetabolicRateField_Patient;
+	Map<String, JTextField> fieldMap = new HashMap<>();
+	 
     JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JComboBox<String> weightUnitComboBox, heightUnitComboBox;
       
@@ -54,7 +55,7 @@ public class PatientPanel {
     	mainPanel.setBackground(Color.LIGHT_GRAY);
     	
         patientPanel = new JScrollPane();
-        JPanel innerPanel = new JPanel(); // Crea un pannello interno per contenere i componenti
+        JPanel innerPanel = new JPanel(); 
         innerPanel.setLayout(new GridBagLayout());
         innerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         innerPanel.setBackground(Color.LIGHT_GRAY);
@@ -65,39 +66,61 @@ public class PatientPanel {
         gbc.gridx = 0;
         gbc.gridy = 0;
         
-        // Aggiungi i selettori di dati al pannello interno
-        addLabelAndField("Name:", nameField_Patient = new JTextField("Standard", 20), innerPanel, gbc);
+        //fill up map
+        fieldMap.put("name", new JTextField("Standard", 20));
+        fieldMap.put("age", new JTextField("44"));
+        fieldMap.put("weight", new JTextField("170"));
+        fieldMap.put("height", new JTextField("71"));
+        fieldMap.put("bodyFat", new JTextField("0.21"));
+        fieldMap.put("heartRate", new JTextField("72"));
+        fieldMap.put("diastolic", new JTextField("72"));
+        fieldMap.put("systolic", new JTextField("114"));
+        fieldMap.put("respirationRate", new JTextField("16"));
+        fieldMap.put("basalMetabolicRate", new JTextField("1600"));
+        
+        // Selectors for patient data
+        addLabelAndField("Name:", fieldMap.get("name"), innerPanel, gbc);
         addLabelAndField("Sex:", sexComboBox_Patient, innerPanel, gbc);
-        addLabelFieldAndUnit("Age:", ageField_Patient = new JTextField("44"), new JLabel("yr"), innerPanel, gbc);
+        addLabelFieldAndUnit("Age:", fieldMap.get("age"), new JLabel("yr"), innerPanel, gbc);
         weightUnitComboBox = new JComboBox<>(new String[]{"lbs", "kg"});
-        addLabelFieldAndUnit("Weight:", weightField_Patient = new JTextField("170"), weightUnitComboBox, innerPanel, gbc);
+        addLabelFieldAndUnit("Weight:", fieldMap.get("weight"), weightUnitComboBox, innerPanel, gbc);
         heightUnitComboBox = new JComboBox<>(new String[]{"inches", "m", "cm", "ft"});
-        addLabelFieldAndUnit("Height:", heightField_Patient = new JTextField("71"), heightUnitComboBox, innerPanel, gbc);
-        addLabelFieldAndUnit("Body Fat Fraction:", bodyFatField_Patient = new JTextField("0.21"), new JLabel("%"), innerPanel, gbc);
-        addLabelFieldAndUnit("Heart Rate Baseline:", heartRateField_Patient = new JTextField("72"), new JLabel("heartbeats/min"), innerPanel, gbc);
-        addLabelFieldAndUnit("Diastolic Pressure:", diastolicField_Patient = new JTextField("72"), new JLabel("mmHg"), innerPanel, gbc);
-        addLabelFieldAndUnit("Systolic Pressure:", systolicField_Patient = new JTextField("114"), new JLabel("mmHg"), innerPanel, gbc);
-        addLabelFieldAndUnit("Respiration Rate Baseline:", respirationRateField_Patient = new JTextField("16"), new JLabel("breaths/min"), innerPanel, gbc);
-        addLabelFieldAndUnit("Basal Metabolic Rate:", basalMetabolicRateField_Patient = new JTextField("1600"), new JLabel("kcal/day"), innerPanel, gbc);
-
-        // Aggiungi il pannello interno al JScrollPane
+        addLabelFieldAndUnit("Height:", fieldMap.get("height"), heightUnitComboBox, innerPanel, gbc);
+        addLabelFieldAndUnit("Body Fat Fraction:", fieldMap.get("bodyFat"), new JLabel("%"), innerPanel, gbc);
+        addLabelFieldAndUnit("Heart Rate Baseline:", fieldMap.get("heartRate"), new JLabel("heartbeats/min"), innerPanel, gbc);
+        addLabelFieldAndUnit("Diastolic Pressure:", fieldMap.get("diastolic"), new JLabel("mmHg"), innerPanel, gbc);
+        addLabelFieldAndUnit("Systolic Pressure:", fieldMap.get("systolic"), new JLabel("mmHg"), innerPanel, gbc);
+        addLabelFieldAndUnit("Respiration Rate Baseline:", fieldMap.get("respirationRate"), new JLabel("breaths/min"), innerPanel, gbc);
+        addLabelFieldAndUnit("Basal Metabolic Rate:", fieldMap.get("basalMetabolicRate"), new JLabel("kcal/day"), innerPanel, gbc);
+        
+        //Add labels
+        fieldMap.get("age").setToolTipText("Value must be between 18 and 65");
+        fieldMap.get("height").setToolTipText("Value must be between 163cm and 190cm for male patients and between 151cm and 175cm for female patients");
+        fieldMap.get("bodyFat").setToolTipText("Value must be between 0.02% and 0.25% for male patients and between 0.1% and 0.32% for female patients");
+        fieldMap.get("heartRate").setToolTipText("Value must be between 50bpm and 110bpm");
+        fieldMap.get("diastolic").setToolTipText("Value must be between 60mmHg and 80mmHg");
+        fieldMap.get("systolic").setToolTipText("Value must be between 90mmHg and 120mmHg");
+        fieldMap.get("respirationRate").setToolTipText("Value must be between 8bpm and 20bpm");
+        
+        //Add to scrollable panel
         patientPanel.setViewportView(innerPanel);
-        patientPanel.setPreferredSize(new Dimension(450, 400)); // Dimensione appropriata
+        patientPanel.setPreferredSize(new Dimension(450, 400)); 
         patientPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         mainPanel.add(patientPanel, BorderLayout.CENTER);
+        
         //button to start simulation from a pre loaded file
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.LIGHT_GRAY);
         JButton startFromFileButton = new JButton("Start From File");
-        JButton startFromSimulationButton = new JButton("Start From Scenario");
+        JButton startFromScenarioButton = new JButton("Start From Scenario");
         JButton startButton = new JButton("Start Simulation");
         stopButton = new JButton("Stop Simulation");
         exportButton = new JButton("Export Simulation");
        
-        startFromSimulationButton.setBackground(new Color(0, 122, 255)); 
-        startFromSimulationButton.setForeground(Color.WHITE);
-        startFromSimulationButton.setFocusPainted(false);
+        startFromScenarioButton.setBackground(new Color(0, 122, 255)); 
+        startFromScenarioButton.setForeground(Color.WHITE);
+        startFromScenarioButton.setFocusPainted(false);
         
         startFromFileButton.setBackground(new Color(0, 122, 255)); 
         startFromFileButton.setForeground(Color.WHITE);
@@ -126,7 +149,7 @@ public class PatientPanel {
         
         buttonPanel.setLayout(new GridLayout(2, 3, 10, 10));
         
-        buttonPanel.add(startFromSimulationButton);
+        buttonPanel.add(startFromScenarioButton);
         buttonPanel.add(startFromFileButton);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
@@ -140,24 +163,32 @@ public class PatientPanel {
          */
         
         startButton.addActionListener(e -> {
-        	setFieldsEnabled(false); //disable changing of parameters 
-            startButton.setEnabled(false); // disable starting buttons
-            startFromFileButton.setEnabled(false); 
-            startFromSimulationButton.setEnabled(false);
-            for (String chartName : app.chartPanels.keySet()) {
-                app.chartPanels.get(chartName).clear(); // Restart panels
-            }
-            app.ventilator.connectButton.setEnabled(true); //enable ventilators
-            app.log.getResultArea().setText(""); //empty log
-            app.action.enableButtonStates(); //enable actions
-            app.condition.disableButtonStates(); //disable conditions changes
-            new SimulationWorker(app).execute(); //start simulation
-            });
+        	if(!checkFieldsNumeric()) {
+        		JOptionPane.showMessageDialog(null, 
+        			    "One or more fields contain invalid characters.\nPlease ensure all numeric fields contain only valid numbers.", 
+        			    "Invalid Input", 
+        			    JOptionPane.WARNING_MESSAGE);
+        		return;
+        	}else{
+            	setFieldsEnabled(false); //disable changing of parameters 
+                startButton.setEnabled(false); // disable starting buttons
+                startFromFileButton.setEnabled(false); 
+                startFromScenarioButton.setEnabled(false);
+                for (String chartName : app.chartPanels.keySet()) {
+                    app.chartPanels.get(chartName).clear(); // Restart panels
+                }
+                app.ventilator.connectButton.setEnabled(true); //enable ventilators
+                app.log.getResultArea().setText(""); //empty log
+                app.action.enableButtonStates(); //enable actions
+                app.condition.disableButtonStates(); //disable conditions changes
+                new SimulationWorker(app).execute(); //start simulation	
+        	}
+        });
 
         stopButton.addActionListener(e -> {
         	SimulationWorker.requestStop(); //stop simulation
             startButton.setEnabled(true);
-            startFromSimulationButton.setEnabled(true);
+            startFromScenarioButton.setEnabled(true);
             exportButton.setEnabled(false);
             startFromFileButton.setEnabled(true);
             selectedPatientFilePath = null;
@@ -172,56 +203,19 @@ public class PatientPanel {
         
         startFromFileButton.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser("./states/");
-            int returnValue = fileChooser.showOpenDialog(null); //pick a file
+            int returnValue = fileChooser.showOpenDialog(null); // pick a file
             if (returnValue == JFileChooser.APPROVE_OPTION) {
-            	selectedPatientFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-            	
-                try { 
-                   ObjectMapper mapper = new ObjectMapper();
-                   JsonNode rootNode = mapper.readTree(new File(selectedPatientFilePath));            
-                    
-                   //Retrieve patient data from selected file
-                   String name = rootNode.path("InitialPatient").path("Name").asText();
-                   String sex = rootNode.path("InitialPatient").path("Sex").asText(); 
-                   if(sex.isBlank()) sex = "Male";
-                   int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
-                   double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
-                   String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
-                   int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
-                   String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
-                   double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
-                   double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
-                   double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                   double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                   int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
-                   double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
-                    
-                   //Set them to the proper field 
-                   nameField_Patient.setText(name);
-                   sexComboBox_Patient.setSelectedItem(sex);
-                   ageField_Patient.setText(String.valueOf(age));
-                   weightField_Patient.setText(String.format("%.2f", weight));
-                   weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
-                   heightField_Patient.setText(String.valueOf(height));
-                   heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
-                   bodyFatField_Patient.setText(String.format("%.2f", bodyFat));
-                   heartRateField_Patient.setText(String.format("%.2f", heartRate));
-                   diastolicField_Patient.setText(String.format("%.2f", diastolicPressure));
-                   systolicField_Patient.setText(String.format("%.2f", systolicPressure));
-                   respirationRateField_Patient.setText(String.valueOf(respirationRate));
-                   basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
-                    
-                   app.condition.getRemoveAllConditionsButton().doClick();
-                   startButton.doClick();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+                selectedPatientFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                
+                if(loadPatientData(selectedPatientFilePath)) {
+                    app.condition.getRemoveAllConditionsButton().doClick();
+                    startButton.doClick();               	
                 }
             }
         });
         
         exportButton.addActionListener(e -> {
-            String defaultFileName = "./states/exported/" + nameField_Patient.getText() + ".json";
+            String defaultFileName = "./states/exported/" + fieldMap.get("name").getText() + ".json";
             JFileChooser fileChooser = new JFileChooser("./states/exported/");
             fileChooser.setDialogTitle("Export simulation");
             fileChooser.setSelectedFile(new File(defaultFileName)); // Pre-set default filename
@@ -270,55 +264,26 @@ public class PatientPanel {
             }
         });
 
-        startFromSimulationButton.addActionListener(e -> {
-        	 JFileChooser fileChooser = new JFileChooser("./scenario/");
-             int returnValue = fileChooser.showOpenDialog(null); //pick a file
-             if (returnValue == JFileChooser.APPROVE_OPTION) {
-             	selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-             	
-                 try { 
+        startFromScenarioButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser("./scenario/");
+            int returnValue = fileChooser.showOpenDialog(null); // pick a file
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                
+                try {
                     ObjectMapper mapper = new ObjectMapper();
-                    JsonNode rootNode_scenario = mapper.readTree(new File(selectedScenarioFilePath)); 
+                    JsonNode rootNode_scenario = mapper.readTree(new File(selectedScenarioFilePath));
                     selectedPatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
-                    JsonNode rootNode_patient = mapper.readTree(new File(selectedPatientFilePath));   
-                    //Retrieve patient data from selected file
-                    String name = rootNode_patient.path("InitialPatient").path("Name").asText();
-                    String sex = rootNode_patient.path("InitialPatient").path("Sex").asText(); 
-                    if(sex.isBlank()) sex = "Male";
-                    int age = rootNode_patient.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
-                    double weight = rootNode_patient.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
-                    String weightUnit = rootNode_patient.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
-                    int height = rootNode_patient.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
-                    String heightUnit = rootNode_patient.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
-                    double bodyFat = rootNode_patient.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
-                    double heartRate = rootNode_patient.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
-                    double diastolicPressure = rootNode_patient.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    double systolicPressure = rootNode_patient.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
-                    int respirationRate = rootNode_patient.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
-                    double basalMetabolicRate = rootNode_patient.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
-                     
-                    //Set them to the proper field 
-                    nameField_Patient.setText(name);
-                    sexComboBox_Patient.setSelectedItem(sex);
-                    ageField_Patient.setText(String.valueOf(age));
-                    weightField_Patient.setText(String.format("%.2f", weight));
-                    weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
-                    heightField_Patient.setText(String.valueOf(height));
-                    heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
-                    bodyFatField_Patient.setText(String.format("%.2f", bodyFat));
-                    heartRateField_Patient.setText(String.format("%.2f", heartRate));
-                    diastolicField_Patient.setText(String.format("%.2f", diastolicPressure));
-                    systolicField_Patient.setText(String.format("%.2f", systolicPressure));
-                    respirationRateField_Patient.setText(String.valueOf(respirationRate));
-                    basalMetabolicRateField_Patient.setText(String.format("%.2f", basalMetabolicRate));
-                     
-                    app.condition.getRemoveAllConditionsButton().doClick(); 
-                    startButton.doClick();
-                 } catch (IOException ex) {
-                     ex.printStackTrace();
-                     JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
-                 }
-             }
+
+                    if(loadPatientData(selectedPatientFilePath)) {
+                        app.condition.getRemoveAllConditionsButton().doClick();
+                        startButton.doClick();               	
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error loading scenario JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
     }
     
@@ -331,6 +296,51 @@ public class PatientPanel {
                 return "kg";
             default:
                 return "lbs";
+        }
+    }
+    
+    //load Patient Data from File
+    private boolean loadPatientData(String patientFilePath) {
+        try { 
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(new File(patientFilePath));
+
+            // Retrieve patient data from the selected file
+            String name = rootNode.path("InitialPatient").path("Name").asText();
+            String sex = rootNode.path("InitialPatient").path("Sex").asText();
+            if (sex.isBlank()) sex = "Male";
+            int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
+            double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
+            String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+            int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
+            String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+            double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+            double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+            double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
+            double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
+
+            // Set the values to the appropriate fields
+            fieldMap.get("name").setText(name);
+            sexComboBox_Patient.setSelectedItem(sex);
+            fieldMap.get("age").setText(String.valueOf(age));
+            fieldMap.get("weight").setText(String.format("%.2f", weight));
+            weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
+            fieldMap.get("height").setText(String.valueOf(height));
+            heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
+            fieldMap.get("bodyFat").setText(String.format("%.2f", bodyFat));
+            fieldMap.get("heartRate").setText(String.format("%.2f", heartRate));
+            fieldMap.get("diastolic").setText(String.format("%.2f", diastolicPressure));
+            fieldMap.get("systolic").setText(String.format("%.2f", systolicPressure));
+            fieldMap.get("respirationRate").setText(String.valueOf(respirationRate));
+            fieldMap.get("basalMetabolicRate").setText(String.format("%.2f", basalMetabolicRate));
+            
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
     }
 
@@ -377,18 +387,50 @@ public class PatientPanel {
         innerPanel.add(unitComponent, gbc);
         gbc.gridy++;
     }
+    
+    private boolean checkFieldsNumeric() {
+        for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
+            String key = entry.getKey();
+            JTextField field = entry.getValue();
 
-    private void setFieldsEnabled(boolean enabled) {
-        nameField_Patient.setEnabled(enabled);
-        ageField_Patient.setEnabled(enabled);
-        weightField_Patient.setEnabled(enabled);
-        heightField_Patient.setEnabled(enabled);
-        bodyFatField_Patient.setEnabled(enabled);
-        heartRateField_Patient.setEnabled(enabled);
-        diastolicField_Patient.setEnabled(enabled);
-        systolicField_Patient.setEnabled(enabled);
-        respirationRateField_Patient.setEnabled(enabled);
-        basalMetabolicRateField_Patient.setEnabled(enabled);
+            if (key.equals("name")) {
+                continue;
+            }
+
+            String fieldValue = field.getText().replace(",", ".");
+            field.setText(fieldValue);
+
+            if (!isValidNumber(fieldValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isValidNumber(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+
+        int commaCount = str.length() - str.replace(",", "").length();
+        commaCount += str.length() - str.replace(".", "").length();
+        
+        if (commaCount > 1) {
+            return false;
+        }
+
+        try {
+            Double.parseDouble(str.replace(",", "."));
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private void setFieldsEnabled(boolean enabled) { 	
+    	for (JTextField field : fieldMap.values()) {
+    	    field.setEnabled(enabled);
+    	}
         sexComboBox_Patient.setEnabled(enabled);
     }
     
@@ -397,7 +439,7 @@ public class PatientPanel {
     	return mainPanel;
     }
     
-    //Get file 
+    //Get files
     public String getSelectedPatientFilePath() {
         return selectedPatientFilePath;
     }
@@ -407,9 +449,11 @@ public class PatientPanel {
 		return selectedScenarioFilePath;
 	}
 	
-    //Get patient data
+    /*
+     * GET PATIENT DATA
+     */
     public String getName_PATIENT() {
-        return nameField_Patient.getText();
+        return fieldMap.get("name").getText();
     }
     
     public String getSex_PATIENT() {
@@ -417,41 +461,41 @@ public class PatientPanel {
     }
     
     public String getAge_PATIENT() {
-        return ageField_Patient.getText();
+        return fieldMap.get("age").getText();
     }
 
     public String getWeight_PATIENT() {
-        return weightField_Patient.getText();
+        return fieldMap.get("weight").getText();
     }
 
     public String getHeight_PATIENT() {
-        return heightField_Patient.getText();
+        return fieldMap.get("height").getText();
     }
 
     public String getBodyFatFraction_PATIENT() {
-        return bodyFatField_Patient.getText();
+        return fieldMap.get("bodyFat").getText();
     }
 
     public String getHeartRate_PATIENT() {
-        return heartRateField_Patient.getText();
+        return fieldMap.get("heartRate").getText();
     }
 
     public String getDiastolicPressure_PATIENT() {
-        return diastolicField_Patient.getText();
+        return fieldMap.get("diastolic").getText();
     }
 
     public String getSystolicPressure_PATIENT() {
-        return systolicField_Patient.getText();
+        return fieldMap.get("systolic").getText();
     }
 
     public String getRespirationRate_PATIENT() {
-        return respirationRateField_Patient.getText();
+        return fieldMap.get("respirationRate").getText();
     }
 
     public String getBasalMetabolicRate_PATIENT() {
-        return basalMetabolicRateField_Patient.getText();
+        return fieldMap.get("basalMetabolicRate").getText();
     }
-    
+
     public String getWeightUnit_PATIENT() {
     	return (String) weightUnitComboBox.getSelectedItem();
     }

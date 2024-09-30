@@ -26,6 +26,10 @@ import java.awt.Insets;
 import java.io.File;
 
 public class ScenarioPanel {
+	
+	/*
+	 * Panel to create scenario
+	 */
 
     private JPanel scenarioPanel;
 
@@ -41,8 +45,12 @@ public class ScenarioPanel {
     private String[] directories = {"./states/", "./states/exported/"};
 
     public ScenarioPanel() {
+    	
+    	//GUI Setup
+    	
         scenarioPanel = new JPanel();
         scenarioPanel.setLayout(new GridBagLayout());
+        scenarioPanel.setBackground(Color.LIGHT_GRAY);
         GridBagConstraints gbc = new GridBagConstraints();
 
         scenarioNameField = new JTextField(25);
@@ -59,6 +67,8 @@ public class ScenarioPanel {
         addLabelAndField("Patient:", fileComboBox, scenarioPanel, gbc, 0);
         addLabelAndField("Scenario Name:", scenarioNameField, scenarioPanel, gbc, 1);
 
+        //TABLE SETUP
+        
         tableModel = new DefaultTableModel(new Object[]{"Action", "Time"}, 0) {
 
 			private static final long serialVersionUID = 1L;
@@ -68,25 +78,24 @@ public class ScenarioPanel {
             }
         };
         actionsTable = new JTable(tableModel);
+        
         DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
-            /**
-			 * 
-			 */
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
             public void setSelectionInterval(int index0, int index1) {
-                // Permetti la selezione solo per le righe che non iniziano con "    " (indentate)
+                //Can only select lines not starting with "	  ", so only action names
                 String action = (String) tableModel.getValueAt(index0, 0);
                 if (!action.startsWith("    ")) {
-                    super.setSelectionInterval(index0, index0); // Permetti solo la selezione della riga
+                    super.setSelectionInterval(index0, index0);
                 } else {
-                    clearSelection(); // Altrimenti non selezionare
+                    clearSelection();
                 }
             }
         };
 
-        // Assegna il selection model alla tabella
+        // Assign logic to table
         actionsTable.setSelectionModel(selectionModel);
         
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
@@ -111,7 +120,7 @@ public class ScenarioPanel {
         });
     }
 
-
+    // get all patients from folder 
 	public void updatePatientFiles() {
         for (String dirPath : directories) {
             File dir = new File(dirPath);
@@ -137,7 +146,10 @@ public class ScenarioPanel {
         gbc.gridx = 1;
         panel.add(textField, gbc);
     }
-
+    
+    //Scenario will be exported to scenario.
+    //an existing patient must be selected.
+    //can overwrite existing scenarios.
     public void createScenario() {
         SEScenario sce = new SEScenario();
         String scenarioName = scenarioNameField.getText();

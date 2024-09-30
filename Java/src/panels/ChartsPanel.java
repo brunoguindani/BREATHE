@@ -67,6 +67,7 @@ public class ChartsPanel {
         scrollInfoBoxPane.setBorder(null);
         scrollInfoBoxPane.setPreferredSize(new Dimension(150, 300));
         
+        //ADDING LINE CHARTS
         String[] chartOrder = {
         	    "Total Lung Volume",
         	    "CO2",
@@ -92,7 +93,7 @@ public class ChartsPanel {
             chartToggleButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    updateChartsPanel();
+                    updateItemDisplay();
                 }
             });
             selectionPanel.add(chartToggleButtons[i]);
@@ -103,6 +104,7 @@ public class ChartsPanel {
             i++;
         }
         
+        //ADDING INFO BOXES
         String[] infoOrder = {
         	    "Heart Rate",
         	    "Respiratory Rate"
@@ -121,7 +123,7 @@ public class ChartsPanel {
             chartToggleButtons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    updateChartsPanel();
+                    updateItemDisplay();
                 }
             });
             selectionPanel.add(chartToggleButtons[i]);
@@ -130,6 +132,7 @@ public class ChartsPanel {
             i++;
         }
         
+        //SET UP MAIN PANEL
         scrollChartPane = new JScrollPane(chartsPanel);
         scrollChartPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollChartPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -150,7 +153,8 @@ public class ChartsPanel {
         return mainPanel;
     }
     
-    private void updateChartsPanel() {
+    //GRAPHIC UPDATE OF THE PANELS
+    private void updateItemDisplay() {
         chartsPanel.removeAll();
         infoBoxPanel.removeAll();
 
@@ -190,12 +194,10 @@ public class ChartsPanel {
         scrollInfoBoxPane.repaint();
         chartsPanel.repaint();
         infoBoxPanel.repaint();
-
-
     }
 
-    
-    public void addPointToChartsPanel(String chartName, double x, double y) {
+    //ADDING VALUES 
+    public void addValueToItemDisplay(String chartName, double x, double y) {
         String mapChartName;
 
         switch (chartName) {

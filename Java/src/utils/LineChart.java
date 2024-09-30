@@ -12,7 +12,7 @@ import java.util.List;
 
 public class LineChart extends ItemDisplay {
     /**
-	 * 
+	 * Create a dynamic linechart 
 	 */
 	private static final long serialVersionUID = 1L;
 	private final List<Point> points = new ArrayList<>();
@@ -22,7 +22,7 @@ public class LineChart extends ItemDisplay {
     private int yStep;       
 
     public LineChart(String title, Unit unit) {
-        super(title, unit, new Dimension(600, 300));  // Imposta le dimensioni di LineChart
+        super(title, unit, new Dimension(600, 300)); 
         this.setMaxY();
     }
 
@@ -33,22 +33,22 @@ public class LineChart extends ItemDisplay {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         if (title != null && !title.isEmpty()) {
-            // Disegna il titolo con font grande
+        	
+            // Add title
             g2.setFont(g2.getFont().deriveFont(20f)); 
             g2.setColor(Color.WHITE); 
             int titleWidth = g2.getFontMetrics().stringWidth(title);
             g2.drawString(title, (getWidth() - titleWidth) / 2, 20);
 
-            // Disegna l'unità di misura con font più piccolo
+            // Add unit
             if (unit != null) {
-                g2.setFont(g2.getFont().deriveFont(16f)); // Font leggermente più piccolo per l'unità
+                g2.setFont(g2.getFont().deriveFont(16f)); 
                 String unitStr = "(" + unit.toString() + ")";
-                //int unitWidth = g2.getFontMetrics().stringWidth(unitStr);
-                g2.drawString(unitStr, (getWidth() + titleWidth) / 2 + 5, 20); // Posiziona l'unità accanto al titolo
+                g2.drawString(unitStr, (getWidth() + titleWidth) / 2 + 5, 20); 
             }
         }
 
-        // Disegna il valore corrente di y vicino al titolo
+        // Add last value
         if (!points.isEmpty()) {
             g2.setFont(g2.getFont().deriveFont(14f));
             g2.setColor(Color.WHITE);
@@ -64,10 +64,11 @@ public class LineChart extends ItemDisplay {
         g2.setColor(new Color(255, 255, 255, 80)); 
         g2.setStroke(new java.awt.BasicStroke(0.5f)); 
 
-        drawGrid(g2);  // Disegna la griglia
+        drawGrid(g2);  // Add grid
 
-        drawAxisLabels(g2);  // Disegna le etichette
+        drawAxisLabels(g2);  // Add grid labels
 
+        //add graph lines
         if (points.size() > 1) {
             int prevX = 50;
             g2.setColor(Color.GREEN);
@@ -87,8 +88,8 @@ public class LineChart extends ItemDisplay {
 
 
     private void drawGrid(Graphics2D g2) {
-        int chartWidth = getWidth() - 100; // Larghezza utile per il grafico
-        int labelInterval = 50; // Intervallo per le etichette sull'asse X
+        int chartWidth = getWidth() - 100; 
+        int labelInterval = 50; 
 
         int startXValue = Math.max(0, points.size() - maxXValue);
         for (int i = startXValue; i <= startXValue + maxXValue; i += labelInterval) {

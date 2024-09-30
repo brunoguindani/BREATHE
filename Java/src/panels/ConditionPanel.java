@@ -115,7 +115,7 @@ public class ConditionPanel {
         scrollConditionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollConditionPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        
+        //set all conditions to 0 and remove them
         resetConditions.addActionListener(e -> {
             for (Condition condition : conditions) {
             	if(condition.isActive()) {

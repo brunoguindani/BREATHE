@@ -21,8 +21,6 @@ Ventilator Hold
 Ventilator Pressure Control
 
 
-
-
 #############################
 ###TODO###
 ############################
@@ -48,11 +46,6 @@ CHIEDERE
 Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stampa ma in questi casi non funziona
 (Guarda in howtoscenario.java, la classe MyListener mettendo listen(true) e invece dei vari Log. metti MiniLogPanel.append(msg);
 ##########################
-
-*Capire quali cartelle si possono eliminare (resource e states sicuro no!)
-
-*Sistemare commenti patientFile, linechart, infobox, panel charts... e aggiungerne a scenarioPanel
-
 
 OPZIONALI:
 

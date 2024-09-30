@@ -240,7 +240,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		        
 		        for(int i = 0; i<50; i++){		  
 		            if (!pe.advanceTime(stime)) {
-		                publish("\nSomething bad happened");
+		                publish("\nSomething bad happened\n");
 		                MiniLogPanel.append("\n!!!Error, simulation stopped!!!");
 		                return;
 		            }
@@ -268,7 +268,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     
     
 	@Override
-    protected void process(java.util.List<String> chunks) {
+    protected void process(List<String> chunks) {
         for (String chunk : chunks) {
             app.log.getResultArea().append(chunk);
         }
@@ -277,7 +277,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 
     @Override
     protected void done() {
-        app.log.getResultArea().append("Simulazione fermata.\n");
+        app.log.getResultArea().append("Simulation stopped.\n");
     }
     
     private void setDataRequests(SEDataRequestManager dataRequests) {
@@ -615,7 +615,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
         	y = dataValues.get(i);
-            app.charts.addPointToChartsPanel(requestList[i],x, y);
+            app.charts.addValueToItemDisplay(requestList[i],x, y);
         }
         
         return data;
