@@ -112,12 +112,22 @@ public class PatientPanel {
         //button to start simulation from a pre loaded file
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.LIGHT_GRAY);
+        
         JButton startFromFileButton = new JButton("Start From File");
+        startFromFileButton.setToolTipText("Start Simulation from Patient File");
+               
         JButton startFromScenarioButton = new JButton("Start From Scenario");
+        startFromScenarioButton.setToolTipText("Start a Scenario");
+        
         JButton startButton = new JButton("Start Simulation");
+        startButton.setToolTipText("Start new Simulation");
+        
         stopButton = new JButton("Stop Simulation");
+        stopButton.setToolTipText("Stop Simulation");
+        
         exportButton = new JButton("Export Simulation");
-       
+        exportButton.setToolTipText("Export current patient state");
+        
         startFromScenarioButton.setBackground(new Color(0, 122, 255)); 
         startFromScenarioButton.setForeground(Color.WHITE);
         startFromScenarioButton.setFocusPainted(false);
@@ -197,7 +207,7 @@ public class PatientPanel {
             app.ventilator.disableButton();
             app.action.disableButtonStates();
             app.condition.enableButtonStates();
-            setFieldsEnabled(true);           
+            setFieldsEnabled(true);     
         });
         
         
