@@ -1,9 +1,7 @@
-package main;
+package app;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import app.App;
 
 public class Main {
 	
