@@ -19,7 +19,7 @@ public class Main {
         	    e.printStackTrace();
         	}
         	
-            App app = new App();
+            App_temp app = new App_temp();
             app.setVisible(true);
         });
     }

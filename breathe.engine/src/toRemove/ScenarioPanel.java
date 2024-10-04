@@ -1,4 +1,4 @@
-package panels;
+package toRemove;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;

@@ -1,4 +1,4 @@
-package utils;
+package toRemove;
 
 import javax.swing.JPanel;
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;

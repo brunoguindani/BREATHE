@@ -1,4 +1,4 @@
-package panels;
+package toRemove;
 
 import java.awt.*;
 import java.util.List;
@@ -9,8 +9,6 @@ import javax.swing.*;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.patient.conditions.*;
-
-import utils.Condition;
 
 public class ConditionPanel {
 	

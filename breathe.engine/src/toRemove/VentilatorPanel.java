@@ -1,4 +1,4 @@
-package panels;
+package toRemove;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
