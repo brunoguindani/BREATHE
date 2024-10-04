@@ -11,8 +11,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 
-import app.App;
-import app.SimulationWorker;
 
 /**
  * A sample Vaadin view class.
@@ -43,14 +41,9 @@ public class MainView extends VerticalLayout {
         // Use TextField for standard text input
         TextField textField = new TextField("Your name");
         textField.addClassName("bordered");
-        
-        App app = new App();
-        
-        SimulationWorker sm = new SimulationWorker(app);
 
         // Button click listeners can be defined as lambda expressions
         Button button = new Button("Say hello", e -> {
-            add(new Paragraph(sm.getState().toString()));
             add(new Paragraph(service.greet(textField.getValue())));
         });
 
@@ -65,7 +58,7 @@ public class MainView extends VerticalLayout {
         // Use custom CSS classes to apply styling. This is defined in
         // styles.css.
         addClassName("centered-content");
-
+        
         add(textField, button);
     }
 
