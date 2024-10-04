@@ -1,4 +1,4 @@
-package panels;
+package toRemove;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,10 +16,6 @@ import com.kitware.pulse.cdm.properties.CommonUnits.FrequencyUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
-
-import utils.ItemDisplay;
-import utils.LineChart;
-import utils.InfoBox;
 
 import javax.swing.JToggleButton;
 

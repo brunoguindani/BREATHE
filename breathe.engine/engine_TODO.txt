@@ -1,0 +1,4 @@
+- a Patient vogliamo aggiungere anche già le condizioni?
+perchè nel simulation le aggiungevamo a patient quindi ci starebbe...
+non è difficile.
+
