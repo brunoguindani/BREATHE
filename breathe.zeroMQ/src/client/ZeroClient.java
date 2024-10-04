@@ -1,4 +1,4 @@
-package breathe.engine.zeromq;
+package client;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;

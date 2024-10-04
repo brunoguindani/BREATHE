@@ -35,8 +35,8 @@ import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.utilities.Log;
 
-import breathe.engine.zeromq.ZeroServer;
 import panels.MiniLogPanel;
+import server.ZeroServer;
 
 
 public class SimulationWorker extends SwingWorker<Void, String> {
