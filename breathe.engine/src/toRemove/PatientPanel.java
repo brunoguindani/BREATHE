@@ -49,7 +49,6 @@ public class PatientPanel {
     
     JButton exportButton, stopButton;
     
-    
     public PatientPanel(App app) {
     	
     	mainPanel.setBackground(Color.LIGHT_GRAY);

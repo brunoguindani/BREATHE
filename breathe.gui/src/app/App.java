@@ -4,11 +4,11 @@ import javax.swing.*;
 
 import com.kitware.pulse.utilities.JNIBridge;
 
-import panels.ConditionPanel;
-import panels.ActionPanel;
+import panels.ConditionsPanel;
+import panels.ActionsPanel;
 import panels.ChartsPanel;
 import panels.LogPanel;
-import panels.MiniLogPanel;
+import panels.MinilogPanel;
 import panels.PatientPanel;
 import panels.ScenarioPanel;
 import panels.VentilatorPanel;
@@ -34,11 +34,11 @@ public class App extends JFrame {
     //all available panels
     public PatientPanel patient = new PatientPanel(this);
     public VentilatorPanel ventilator = new VentilatorPanel();
-    public ActionPanel action = new ActionPanel(this);
-    public ConditionPanel condition = new ConditionPanel();
+    public ActionsPanel action = new ActionsPanel(this);
+    public ConditionsPanel condition = new ConditionsPanel();
     public ScenarioPanel scenario = new ScenarioPanel();
     public LogPanel log = new LogPanel();
-    public MiniLogPanel mlog = new MiniLogPanel();
+    public MinilogPanel mlog = new MinilogPanel();
     public ChartsPanel charts = new ChartsPanel();
     public HashMap<String, ItemDisplay> chartPanels;
 
@@ -46,8 +46,6 @@ public class App extends JFrame {
     private JPanel patientConditionPanel;
     private CardLayout cardLayout;
     
-   
-
     public App() {
         JNIBridge.initialize();
     	//main panel

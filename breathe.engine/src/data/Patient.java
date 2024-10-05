@@ -3,6 +3,7 @@ package data;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,14 +35,16 @@ public class Patient {
 	private eSex sex; 
 	private Map<String, Double> parameters; //Parameter name and Parameter value
 	private SEPatient patient; //SEPatient object for simulation
+	private List<Condition> conditions;
 	
 	/*
 	 * Constructor from Parameters
 	 */
 	@SafeVarargs
-	public Patient(String name, char sex, Pair<String, Double>... pairs) {
+	public Patient(String name, char sex, List<Condition> conditions, Pair<String, Double>... pairs) {
 		
 	    this.name = name;
+	    this.conditions = conditions;
 	    
 	    //set it up already for simulation
 	    if(sex == 'M') this.sex = eSex.Male; 
@@ -62,7 +65,6 @@ public class Patient {
 	 */
 	public Patient(String file) {	   
 		loadPatientData(file);
-	    generateSEPatient(); //generate and save SEPatient object
 	}
 	
 	/*
@@ -136,7 +138,27 @@ public class Patient {
 	 */
 	public SEPatient getPatient(){
 		return patient;
+	}	
+	
+	/*
+	 * Create SEPatient object
+	 */
+	public void setPatient(SEPatient p){
+		patient = p;
 	}
 	
+	/*
+	 * Return list of conditions
+	 */
+	public List<Condition> getConditions(){
+		return conditions;
+	}
+	
+	/*
+	 * Return list of conditions
+	 */
+	public void addCondition(Condition c){
+		conditions.add(c);
+	}	
 	
 }

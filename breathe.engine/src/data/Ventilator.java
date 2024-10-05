@@ -11,6 +11,7 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
+import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -25,13 +26,11 @@ public class Ventilator {
 	private Map<String, Double> parameters; //Parameter name and Parameter value
 	
 	//Ventilators object depending on mode
-	private SEMechanicalVentilatorVolumeControl ventilator_VC; 
-	private SEMechanicalVentilatorPressureControl ventilator_PC; 
-	private SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_PCAC; 
+	private SEEquipmentAction ventilator; 
 	private SEMechanicalVentilation ventilator_EXTERNAL;
 	
 	/*
-	 * Constructor from Parameters
+	 * Constructor from Parameters with assisted option
 	 */
 	@SafeVarargs
 	public Ventilator(VentilationMode mode, boolean assisted, Pair<String, Double>... pairs) {
@@ -48,11 +47,29 @@ public class Ventilator {
 	    manageSEVentilator(); //generate and update the proper ventilator
 	}
 	
+	/*
+	 * Constructor from Parameters without assisted option
+	 */
+	@SafeVarargs
+	public Ventilator(VentilationMode mode, Pair<String, Double>... pairs) {
+		
+	    this.mode = mode;
+	    this.assisted = false;
+	    //Receive a list of parameters as pairs String Double
+	    //Doesn't check for duplicates cause it is completely handled client side
+	    this.parameters = new HashMap<>(); 
+	    for (Pair<String, Double> pair : pairs) {
+	        this.parameters.put(pair.getKey(), pair.getValue());
+	    } 
+	    
+	    manageSEVentilator(); //generate and update the proper ventilator
+	}
+	
 	//Set up parameters depending on mode
 	private void manageSEVentilator() {
 		if(mode == VentilationMode.VC) {
 			
-			if(ventilator_VC == null) ventilator_VC = new SEMechanicalVentilatorVolumeControl();
+			SEMechanicalVentilatorVolumeControl ventilator_VC = new SEMechanicalVentilatorVolumeControl();
 			
 			if(assisted) ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
 			else ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
@@ -64,9 +81,11 @@ public class Ventilator {
 			ventilator_VC.getRespirationRate().setValue(parameters.get("RespirationRate"), FrequencyUnit.Per_min);
 			ventilator_VC.getTidalVolume().setValue(parameters.get("TidalVolume"), VolumeUnit.mL);
 			
+			this.ventilator = ventilator_VC;
+			
 		}else if(mode == VentilationMode.PC){
 			
-			if(ventilator_PC == null) ventilator_PC = new SEMechanicalVentilatorPressureControl();
+			SEMechanicalVentilatorPressureControl ventilator_PC = new SEMechanicalVentilatorPressureControl();
 			
 			if(assisted) ventilator_PC.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
 			else ventilator_PC.setMode(MechanicalVentilatorPressureControlData.eMode.ContinuousMandatoryVentilation);
@@ -78,14 +97,18 @@ public class Ventilator {
 			ventilator_PC.getRespirationRate().setValue(parameters.get("RespirationRate"), FrequencyUnit.Per_min);
 			ventilator_PC.getInspiratoryPressure().setValue(parameters.get("InspiratoryPressure"), PressureUnit.cmH2O);	
 			
+			this.ventilator = ventilator_PC;
+			
 		}else if(mode == VentilationMode.CPAP){
 			
-			if(ventilator_PCAC == null) ventilator_PCAC = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
+			SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = new SEMechanicalVentilatorContinuousPositiveAirwayPressure();
 			
-			ventilator_PCAC.getFractionInspiredOxygen().setValue(parameters.get("FractionInspiredOxygen"));
-			ventilator_PCAC.getDeltaPressureSupport().setValue(parameters.get("DeltaPressureSupport"), PressureUnit.cmH2O);
-			ventilator_PCAC.getPositiveEndExpiratoryPressure().setValue(parameters.get("PositiveEndExpiratoryPressure"), PressureUnit.cmH2O);
-			ventilator_PCAC.getSlope().setValue(parameters.get("Slope"), TimeUnit.s);	
+			ventilator_CPAP.getFractionInspiredOxygen().setValue(parameters.get("FractionInspiredOxygen"));
+			ventilator_CPAP.getDeltaPressureSupport().setValue(parameters.get("DeltaPressureSupport"), PressureUnit.cmH2O);
+			ventilator_CPAP.getPositiveEndExpiratoryPressure().setValue(parameters.get("PositiveEndExpiratoryPressure"), PressureUnit.cmH2O);
+			ventilator_CPAP.getSlope().setValue(parameters.get("Slope"), TimeUnit.s);	
+			
+			this.ventilator = ventilator_CPAP;
 		}else{
 			if(ventilator_EXTERNAL == null) ventilator_EXTERNAL = new SEMechanicalVentilation();
 			
@@ -103,6 +126,17 @@ public class Ventilator {
 	    } 
 	    
 	    manageSEVentilator(); 
+	}
+	
+	/*
+	 * Get ventilator
+	 */
+	public SEEquipmentAction getVentilator() {
+	    return ventilator;
+	}
+	
+	public SEMechanicalVentilation getVentilator_External() {
+	    return ventilator_EXTERNAL;
 	}
 	
 }
