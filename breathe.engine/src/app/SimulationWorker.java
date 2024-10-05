@@ -431,8 +431,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
     		pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
 		} else {
 			pc.setMode(MechanicalVentilatorPressureControlData.eMode.ContinuousMandatoryVentilation);
-		}
-        pc.setMode(MechanicalVentilatorPressureControlData.eMode.AssistedControl);
+		}  
         pc.getInspiratoryPeriod().setValue(app.ventilator.getInspiratoryPeriodValue_PC(),TimeUnit.s);
         pc.getFractionInspiredOxygen().setValue(app.ventilator.getFractionInspOxygenValue_PC());
         pc.getInspiratoryPressure().setValue(app.ventilator.getInspiratoryPressureValue_PC(), PressureUnit.cmH2O);
@@ -484,7 +483,6 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 		} else {
 			vc.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
 		}
-    	vc.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
         vc.getFlow().setValue(app.ventilator.getFlow_VC(), VolumePerTimeUnit.L_Per_min);
         vc.getFractionInspiredOxygen().setValue(app.ventilator.getFractionInspOxygenValue_VC());
         vc.getInspiratoryPeriod().setValue(app.ventilator.getInspiratoryPeriod_VC(), TimeUnit.s);
@@ -534,7 +532,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
     }
 	
-	private void setVolume(SEMechanicalVentilation ext) {
+	private void setVolume(c ext) {
 		double volume = zmqServer.getVolume();
 		ext.getFlow().setValue(volume, VolumePerTimeUnit.mL_Per_s);
     	app.ventilator.setVolumeLabel_EXT(volume);

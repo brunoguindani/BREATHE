@@ -260,7 +260,7 @@ public class VentilatorPanel {
         return runningVentilationMode == VentilationMode.CPAP;
     }
     
- // CPAP methods
+    // CPAP methods
     public double getFractionInspOxygenValue_CPAP() {
         return (double) fractionInspOxygenCPAPField.getValue();
     }
