@@ -1,6 +1,7 @@
 package app;
 
 import data.*;
+import interfaces.GuiCallback;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,10 +31,14 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
     SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
+    private GuiCallback gui;
+    
     /*
      * Costruttore
      */
-    public SimulationWorker() { }
+    public SimulationWorker(GuiCallback guiCallback) { 
+    	this.gui = guiCallback;
+    }
     
     public void simulation(Patient patient) {
     	
@@ -99,8 +104,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 			//non so se serve
 		}
 
-		//qui chiamare il metodo per cambiare i bottoni di ControlPanel
-		//AppInterface.showStartingButton(false);
+		//Hide starting buttons and show others
+		gui.showStartingButton(false);
 		
 		while (true) {
         	

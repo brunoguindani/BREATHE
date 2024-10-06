@@ -9,8 +9,9 @@ import javax.swing.*;
 
 import panels.*;
 import data.Patient;
+import interfaces.GuiCallback;
 
-public class App_temp extends JFrame {
+public class App_temp extends JFrame implements GuiCallback {
 	
 	/*
 	 * Main Panel containing all the other Panels
@@ -124,7 +125,7 @@ public class App_temp extends JFrame {
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.getInitialPatient();
     	if(new_patient != null) {
-    		new SimulationWorker().simulation(new_patient);	
+    		new SimulationWorker(this).simulation(new_patient);	
     		return true;
     	}else {
     		return false;
@@ -133,11 +134,20 @@ public class App_temp extends JFrame {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		new SimulationWorker().simulationfromFile(file);	
+    		new SimulationWorker(this).simulationfromFile(file);	
     		return true;
     	}else {
     		return false;
     	}
     }
+    
+    /*
+     * GUI METHODS CALLBACKS FROM SIMULATIONWORKER
+     */
+
+	@Override
+	public void showStartingButton(boolean enable) {
+		controlPanel.showStartingButton(enable);
+	}
     
 }
