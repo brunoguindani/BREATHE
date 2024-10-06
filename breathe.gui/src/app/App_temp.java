@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import javax.swing.*;
 
 import panels.*;
+import data.Patient;
 
 public class App_temp extends JFrame {
 	
@@ -33,9 +34,12 @@ public class App_temp extends JFrame {
     
     //Panel for switching between patient and condition during setUp
     private JPanel patientConditionPanel;
-    private CardLayout cardLayout;   
+    private CardLayout cardLayout;  
+    
     
     public App_temp() {
+    	
+    	Initializer.initilizeJNI();
     	
     	//Main Panel Style
         setTitle("Breathe Simulation");
@@ -116,4 +120,24 @@ public class App_temp extends JFrame {
         add(rightPanel, BorderLayout.EAST); 
         add(minilogPanel.getMainPanel(), BorderLayout.SOUTH);
     }
+    
+    public boolean startSimulation() {
+    	Patient new_patient = patientPanel.getInitialPatient();
+    	if(new_patient != null) {
+    		new SimulationWorker().simulation(new_patient);	
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
+    public boolean startFromFileSimulation(String file) {
+    	if(file != null) {
+    		new SimulationWorker().simulationfromFile(file);	
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
 }

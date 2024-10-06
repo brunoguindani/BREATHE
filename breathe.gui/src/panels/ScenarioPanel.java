@@ -11,7 +11,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-
 import app.App_temp;
 import data.Action;
 import utils.Pair;
@@ -118,6 +117,7 @@ public class ScenarioPanel {
     	return mainPanel;
     }
     
+    //Add visuals to panel
     private void addLabelAndField(String labelText, JComponent textField, JPanel panel, GridBagConstraints gbc, int row) {
         gbc.gridx = 0;
         gbc.gridy = row;
@@ -156,6 +156,7 @@ public class ScenarioPanel {
 
     
     private void updateActionsDisplay(DefaultTableModel tableModel) {
+
         tableModel.setRowCount(0);
 
         for (Pair<Action, Integer> action : actions) {
@@ -171,6 +172,7 @@ public class ScenarioPanel {
             }
             tableModel.addRow(new Object[]{"    ", "    "});
         }
+
     }
     
 }

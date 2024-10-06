@@ -8,16 +8,20 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import app.App_temp;
+import data.*;
 
 public class PatientPanel {
 	
@@ -130,5 +134,79 @@ public class PatientPanel {
         gbc.gridx = 2;
         innerPanel.add(unitComponent, gbc);
         gbc.gridy++;
+    }
+    
+    public Patient getInitialPatient() {
+    	if(checkFieldsNumeric()){
+        	String name = fieldMap.get("Name").getText();
+        	Map<String,Double> parameters = new HashMap<>();
+        	char sex = 'F';
+        	for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
+        	    String chiave = entry.getKey();
+        	    
+        	    if(!chiave.equals("Name")) {
+            	    Double valore = Double.parseDouble( entry.getValue().getText());
+        	    	parameters.put(chiave, valore);
+        	    }
+        	}
+    		if (sexComboBox_Patient.getSelectedItem().equals("Male")) {
+    		    sex = 'M';
+    		} 
+    		List<Condition> conditions = new ArrayList<>();
+        	//app.getConditions(); to get conditions and pass them to contruction;
+        	return new Patient(name,sex,parameters,conditions); 	
+    	}else{
+    		JOptionPane.showMessageDialog(null, 
+    			    "One or more fields contain invalid characters.\nPlease ensure all numeric fields contain only valid numbers.", 
+    			    "Invalid Input", 
+    			    JOptionPane.WARNING_MESSAGE);
+    		return null;
+    	}
+    }
+    
+    //COMMETNS
+    private boolean checkFieldsNumeric() {
+        for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
+            String key = entry.getKey();
+            JTextField field = entry.getValue();
+
+            if (key.equals("Name")) {
+                continue;
+            }
+
+            String fieldValue = field.getText().replace(",", ".");
+            field.setText(fieldValue);
+
+            if (!isValidNumber(fieldValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+   //COMMETNS
+    public boolean isValidNumber(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+
+        int commaCount = str.length() - str.replace(",", "").length();
+        commaCount += str.length() - str.replace(".", "").length();
+        
+        if (commaCount > 1) {
+            return false;
+        }
+        
+        for (char c : str.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return false;
+            }
+        }
+
+        try {
+            Double.parseDouble(str.replace(",", "."));
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }
