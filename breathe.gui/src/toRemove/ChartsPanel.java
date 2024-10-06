@@ -17,6 +17,10 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 
+import outputItems.InfoBox;
+import outputItems.ItemDisplay;
+import outputItems.LineChart;
+
 import javax.swing.JToggleButton;
 
 public class ChartsPanel {

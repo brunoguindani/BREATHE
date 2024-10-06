@@ -1,6 +1,5 @@
-package toRemove;
+package outputItems;
 
-import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -21,8 +20,8 @@ public class LineChart extends ItemDisplay {
     private int minYValue = 0;  
     private int yStep;       
 
-    public LineChart(String title, Unit unit) {
-        super(title, unit, new Dimension(600, 300)); 
+    public LineChart(String title, String unit) {
+        super(title, unit, new Dimension(450, 300)); 
         this.setMaxY();
     }
 
@@ -58,7 +57,7 @@ public class LineChart extends ItemDisplay {
 
         g2.setColor(Color.WHITE); 
         g2.setStroke(new java.awt.BasicStroke(1.5f)); 
-        g2.drawLine(50, 250, 550, 250); 
+        g2.drawLine(50, 250, 500, 250); 
         g2.drawLine(50, 50, 50, 250);   
 
         g2.setColor(new Color(255, 255, 255, 80)); 
@@ -99,7 +98,7 @@ public class LineChart extends ItemDisplay {
 
         for (int i = minYValue; i <= maxYValue; i += yStep) {
             int y = 250 - ((i - minYValue) * 200 / (maxYValue - minYValue)); 
-            g2.drawLine(50, y, 550, y);
+            g2.drawLine(50, y, 500, y);
         }
     }
 

@@ -1,12 +1,10 @@
-package toRemove;
+package outputItems;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.Dimension;
-
-import com.kitware.pulse.cdm.properties.CommonUnits.Unit;
 
 public class InfoBox extends ItemDisplay {
 	//Item to display last value received
@@ -15,7 +13,7 @@ public class InfoBox extends ItemDisplay {
     
     private static final Color TEXT_COLOR = Color.WHITE;   
 
-    public InfoBox(String title, Unit unit) {
+    public InfoBox(String title, String unit) {
         super(title, unit, new Dimension(150, 150));  
     }
 

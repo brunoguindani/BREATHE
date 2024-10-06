@@ -14,8 +14,8 @@ public class MinilogPanel{
     
     public MinilogPanel(App_temp app) {
     	mainPanel.setBackground(Color.WHITE);
-    	mainPanel.setPreferredSize(new Dimension(1250, 100));
-    	mainPanel.setBorder(BorderFactory.createMatteBorder(3, 3, 3, 3, Color.DARK_GRAY));
+    	mainPanel.setPreferredSize(new Dimension(1100, 100));
+    	mainPanel.setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, Color.LIGHT_GRAY));
     }
     
     //method to return panel

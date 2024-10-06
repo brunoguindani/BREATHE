@@ -33,13 +33,13 @@ public class App_temp extends JFrame {
     
     //Panel for switching between patient and condition during setUp
     private JPanel patientConditionPanel;
-    private CardLayout cardLayout;
+    private CardLayout cardLayout;   
     
     public App_temp() {
     	
     	//Main Panel Style
         setTitle("Breathe Simulation");
-        setSize(1250, 700);
+        setSize(1100, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setLayout(new BorderLayout());
@@ -82,7 +82,6 @@ public class App_temp extends JFrame {
         leftTabbedPane.addTab("Patient", switchPanel);
         leftTabbedPane.addTab("Actions", actionsPanel.getMainPanel());
         leftTabbedPane.addTab("Ventilators", ventilatorsPanel.getMainPanel());
-        leftTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.DARK_GRAY));
         
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
@@ -95,7 +94,6 @@ public class App_temp extends JFrame {
         rightTabbedPane.addTab("Output", outputPanel.getMainPanel());
         rightTabbedPane.addTab("Scenario", scenarioPanel.getMainPanel());
         rightTabbedPane.addTab("Log", logPanel.getMainPanel());
-        rightTabbedPane.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, Color.DARK_GRAY));
         
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
@@ -103,9 +101,18 @@ public class App_temp extends JFrame {
 
         /*
          * Splitting View
-         */
-        add(controlPanel.getMainPanel(), BorderLayout.WEST);  
-        add(leftPanel, BorderLayout.CENTER);  
+         */     
+        JPanel leftView = new JPanel();
+        leftView.setLayout(new BoxLayout(leftView, BoxLayout.Y_AXIS));
+        leftView.add(leftPanel);
+        leftView.add(Box.createVerticalGlue());  
+        leftView.add(controlPanel.getMainPanel());
+        
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftView, rightPanel);
+        splitPane.setDividerLocation(550); 
+        splitPane.setDividerSize(5);
+
+        add(splitPane, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST); 
         add(minilogPanel.getMainPanel(), BorderLayout.SOUTH);
     }
