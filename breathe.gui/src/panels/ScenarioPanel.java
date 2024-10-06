@@ -5,6 +5,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -13,11 +14,13 @@ import javax.swing.table.DefaultTableModel;
 
 import app.App_temp;
 import data.Action;
+import data.Scenario;
 import utils.Pair;
 
 import java.util.ArrayList;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -28,13 +31,14 @@ public class ScenarioPanel {
 	/*
 	 * Panel to create scenario
 	 */
-
     private JPanel mainPanel;
-    private JComboBox<String> fileComboBox = new JComboBox<>();
-
+    
+    private JComboBox<String> patientFileComboBox;
+    JTextField scenarioNameField;
+    
     
     private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
-    
+    private Scenario sce = new Scenario();
     
     public ScenarioPanel(App_temp app) {
     	
@@ -46,12 +50,14 @@ public class ScenarioPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         
         //PATIENT NAME SETUP
+        patientFileComboBox = new JComboBox<>();
         String[] directories = {"./states/", "./states/exported/"};
         updatePatientFiles(directories);
-        addLabelAndField("Patient:", fileComboBox, mainPanel, gbc, 0);
+        addLabelAndField("Patient:", patientFileComboBox, mainPanel, gbc, 0);
         
         //SCENARIO NAME SETUP
-        JTextField scenarioNameField = new JTextField(25);
+        scenarioNameField = new JTextField(25);
+        scenarioNameField.setPreferredSize(new Dimension(300, 30)); 
         addLabelAndField("Scenario Name:", scenarioNameField, mainPanel, gbc, 1);
 
         
@@ -86,6 +92,7 @@ public class ScenarioPanel {
         actionsTable.setSelectionModel(selectionModel);
         updateActionsDisplay(tableModel);
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
+        actionsScrollPane.setPreferredSize(new Dimension(450, 350)); 
         addLabelAndField("", actionsScrollPane, mainPanel, gbc, 2);
 
 
@@ -106,13 +113,15 @@ public class ScenarioPanel {
         mainPanel.add(createScenarioButton, gbc);
 
         createScenarioButton.addActionListener(e -> {
+        	createScenario();
         });
 
         removeActionButton.addActionListener(e -> {
         });
     }
-    
-    //method to return panel
+
+
+	//method to return panel
     public JPanel getMainPanel() {
     	return mainPanel;
     }
@@ -138,7 +147,7 @@ public class ScenarioPanel {
                 if (files != null) {
                     for (File file : files) {
                         if (file.isFile() && file.getName().endsWith(".json")) { // Pick only files .json
-                            fileComboBox.addItem(file.getName());
+                            patientFileComboBox.addItem(file.getName());
                         }
                     }
                 }
@@ -175,4 +184,49 @@ public class ScenarioPanel {
 
     }
     
+    
+    private void createScenario() {
+        String scenarioName = scenarioNameField.getText();
+
+        if (scenarioName.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter a name for the scenario.", "Missing Name", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        File scenarioFile = new File("./scenario/" + scenarioName + ".json");
+        if (scenarioFile.exists()) {
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    "A file named \"" + scenarioName + ".json\" already exists. Do you want to overwrite it?",
+                    "Confirm Overwrite",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
+        String patientFile = (String) patientFileComboBox.getSelectedItem();
+        File patientTempFile = new File("./states/" + patientFile);
+        if (patientTempFile.exists())
+            patientFile = "./states/" + patientFile;
+        else
+        	patientFile = "./states/exported/" + patientFile;
+
+        //PRENDE LE AZIONI
+        /*for (Pair<SEAction, Integer> action : actions) {
+            int target = action.getValue();
+
+            while (seconds < target) {
+                sce.getActions().add(adv);
+                seconds++;
+            }
+
+            sce.getActions().add(action.getKey());
+        }*/
+        
+        sce.createScenario(patientFile, scenarioName, null);
+        
+    }
+
 }

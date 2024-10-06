@@ -41,24 +41,18 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     public void simulation(Patient patient) {
-    	
     	initializeMode = "standard";
-		
-        pe = new PulseEngine("../breathe.engine/");
+        pe = new PulseEngine();
 		
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
-        
         patient_configuration = patient.getPatientConfiguration();
         
     	this.execute();
-    
     }
     
     public void simulationfromFile(String file) {
-    	
     	initializeMode = "file";
-        
     	pe = new PulseEngine("../breathe.engine/");
 		
         dataRequests = new SEDataRequestManager();
@@ -66,7 +60,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	
 		pe.serializeFromFile(file, dataRequests);
 
-		//questo non capisco cosa fa
+		//questo non capisco cosa fa	--> è un controllo per vedere se ha caricato giusto il paziente
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
@@ -83,13 +77,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         */
 		
     	this.execute();
-    	
     }
     
     public void simulationfromScenario() {
-    	
     	initializeMode = "scenario";
-    
     }
 
 	@Override
@@ -121,7 +112,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             	zmqServer.setSimulationData(dataPrint());
             else
             	*/
-            	dataPrint();
+            	sendData();
 
             stime.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+stime+"...");
@@ -170,25 +161,22 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.serializeToFile(filePath);
     }
     
-    private ArrayList<String> dataPrint() {
+    private ArrayList<String> sendData() {
     	ArrayList<String> data = new ArrayList<String>();
     	
     	//print conditions
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {
-            Log.info(any.toString());
-            publish(any.toString()+ "\n");
-            data.add(any.toString());
+            gui.logStringData(any.toString()+ "\n");
         }
         
         //print requested data
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
-        publish("---------------------------\n");
+        gui.logStringData("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
-            publish(requestList[i] + ": " + dataValues.get(i) + "\n");
-            data.add(requestList[i] + ": " + dataValues.get(i));
+            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
         }
         
         //print actions
@@ -196,21 +184,18 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
-        	Log.info(any.toString());
-        	publish(any.toString()+ "\n");
-          
+        	gui.logStringData(any.toString()+ "\n");
           //Ext ventilator doesn't need the data actions
           //data.add(any.toString());
         }
         
-/*
         //send data to graphs to be printed
         double x = dataValues.get(0);
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
         	y = dataValues.get(i);
-            app.charts.addValueToItemDisplay(requestList[i],x, y);
-        }*/
+            gui.logItemDisplayData(requestList[i],x, y);
+        }
         
         return data;
     }

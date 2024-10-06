@@ -14,6 +14,7 @@ import app.App_temp;
 public class LogPanel{
 	
     private JPanel mainPanel = new JPanel();
+    JTextArea resultArea = new JTextArea();
     
     public LogPanel(App_temp app) {
     	
@@ -21,14 +22,13 @@ public class LogPanel{
     	mainPanel.setPreferredSize(new Dimension(550, 700));
     	
 		// Text area that updates with every new data retrieved from the engine
-    	JTextArea resultArea = new JTextArea();
 	    resultArea.setEditable(false);
 	    resultArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
 	    resultArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 	    resultArea.setBackground(Color.WHITE);
 	    
 	    JScrollPane scrollLogPane = new JScrollPane(resultArea);
-	    scrollLogPane.setPreferredSize(new Dimension(450, 0));
+	    scrollLogPane.setPreferredSize(new Dimension(450, 650));
 	    scrollLogPane.setBackground(Color.LIGHT_GRAY);
 	    
 	    mainPanel.add(scrollLogPane);
@@ -37,5 +37,9 @@ public class LogPanel{
     //method to return panel
     public JPanel getMainPanel() {
     	return mainPanel;
+    }
+    
+    public void append(String log) {
+    	resultArea.append(log);
     }
 }

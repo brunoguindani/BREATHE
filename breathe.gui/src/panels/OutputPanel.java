@@ -129,4 +129,37 @@ public class OutputPanel{
     public JPanel getMainPanel() {
     	return mainPanel;
     }
+    
+    //ADDING VALUES 
+    public void addValueToItemDisplay(String chartName, double x, double y) {
+        String mapChartName;
+
+        switch (chartName) {
+            case "HeartRate":
+            	mapChartName = "Heart Rate";
+                break;
+            case "TotalLungVolume":
+            	mapChartName = "Total Lung Volume";
+                break;
+            case "RespirationRate":
+            	mapChartName = "Respiratory Rate";
+                break;
+            case "Lead3ElectricPotential":
+            	mapChartName = "ECG";
+                break;
+            case "CarbonDioxide":
+            	mapChartName = "CO2";
+                break;
+            case "ArterialPressure":
+            	mapChartName = "Pleth";
+                break;
+            default:
+            	mapChartName = null; 
+                break;
+        }
+        
+        if (mapChartName != null) {
+            chartPanels.get(mapChartName).addPoint(x, y);
+        }
+    }
 }

@@ -150,55 +150,7 @@ public class ScenarioPanel {
     //Scenario will be exported to scenario.
     //an existing patient must be selected.
     //can overwrite existing scenarios.
-    public void createScenario() {
-        SEScenario sce = new SEScenario();
-        String scenarioName = scenarioNameField.getText();
-
-        if (scenarioName.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter a name for the scenario.", "Missing Name", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        File scenarioFile = new File("./scenario/" + scenarioName + ".json");
-        if (scenarioFile.exists()) {
-            int confirm = JOptionPane.showConfirmDialog(null,
-                    "A file named \"" + scenarioName + ".json\" already exists. Do you want to overwrite it?",
-                    "Confirm Overwrite",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.WARNING_MESSAGE);
-
-            if (confirm != JOptionPane.YES_OPTION) {
-                return;
-            }
-        }
-
-        sce.setName(scenarioName);
-
-        String patientFile = (String) fileComboBox.getSelectedItem();
-        File patientTempFile = new File("./states/" + patientFile);
-        if (patientTempFile.exists())
-            sce.setEngineState("./states/" + patientFile);
-        else
-            sce.setEngineState("./states/exported/" + patientFile);
-
-        int seconds = 0;
-        SEAdvanceTime adv = new SEAdvanceTime();
-        adv.getTime().setValue(1, TimeUnit.s);
-        for (Pair<SEAction, Integer> action : actions) {
-            int target = action.getValue();
-
-            while (seconds < target) {
-                sce.getActions().add(adv);
-                seconds++;
-            }
-
-            sce.getActions().add(action.getKey());
-        }
-
-        sce.writeFile("./scenario/" + scenarioName + ".json");
-        MiniLogPanel.append("Scenario exported\n");
-    }
-
+   
     public void addAction(SEAction action, int seconds) {
         Pair<SEAction, Integer> newAction = new Pair<>(action, seconds);
         actions.add(newAction);

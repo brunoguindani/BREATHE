@@ -1,8 +1,0 @@
-azioni bottoni di control panel
-
-conditions
-actions
-ventilators
-output
-minilog
-scenario
