@@ -132,7 +132,7 @@ public class ControlPanel {
         exportButton.setEnabled(!enable);
     }
     
-    private void showStartingButton(boolean enable) {
+    public void showStartingButton(boolean enable) {
         startButton.setVisible(enable); 
         startFromFileButton.setVisible(enable); 
         startFromScenarioButton.setVisible(enable);
