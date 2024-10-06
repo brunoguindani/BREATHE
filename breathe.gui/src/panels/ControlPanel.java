@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JFileChooser;
 import javax.swing.Box;
 import app.App_temp;
 
@@ -46,9 +47,16 @@ public class ControlPanel {
         startFromScenarioButton.setFocusPainted(false);
         
         startFromFileButton.addActionListener(e -> {
-        	if(app.startSimulation()) {
-            	enableStartingButton(false);        		
-        	};
+        	
+        	JFileChooser fileChooser = new JFileChooser("./states/");
+            int returnValue = fileChooser.showOpenDialog(null); // pick a file
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                String file = fileChooser.getSelectedFile().getAbsolutePath();   
+            	if(app.startFromFileSimulation(file)) {
+                	enableStartingButton(false);        		
+            	};
+            }
+
         });
 
         //START SIMULATION BUTTON
@@ -122,7 +130,9 @@ public class ControlPanel {
         startFromScenarioButton.setEnabled(enable);
         stopButton.setEnabled(!enable);
         exportButton.setEnabled(!enable);
-        
+    }
+    
+    private void showStartingButton(boolean enable) {
         startButton.setVisible(enable); 
         startFromFileButton.setVisible(enable); 
         startFromScenarioButton.setVisible(enable);

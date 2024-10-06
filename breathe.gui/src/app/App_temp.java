@@ -131,4 +131,13 @@ public class App_temp extends JFrame {
     	}
     }
     
+    public boolean startFromFileSimulation(String file) {
+    	if(file != null) {
+    		new SimulationWorker().simulationfromFile(file);	
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
 }
