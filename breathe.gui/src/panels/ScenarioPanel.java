@@ -5,7 +5,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -14,11 +13,12 @@ import javax.swing.table.DefaultTableModel;
 
 
 import app.App_temp;
+import data.Action;
+import utils.Pair;
 
 import java.util.ArrayList;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,9 +31,12 @@ public class ScenarioPanel {
 	 */
 
     private JPanel mainPanel;
-
     private JComboBox<String> fileComboBox = new JComboBox<>();
 
+    
+    private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
+    
+    
     public ScenarioPanel(App_temp app) {
     	
     	//Main panel
@@ -82,7 +85,7 @@ public class ScenarioPanel {
 
         // Assign logic to table
         actionsTable.setSelectionModel(selectionModel);
-        
+        updateActionsDisplay(tableModel);
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
         addLabelAndField("", actionsScrollPane, mainPanel, gbc, 2);
 
@@ -142,9 +145,32 @@ public class ScenarioPanel {
             }
         }
     }
+	
+    private String formatTime(int seconds) {
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        int remainingSeconds = seconds % 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
+    }
 
     
     private void updateActionsDisplay(DefaultTableModel tableModel) {
+        tableModel.setRowCount(0);
+
+        for (Pair<Action, Integer> action : actions) {
+            String actionString = action.getKey().toString();
+            String timeString = formatTime(action.getValue());
+
+            String actionName = actionString.split("\n")[0];
+            tableModel.addRow(new Object[]{actionName, timeString});
+
+            String[] lines = actionString.split("\n");
+            for (int i = 1; i < lines.length; i++) {
+                tableModel.addRow(new Object[]{"    " + lines[i], ""});
+            }
+            tableModel.addRow(new Object[]{"    ", "    "});
+        }
     }
     
 }

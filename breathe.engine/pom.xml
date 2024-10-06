@@ -23,6 +23,13 @@
 			<artifactId>jeromq</artifactId>
 			<version>0.6.0</version>
 		</dependency>
+		
+		<dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>2.15.2</version>
+    	</dependency>
+    
 		<!-- https://stackoverflow.com/questions/4955635/how-to-add-local-jar-files-to-a-maven-project -->
 		<dependency>
 			<groupId>breathe</groupId>
