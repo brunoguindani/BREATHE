@@ -13,7 +13,7 @@ public class VentilatorsPanel{
     
     public VentilatorsPanel(App_temp app) {
     	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 700));
+    	mainPanel.setPreferredSize(new Dimension(550, 650));
     }
     
     //method to return panel

@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import app.App_temp;
 
 public class ControlPanel {
@@ -16,14 +14,7 @@ public class ControlPanel {
     public ControlPanel(App_temp app) {
     	//set up main panel
         mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setPreferredSize(new Dimension(150, 700));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        
-        //set up button panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(Color.LIGHT_GRAY);
-        buttonPanel.setPreferredSize(new Dimension(150, 700));
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        mainPanel.setPreferredSize(new Dimension(550, 100));
 
         Dimension buttonSize = new Dimension(130, 40); 
 
@@ -66,6 +57,7 @@ public class ControlPanel {
         stopButton.setEnabled(false);
         stopButton.setBackground(new Color(255, 59, 48));
         stopButton.setForeground(Color.WHITE);
+        stopButton.setVisible(false);
         stopButton.setFocusPainted(false);
 
         //EXPORT BUTTON
@@ -77,35 +69,19 @@ public class ControlPanel {
         exportButton.setEnabled(false);
         exportButton.setBackground(new Color(0, 128, 0));
         exportButton.setForeground(Color.WHITE);
+        exportButton.setVisible(false);
         exportButton.setFocusPainted(false);
 
         //Add buttons to buttonPanel
-        buttonPanel.add(Box.createVerticalGlue()); 
-        buttonPanel.add(startFromScenarioButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));  
-        buttonPanel.add(startFromFileButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(startButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(stopButton);
-        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        buttonPanel.add(exportButton);
-        buttonPanel.add(Box.createVerticalGlue()); 
-        
-        //A few items for style
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(220,220,220));
-        headerPanel.setPreferredSize(new Dimension(150, 33));  
-        
-        JPanel line = new JPanel();
-        line.setBackground(new Color(185,206,225));
-        line.setPreferredSize(new Dimension(150, 2));
-        line.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.darkGray));
-        
-        //Add everything to mainPanel
-        mainPanel.add(headerPanel);
-        mainPanel.add(line);
-        mainPanel.add(buttonPanel);
+        mainPanel.add(startFromScenarioButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));  
+        mainPanel.add(startFromFileButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        mainPanel.add(startButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        mainPanel.add(stopButton);
+        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+        mainPanel.add(exportButton);
     }
 
     //method to return panel

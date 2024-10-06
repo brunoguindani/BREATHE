@@ -39,7 +39,7 @@ public class PatientPanel {
     	
     	//set up main panel
     	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 700));
+    	mainPanel.setPreferredSize(new Dimension(550, 650));
     	
     	//set up dataPanel
     	dataPanel = new JScrollPane();
@@ -93,7 +93,7 @@ public class PatientPanel {
         
         //Add the new panel to the scrollable View
         dataPanel.setViewportView(innerPanel);
-        dataPanel.setPreferredSize(new Dimension(500, 450)); 
+        dataPanel.setPreferredSize(new Dimension(500, 400)); 
         dataPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         //Include everything to the main Panel
