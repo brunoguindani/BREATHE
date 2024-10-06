@@ -150,4 +150,13 @@ public class App_temp extends JFrame implements GuiCallback {
 		controlPanel.showStartingButton(enable);
 	}
     
+	@Override
+	public void logStringData(String data) {
+		logPanel.append(data);
+	}
+	
+	@Override
+	public void logItemDisplayData(String data, double x, double y) {
+		outputPanel.addValueToItemDisplay(data, x, y);
+	}
 }

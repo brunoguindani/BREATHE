@@ -31,9 +31,15 @@ public class ControlPanel {
         startFromFileButton.setFocusPainted(false);
         
         startFromFileButton.addActionListener(e -> {
-        	if(app.startSimulation()) {
-            	enableStartingButton(false);        		
-        	};
+
+        	JFileChooser fileChooser = new JFileChooser("./states/");
+            int returnValue = fileChooser.showOpenDialog(null); // pick a file
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                String file = fileChooser.getSelectedFile().getAbsolutePath();   
+            	if(app.startFromFileSimulation(file)) {
+                	enableStartingButton(false);        		
+            	};
+            }
         });
 
         //START FROM SCENARIO BUTTON
@@ -46,16 +52,7 @@ public class ControlPanel {
         startFromScenarioButton.setForeground(Color.WHITE);
         startFromScenarioButton.setFocusPainted(false);
         
-        startFromFileButton.addActionListener(e -> {
-        	
-        	JFileChooser fileChooser = new JFileChooser("./states/");
-            int returnValue = fileChooser.showOpenDialog(null); // pick a file
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                String file = fileChooser.getSelectedFile().getAbsolutePath();   
-            	if(app.startFromFileSimulation(file)) {
-                	enableStartingButton(false);        		
-            	};
-            }
+        startFromScenarioButton.addActionListener(e -> {
 
         });
 
