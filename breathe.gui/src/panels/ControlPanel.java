@@ -10,6 +10,7 @@ import app.App_temp;
 public class ControlPanel {
 
     private JPanel mainPanel = new JPanel(); 
+    JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
 
     public ControlPanel(App_temp app) {
     	//set up main panel
@@ -19,7 +20,7 @@ public class ControlPanel {
         Dimension buttonSize = new Dimension(130, 40); 
 
         //START FROM FILE BUTTON
-        JButton startFromFileButton = new JButton("Start From File");
+        startFromFileButton = new JButton("Start From File");
         startFromFileButton.setToolTipText("Start Simulation from Patient File");
         startFromFileButton.setPreferredSize(buttonSize);
         startFromFileButton.setMaximumSize(buttonSize);
@@ -27,9 +28,15 @@ public class ControlPanel {
         startFromFileButton.setBackground(new Color(0, 122, 255));
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
+        
+        startFromFileButton.addActionListener(e -> {
+        	if(app.startSimulation()) {
+            	enableStartingButton(false);        		
+        	};
+        });
 
         //START FROM SCENARIO BUTTON
-        JButton startFromScenarioButton = new JButton("Start From Scenario");
+        startFromScenarioButton = new JButton("Start From Scenario");
         startFromScenarioButton.setToolTipText("Start a Scenario");
         startFromScenarioButton.setPreferredSize(buttonSize);
         startFromScenarioButton.setMaximumSize(buttonSize);
@@ -37,9 +44,15 @@ public class ControlPanel {
         startFromScenarioButton.setBackground(new Color(0, 122, 255));
         startFromScenarioButton.setForeground(Color.WHITE);
         startFromScenarioButton.setFocusPainted(false);
+        
+        startFromFileButton.addActionListener(e -> {
+        	if(app.startSimulation()) {
+            	enableStartingButton(false);        		
+        	};
+        });
 
         //START SIMULATION BUTTON
-        JButton startButton = new JButton("Start Simulation");
+        startButton = new JButton("Start Simulation");
         startButton.setToolTipText("Start new Simulation");
         startButton.setPreferredSize(buttonSize);
         startButton.setMaximumSize(buttonSize);
@@ -48,8 +61,14 @@ public class ControlPanel {
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
         
+        startButton.addActionListener(e -> {
+        	if(app.startSimulation()) {
+            	enableStartingButton(false);        		
+        	};
+        });
+        
         //STOP SIMULATION BUTTON
-        JButton stopButton = new JButton("Stop Simulation");
+        stopButton = new JButton("Stop Simulation");
         stopButton.setToolTipText("Stop Simulation");
         stopButton.setPreferredSize(buttonSize);
         stopButton.setMaximumSize(buttonSize);
@@ -59,9 +78,13 @@ public class ControlPanel {
         stopButton.setForeground(Color.WHITE);
         stopButton.setVisible(false);
         stopButton.setFocusPainted(false);
+        
+        stopButton.addActionListener(e -> {
+        	enableStartingButton(true);
+        });
 
         //EXPORT BUTTON
-        JButton exportButton = new JButton("Export Simulation");
+        exportButton = new JButton("Export Simulation");
         exportButton.setToolTipText("Export current patient state");
         exportButton.setPreferredSize(buttonSize);
         exportButton.setMaximumSize(buttonSize);
@@ -71,6 +94,10 @@ public class ControlPanel {
         exportButton.setForeground(Color.WHITE);
         exportButton.setVisible(false);
         exportButton.setFocusPainted(false);
+        
+        exportButton.addActionListener(e -> {
+        	enableStartingButton(true);
+        });
 
         //Add buttons to buttonPanel
         mainPanel.add(startFromScenarioButton);
@@ -88,4 +115,19 @@ public class ControlPanel {
     public JPanel getMainPanel() {
         return mainPanel;
     }
+    
+    private void enableStartingButton(boolean enable) {
+        startButton.setEnabled(enable); 
+        startFromFileButton.setEnabled(enable); 
+        startFromScenarioButton.setEnabled(enable);
+        stopButton.setEnabled(!enable);
+        exportButton.setEnabled(!enable);
+        
+        startButton.setVisible(enable); 
+        startFromFileButton.setVisible(enable); 
+        startFromScenarioButton.setVisible(enable);
+        stopButton.setVisible(!enable);
+        exportButton.setVisible(!enable);
+    }
+   
 }

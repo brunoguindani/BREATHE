@@ -1,6 +1,7 @@
 package data;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.kitware.pulse.cdm.actions.SEAction;
@@ -23,17 +24,13 @@ public class Action {
 	/*
 	 * Constructor from Parameters
 	 */
-	@SafeVarargs
-	public Action(String name, Pair<String, Double>... pairs) {
+	public Action(String name, Map<String, Double> pairs) {
 		
 	    this.name = name;
 
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
-	    this.parameters = new HashMap<>(); 
-	    for (Pair<String, Double> pair : pairs) {
-	        this.parameters.put(pair.getKey(), pair.getValue());
-	    }
+	    this.parameters = new HashMap<>(pairs); 
 	    
 	    generateSEAction(); //generate and save SEAction object
 	}

@@ -8,8 +8,6 @@ import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.patient.conditions.*;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
 
-import utils.Pair;
-
 public class Condition {
 	
 	/*
@@ -25,17 +23,13 @@ public class Condition {
 	/*
 	 * Constructor from Parameters
 	 */
-	@SafeVarargs
-	public Condition(String name, Pair<String, Double>... pairs) {
+	public Condition(String name, Map<String, Double> pairs) {
 		
 	    this.name = name;
 
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
-	    this.parameters = new HashMap<>(); 
-	    for (Pair<String, Double> pair : pairs) {
-	        this.parameters.put(pair.getKey(), pair.getValue());
-	    }
+	    this.parameters = new HashMap<>(pairs); 
 	    
 	    generateSECondition(); //generate and save SECondition object
 	}

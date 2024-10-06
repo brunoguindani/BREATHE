@@ -1,6 +1,7 @@
 package data;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
@@ -32,17 +33,13 @@ public class Ventilator {
 	/*
 	 * Constructor from Parameters with assisted option
 	 */
-	@SafeVarargs
-	public Ventilator(VentilationMode mode, boolean assisted, Pair<String, Double>... pairs) {
+	public Ventilator(VentilationMode mode, boolean assisted, Map<String, Double> pairs) {
 		
 	    this.mode = mode;
 	    this.assisted = assisted;
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
-	    this.parameters = new HashMap<>(); 
-	    for (Pair<String, Double> pair : pairs) {
-	        this.parameters.put(pair.getKey(), pair.getValue());
-	    } 
+	    this.parameters = new HashMap<>(pairs); 
 	    
 	    manageSEVentilator(); //generate and update the proper ventilator
 	}

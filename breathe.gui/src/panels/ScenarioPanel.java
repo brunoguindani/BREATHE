@@ -117,6 +117,7 @@ public class ScenarioPanel {
     	return mainPanel;
     }
     
+    //Add visuals to panel
     private void addLabelAndField(String labelText, JComponent textField, JPanel panel, GridBagConstraints gbc, int row) {
         gbc.gridx = 0;
         gbc.gridy = row;

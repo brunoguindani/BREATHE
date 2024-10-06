@@ -2,9 +2,9 @@ package data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitware.pulse.cdm.bind.Patient.PatientData.eSex;
@@ -16,7 +16,6 @@ import com.kitware.pulse.cdm.properties.CommonUnits.MassUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.PowerUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
-import utils.Pair;
 
 public class Patient {
 	
@@ -34,14 +33,14 @@ public class Patient {
 	private String name; 
 	private eSex sex; 
 	private Map<String, Double> parameters; //Parameter name and Parameter value
-	private SEPatient patient; //SEPatient object for simulation
+	private SEPatient patient = new SEPatient(); //SEPatient object for simulation
+	private SEPatientConfiguration patient_configuration;
 	private List<Condition> conditions;
 	
 	/*
 	 * Constructor from Parameters
 	 */
-	@SafeVarargs
-	public Patient(String name, char sex, List<Condition> conditions, Pair<String, Double>... pairs) {
+	public Patient(String name, char sex, Map<String, Double> parameters, List<Condition> conditions) {
 		
 	    this.name = name;
 	    this.conditions = conditions;
@@ -52,10 +51,7 @@ public class Patient {
 
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
-	    this.parameters = new HashMap<>(); 
-	    for (Pair<String, Double> pair : pairs) {
-	        this.parameters.put(pair.getKey(), pair.getValue());
-	    }
+	    this.parameters = parameters; 
 	    
 	    generateSEPatient(); //generate and save SEPatient object
 	}
@@ -72,7 +68,7 @@ public class Patient {
 	 */
 	private void generateSEPatient() {
 		//create new patient
-		SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
+		patient_configuration = new SEPatientConfiguration();
 		patient = patient_configuration.getPatient();
 			
     	//SET UP DATA
@@ -89,6 +85,10 @@ public class Patient {
 		patient.setSex(sex);
     	patient.getWeight().setValue(parameters.get("Weight"), MassUnit.kg);
     	patient.getHeight().setValue(parameters.get("Height"), LengthUnit.cm);
+    	
+    	for(Condition c : conditions) {
+    		patient_configuration.getConditions().add(c.getCondition());
+    	}
 	}
 	
 	/*
@@ -138,12 +138,21 @@ public class Patient {
 	 */
 	public SEPatient getPatient(){
 		return patient;
-	}	
+	}
+	
+	public SEPatientConfiguration getPatientConfiguration(){
+		return patient_configuration;
+	}
+	
+	public String getName() {
+		return name;
+	}
 	
 	/*
 	 * Create SEPatient object
 	 */
-	public void setPatient(SEPatient p){
+	public void setPatient(SEPatientConfiguration pc, SEPatient p){
+		patient_configuration = pc;
 		patient = p;
 	}
 	
@@ -155,10 +164,11 @@ public class Patient {
 	}
 	
 	/*
-	 * Return list of conditions
+	 * Add conditions
 	 */
 	public void addCondition(Condition c){
 		conditions.add(c);
+		patient_configuration.getConditions().add(c.getCondition());
 	}	
 	
 }
