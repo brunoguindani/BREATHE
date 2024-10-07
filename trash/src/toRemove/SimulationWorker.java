@@ -532,7 +532,7 @@ public class SimulationWorker extends SwingWorker<Void, String> {
 			
     }
 	
-	private void setVolume(c ext) {
+	private void setVolume(SEMechanicalVentilation ext) {
 		double volume = zmqServer.getVolume();
 		ext.getFlow().setValue(volume, VolumePerTimeUnit.mL_Per_s);
     	app.ventilator.setVolumeLabel_EXT(volume);

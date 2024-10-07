@@ -19,7 +19,7 @@ public class LogPanel{
     public LogPanel(App_temp app) {
     	
     	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 700));
+    	mainPanel.setPreferredSize(new Dimension(550, 500));
     	
 		// Text area that updates with every new data retrieved from the engine
 	    resultArea.setEditable(false);
@@ -28,7 +28,7 @@ public class LogPanel{
 	    resultArea.setBackground(Color.WHITE);
 	    
 	    JScrollPane scrollLogPane = new JScrollPane(resultArea);
-	    scrollLogPane.setPreferredSize(new Dimension(550, 800));
+	    scrollLogPane.setPreferredSize(new Dimension(550, 500));
 	    scrollLogPane.setBackground(Color.LIGHT_GRAY);
 	    
 	    mainPanel.add(scrollLogPane);
@@ -41,5 +41,6 @@ public class LogPanel{
     
     public void append(String log) {
     	resultArea.append(log);
+    	resultArea.setCaretPosition(resultArea.getDocument().getLength());
     }
 }

@@ -48,13 +48,11 @@ public class extVentilatorPanel{
     	return mainPanel;
     }
     
-    //Get ventilator data 
-    public Map<String, Number> getData() {
-        Map<String, Number> dataMap = new HashMap<>();
-        if(!pressure.getText().isEmpty())
-        	dataMap.put("Pressure", Double.parseDouble(pressure.getText()));
-        else if(!volume.getText().isEmpty())
-        	dataMap.put("Volume", Double.parseDouble(volume.getText())); 
-        return dataMap;
+    public void setPressureLabel(Double pressure) {
+    	this.pressure.setText(""+pressure);
+    }
+    
+    public void setVolumeLabel(Double volume) {
+    	this.pressure.setText(""+volume);
     }
 }
