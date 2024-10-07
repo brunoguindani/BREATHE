@@ -21,7 +21,6 @@ import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
-import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -77,7 +76,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	
 		pe.serializeFromFile(file, dataRequests);
 
-		//questo non capisco cosa fa	--> è un controllo per vedere se ha caricato giusto il paziente
+		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		

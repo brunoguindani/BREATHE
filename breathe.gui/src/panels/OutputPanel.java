@@ -3,6 +3,9 @@ package panels;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import java.util.HashMap;
 
 import javax.swing.BoxLayout;
@@ -11,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
 import outputItems.*;
-
 import app.App_temp;
 
 public class OutputPanel{
@@ -26,6 +28,8 @@ public class OutputPanel{
     JPanel infoBoxPanel;
     JScrollPane scrollInfoBoxPane;
     private JToggleButton[] chartToggleButtons;
+    
+    private boolean mainChange = false;
     
     public OutputPanel(App_temp app) {
     	mainPanel.setBackground(Color.LIGHT_GRAY);
@@ -82,6 +86,12 @@ public class OutputPanel{
             
             chartToggleButtons[i].setBackground(Color.BLACK);
             chartToggleButtons[i].setForeground(Color.WHITE);
+            chartToggleButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateItemDisplay();
+                }
+            });
             selectionPanel.add(chartToggleButtons[i]);
             
             if (chartToggleButtons[i].isSelected()) {
@@ -106,6 +116,12 @@ public class OutputPanel{
             
             chartToggleButtons[i].setBackground(Color.BLACK);
             chartToggleButtons[i].setForeground(Color.WHITE);
+            chartToggleButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateItemDisplay();
+                }
+            });
             selectionPanel.add(chartToggleButtons[i]);
             
             infoBoxPanel.add(chartPanels.get(chartName));
@@ -128,6 +144,49 @@ public class OutputPanel{
     //method to return panel
     public JPanel getMainPanel() {
     	return mainPanel;
+    }
+    
+    //GRAPHIC UPDATE OF THE PANELS
+    private void updateItemDisplay() {
+        chartsPanel.removeAll();
+        infoBoxPanel.removeAll();
+
+        for (int i = 0; i < chartToggleButtons.length; i++) {
+            JToggleButton toggleButton = chartToggleButtons[i];
+            String chartName = toggleButton.getText();
+            if (toggleButton.isSelected()) {
+                if (chartPanels.get(chartName) instanceof LineChart) {
+                    chartsPanel.add(chartPanels.get(chartName));
+                } else if (chartPanels.get(chartName) instanceof InfoBox) {
+                    infoBoxPanel.add(chartPanels.get(chartName));
+                }
+            }
+        }
+
+        if (infoBoxPanel.getComponentCount() == 0) {
+            scrollInfoBoxPane.setPreferredSize(new Dimension(0, 0));
+            
+            if(!mainChange) {
+            	mainChange = true;
+                mainPanel.revalidate(); 
+                mainPanel.repaint(); 
+            }
+        } else {
+        	scrollInfoBoxPane.setPreferredSize(new Dimension(150, 300));  
+            if(mainChange) {
+            	mainChange = false;
+                mainPanel.revalidate(); 
+                mainPanel.repaint(); 
+            }
+        }
+
+        scrollInfoBoxPane.revalidate();
+        chartsPanel.revalidate();
+        infoBoxPanel.revalidate();
+
+        scrollInfoBoxPane.repaint();
+        chartsPanel.repaint();
+        infoBoxPanel.repaint();
     }
     
     //ADDING VALUES 

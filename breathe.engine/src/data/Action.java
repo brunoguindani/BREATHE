@@ -1,14 +1,12 @@
 package data;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
-import utils.Pair;
 
 public class Action {
 	/*
@@ -140,6 +138,14 @@ public class Action {
 	 */
 	public SEAction getAction(){
 		return action;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public Map<String, Double> getParameters(){
+		return parameters;
 	}
 
 }

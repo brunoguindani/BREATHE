@@ -29,8 +29,6 @@ public class cpapVentilatorPanel{
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
-        
-        
     
         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygen = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), mainPanel, gbc);
         addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSup = new JSpinner(new SpinnerNumberModel(10, 0, 50, 1)), mainPanel, gbc);
