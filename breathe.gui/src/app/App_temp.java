@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import panels.*;
 import data.Patient;
+import data.Ventilator;
 import interfaces.GuiCallback;
 
 public class App_temp extends JFrame implements GuiCallback {
@@ -36,6 +37,9 @@ public class App_temp extends JFrame implements GuiCallback {
     //Panel for switching between patient and condition during setUp
     private JPanel patientConditionPanel;
     private CardLayout cardLayout;  
+    
+    //create a simulationWorker
+    private SimulationWorker s;
     
     
     public App_temp() {
@@ -122,10 +126,15 @@ public class App_temp extends JFrame implements GuiCallback {
         add(minilogPanel.getMainPanel(), BorderLayout.SOUTH);
     }
     
+    /*
+     * SIMULATIONWORKER METHODS CALLBACKS FROM GUI
+     */
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.getInitialPatient();
     	if(new_patient != null) {
-    		new SimulationWorker(this).simulation(new_patient);	
+    		s = new SimulationWorker(this);
+    		s.simulation(new_patient);	
+    		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {
     		return false;
@@ -134,17 +143,34 @@ public class App_temp extends JFrame implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		new SimulationWorker(this).simulationfromFile(file);	
+    		s = new SimulationWorker(this);
+    		s.simulationfromFile(file);	
+    		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {
     		return false;
     	}
     }
     
+    public void stopSimulation() {
+    	s.stopSimulation();	
+    }
+    
+    public void connectVentilator() {
+    	Ventilator v = ventilatorsPanel.getCurrentVentilator();
+    	if(v != null)
+    		s.connectVentilator(v);	
+    }
+    
+    public void disconnectVentilator() {
+    	Ventilator v = ventilatorsPanel.getCurrentVentilator();
+    	if(v != null)
+    		s.disconnectVentilator(v);	
+    }
+    
     /*
      * GUI METHODS CALLBACKS FROM SIMULATIONWORKER
      */
-
 	@Override
 	public void showStartingButton(boolean enable) {
 		controlPanel.showStartingButton(enable);
