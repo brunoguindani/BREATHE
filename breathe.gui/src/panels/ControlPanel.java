@@ -85,6 +85,7 @@ public class ControlPanel {
         stopButton.setFocusPainted(false);
         
         stopButton.addActionListener(e -> {
+        	app.stopSimulation();
         	enableStartingButton(true);
         });
 
@@ -102,6 +103,7 @@ public class ControlPanel {
         
         exportButton.addActionListener(e -> {
         	enableStartingButton(true);
+        	showStartingButton(true);
         });
 
         //Add buttons to buttonPanel

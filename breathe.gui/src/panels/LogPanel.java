@@ -28,7 +28,7 @@ public class LogPanel{
 	    resultArea.setBackground(Color.WHITE);
 	    
 	    JScrollPane scrollLogPane = new JScrollPane(resultArea);
-	    scrollLogPane.setPreferredSize(new Dimension(450, 650));
+	    scrollLogPane.setPreferredSize(new Dimension(550, 800));
 	    scrollLogPane.setBackground(Color.LIGHT_GRAY);
 	    
 	    mainPanel.add(scrollLogPane);

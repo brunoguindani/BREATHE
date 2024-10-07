@@ -41,9 +41,7 @@ public class VentilatorPanel {
     //data for PC ventilator
     private JToggleButton pc;
 
-	public JSpinner fractionInspOxygenPCField, inspiratoryPeriodPCField, inspiratoryPressurePCField, positiveEndExpPresPCField, respirationRatePCField, slopePCField;
-    JComboBox<String> AMComboBox_PC = new JComboBox<>(new String[]{"AC", "CMV"});
-    
+	
     //data for CPAP ventilator
     private JToggleButton cpap;
     public JSpinner fractionInspOxygenCPAPField, deltaPressureSupCPAPField, positiveEndExpPresCPAPField, slopeCPAPField;

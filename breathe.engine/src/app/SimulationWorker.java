@@ -17,7 +17,12 @@ import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.actions.SEAction;
+import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
+import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 
 public class SimulationWorker extends SwingWorker<Void, String>{
 	
@@ -33,6 +38,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     private GuiCallback gui;
     
+    private boolean stopRequest = false;
+    
     /*
      * Costruttore
      */
@@ -40,6 +47,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	this.gui = guiCallback;
     }
     
+    //Public method (for inputs)
     public void simulation(Patient patient) {
     	initializeMode = "standard";
         pe = new PulseEngine();
@@ -83,6 +91,64 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	initializeMode = "scenario";
     }
 
+    public void stopSimulation() {
+    	stopRequest = true;
+    }
+    
+    public void connectVentilator(Ventilator v) {
+        switch (v.getMode()) {
+        case PC:
+        	SEMechanicalVentilatorPressureControl ventilator_PC = (SEMechanicalVentilatorPressureControl) v.getVentilator();
+        	ventilator_PC.setConnection(eSwitch.On);
+            pe.processAction(ventilator_PC);
+            break;
+            
+        case CPAP:
+            // Gestisci la connessione per un ventilatore CPAP
+        	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
+        	ventilator_CPAP.setConnection(eSwitch.On);
+            pe.processAction(ventilator_CPAP);
+            break;
+
+        case VC:
+        	SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) v.getVentilator();
+        	ventilator_VC.setConnection(eSwitch.On);
+            pe.processAction(ventilator_VC);
+            break;
+
+        case EXTERNAL:
+            //TODO
+            break;
+        }
+    }
+    
+    public void disconnectVentilator(Ventilator v) {
+        switch (v.getMode()) {
+        case PC:
+        	SEMechanicalVentilatorPressureControl ventilator_PC = (SEMechanicalVentilatorPressureControl) v.getVentilator();
+        	ventilator_PC.setConnection(eSwitch.Off);
+            pe.processAction(ventilator_PC);
+            break;
+            
+        case CPAP:
+            // Gestisci la connessione per un ventilatore CPAP
+        	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
+        	ventilator_CPAP.setConnection(eSwitch.Off);
+            pe.processAction(ventilator_CPAP);
+            break;
+
+        case VC:
+        	SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) v.getVentilator();
+        	ventilator_VC.setConnection(eSwitch.Off);
+            pe.processAction(ventilator_VC);
+            break;
+
+        case EXTERNAL:
+            //TODO
+            break;
+        }
+    }
+    
 	@Override
 	protected Void doInBackground() throws Exception {
         
@@ -98,7 +164,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		//Hide starting buttons and show others
 		gui.showStartingButton(false);
 		
-		while (true) {
+		while (!stopRequest) {
         	
             if (!pe.advanceTime(stime)) {
                 publish("\nSomething bad happened");
@@ -117,11 +183,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             stime.setValue(0.02, TimeUnit.s);
             Log.info("Advancing "+stime+"...");
         }
-        /*
+		
         pe.clear();
         pe.cleanUp();
         publish("Simulation Complete\n");
-        return null;*/
+        return null;
 	}
 	
     private void setDataRequests(SEDataRequestManager dataRequests) {
@@ -160,6 +226,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         pe.serializeToFile(filePath);
     }
+    
     
     private ArrayList<String> sendData() {
     	ArrayList<String> data = new ArrayList<String>();
