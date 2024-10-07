@@ -48,22 +48,22 @@ public class ActionsPanel {
 
         Map<String, JComponent> acuteStressComponents = new HashMap<>();
         acuteStressComponents.put("Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        ActionBox acuteStressBox = new ActionBox(app, "AcuteStress", acuteStressComponents);
+        ActionBox acuteStressBox = new ActionBox(app, "Acute Stress", acuteStressComponents);
         boxes.add(acuteStressBox);
 
         Map<String, JComponent> airwayObstructionComponents = new HashMap<>();
         airwayObstructionComponents.put("Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        ActionBox airwayObstructionBox = new ActionBox(app, "AirwayObstruction", airwayObstructionComponents);
+        ActionBox airwayObstructionBox = new ActionBox(app, "Airway Obstruction", airwayObstructionComponents);
         boxes.add(airwayObstructionBox);
 
         Map<String, JComponent> asthmaAttackComponents = new HashMap<>();
         asthmaAttackComponents.put("Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        ActionBox asthmaAttackBox = new ActionBox(app, "AsthmaAttack", asthmaAttackComponents);
+        ActionBox asthmaAttackBox = new ActionBox(app, "Asthma Attack", asthmaAttackComponents);
         boxes.add(asthmaAttackBox);
 
         Map<String, JComponent> brainInjuryComponents = new HashMap<>();
         brainInjuryComponents.put("Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        ActionBox brainInjuryBox = new ActionBox(app, "BrainInjury", brainInjuryComponents);
+        ActionBox brainInjuryBox = new ActionBox(app, "Brain Injury", brainInjuryComponents);
         boxes.add(brainInjuryBox);
 
         Map<String, JComponent> bronchoconstrictionComponents = new HashMap<>();

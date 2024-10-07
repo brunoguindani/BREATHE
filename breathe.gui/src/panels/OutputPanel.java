@@ -43,12 +43,20 @@ public class OutputPanel{
         chartsMap.put("Pleth", "mmHg");
         chartsMap.put("Heart Rate", "1/min");
         chartsMap.put("Respiratory Rate", "1/min");
+        chartsMap.put("Airway Pressure", "mmHg");
         
         chartPanels = new HashMap<>();
         chartToggleButtons = new JToggleButton[chartsMap.size()];
         
         selectionPanel = new JPanel();
         selectionPanel.setBackground(Color.BLACK);
+        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.X_AXIS)); 
+        
+        JScrollPane scrollablePanel = new JScrollPane(selectionPanel);  // Avvolgi il pannello
+        scrollablePanel.setPreferredSize(new Dimension(200, 100)); 
+        scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollablePanel.setBorder(null);
         
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
@@ -77,12 +85,8 @@ public class OutputPanel{
             chartPanels.put(chartName, chart);
             
             chartToggleButtons[i] = new JToggleButton(chartName);
-            
-            if (i < 4) {
-                chartToggleButtons[i].setSelected(true);
-            } else {
-                chartToggleButtons[i].setSelected(false);
-            }
+
+            chartToggleButtons[i].setSelected(true);
             
             chartToggleButtons[i].setBackground(Color.BLACK);
             chartToggleButtons[i].setForeground(Color.WHITE);
@@ -94,16 +98,15 @@ public class OutputPanel{
             });
             selectionPanel.add(chartToggleButtons[i]);
             
-            if (chartToggleButtons[i].isSelected()) {
-                chartsPanel.add(chartPanels.get(chartName));
-            }
+            chartsPanel.add(chartPanels.get(chartName));
             i++;
         }
         
         //ADDING INFO BOXES
         String[] infoOrder = {
         	    "Heart Rate",
-        	    "Respiratory Rate"
+        	    "Respiratory Rate",
+        	    "Airway Pressure"
         	};
         
         for (String chartName : infoOrder) {
@@ -135,7 +138,7 @@ public class OutputPanel{
         scrollChartPane.setBorder(null);
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(selectionPanel);
+        mainPanel.add(scrollablePanel);
         mainPanel.add(scrollInfoBoxPane);
         mainPanel.add(scrollChartPane);
         mainPanel.setBackground(Color.BLACK);
@@ -211,6 +214,9 @@ public class OutputPanel{
                 break;
             case "ArterialPressure":
             	mapChartName = "Pleth";
+                break;
+            case "AirwayPressure":
+            	mapChartName = "Airway Pressure";
                 break;
             default:
             	mapChartName = null; 

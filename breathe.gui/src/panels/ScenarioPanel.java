@@ -185,7 +185,7 @@ public class ScenarioPanel {
 
             for (Map.Entry<String, Double> entry : temp.getParameters().entrySet()) {
             	
-            	tableModel.addRow(new Object[]{"    " + entry.getKey() +": "+ entry.getValue(), ""});
+            	tableModel.addRow(new Object[]{"    " + addSpaceBeforeUpperCase(entry.getKey()) +": "+ entry.getValue(), ""});
             }
             
             tableModel.addRow(new Object[]{"    ", "    "});
