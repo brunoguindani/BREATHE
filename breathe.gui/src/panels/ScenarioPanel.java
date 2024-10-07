@@ -18,7 +18,7 @@ import data.Scenario;
 import utils.Pair;
 
 import java.util.ArrayList;
-
+import java.util.Map;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -36,6 +36,7 @@ public class ScenarioPanel {
     private JComboBox<String> patientFileComboBox;
     JTextField scenarioNameField;
     
+    DefaultTableModel tableModel;
     
     private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
     private Scenario sce = new Scenario();
@@ -62,7 +63,7 @@ public class ScenarioPanel {
 
         
         //TABLE SETUP
-        DefaultTableModel tableModel = new DefaultTableModel(new Object[]{"Action", "Time"}, 0) {
+        tableModel = new DefaultTableModel(new Object[]{"Action", "Time"}, 0) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -136,7 +137,14 @@ public class ScenarioPanel {
         gbc.gridx = 1;
         panel.add(textField, gbc);
     }
-
+    
+    //Add action to table
+    public void addAction(Action action, int seconds) {
+        Pair<Action, Integer> newAction = new Pair<>(action, seconds);
+        actions.add(newAction);
+        actions.sort((pair1, pair2) -> pair1.getValue().compareTo(pair2.getValue()));
+        updateActionsDisplay(tableModel);
+    }
 
     // get all patients from folder 
 	public void updatePatientFiles(String[] directories) {
@@ -169,16 +177,17 @@ public class ScenarioPanel {
         tableModel.setRowCount(0);
 
         for (Pair<Action, Integer> action : actions) {
-            String actionString = action.getKey().toString();
+            Action temp = action.getKey();
             String timeString = formatTime(action.getValue());
 
-            String actionName = actionString.split("\n")[0];
+            String actionName = temp.getName();
             tableModel.addRow(new Object[]{actionName, timeString});
 
-            String[] lines = actionString.split("\n");
-            for (int i = 1; i < lines.length; i++) {
-                tableModel.addRow(new Object[]{"    " + lines[i], ""});
+            for (Map.Entry<String, Double> entry : temp.getParameters().entrySet()) {
+            	
+            	tableModel.addRow(new Object[]{"    " + entry.getKey() +": "+ entry.getValue(), ""});
             }
+            
             tableModel.addRow(new Object[]{"    ", "    "});
         }
 
@@ -227,6 +236,15 @@ public class ScenarioPanel {
         
         sce.createScenario(patientFile, scenarioName, null);
         
+    }
+    
+    //add space to title
+    private String addSpaceBeforeUpperCase(String input) {
+        if (input == null || input.isEmpty()) {
+            return input; // Restituisce null o stringa vuota se l'input è nullo o vuoto
+        }
+        // Utilizza una regex per inserire uno spazio prima di ogni lettera maiuscola
+        return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
     }
 
 }

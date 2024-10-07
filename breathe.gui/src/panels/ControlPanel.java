@@ -18,7 +18,7 @@ public class ControlPanel {
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 100));
 
-        Dimension buttonSize = new Dimension(130, 40); 
+        Dimension buttonSize = new Dimension(160, 40); 
 
         //START FROM FILE BUTTON
         startFromFileButton = new JButton("Start From File");
@@ -108,12 +108,11 @@ public class ControlPanel {
 
         //Add buttons to buttonPanel
         mainPanel.add(startFromScenarioButton);
+        mainPanel.add(stopButton);
         mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));  
         mainPanel.add(startFromFileButton);
         mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         mainPanel.add(startButton);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        mainPanel.add(stopButton);
         mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         mainPanel.add(exportButton);
     }

@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import javax.swing.*;
 
 import panels.*;
+import data.Action;
 import data.Patient;
 import data.Ventilator;
 import interfaces.GuiCallback;
@@ -40,8 +41,7 @@ public class App_temp extends JFrame implements GuiCallback {
     
     //create a simulationWorker
     private SimulationWorker s;
-    
-    
+   
     public App_temp() {
     	
     	Initializer.initilizeJNI();
@@ -125,9 +125,15 @@ public class App_temp extends JFrame implements GuiCallback {
         add(rightPanel, BorderLayout.EAST); 
         add(minilogPanel.getMainPanel(), BorderLayout.SOUTH);
     }
+    /*
+     * GUI PANEL to another GUI PANEL
+     */
+    public void addActiontoScenario(Action action, int seconds) {
+    	scenarioPanel.addAction(action, seconds);
+    }
     
     /*
-     * SIMULATIONWORKER METHODS CALLBACKS FROM GUI
+     * SIMULATIONWORKER METHODS CALLS FROM GUI
      */
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.getInitialPatient();

@@ -28,10 +28,6 @@ public class Ventilator {
 	private SEMechanicalVentilation ventilator_EXTERNAL;
 	
 	/*
-	 * Constructor from Parameters with assisted option
-	 */
-	
-	/*
 	 * Constructor from Parameters without assisted option
 	 */
 	public Ventilator(VentilationMode mode, Map<String, Number> parameters) {
