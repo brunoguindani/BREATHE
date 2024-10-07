@@ -16,7 +16,6 @@ import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
-import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
@@ -45,8 +44,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     ZeroServer zmqServer;
     SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
     private boolean ext_running = false;
-    
-    
     
     /*
      * Costruttore
@@ -247,7 +244,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				"RespirationRate",
 				"Lead3ElectricPotential",
 				"CarbonDioxide",
-				"ArterialPressure"
+				"ArterialPressure",
+				"AirwayPressure"
 				};
     	
     	this.requestList = requestList;
@@ -259,6 +257,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
         dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
         dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
+        dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.mmHg);
     }
     
     private void exportInitialPatient(SEPatient patient) {

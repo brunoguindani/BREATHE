@@ -44,14 +44,12 @@ public class Ventilator {
 	 * Constructor for "external" ventilators
 	 */
 	public Ventilator(VentilationMode mode) {
-		
 	    this.mode = mode;
-	    //Receive a list of parameters as pairs String Double
-	    //Doesn't check for duplicates cause it is completely handled client side
-	    
-	    manageSEVentilator(); //generate and update the proper ventilator
+	    if(mode == VentilationMode.EXTERNAL) {
+		    if(ventilator_EXTERNAL == null) 
+				ventilator_EXTERNAL = new SEMechanicalVentilation();
+	    }
 	}
-	
 	
 	//Set up parameters depending on mode
 	private void manageSEVentilator() {
@@ -98,9 +96,6 @@ public class Ventilator {
 			ventilator_CPAP.getSlope().setValue((double) parameters.get("Slope"), TimeUnit.s);	
 			
 			this.ventilator = ventilator_CPAP;
-		}else {
-			if(ventilator_EXTERNAL == null) 
-				ventilator_EXTERNAL = new SEMechanicalVentilation();
 		}
 	}
 	
