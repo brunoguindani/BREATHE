@@ -2,6 +2,7 @@ package app;
 
 import data.*;
 import interfaces.GuiCallback;
+import server.ZeroServer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import com.kitware.pulse.cdm.properties.CommonUnits.*;
 import com.kitware.pulse.engine.PulseEngine;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
+import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
 import com.kitware.pulse.utilities.Log;
 import com.kitware.pulse.cdm.conditions.SECondition;
 import com.kitware.pulse.cdm.actions.SEAction;
@@ -32,13 +34,20 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private SEDataRequestManager dataRequests;
     private String[] requestList;
     
+    private GuiCallback gui;
+    
+    private boolean stopRequest = false;
+    
     SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
 
     SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
-    private GuiCallback gui;
+    //Data for external ventilator
+    ZeroServer zmqServer;
+    SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
+    private boolean ext_running = false;
     
-    private boolean stopRequest = false;
+    
     
     /*
      * Costruttore
@@ -117,7 +126,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             break;
 
         case EXTERNAL:
-            //TODO
+        	SEMechanicalVentilation ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
+        	zmqServer = new ZeroServer();
+        	try {
+				zmqServer.connect();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        	//Server wait for data
+    		zmqServer.startReceiving();
+    		ext_running = true;
             break;
         }
     }
@@ -131,7 +149,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             break;
             
         case CPAP:
-            // Gestisci la connessione per un ventilatore CPAP
         	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
         	ventilator_CPAP.setConnection(eSwitch.Off);
             pe.processAction(ventilator_CPAP);
@@ -144,11 +161,43 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             break;
 
         case EXTERNAL:
-            //TODO
-            break;
+        	ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
+        	ventilator_ext.setState(eSwitch.Off);
+        	pe.processAction(ventilator_ext);
+        	zmqServer.close();
+        	ext_running = false;
+        	break;
         }
     }
     
+    //Methods for external ventilator
+	private void manage_ext(){
+		if(zmqServer.isConnectionStable() && zmqServer.getSelectedMode() != null) {
+			//here change to add ZeroMQ call	
+			if (zmqServer.getSelectedMode().equals("VOLUME")) {
+	            setExtVolume();
+	        } else {
+	            setExtPressure();
+	        }
+			ventilator_ext.setState(eSwitch.On);
+	        if(!pe.processAction(ventilator_ext)) {
+	        	//ERROR!
+	        }
+		}
+    }
+    
+	private void setExtVolume() {
+		double volume = zmqServer.getVolume();
+		ventilator_ext.getFlow().setValue(volume, VolumePerTimeUnit.mL_Per_s);
+    	gui.logVolumeExternalVentilatorData(volume);
+	}
+	
+	private void setExtPressure() {
+		double pressure = zmqServer.getPressure();
+		ventilator_ext.getPressure().setValue(pressure,PressureUnit.mmHg);
+		gui.logPressureExternalVentilatorData(pressure);
+	}
+	
 	@Override
 	protected Void doInBackground() throws Exception {
         
@@ -162,7 +211,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		}
 
 		//Hide starting buttons and show others
-		gui.showStartingButton(false);
+		gui.stabilizationComplete(false);
 		
 		while (!stopRequest) {
         	
@@ -171,17 +220,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
                 return null;
             }
             
-            /*handlingVentilator(ext,pc,cpap,vc);
 
-            //Log and data printing
-            if(ext_running)
-            	zmqServer.setSimulationData(dataPrint());
+            //Send data (to gui and to ext ventilator)
+            if(ext_running) {
+            	manage_ext();
+            	zmqServer.setSimulationData(sendData());
+            }
             else
-            	*/
             	sendData();
 
             stime.setValue(0.02, TimeUnit.s);
-            Log.info("Advancing "+stime+"...");
         }
 		
         pe.clear();
@@ -236,6 +284,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         for(SECondition any : patient_configuration.getConditions())
         {
             gui.logStringData(any.toString()+ "\n");
+            data.add(any.toString());
         }
         
         //print requested data
@@ -244,6 +293,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         gui.logStringData("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
             gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
+            data.add(requestList[i] + ": " + dataValues.get(i));
         }
         
         //print actions
@@ -255,7 +305,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
           //Ext ventilator doesn't need the data actions
           //data.add(any.toString());
         }
-        
         //send data to graphs to be printed
         double x = dataValues.get(0);
         double y = 0;

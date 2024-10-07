@@ -172,7 +172,7 @@ public class App_temp extends JFrame implements GuiCallback {
      * GUI METHODS CALLBACKS FROM SIMULATIONWORKER
      */
 	@Override
-	public void showStartingButton(boolean enable) {
+	public void stabilizationComplete(boolean enable) {
 		controlPanel.showStartingButton(enable);
 	}
     
@@ -184,5 +184,15 @@ public class App_temp extends JFrame implements GuiCallback {
 	@Override
 	public void logItemDisplayData(String data, double x, double y) {
 		outputPanel.addValueToItemDisplay(data, x, y);
+	}
+
+	@Override
+	public void logPressureExternalVentilatorData(double pressure) {
+		ventilatorsPanel.setEXTPressureLabel(pressure);
+	}
+
+	@Override
+	public void logVolumeExternalVentilatorData(double volume) {
+		ventilatorsPanel.setEXTVolumeLabel(volume);
 	}
 }
