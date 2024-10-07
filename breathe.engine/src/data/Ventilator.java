@@ -26,7 +26,7 @@ public class Ventilator {
 	//Ventilators object depending on mode
 	private SEEquipmentAction ventilator; 
 	private SEMechanicalVentilation ventilator_EXTERNAL;
-	
+
 	/*
 	 * Constructor for "standard" ventilators
 	 */
@@ -39,6 +39,19 @@ public class Ventilator {
 	    
 	    manageSEVentilator(); //generate and update the proper ventilator
 	}
+	
+	/*
+	 * Constructor for "external" ventilators
+	 */
+	public Ventilator(VentilationMode mode) {
+		
+	    this.mode = mode;
+	    //Receive a list of parameters as pairs String Double
+	    //Doesn't check for duplicates cause it is completely handled client side
+	    
+	    manageSEVentilator(); //generate and update the proper ventilator
+	}
+	
 	
 	//Set up parameters depending on mode
 	private void manageSEVentilator() {
@@ -85,11 +98,9 @@ public class Ventilator {
 			ventilator_CPAP.getSlope().setValue((double) parameters.get("Slope"), TimeUnit.s);	
 			
 			this.ventilator = ventilator_CPAP;
-		}else{
-			if(ventilator_EXTERNAL == null) ventilator_EXTERNAL = new SEMechanicalVentilation();
-			
-			if(parameters.containsKey("Volume")) ventilator_EXTERNAL.getFlow().setValue((double) parameters.get("Volume"), VolumePerTimeUnit.mL_Per_s);
-			if(parameters.containsKey("Pressure")) ventilator_EXTERNAL.getPressure().setValue((double) parameters.get("Pressure"), PressureUnit.mmHg);
+		}else {
+			if(ventilator_EXTERNAL == null) 
+				ventilator_EXTERNAL = new SEMechanicalVentilation();
 		}
 	}
 	
