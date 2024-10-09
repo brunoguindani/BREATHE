@@ -10,6 +10,8 @@ public interface GuiCallback {
     
     void logStringData(String data);
     
+    void minilogStringData(String data);
+    
     void logItemDisplayData(String data, double x, double y);
     
     void logPressureExternalVentilatorData(double pressure);
@@ -17,4 +19,5 @@ public interface GuiCallback {
     void logVolumeExternalVentilatorData(double volume);
     
     void setInitialCondition(List<Condition> list);
+    
 }

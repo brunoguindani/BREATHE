@@ -116,7 +116,7 @@ public class ConditionBox {
                 if (!applied) {
                     // Azione per quando si applica la condizione
                     enableFields(false);  
-                    applySectionButton.setText("Rimuovi");
+                    applySectionButton.setText("Remove");
                     headerButton.setBackground(new Color(100, 149, 237));
                     
                 	Map<String,Double> parameters = new HashMap<>();
@@ -140,7 +140,7 @@ public class ConditionBox {
                 } else {
                     // Azione per quando si rimuove la condizione
                     enableFields(true);  
-                    applySectionButton.setText("Applica");
+                    applySectionButton.setText("Apply");
                     headerButton.setBackground(Color.DARK_GRAY);
                     app.removeCondition(title);
                     applied = false;

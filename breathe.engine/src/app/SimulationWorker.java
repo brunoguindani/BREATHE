@@ -131,6 +131,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
+		
+		List<SECondition> list = new ArrayList<>();
+		List<Condition> temp_list = new ArrayList<>();
+        pe.getConditions(list);
+        for(SECondition c : list) {
+        	Condition temp = new Condition(c);
+        	temp_list.add(temp);
+        }
+        gui.setInitialCondition(temp_list);
+		
     	this.execute();
     }
     
@@ -423,6 +433,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	
 	public void applyAction(Action action) {
 		pe.processAction(action.getAction());
+	}
+
+	public void exportSimulation(String exportFilePath) {
+		pe.serializeToFile(exportFilePath); 
 	}
 
 }
