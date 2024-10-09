@@ -26,6 +26,8 @@ public class VentilatorsPanel {
     private vcVentilatorPanel vc = new vcVentilatorPanel();
     private extVentilatorPanel ext = new extVentilatorPanel();
     
+    private VentilationMode activeMode = null;
+    
     //Button
     JToggleButton pcToggleButton,cpapToggleButton, vcToggleButton, extToggleButton;
     
@@ -98,6 +100,7 @@ public class VentilatorsPanel {
         connectButton.setBackground(new Color(0, 122, 255));
         connectButton.setFocusPainted(false);
         connectButton.addActionListener(e -> {
+            activeMode = getCurrentMode();
             app.connectVentilator();
             connectButton.setEnabled(false);
             applyButton.setEnabled(true);
@@ -116,6 +119,7 @@ public class VentilatorsPanel {
             applyButton.setEnabled(false);
             disconnectButton.setEnabled(false);
             disconnectButton.setText("Disconnect");
+            activeMode = null;
         });
 
         applyButton = new JButton("Apply");
@@ -161,7 +165,7 @@ public class VentilatorsPanel {
     }
     
     public Ventilator getCurrentVentilator() {
-        switch (getCurrentMode()) {
+        switch (activeMode) {
             case PC:
                 return new Ventilator(VentilationMode.PC, pc.getData());
             case CPAP:

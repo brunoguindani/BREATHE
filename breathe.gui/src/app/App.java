@@ -118,6 +118,7 @@ public class App extends JFrame implements GuiCallback {
         leftView.add(leftPanel);
         leftView.add(Box.createVerticalGlue());  
         leftView.add(controlPanel.getMainPanel());
+        leftView.add(minilogPanel.getMainPanel());
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftView, rightPanel);
         splitPane.setDividerLocation(550); 
@@ -125,7 +126,7 @@ public class App extends JFrame implements GuiCallback {
 
         add(splitPane, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST); 
-        add(minilogPanel.getMainPanel(), BorderLayout.SOUTH);
+        
     }
     /*
      * GUI PANEL to another GUI PANEL
@@ -134,7 +135,6 @@ public class App extends JFrame implements GuiCallback {
     	scenarioPanel.addAction(action, seconds);
     }
     
-
 	public void applyCondition(Condition condition) {
 		conditionsPanel.addCondition(condition);
 	}
@@ -157,6 +157,12 @@ public class App extends JFrame implements GuiCallback {
 	public void resetVentilatorsButton() {
 		ventilatorsPanel.resetButton();
 	}
+	
+	public String getPatientName() {
+		return patientPanel.getName();
+	}
+	
+
     
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI
@@ -168,6 +174,7 @@ public class App extends JFrame implements GuiCallback {
     		s.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
+        	patientPanel.enableComponents(false);
     		return true;
     	}
     	return false;
@@ -179,6 +186,7 @@ public class App extends JFrame implements GuiCallback {
     		s.simulationFromFile(file);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
+        	patientPanel.enableComponents(false);
     		return true;
     	}else {
     		return false;
@@ -190,6 +198,7 @@ public class App extends JFrame implements GuiCallback {
     		s = new SimulationWorker(this);
     		s.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
+        	patientPanel.enableComponents(false);
     		return true;
     	}else {
     		return false;
@@ -199,6 +208,8 @@ public class App extends JFrame implements GuiCallback {
     public void stopSimulation() {
     	s.stopSimulation();	
     	conditionsPanel.enableButtons(true);
+    	patientPanel.enableComponents(true);
+    	actionsPanel.enableButtons(false);
     }
     
     public void connectVentilator() {
@@ -210,7 +221,7 @@ public class App extends JFrame implements GuiCallback {
     public void disconnectVentilator() {
     	Ventilator v = ventilatorsPanel.getCurrentVentilator();
     	if(v != null)
-    		s.disconnectVentilator(v);	
+    		s.disconnectVentilator(v);
     }
     
 	public void applyAction(Action action) {
@@ -233,6 +244,10 @@ public class App extends JFrame implements GuiCallback {
 		logPanel.append(data);
 	}
 	
+	public void minilogStringData(String data){
+		minilogPanel.append(data);
+	}
+	
 	@Override
 	public void logItemDisplayData(String data, double x, double y) {
 		outputPanel.addValueToItemDisplay(data, x, y);
@@ -251,6 +266,10 @@ public class App extends JFrame implements GuiCallback {
 	@Override
 	public void setInitialCondition(List<Condition> list) {	
     	conditionsPanel.setInitialCondition(list);
+	}
+	
+	public void exportSimulation(String exportFilePath) {
+		s.exportSimulation(exportFilePath);
 	}
 
 }

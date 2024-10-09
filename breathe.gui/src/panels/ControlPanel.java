@@ -107,8 +107,53 @@ public class ControlPanel {
         exportButton.setFocusPainted(false);
         
         exportButton.addActionListener(e -> {
-        });
+            String defaultFileName = "./states/exported/" + app.getPatientName() + ".json";
+            JFileChooser fileChooser = new JFileChooser("./states/exported/");
+            fileChooser.setDialogTitle("Export simulation");
+            fileChooser.setSelectedFile(new File(defaultFileName)); // Pre-set default filename
+            fileChooser.setApproveButtonText("Export");
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            
+            boolean validFileName = false; // Flag to track valid filename
 
+            while (!validFileName) {
+                int userSelection = fileChooser.showSaveDialog(null);
+                
+                if (userSelection == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave = fileChooser.getSelectedFile();
+                    String fileName = fileToSave.getAbsolutePath();
+                    
+                    // Ensure the file ends with .json
+                    if (!fileName.endsWith(".json")) {
+                        fileName += ".json";
+                    }
+                    
+                    File file = new File(fileName);
+                    
+                    // Check if file exists and ask for overwrite confirmation
+                    if (file.exists()) {
+                        int response = JOptionPane.showConfirmDialog(null, 
+                            "File already exists. Do you want to overwrite it?", 
+                            "Overwrite Confirmation", 
+                            JOptionPane.YES_NO_OPTION, 
+                            JOptionPane.WARNING_MESSAGE);
+                        
+                        if (response == JOptionPane.YES_OPTION) {
+                            app.exportSimulation(fileName);
+                            validFileName = true; // Exit loop
+                        }
+                    } else {
+                    	app.exportSimulation(fileName);
+                        validFileName = true; 
+                    }
+                    
+                } else {
+                    // User cancelled the operation
+                    validFileName = true; 
+                }
+            }
+        });
+        
         //Add buttons to buttonPanel
         mainPanel.add(startFromScenarioButton);
         mainPanel.add(stopButton);
@@ -133,15 +178,18 @@ public class ControlPanel {
     	JFileChooser fileChooser = new JFileChooser("./states/");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            String file = fileChooser.getSelectedFile().getAbsolutePath();   
+            String patientFilePath = fileChooser.getSelectedFile().getAbsolutePath();   
             
             enableControlStartButton(false);
-        	if(app.startFromFileSimulation(file)) {
-            	clearOutputDisplay();
-        	}
+
+            if(app.loadPatientData(patientFilePath)) {
+            	
+            	if(app.startFromFileSimulation(patientFilePath)) {
+                	clearOutputDisplay();
+            	}
+            }
         }
-    }
-    
+    }   
 
 
 	//start from scenario simulation

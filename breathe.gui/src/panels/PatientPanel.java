@@ -286,6 +286,23 @@ public class PatientPanel {
 	            break;
 	    }
 	}
+
+	public String getName() {
+		return fieldMap.get("Name").getText();
+	}
 	
+	public void enableComponents(boolean enabled) {
+	    for (JTextField field : fieldMap.values()) {
+	        field.setEnabled(enabled);
+	    }
+
+	    sexComboBox_Patient.setEnabled(enabled);
+	    if (weightUnitComboBox != null) {
+	        weightUnitComboBox.setEnabled(enabled);
+	    }
+	    if (heightUnitComboBox != null) {
+	        heightUnitComboBox.setEnabled(enabled);
+	    }
+	}
 	
 }
