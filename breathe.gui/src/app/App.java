@@ -134,6 +134,7 @@ public class App extends JFrame implements GuiCallback {
     	scenarioPanel.addAction(action, seconds);
     }
     
+
 	public void applyCondition(Condition condition) {
 		conditionsPanel.addCondition(condition);
 	}
@@ -145,6 +146,9 @@ public class App extends JFrame implements GuiCallback {
 	public List<Condition> getActiveConditions() {
 		return conditionsPanel.getActiveConditions();
 	}
+    public boolean loadPatientData(String selectedPatientFilePath) {
+    	return patientPanel.loadPatientData(selectedPatientFilePath);
+
     
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI
@@ -155,6 +159,7 @@ public class App extends JFrame implements GuiCallback {
     		s = new SimulationWorker(this);
     		s.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
+
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {
@@ -167,6 +172,17 @@ public class App extends JFrame implements GuiCallback {
     		s = new SimulationWorker(this);
     		s.simulationFromFile(file);	
         	conditionsPanel.enableButtons(false);
+    		ventilatorsPanel.setEnableConnectButton(true);
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
+    public boolean startFromScenarioSimulation(String scenarioFile) {
+    	if(scenarioFile != null) {
+    		s = new SimulationWorker(this);
+    		s.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {

@@ -5,6 +5,7 @@ import interfaces.GuiCallback;
 import server.ZeroServer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,14 @@ import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
 import com.kitware.pulse.cdm.conditions.SECondition;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.kitware.pulse.cdm.actions.SEAction;
+import com.kitware.pulse.cdm.actions.SEAdvanceTime;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
+import com.kitware.pulse.cdm.scenario.SEScenario;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -40,10 +46,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
     SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
+    //Data for scenario
+    String scenarioFilePath = null;
+    String patientFilePath = null;
+    
     //Data for external ventilator
     ZeroServer zmqServer;
     SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
     private boolean ext_running = false;
+    
+    
     
     /*
      * Costruttore
@@ -71,7 +83,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     public void simulationFromFile(String file) {
     	initializeMode = "file";
-    	pe = new PulseEngine("../breathe.engine/");
+    	pe = new PulseEngine();
 		
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
@@ -89,24 +101,60 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	this.execute();
     }
     
+    public void simulationFromScenario(String scenarioFilePath) {
+    	this.scenarioFilePath = scenarioFilePath;
+    	
+    	initializeMode = "scenario";
+    	pe = new PulseEngine();
+		
+        dataRequests = new SEDataRequestManager();
+        setDataRequests(dataRequests);
+    	
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode rootNode_scenario = null;
+		try {
+			rootNode_scenario = mapper.readTree(new File(scenarioFilePath));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        patientFilePath = rootNode_scenario.path("EngineStateFile").asText();
+        
+		pe.serializeFromFile(patientFilePath, dataRequests);
+
+		//check that patient has loaded
+		SEPatient initialPatient = new SEPatient();
+		pe.getInitialPatient(initialPatient);
+		
+    	this.execute();
+    }
+    
+    
     public void simulationfromScenario() {
     	initializeMode = "scenario";
     }
-    
+
+    public void stopSimulation() {
+    	stopRequest = true;
+    }
+  
+	
 	@Override
 	protected Void doInBackground() throws Exception {
         
 		if(initializeMode.equals("standard")) {
 	        pe.initializeEngine(patient_configuration, dataRequests);    
-	        exportInitialPatient(patient_configuration.getPatient());		
+	        exportInitialPatient(patient_configuration.getPatient());	
+	        
+	        //Advice for stabilaztion completed
+			gui.stabilizationComplete(false);
 		}else if(initializeMode.equals("file")) {
 			//boh se si vuole spostare qui
 		}else if(initializeMode.equals("scenario")) {
-			//non so se serve
+			run_scenario();
 		}
 
-		//Hide starting buttons and show others
-		gui.stabilizationComplete(false);
+		
 		
 		while (!stopRequest) {
         	
@@ -132,10 +180,149 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         publish("Simulation Complete\n");
         return null;
 	}
-
-    public void stopSimulation() {
-    	stopRequest = true;
+	
+    private void setDataRequests(SEDataRequestManager dataRequests) {
+    	//list of data requests.
+    	//SimTime is mandatory, since it is always retrieved
+    	//order is important
+    	String[] requestList = {"SimTime",
+				"HeartRate",
+				"TotalLungVolume",
+				"RespirationRate",
+				"Lead3ElectricPotential",
+				"CarbonDioxide",
+				"ArterialPressure",
+				"AirwayPressure"
+				};
+    	
+    	this.requestList = requestList;
+    	
+    	//create the requests
+    	dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
+        dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
+        dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
+        dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
+        dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
+        dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
+        dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.mmHg);
     }
+    
+    
+    private void run_scenario() {
+    	
+    	//Load scenario
+    	SEScenario sce = new SEScenario();
+		try {
+			sce.readFile(scenarioFilePath);
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(sce.hasEngineState()) {
+			
+			if(!pe.serializeFromFile(patientFilePath, dataRequests));
+		} else if(sce.hasPatientConfiguration()) {
+			if(!pe.initializeEngine(sce.getPatientConfiguration(), dataRequests));
+		}
+		
+		SEPatient initialPatient = new SEPatient();
+		pe.getInitialPatient(initialPatient);
+		
+		//TAKE CONDITION
+		/*
+		pe.getConditions(app.condition.getActiveConditions());
+		for(SECondition any : app.condition.getActiveConditions())
+        {
+        	app.condition.setInitialConditions(any);
+        }*/
+		
+		//Advice for stabilaztion completed
+		gui.stabilizationComplete(false);
+		
+		for (SEAction a : sce.getActions()) {
+			
+		    if (a instanceof SEAdvanceTime) {
+		        
+		        for(int i = 0; i<50; i++){		  
+		            if (!pe.advanceTime(stime)) {
+		            	//ERRORR!
+		                return;
+		            }
+
+		            //Send data (to gui and to ext ventilator)
+		            if(ext_running) {
+		            	manage_ext();
+		            	zmqServer.setSimulationData(sendData());
+		            }
+		            else
+		            	sendData();
+
+		            stime.setValue(0.02, TimeUnit.s);	
+		        }
+
+		    } else {
+		        pe.processAction(a);
+		    }
+		    if(stopRequest)
+		    	return;
+		}
+	}
+    
+    private void exportInitialPatient(SEPatient patient) {
+        String basePath = "./states/";
+        String baseFileName = patient.getName() + "@0s.json";
+        String filePath = basePath + baseFileName;
+
+        int counter = 1;
+        while (new File(filePath).exists()) {
+            filePath = basePath + patient.getName() + counter + "@0s.json";
+            counter++;
+        }
+        pe.serializeToFile(filePath);
+    }
+    
+    
+    private ArrayList<String> sendData() {
+    	ArrayList<String> data = new ArrayList<String>();
+    	
+    	//print conditions
+        pe.getConditions(patient_configuration.getConditions());
+        for(SECondition any : patient_configuration.getConditions())
+        {
+            gui.logStringData(any.toString()+ "\n");
+            data.add(any.toString());
+        }
+        
+        //print requested data
+    	List<Double> dataValues = pe.pullData();
+        dataRequests.writeData(dataValues);
+        gui.logStringData("---------------------------\n");
+        for(int i = 0; i < (dataValues.size()); i++ ) {
+            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
+            data.add(requestList[i] + ": " + dataValues.get(i));
+        }
+        
+        //print actions
+        List<SEAction> actions = new ArrayList<SEAction>();
+        pe.getActiveActions(actions);
+        for(SEAction any : actions)
+        {
+        	gui.logStringData(any.toString()+ "\n");
+          //Ext ventilator doesn't need the data actions
+          //data.add(any.toString());
+        }
+        //send data to graphs to be printed
+        double x = dataValues.get(0);
+        double y = 0;
+        for (int i = 1; i < (dataValues.size()); i++) {
+        	y = dataValues.get(i);
+            gui.logItemDisplayData(requestList[i],x, y);
+        }
+        
+        return data;
+    }
+    
     
     public void connectVentilator(Ventilator v) {
         switch (v.getMode()) {
@@ -230,86 +417,5 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		ventilator_ext.getPressure().setValue(pressure,PressureUnit.mmHg);
 		gui.logPressureExternalVentilatorData(pressure);
 	}
-	
-    private void setDataRequests(SEDataRequestManager dataRequests) {
-    	//list of data requests.
-    	//SimTime is mandatory, since it is always retrieved
-    	//order is important
-    	String[] requestList = {"SimTime",
-				"HeartRate",
-				"TotalLungVolume",
-				"RespirationRate",
-				"Lead3ElectricPotential",
-				"CarbonDioxide",
-				"ArterialPressure",
-				"AirwayPressure"
-				};
-    	
-    	this.requestList = requestList;
-    	
-    	//create the requests
-    	dataRequests.createPhysiologyDataRequest(requestList[1], FrequencyUnit.Per_min);
-        dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
-        dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
-        dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
-        dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
-        dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
-        dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.mmHg);
-    }
-    
-    private void exportInitialPatient(SEPatient patient) {
-        String basePath = "./states/";
-        String baseFileName = patient.getName() + "@0s.json";
-        String filePath = basePath + baseFileName;
-
-        int counter = 1;
-        while (new File(filePath).exists()) {
-            filePath = basePath + patient.getName() + counter + "@0s.json";
-            counter++;
-        }
-        pe.serializeToFile(filePath);
-    }
-    
-    
-    private ArrayList<String> sendData() {
-    	ArrayList<String> data = new ArrayList<String>();
-    	
-    	//print conditions
-        pe.getConditions(patient_configuration.getConditions());
-        for(SECondition any : patient_configuration.getConditions())
-        {
-            gui.logStringData(any.toString()+ "\n");
-            data.add(any.toString());
-        }
-        
-        //print requested data
-    	List<Double> dataValues = pe.pullData();
-        dataRequests.writeData(dataValues);
-        gui.logStringData("---------------------------\n");
-        for(int i = 0; i < (dataValues.size()); i++ ) {
-            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
-            data.add(requestList[i] + ": " + dataValues.get(i));
-        }
-        
-        //print actions
-        List<SEAction> actions = new ArrayList<SEAction>();
-        pe.getActiveActions(actions);
-        for(SEAction any : actions)
-        {
-        	gui.logStringData(any.toString()+ "\n");
-          //Ext ventilator doesn't need the data actions
-          //data.add(any.toString());
-        }
-        //send data to graphs to be printed
-        double x = dataValues.get(0);
-        double y = 0;
-        for (int i = 1; i < (dataValues.size()); i++) {
-        	y = dataValues.get(i);
-            gui.logItemDisplayData(requestList[i],x, y);
-        }
-        
-        return data;
-    }
-    
 
 }

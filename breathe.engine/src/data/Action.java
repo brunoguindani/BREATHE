@@ -148,4 +148,7 @@ public class Action {
 		return parameters;
 	}
 
+	public String toString(){
+		return action.toString();
+	}
 }

@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -19,6 +21,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.App;
 import data.*;
@@ -205,6 +210,80 @@ public class PatientPanel {
             return true;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+    
+    //load Patient Data from File
+    public boolean loadPatientData(String patientFilePath) {
+        try { 
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(new File(patientFilePath));
+
+            // Retrieve patient data from the selected file
+            String name = rootNode.path("InitialPatient").path("Name").asText();
+            String sex = rootNode.path("InitialPatient").path("Sex").asText();
+            if (sex.isBlank()) sex = "Male";
+            int age = rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asInt();
+            double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble();
+            String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+            int height = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asInt();
+            String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+            double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble();
+            double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+            double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            int respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asInt();
+            double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
+
+            // Set the values to the appropriate fields
+            fieldMap.get("Name").setText(name);
+            sexComboBox_Patient.setSelectedItem(sex);
+            fieldMap.get("Age").setText(String.valueOf(age));
+            fieldMap.get("Weight").setText(String.format("%.2f", weight));
+            weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
+            fieldMap.get("Height").setText(String.valueOf(height));
+            heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
+            fieldMap.get("BodyFatFraction").setText(String.format("%.2f", bodyFat));
+            fieldMap.get("HeartRateBaseline").setText(String.format("%.2f", heartRate));
+            fieldMap.get("DiastolicArterialPressureBaseline").setText(String.format("%.2f", diastolicPressure));
+            fieldMap.get("SystolicArterialPressureBaseline").setText(String.format("%.2f", systolicPressure));
+            fieldMap.get("RespirationRateBaseline").setText(String.valueOf(respirationRate));
+            fieldMap.get("BasalMetabolicRate").setText(String.format("%.2f", basalMetabolicRate));
+            
+ 
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
+    //selection height unit
+    private String convertHeightUnitToComboBoxValue(String unit) {
+        switch (unit) {
+            case "in":
+                return "inches";
+            case "m":
+                return "m";
+            case "cm":
+                return "cm";
+            case "ft":
+                return "ft";
+            default:
+                return "inches";
+        }
+    }
+    
+    //selection weight unit
+    private String convertWeightUnitToComboBoxValue(String unit) {
+        switch (unit) {
+            case "lb":
+                return "lbs";
+            case "kg":
+                return "kg";
+            default:
+                return "lbs";
         }
     }
 }

@@ -34,9 +34,10 @@ public class ScenarioPanel {
     private JPanel mainPanel;
     
     private JComboBox<String> patientFileComboBox;
-    JTextField scenarioNameField;
+    private JTextField scenarioNameField;
     
-    DefaultTableModel tableModel;
+    private DefaultTableModel tableModel;
+    private JTable actionsTable;
     
     private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
     private Scenario sce = new Scenario();
@@ -71,7 +72,7 @@ public class ScenarioPanel {
                 return false;
             }
         };
-        JTable actionsTable = new JTable(tableModel);
+        actionsTable = new JTable(tableModel);
         
         DefaultListSelectionModel selectionModel = new DefaultListSelectionModel() {
 
@@ -91,7 +92,7 @@ public class ScenarioPanel {
 
         // Assign logic to table
         actionsTable.setSelectionModel(selectionModel);
-        updateActionsDisplay(tableModel);
+        updateActionsDisplay();
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
         actionsScrollPane.setPreferredSize(new Dimension(450, 350)); 
         addLabelAndField("", actionsScrollPane, mainPanel, gbc, 2);
@@ -118,6 +119,7 @@ public class ScenarioPanel {
         });
 
         removeActionButton.addActionListener(e -> {
+        	removeAction();
         });
     }
 
@@ -143,7 +145,7 @@ public class ScenarioPanel {
         Pair<Action, Integer> newAction = new Pair<>(action, seconds);
         actions.add(newAction);
         actions.sort((pair1, pair2) -> pair1.getValue().compareTo(pair2.getValue()));
-        updateActionsDisplay(tableModel);
+        updateActionsDisplay();
     }
 
     // get all patients from folder 
@@ -172,25 +174,22 @@ public class ScenarioPanel {
     }
 
     
-    private void updateActionsDisplay(DefaultTableModel tableModel) {
-
+    private void updateActionsDisplay() {
         tableModel.setRowCount(0);
 
         for (Pair<Action, Integer> action : actions) {
-            Action temp = action.getKey();
+            String actionString = action.getKey().toString();
             String timeString = formatTime(action.getValue());
 
-            String actionName = temp.getName();
+            String actionName = actionString.split("\n")[0];
             tableModel.addRow(new Object[]{actionName, timeString});
 
-            for (Map.Entry<String, Double> entry : temp.getParameters().entrySet()) {
-            	
-            	tableModel.addRow(new Object[]{"    " + addSpaceBeforeUpperCase(entry.getKey()) +": "+ entry.getValue(), ""});
+            String[] lines = actionString.split("\n");
+            for (int i = 1; i < lines.length; i++) {
+                tableModel.addRow(new Object[]{"    " + lines[i], ""});
             }
-            
             tableModel.addRow(new Object[]{"    ", "    "});
         }
-
     }
     
     
@@ -221,30 +220,76 @@ public class ScenarioPanel {
             patientFile = "./states/" + patientFile;
         else
         	patientFile = "./states/exported/" + patientFile;
-
-        //PRENDE LE AZIONI
-        /*for (Pair<SEAction, Integer> action : actions) {
-            int target = action.getValue();
-
-            while (seconds < target) {
-                sce.getActions().add(adv);
-                seconds++;
-            }
-
-            sce.getActions().add(action.getKey());
-        }*/
         
-        sce.createScenario(patientFile, scenarioName, null);
+        sce.createScenario(patientFile, scenarioName, actions);
         
     }
     
-    //add space to title
-    private String addSpaceBeforeUpperCase(String input) {
-        if (input == null || input.isEmpty()) {
-            return input; // Restituisce null o stringa vuota se l'input è nullo o vuoto
+    private void removeAction() {
+        int[] selectedRows = actionsTable.getSelectedRows(); 
+
+      //Check if at least one actions is selected
+        if (selectedRows.length > 0) {
+            StringBuilder confirmationMessage = new StringBuilder("Are you sure you want to remove the following actions?\n");
+
+            //Check if all the actions selected are not empty and create message
+            for (int row : selectedRows) {
+                if (isEmptyRow(row)) {
+                    JOptionPane.showMessageDialog(null, "Please select a valid action to remove.", "Invalid Selection", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                Pair<Action, Integer> actionToRemove = getActionFromRow(row);
+                confirmationMessage.append("\n"+actionToRemove.getKey().toString()+"\nTime: "+formatTime(actionToRemove.getValue())+"\n");
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    confirmationMessage.toString(),
+                    "Confirm Removal",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+               
+            	 // Remove the selected actions, iterating backward
+                for (int i = selectedRows.length - 1; i >= 0; i--) { 
+                    int row = selectedRows[i]; 
+                    Pair<Action, Integer> actionToRemove = getActionFromRow(row);
+                    removeAction(actionToRemove.getKey());
+                }
+                
+                updateActionsDisplay(); 
+                actionsTable.clearSelection();
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select actions to remove.", "No Selection", JOptionPane.WARNING_MESSAGE);
         }
-        // Utilizza una regex per inserire uno spazio prima di ogni lettera maiuscola
-        return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
     }
 
+    
+    private boolean isEmptyRow(int row) {
+        Object actionValue = tableModel.getValueAt(row, 0);
+        return actionValue == null || actionValue.toString().trim().isEmpty();
+    }
+    
+    private Pair<Action, Integer> getActionFromRow(int row) {
+        int rowCount = 0;
+
+        for (Pair<Action, Integer> action : actions) {
+            int lines = action.getKey().toString().split("\n").length + 1; 
+
+            if (rowCount == row) {
+                return action; 
+            }
+            if (rowCount + lines > row) {
+                return action; 
+            }
+            rowCount += lines; 
+        }
+        return null; 
+    }
+
+
+    private void removeAction(Action actionToRemove) {
+        actions.removeIf(pair -> pair.getKey().equals(actionToRemove));
+    }
 }
