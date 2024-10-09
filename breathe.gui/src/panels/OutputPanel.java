@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -26,10 +27,8 @@ public class OutputPanel{
 	private Map<String, ItemDisplay> chartPanels;
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
-    JPanel selectionPanel;
     JPanel infoBoxPanel;
     JScrollPane scrollInfoBoxPane;
-    private JToggleButton[] chartToggleButtons;
     
     private boolean mainChange = false;
     
@@ -48,17 +47,7 @@ public class OutputPanel{
         chartsMap.put("Airway Pressure", "mmHg");
         
         chartPanels = new HashMap<>();
-        chartToggleButtons = new JToggleButton[chartsMap.size()];
         
-        selectionPanel = new JPanel();
-        selectionPanel.setBackground(Color.BLACK);
-        selectionPanel.setLayout(new BoxLayout(selectionPanel, BoxLayout.X_AXIS)); 
-        
-        JScrollPane scrollablePanel = new JScrollPane(selectionPanel);  // Avvolgi il pannello
-        scrollablePanel.setPreferredSize(new Dimension(200, 100)); 
-        scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollablePanel.setBorder(null);
         
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
@@ -86,19 +75,7 @@ public class OutputPanel{
             LineChart chart = new LineChart(chartName, chartsMap.get(chartName));
             chartPanels.put(chartName, chart);
             
-            chartToggleButtons[i] = new JToggleButton(chartName);
-
-            chartToggleButtons[i].setSelected(true);
-            
-            chartToggleButtons[i].setBackground(Color.BLACK);
-            chartToggleButtons[i].setForeground(Color.WHITE);
-            chartToggleButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    updateItemDisplay();
-                }
-            });
-            selectionPanel.add(chartToggleButtons[i]);
+            app.addOutputButton(chartName);
             
             chartsPanel.add(chartPanels.get(chartName));
             i++;
@@ -116,18 +93,7 @@ public class OutputPanel{
             chart.setPreferredSize(new Dimension(150, 100));
             chartPanels.put(chartName, chart);
             
-            chartToggleButtons[i] = new JToggleButton(chartName);
-            chartToggleButtons[i].setSelected(true);
-            
-            chartToggleButtons[i].setBackground(Color.BLACK);
-            chartToggleButtons[i].setForeground(Color.WHITE);
-            chartToggleButtons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    updateItemDisplay();
-                }
-            });
-            selectionPanel.add(chartToggleButtons[i]);
+            app.addOutputButton(chartName);
             
             infoBoxPanel.add(chartPanels.get(chartName));
             i++;
@@ -140,7 +106,6 @@ public class OutputPanel{
         scrollChartPane.setBorder(null);
         
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(scrollablePanel);
         mainPanel.add(scrollInfoBoxPane);
         mainPanel.add(scrollChartPane);
         mainPanel.setBackground(Color.BLACK);
@@ -152,12 +117,12 @@ public class OutputPanel{
     }
     
     //GRAPHIC UPDATE OF THE PANELS
-    private void updateItemDisplay() {
+    public void updateItemDisplay(List<JToggleButton> buttons) {
         chartsPanel.removeAll();
         infoBoxPanel.removeAll();
 
-        for (int i = 0; i < chartToggleButtons.length; i++) {
-            JToggleButton toggleButton = chartToggleButtons[i];
+        for (int i = 0; i < buttons.size(); i++) {
+            JToggleButton toggleButton = buttons.get(i);
             String chartName = toggleButton.getText();
             if (toggleButton.isSelected()) {
                 if (chartPanels.get(chartName) instanceof LineChart) {
