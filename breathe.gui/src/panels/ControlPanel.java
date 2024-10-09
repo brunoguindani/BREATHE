@@ -88,8 +88,9 @@ public class ControlPanel {
         
         stopButton.addActionListener(e -> {
         	app.stopSimulation();
-        	enableStartingButton(true);
-        	showStartingButton(true);
+        	enableControlStartButton(true);
+        	showControlStartButton(true);
+        	resetVentilatorsButton();
         });
 
         //EXPORT BUTTON
@@ -118,11 +119,11 @@ public class ControlPanel {
         mainPanel.add(exportButton);
     }
     
-    //start simulation
+
+	//start simulation
     private void startingStandardSimulation() {
     	if(app.startSimulation()) {
-        	enableStartingButton(true); 
-        	showStartingButton(true);
+        	clearOutputDisplay();
     	}
 	}
 
@@ -133,27 +134,31 @@ public class ControlPanel {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String file = fileChooser.getSelectedFile().getAbsolutePath();   
         	if(app.startFromFileSimulation(file)) {
-            	enableStartingButton(false);        		
+            	clearOutputDisplay();
         	}
         }
     }
     
-    //start from scenario simulation
+
+
+	//start from scenario simulation
     private void startingScenarioSimulation() {
     	JFileChooser fileChooser = new JFileChooser("./scenario/");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            String selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+            String scenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
             
             try {
                 ObjectMapper mapper = new ObjectMapper();
-                JsonNode rootNode_scenario = mapper.readTree(new File(selectedScenarioFilePath));
-                String selectedPatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
+                JsonNode rootNode_scenario = mapper.readTree(new File(scenarioFilePath));
+                String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
 
-                if(app.loadPatientData(selectedPatientFilePath)) {
+                if(app.loadPatientData(PatientFilePath)) {
                 	//CONDIZIONI ATTIVE
                     //app.condition.getRemoveAllConditionsButton().doClick();
-                	app.startFromScenarioSimulation(selectedScenarioFilePath);
+                	if(app.startFromScenarioSimulation(scenarioFilePath)) {
+                    	clearOutputDisplay();
+                	}
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -167,7 +172,7 @@ public class ControlPanel {
         return mainPanel;
     }
     
-    private void enableStartingButton(boolean enable) {
+    public void enableControlStartButton(boolean enable) {
         startButton.setEnabled(enable); 
         startFromFileButton.setEnabled(enable); 
         startFromScenarioButton.setEnabled(enable);
@@ -175,12 +180,21 @@ public class ControlPanel {
         exportButton.setEnabled(!enable);
     }
     
-    public void showStartingButton(boolean enable) {
+    public void showControlStartButton(boolean enable) {
         startButton.setVisible(enable); 
         startFromFileButton.setVisible(enable); 
         startFromScenarioButton.setVisible(enable);
         stopButton.setVisible(!enable);
         exportButton.setVisible(!enable);
     }
+    
+
+	private void clearOutputDisplay() {
+		app.clearOutputDisplay();
+	}
+	
+    private void resetVentilatorsButton() {
+		app.resetVentilatorsButton();
+	}
    
 }

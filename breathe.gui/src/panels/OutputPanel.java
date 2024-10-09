@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -20,8 +21,9 @@ public class OutputPanel{
 	
     private JPanel mainPanel = new JPanel();
     
-    private HashMap<String, String> chartsMap;
-	private HashMap<String, ItemDisplay> chartPanels;
+    private Map<String, String> chartsMap;
+    
+	private Map<String, ItemDisplay> chartPanels;
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
     JPanel selectionPanel;
@@ -227,4 +229,11 @@ public class OutputPanel{
             chartPanels.get(mapChartName).addPoint(x, y);
         }
     }
+    
+    
+    public void clearOutputDisplay() {
+    	for (Map.Entry<String, ItemDisplay> chart : chartPanels.entrySet()) {
+    	    chart.getValue().clear();
+    	}
+	}
 }

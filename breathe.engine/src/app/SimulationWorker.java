@@ -60,7 +60,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     /*
      * Costruttore
      */
-    public SimulationWorker(GuiCallback guiCallback) { 
+    public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
     }
     
@@ -102,14 +102,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     public void simulationFromScenario(String scenarioFilePath) {
-    	this.scenarioFilePath = scenarioFilePath;
-    	
     	initializeMode = "scenario";
     	pe = new PulseEngine();
 		
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
     	
+        this.scenarioFilePath = scenarioFilePath;
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode_scenario = null;
 		try {
@@ -147,19 +146,18 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        exportInitialPatient(patient_configuration.getPatient());	
 	        
 	        //Advice for stabilaztion completed
-			gui.stabilizationComplete(false);
+			gui.stabilizationComplete(true);
+			
 		}else if(initializeMode.equals("file")) {
-			//boh se si vuole spostare qui
+			gui.stabilizationComplete(true);
 		}else if(initializeMode.equals("scenario")) {
 			run_scenario();
 		}
 
 		
-		
 		while (!stopRequest) {
         	
             if (!pe.advanceTime(stime)) {
-                publish("\nSomething bad happened");
                 return null;
             }
             
@@ -177,7 +175,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		
         pe.clear();
         pe.cleanUp();
-        publish("Simulation Complete\n");
         return null;
 	}
 	
@@ -238,9 +235,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }*/
 		
 		//Advice for stabilaztion completed
-		gui.stabilizationComplete(false);
+		gui.stabilizationComplete(true);
 		
 		for (SEAction a : sce.getActions()) {
+			if(stopRequest)
+		    	return;
 			
 		    if (a instanceof SEAdvanceTime) {
 		        
@@ -264,8 +263,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    } else {
 		        pe.processAction(a);
 		    }
-		    if(stopRequest)
-		    	return;
 		}
 	}
     
@@ -346,7 +343,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             break;
 
         case EXTERNAL:
-        	SEMechanicalVentilation ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
+        	ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
         	zmqServer = new ZeroServer();
         	try {
 				zmqServer.connect();

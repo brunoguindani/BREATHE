@@ -150,21 +150,27 @@ public class App extends JFrame implements GuiCallback {
     	return patientPanel.loadPatientData(selectedPatientFilePath);
     }
     
+	public void clearOutputDisplay() {
+		outputPanel.clearOutputDisplay();
+	}
+	
+	public void resetVentilatorsButton() {
+		ventilatorsPanel.resetButton();
+	}
+    
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI
      */
     public boolean startSimulation() {
-    	Patient new_patient = patientPanel.getInitialPatient(getActiveConditions());
+    	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
     		s = new SimulationWorker(this);
     		s.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
-
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
-    	}else {
-    		return false;
     	}
+    	return false;
     }
     
     public boolean startFromFileSimulation(String file) {
@@ -212,7 +218,8 @@ public class App extends JFrame implements GuiCallback {
      */
 	@Override
 	public void stabilizationComplete(boolean enable) {
-		controlPanel.showStartingButton(enable);
+		controlPanel.showControlStartButton(!enable);
+		controlPanel.enableControlStartButton(!enable);
 	}
     
 	@Override
@@ -238,4 +245,5 @@ public class App extends JFrame implements GuiCallback {
 	public void setInitialCondition(List<Condition> list) {
 		// TODO Auto-generated method stud		
 	}
+
 }
