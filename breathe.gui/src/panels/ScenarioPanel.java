@@ -12,7 +12,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import app.App_temp;
+import app.App;
 import data.Action;
 import data.Scenario;
 import utils.Pair;
@@ -41,7 +41,7 @@ public class ScenarioPanel {
     private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
     private Scenario sce = new Scenario();
     
-    public ScenarioPanel(App_temp app) {
+    public ScenarioPanel(App app) {
     	
     	//Main panel
     	mainPanel = new JPanel();

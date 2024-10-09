@@ -16,15 +16,18 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-import app.App_temp;
+import app.App;
+import data.Condition;
 import inputItems.ConditionBox;
 
 public class ConditionsPanel {
 
     private JPanel mainPanel = new JPanel();
     private List<ConditionBox> boxes = new ArrayList<>();
+    private List<Condition> activeConditions = new ArrayList<>();
+    private JButton reset;
 
-    public ConditionsPanel(App_temp app) {
+    public ConditionsPanel(App app) {
     	 
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 650));
@@ -54,8 +57,8 @@ public class ConditionsPanel {
 
         Map<String, JComponent> copdComponents = new HashMap<>();
         copdComponents.put("BronchitisSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        copdComponents.put("EmphysemaLeft Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        copdComponents.put("EmphysemaRight Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
+        copdComponents.put("LeftLungEmphysemaSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
+        copdComponents.put("RightLungEmphysemaSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
         ConditionBox copdBox = new ConditionBox(app, "COPD", copdComponents);
         boxes.add(copdBox);
 
@@ -98,7 +101,7 @@ public class ConditionsPanel {
            	
     	Dimension buttonSize = new Dimension(160, 50);
     	
-		JButton reset = new JButton("Reset Conditions");
+		reset = new JButton("Reset Conditions");
 		reset.setToolTipText("remove all conditions and set values to 0");
 		reset.setPreferredSize(buttonSize);
 		reset.setMaximumSize(buttonSize);
@@ -122,8 +125,45 @@ public class ConditionsPanel {
         return mainPanel;
     }
     
-    private void resetConditions() {
-    	
+    public void addCondition(Condition c) {
+    	activeConditions.add(c);
     }
+    
+    public void removeCondition(String title) {
+    	for(int i=0; i< activeConditions.size() ;i++) {
+    		if(activeConditions.get(i).getTitle().equals(title)) {
+            	activeConditions.remove(i);
+    			break;
+    		}
+    	}
+    }
+    
+    public List<Condition> getActiveConditions() {
+    	return activeConditions;
+    }
+    
+    private void resetConditions() {
+        List<Condition> toRemove = new ArrayList<>();  
+        
+        for (Condition c : activeConditions) {
+            for (int i = 0; i < boxes.size(); i++) {
+                if (boxes.get(i).getTitle().equals(c.getTitle())) {
+                    boxes.get(i).reset();
+                    break;
+                }
+            }
+            toRemove.add(c); 
+        }
+        
+        activeConditions.removeAll(toRemove);
+    }
+
+    public void enableButtons(boolean enable) {
+    	reset.setEnabled(enable);
+        for(ConditionBox box : boxes) {
+        	box.enableBox(enable);
+        }    	
+    }
+    
 }
 

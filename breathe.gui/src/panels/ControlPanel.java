@@ -6,14 +6,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JFileChooser;
 import javax.swing.Box;
-import app.App_temp;
+import app.App;
 
 public class ControlPanel {
 
     private JPanel mainPanel = new JPanel(); 
     JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
 
-    public ControlPanel(App_temp app) {
+    public ControlPanel(App app) {
     	//set up main panel
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 100));
@@ -68,8 +68,7 @@ public class ControlPanel {
         
         startButton.addActionListener(e -> {
         	if(app.startSimulation()) {
-            	enableStartingButton(true); 
-            	showStartingButton(true);
+            	enableStartingButton(false); 
         	};
         });
         

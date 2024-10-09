@@ -61,10 +61,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         setDataRequests(dataRequests);
         patient_configuration = patient.getPatientConfiguration();
         
+        for(Condition any : patient.getConditions())
+        {
+          patient_configuration.getConditions().add(any.getCondition());
+        }
+        
     	this.execute();
     }
     
-    public void simulationfromFile(String file) {
+    public void simulationFromFile(String file) {
     	initializeMode = "file";
     	pe = new PulseEngine("../breathe.engine/");
 		
@@ -77,17 +82,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
-		/*
-		GET CONDITIONS FROM CONDITION PANEL 
-		
-        pe.getConditions(app.condition.getActiveConditions());
-        app.condition.setInitialConditionsTo0();
-        for(SECondition any : app.condition.getActiveConditions())
-        {
-        	app.condition.setInitialConditions(any);
-        }
-        
-        */
+		List<SECondition> list = new ArrayList<>();
+        pe.getConditions(list);
+        //gui.setInitialConditions(list);
 		
     	this.execute();
     }
@@ -95,6 +92,46 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     public void simulationfromScenario() {
     	initializeMode = "scenario";
     }
+    
+	@Override
+	protected Void doInBackground() throws Exception {
+        
+		if(initializeMode.equals("standard")) {
+	        pe.initializeEngine(patient_configuration, dataRequests);    
+	        exportInitialPatient(patient_configuration.getPatient());		
+		}else if(initializeMode.equals("file")) {
+			//boh se si vuole spostare qui
+		}else if(initializeMode.equals("scenario")) {
+			//non so se serve
+		}
+
+		//Hide starting buttons and show others
+		gui.stabilizationComplete(false);
+		
+		while (!stopRequest) {
+        	
+            if (!pe.advanceTime(stime)) {
+                publish("\nSomething bad happened");
+                return null;
+            }
+            
+
+            //Send data (to gui and to ext ventilator)
+            if(ext_running) {
+            	manage_ext();
+            	zmqServer.setSimulationData(sendData());
+            }
+            else
+            	sendData();
+
+            stime.setValue(0.02, TimeUnit.s);
+        }
+		
+        pe.clear();
+        pe.cleanUp();
+        publish("Simulation Complete\n");
+        return null;
+	}
 
     public void stopSimulation() {
     	stopRequest = true;
@@ -192,46 +229,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		double pressure = zmqServer.getPressure();
 		ventilator_ext.getPressure().setValue(pressure,PressureUnit.mmHg);
 		gui.logPressureExternalVentilatorData(pressure);
-	}
-	
-	@Override
-	protected Void doInBackground() throws Exception {
-        
-		if(initializeMode.equals("standard")) {
-	        pe.initializeEngine(patient_configuration, dataRequests);    
-	        exportInitialPatient(patient_configuration.getPatient());		
-		}else if(initializeMode.equals("file")) {
-			//boh se si vuole spostare qui
-		}else if(initializeMode.equals("scenario")) {
-			//non so se serve
-		}
-
-		//Hide starting buttons and show others
-		gui.stabilizationComplete(false);
-		
-		while (!stopRequest) {
-        	
-            if (!pe.advanceTime(stime)) {
-                publish("\nSomething bad happened");
-                return null;
-            }
-            
-
-            //Send data (to gui and to ext ventilator)
-            if(ext_running) {
-            	manage_ext();
-            	zmqServer.setSimulationData(sendData());
-            }
-            else
-            	sendData();
-
-            stime.setValue(0.02, TimeUnit.s);
-        }
-		
-        pe.clear();
-        pe.cleanUp();
-        publish("Simulation Complete\n");
-        return null;
 	}
 	
     private void setDataRequests(SEDataRequestManager dataRequests) {
