@@ -17,11 +17,13 @@ public class ActionBox {
     private String title;
     private Map<String, JComponent> components;
     private JButton applySectionButton;
-    private boolean enabled = false;
     
     private JSpinner[] time = new JSpinner[3]; //0 hours, 1 minutes, 2 seconds
     
+    private App app;
+    
     public ActionBox(App app, String title, Map<String, JComponent> components) {
+    	this.app = app;
         this.title = title;
         this.components = components;
         
@@ -133,13 +135,13 @@ public class ActionBox {
         fieldsPanel.add(timePanel, gbc);
         
      // Pulsante "Applica"
-        applySectionButton = new JButton("Applica");
+        applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
         applySectionButton.setBackground(new Color(0, 122, 255));
         applySectionButton.setForeground(Color.WHITE);
         applySectionButton.setFocusPainted(false);
         applySectionButton.setMargin(new Insets(0, 0, 0, 0));
-        applySectionButton.setEnabled(true);  // Abilitato inizialmente
+        applySectionButton.setEnabled(false); 
         
         applySectionButton.addActionListener(buttonAction());
 
@@ -172,17 +174,24 @@ public class ActionBox {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!enabled) {
-                    // Azione per quando si applica la condizione
-                    enableFields(false);  // Disabilita i campi
-                    applySectionButton.setText("Rimuovi");
-                    enabled = true;
-                } else {
-                    // Azione per quando si rimuove la condizione
-                    enableFields(true);  // Riabilita i campi
-                    applySectionButton.setText("Applica");
-                    enabled = false;
-                }
+                
+            	Map<String,Double> parameters = new HashMap<>();
+            	for (Map.Entry<String, JComponent> entry : components.entrySet()) {
+        		   String chiave = entry.getKey();
+        		   JComponent component = entry.getValue();
+        		    
+        		   Double valore = null;
+        		   if (component instanceof JSpinner) {
+        		       valore = ((JSpinner) component).getValue() instanceof Number ? 
+        		                ((Number) ((JSpinner) component).getValue()).doubleValue() : null;
+        		   } else {
+        		       valore = Double.parseDouble(component.toString());
+        		   }
+        		    
+        		   parameters.put(chiave, valore);
+            	}
+                
+                app.applyAction(new Action(title,parameters));
             }
         };
     }
@@ -197,26 +206,18 @@ public class ActionBox {
         return hours * 3600 + minutes * 60 + seconds;
     }
     
-    // Abilita o disabilita i campi
-    private void enableFields(boolean enable) {
-        for (Map.Entry<String, JComponent> entry : components.entrySet()) {
-        	entry.getValue().setEnabled(enable);
-        }
-    }
-    
     // Metodo per ottenere il pannello
     public JPanel getSectionPanel() {
         return sectionPanel;
     }
     
-    // Metodo per verificare se è attiva
-    public boolean isActive() {
-        return enabled;
-    }
-    
     // Metodo per ottenere il titolo
     public String getTitle() {
         return title;
+    }
+    
+    public void enableButton(boolean enable) {
+    	applySectionButton.setEnabled(enable);
     }
     
     //add space to title
