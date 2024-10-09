@@ -175,6 +175,12 @@ public class VentilatorsPanel {
         }
     }
 
+    public void resetButton() {
+    	connectButton.setEnabled(false);
+    	disconnectButton.setEnabled(false);
+    	applyButton.setEnabled(false);
+    	disconnectButton.setText("Disconnect");
+    }
     
     public void setEnableConnectButton(boolean enable) {
     	connectButton.setEnabled(enable);

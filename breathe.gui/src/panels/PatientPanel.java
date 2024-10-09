@@ -80,9 +80,9 @@ public class PatientPanel {
         addLabelAndField("Name:", fieldMap.get("Name"), innerPanel, gbc);
         addLabelAndField("Sex:", sexComboBox_Patient, innerPanel, gbc);
         addLabelFieldAndUnit("Age:", fieldMap.get("Age"), new JLabel("yr"), innerPanel, gbc);
-        weightUnitComboBox = new JComboBox<>(new String[]{"kg", "lbs"});
+        weightUnitComboBox = new JComboBox<>(new String[]{"kg", "lb"});
         addLabelFieldAndUnit("Weight:", fieldMap.get("Weight"), weightUnitComboBox, innerPanel, gbc);
-        heightUnitComboBox = new JComboBox<>(new String[]{"cm", "m", "inches", "ft"});
+        heightUnitComboBox = new JComboBox<>(new String[]{"cm", "m", "in", "ft"});
         addLabelFieldAndUnit("Height:", fieldMap.get("Height"), heightUnitComboBox, innerPanel, gbc);
         addLabelFieldAndUnit("Body Fat Fraction:", fieldMap.get("BodyFatFraction"), new JLabel("%"), innerPanel, gbc);
         addLabelFieldAndUnit("Heart Rate Baseline:", fieldMap.get("HeartRateBaseline"), new JLabel("heartbeats/min"), innerPanel, gbc);
@@ -141,22 +141,27 @@ public class PatientPanel {
         gbc.gridy++;
     }
     
-    public Patient getInitialPatient(List<Condition> conditions) {
+    public Patient generateInitialPatient(List<Condition> conditions) {
     	if(checkFieldsNumeric()){
         	String name = fieldMap.get("Name").getText();
         	Map<String,Double> parameters = new HashMap<>();
+        	
         	char sex = 'F';
         	for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
         	    String chiave = entry.getKey();
         	    
         	    if(!chiave.equals("Name")) {
-            	    Double valore = Double.parseDouble( entry.getValue().getText());
+            	    Double valore = Double.parseDouble(entry.getValue().getText());
         	    	parameters.put(chiave, valore);
         	    }
         	}
-    		if (sexComboBox_Patient.getSelectedItem().equals("Male")) {
+        	
+    		if (sexComboBox_Patient.getSelectedItem().equals("Male")) 
     		    sex = 'M';
-    		} 
+    		
+    		//methods to convert weight and height (kg and cm)
+    		checkUnits(parameters);
+    		
         	return new Patient(name,sex,parameters,conditions); 	
     	}else{
     		JOptionPane.showMessageDialog(null, 
@@ -167,7 +172,9 @@ public class PatientPanel {
     	}
     }
     
-    //COMMETNS
+
+
+	//COMMENTS
     private boolean checkFieldsNumeric() {
         for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
             String key = entry.getKey();
@@ -240,9 +247,9 @@ public class PatientPanel {
             sexComboBox_Patient.setSelectedItem(sex);
             fieldMap.get("Age").setText(String.valueOf(age));
             fieldMap.get("Weight").setText(String.format("%.2f", weight));
-            weightUnitComboBox.setSelectedItem(convertWeightUnitToComboBoxValue(weightUnit));
+            weightUnitComboBox.setSelectedItem(weightUnit);
             fieldMap.get("Height").setText(String.valueOf(height));
-            heightUnitComboBox.setSelectedItem(convertHeightUnitToComboBoxValue(heightUnit));
+            heightUnitComboBox.setSelectedItem(heightUnit);
             fieldMap.get("BodyFatFraction").setText(String.format("%.2f", bodyFat));
             fieldMap.get("HeartRateBaseline").setText(String.format("%.2f", heartRate));
             fieldMap.get("DiastolicArterialPressureBaseline").setText(String.format("%.2f", diastolicPressure));
@@ -259,31 +266,26 @@ public class PatientPanel {
         }
     }
     
-    //selection height unit
-    private String convertHeightUnitToComboBoxValue(String unit) {
-        switch (unit) {
-            case "in":
-                return "inches";
-            case "m":
-                return "m";
-            case "cm":
-                return "cm";
-            case "ft":
-                return "ft";
-            default:
-                return "inches";
-        }
-    }
-    
-    //selection weight unit
-    private String convertWeightUnitToComboBoxValue(String unit) {
-        switch (unit) {
-            case "lb":
-                return "lbs";
-            case "kg":
-                return "kg";
-            default:
-                return "lbs";
-        }
-    }
+	private void checkUnits(Map<String, Double> parameters) {
+		
+	    // weight conversion (if necessary)
+	    if(weightUnitComboBox.getSelectedItem().equals("lb")) {
+	    	parameters.put("Weight", Double.parseDouble(fieldMap.get("Weight").getText()) * 0.453592); 
+	    }
+
+	    // height conversion (if necessary)
+	    switch ((String) heightUnitComboBox.getSelectedItem()) {
+	        case "m":
+	        	parameters.put("Height", Double.parseDouble(fieldMap.get("Height").getText()) * 100); // m to cm
+	            break;
+	        case "in":
+	        	parameters.put("Height", Double.parseDouble(fieldMap.get("Height").getText()) * 2.54); // in to cm
+	            break;
+	        case "ft":
+	        	parameters.put("Height", Double.parseDouble(fieldMap.get("Height").getText()) * 30.48); // feat to cm
+	            break;
+	    }
+	}
+	
+	
 }
