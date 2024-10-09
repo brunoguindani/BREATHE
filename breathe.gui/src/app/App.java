@@ -28,6 +28,7 @@ public class App extends JFrame implements GuiCallback {
     public ConditionsPanel conditionsPanel = new ConditionsPanel(this);
     public ActionsPanel actionsPanel = new ActionsPanel(this);
     public VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
+    public OutputButtonPanel outputButtonPanel = new OutputButtonPanel(this);
     public OutputPanel outputPanel = new OutputPanel(this);
     public LogPanel logPanel = new LogPanel(this);
     public ScenarioPanel scenarioPanel = new ScenarioPanel(this);
@@ -93,6 +94,7 @@ public class App extends JFrame implements GuiCallback {
         leftTabbedPane.addTab("Patient", switchPanel);
         leftTabbedPane.addTab("Actions", actionsPanel.getMainPanel());
         leftTabbedPane.addTab("Ventilators", ventilatorsPanel.getMainPanel());
+        leftTabbedPane.addTab("Output Settings", outputButtonPanel.getMainPanel());
         
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
@@ -131,6 +133,14 @@ public class App extends JFrame implements GuiCallback {
     /*
      * GUI PANEL to another GUI PANEL
      */
+	public void addOutputButton(String outputName) {
+		outputButtonPanel.addOutputButton(outputName);
+	}
+    
+	public void updateOutputDisplay(List<JToggleButton> buttons) {
+		outputPanel.updateItemDisplay(buttons);
+	}
+	
     public void addActiontoScenario(Action action, int seconds) {
     	scenarioPanel.addAction(action, seconds);
     }
