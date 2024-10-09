@@ -11,7 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
-import app.App_temp;
+import app.App;
 import data.Ventilator;
 import utils.VentilationMode;
 import ventilators.*;
@@ -31,7 +31,7 @@ public class VentilatorsPanel {
     
     JButton connectButton, disconnectButton, applyButton;
     
-    public VentilatorsPanel(App_temp app) {
+    public VentilatorsPanel(App app) {
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 650));
 

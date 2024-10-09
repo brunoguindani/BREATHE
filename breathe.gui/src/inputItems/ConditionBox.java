@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 
-import app.App_temp;
+import app.App;
 
 public class ConditionBox {
     
@@ -17,7 +17,7 @@ public class ConditionBox {
     private JButton headerButton;
     private boolean enabled = false;
     
-    public ConditionBox(App_temp app, String title, Map<String, JComponent> components) {
+    public ConditionBox(App app, String title, Map<String, JComponent> components) {
         this.title = title;
         this.components = components;
         

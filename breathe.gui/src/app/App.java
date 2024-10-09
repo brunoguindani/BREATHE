@@ -13,7 +13,7 @@ import data.Patient;
 import data.Ventilator;
 import interfaces.GuiCallback;
 
-public class App_temp extends JFrame implements GuiCallback {
+public class App extends JFrame implements GuiCallback {
 	
 	/*
 	 * Main Panel containing all the other Panels
@@ -42,7 +42,7 @@ public class App_temp extends JFrame implements GuiCallback {
     //create a simulationWorker
     private SimulationWorker s;
    
-    public App_temp() {
+    public App() {
     	
     	Initializer.initilizeJNI();
     	
@@ -132,6 +132,10 @@ public class App_temp extends JFrame implements GuiCallback {
     	scenarioPanel.addAction(action, seconds);
     }
     
+    public boolean loadPatientData(String selectedPatientFilePath) {
+    	return patientPanel.loadPatientData(selectedPatientFilePath);
+    }
+    
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI
      */
@@ -150,7 +154,18 @@ public class App_temp extends JFrame implements GuiCallback {
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
     		s = new SimulationWorker(this);
-    		s.simulationfromFile(file);	
+    		s.simulationFromFile(file);	
+    		ventilatorsPanel.setEnableConnectButton(true);
+    		return true;
+    	}else {
+    		return false;
+    	}
+    }
+    
+    public boolean startFromScenarioSimulation(String scenarioFile) {
+    	if(scenarioFile != null) {
+    		s = new SimulationWorker(this);
+    		s.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {

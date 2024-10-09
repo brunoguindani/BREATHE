@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import app.App_temp;
+import app.App;
 import inputItems.ActionBox;
 
 public class ActionsPanel {
@@ -23,7 +23,7 @@ public class ActionsPanel {
     private JPanel mainPanel = new JPanel();
     private List<ActionBox> boxes = new ArrayList<>();
 
-    public ActionsPanel(App_temp app) {
+    public ActionsPanel(App app) {
     	 
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 650));
