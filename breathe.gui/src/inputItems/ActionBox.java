@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.HashMap;
 
-import app.App_temp;
+import app.App;
 import data.Action;
 
 public class ActionBox {
@@ -21,7 +21,7 @@ public class ActionBox {
     
     private JSpinner[] time = new JSpinner[3]; //0 hours, 1 minutes, 2 seconds
     
-    public ActionBox(App_temp app, String title, Map<String, JComponent> components) {
+    public ActionBox(App app, String title, Map<String, JComponent> components) {
         this.title = title;
         this.components = components;
         

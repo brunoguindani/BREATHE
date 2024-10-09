@@ -16,7 +16,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-import app.App_temp;
+import app.App;
 import inputItems.ConditionBox;
 
 public class ConditionsPanel {
@@ -24,7 +24,7 @@ public class ConditionsPanel {
     private JPanel mainPanel = new JPanel();
     private List<ConditionBox> boxes = new ArrayList<>();
 
-    public ConditionsPanel(App_temp app) {
+    public ConditionsPanel(App app) {
     	 
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 650));

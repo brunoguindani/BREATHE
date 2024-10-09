@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToggleButton;
 
 import outputItems.*;
-import app.App_temp;
+import app.App;
 
 public class OutputPanel{
 	
@@ -31,7 +31,7 @@ public class OutputPanel{
     
     private boolean mainChange = false;
     
-    public OutputPanel(App_temp app) {
+    public OutputPanel(App app) {
     	mainPanel.setBackground(Color.LIGHT_GRAY);
     	mainPanel.setPreferredSize(new Dimension(550, 700));
     	

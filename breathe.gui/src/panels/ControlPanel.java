@@ -2,23 +2,35 @@ package panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.Box;
-import app.App_temp;
+import app.App;
 
 public class ControlPanel {
 
     private JPanel mainPanel = new JPanel(); 
     JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
+    
+    App app;
 
-    public ControlPanel(App_temp app) {
+    public ControlPanel(App app) {
+    	this.app = app;
+    	
     	//set up main panel
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 100));
 
-        Dimension buttonSize = new Dimension(160, 40); 
+        Dimension buttonSize = new Dimension(150, 40); 
 
         //START FROM FILE BUTTON
         startFromFileButton = new JButton("Start From File");
@@ -31,15 +43,7 @@ public class ControlPanel {
         startFromFileButton.setFocusPainted(false);
         
         startFromFileButton.addActionListener(e -> {
-
-        	JFileChooser fileChooser = new JFileChooser("./states/");
-            int returnValue = fileChooser.showOpenDialog(null); // pick a file
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                String file = fileChooser.getSelectedFile().getAbsolutePath();   
-            	if(app.startFromFileSimulation(file)) {
-                	enableStartingButton(false);        		
-            	};
-            }
+        	startingFileSimulation();
         });
 
         //START FROM SCENARIO BUTTON
@@ -53,7 +57,7 @@ public class ControlPanel {
         startFromScenarioButton.setFocusPainted(false);
         
         startFromScenarioButton.addActionListener(e -> {
-
+        	startingScenarioSimulation();
         });
 
         //START SIMULATION BUTTON
@@ -67,10 +71,8 @@ public class ControlPanel {
         startButton.setFocusPainted(false);
         
         startButton.addActionListener(e -> {
-        	if(app.startSimulation()) {
-            	enableStartingButton(true); 
-            	showStartingButton(true);
-        	};
+        	startingStandardSimulation();
+        	
         });
         
         //STOP SIMULATION BUTTON
@@ -116,8 +118,52 @@ public class ControlPanel {
         mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         mainPanel.add(exportButton);
     }
+    
+    //start simulation
+    private void startingStandardSimulation() {
+    	if(app.startSimulation()) {
+        	enableStartingButton(true); 
+        	showStartingButton(true);
+    	}
+	}
 
-    //method to return panel
+    //start from file
+    private void startingFileSimulation() {
+    	JFileChooser fileChooser = new JFileChooser("./states/");
+        int returnValue = fileChooser.showOpenDialog(null); // pick a file
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String file = fileChooser.getSelectedFile().getAbsolutePath();   
+        	if(app.startFromFileSimulation(file)) {
+            	enableStartingButton(false);        		
+        	}
+        }
+    }
+    
+    //start from scenario simulation
+    private void startingScenarioSimulation() {
+    	JFileChooser fileChooser = new JFileChooser("./scenario/");
+        int returnValue = fileChooser.showOpenDialog(null); // pick a file
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String selectedScenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+            
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode_scenario = mapper.readTree(new File(selectedScenarioFilePath));
+                String selectedPatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
+
+                if(app.loadPatientData(selectedPatientFilePath)) {
+                	//CONDIZIONI ATTIVE
+                    //app.condition.getRemoveAllConditionsButton().doClick();
+                	app.startFromScenarioSimulation(selectedScenarioFilePath);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error loading scenario JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+	}
+    
+	//method to return panel
     public JPanel getMainPanel() {
         return mainPanel;
     }

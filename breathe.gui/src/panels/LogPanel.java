@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import app.App_temp;
+import app.App;
 
 public class LogPanel{
 	
     private JPanel mainPanel = new JPanel();
     JTextArea resultArea = new JTextArea();
     
-    public LogPanel(App_temp app) {
+    public LogPanel(App app) {
     	
     	mainPanel.setBackground(Color.LIGHT_GRAY);
     	mainPanel.setPreferredSize(new Dimension(550, 500));
