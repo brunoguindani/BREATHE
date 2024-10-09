@@ -141,7 +141,7 @@ public class PatientPanel {
         gbc.gridy++;
     }
     
-    public Patient getInitialPatient() {
+    public Patient getInitialPatient(List<Condition> conditions) {
     	if(checkFieldsNumeric()){
         	String name = fieldMap.get("Name").getText();
         	Map<String,Double> parameters = new HashMap<>();
@@ -157,8 +157,6 @@ public class PatientPanel {
     		if (sexComboBox_Patient.getSelectedItem().equals("Male")) {
     		    sex = 'M';
     		} 
-    		List<Condition> conditions = new ArrayList<>();
-        	//app.getConditions(); to get conditions and pass them to contruction;
         	return new Patient(name,sex,parameters,conditions); 	
     	}else{
     		JOptionPane.showMessageDialog(null, 

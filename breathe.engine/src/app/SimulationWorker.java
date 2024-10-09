@@ -73,6 +73,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         setDataRequests(dataRequests);
         patient_configuration = patient.getPatientConfiguration();
         
+        for(Condition any : patient.getConditions())
+        {
+          patient_configuration.getConditions().add(any.getCondition());
+        }
+        
     	this.execute();
     }
     
@@ -89,17 +94,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
-		/*
-		GET CONDITIONS FROM CONDITION PANEL 
-		
-        pe.getConditions(app.condition.getActiveConditions());
-        app.condition.setInitialConditionsTo0();
-        for(SECondition any : app.condition.getActiveConditions())
-        {
-        	app.condition.setInitialConditions(any);
-        }
-        
-        */
+		List<SECondition> list = new ArrayList<>();
+        pe.getConditions(list);
+        //gui.setInitialConditions(list);
 		
     	this.execute();
     }
@@ -184,7 +181,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         return null;
 	}
 	
-
     private void setDataRequests(SEDataRequestManager dataRequests) {
     	//list of data requests.
     	//SimTime is mandatory, since it is always retrieved

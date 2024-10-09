@@ -25,7 +25,7 @@ public class ControlPanel {
 
     public ControlPanel(App app) {
     	this.app = app;
-    	
+
     	//set up main panel
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 100));
@@ -72,7 +72,6 @@ public class ControlPanel {
         
         startButton.addActionListener(e -> {
         	startingStandardSimulation();
-        	
         });
         
         //STOP SIMULATION BUTTON

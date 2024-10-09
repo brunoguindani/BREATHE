@@ -1,5 +1,8 @@
 package interfaces;
 
+import java.util.List;
+
+import data.Condition;
 
 public interface GuiCallback {
 	
@@ -12,5 +15,6 @@ public interface GuiCallback {
     void logPressureExternalVentilatorData(double pressure);
     
     void logVolumeExternalVentilatorData(double volume);
-
+    
+    void setInitialCondition(List<Condition> list);
 }

@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.*;
 
 import panels.*;
 import data.Action;
+import data.Condition;
 import data.Patient;
 import data.Ventilator;
 import interfaces.GuiCallback;
@@ -132,18 +134,32 @@ public class App extends JFrame implements GuiCallback {
     	scenarioPanel.addAction(action, seconds);
     }
     
+
+	public void applyCondition(Condition condition) {
+		conditionsPanel.addCondition(condition);
+	}
+	
+	public void removeCondition(String title) {
+		conditionsPanel.removeCondition(title);
+	}
+	
+	public List<Condition> getActiveConditions() {
+		return conditionsPanel.getActiveConditions();
+	}
     public boolean loadPatientData(String selectedPatientFilePath) {
     	return patientPanel.loadPatientData(selectedPatientFilePath);
-    }
+
     
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI
      */
     public boolean startSimulation() {
-    	Patient new_patient = patientPanel.getInitialPatient();
+    	Patient new_patient = patientPanel.getInitialPatient(getActiveConditions());
     	if(new_patient != null) {
     		s = new SimulationWorker(this);
     		s.simulation(new_patient);	
+        	conditionsPanel.enableButtons(false);
+
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {
@@ -155,6 +171,7 @@ public class App extends JFrame implements GuiCallback {
     	if(file != null) {
     		s = new SimulationWorker(this);
     		s.simulationFromFile(file);	
+        	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
     		return true;
     	}else {
@@ -175,6 +192,7 @@ public class App extends JFrame implements GuiCallback {
     
     public void stopSimulation() {
     	s.stopSimulation();	
+    	conditionsPanel.enableButtons(true);
     }
     
     public void connectVentilator() {
@@ -215,5 +233,9 @@ public class App extends JFrame implements GuiCallback {
 	@Override
 	public void logVolumeExternalVentilatorData(double volume) {
 		ventilatorsPanel.setEXTVolumeLabel(volume);
+	}
+	@Override
+	public void setInitialCondition(List<Condition> list) {
+		// TODO Auto-generated method stud		
 	}
 }

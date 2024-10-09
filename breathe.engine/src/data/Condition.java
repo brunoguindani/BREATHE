@@ -16,7 +16,7 @@ public class Condition {
 	 * - add the proper line in "generateSECondition"
 	 */
 	
-	private String name;
+	private String title;
 	private Map<String, Double> parameters; 
 	private SECondition condition; 
 	
@@ -25,7 +25,7 @@ public class Condition {
 	 */
 	public Condition(String name, Map<String, Double> pairs) {
 		
-	    this.name = name;
+	    this.title = name;
 
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
@@ -34,12 +34,18 @@ public class Condition {
 	    generateSECondition(); //generate and save SECondition object
 	}
 	
+	public Condition(SECondition condition) {
+		this.condition = condition;
+		this.title = condition.toString();
+		System.out.println(title);
+	}
+	
 	/*
 	 * Create the SECondition object
 	 */
 	private void generateSECondition() {
 
-		switch (this.name) {
+		switch (this.title) {
 		    case "Chronic Anemia":
 		        SEChronicAnemia condition = new SEChronicAnemia();	                        
 		        condition.getReductionFactor().setValue(parameters.get("ReductionFactor"));	 
@@ -110,6 +116,10 @@ public class Condition {
 	 */
 	public SECondition getCondition(){
 		return condition;
+	}
+	
+	public String getTitle() {
+		return title;
 	}
 
 }

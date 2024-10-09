@@ -4,20 +4,28 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Map;
 
 import app.App;
+import data.Condition;
 
 public class ConditionBox {
     
     private JPanel sectionPanel;
-    private String title;
-    private Map<String, JComponent> components;
     private JButton applySectionButton;
     private JButton headerButton;
-    private boolean enabled = false;
+    
+    private App app;
+    
+    private String title;
+    private Map<String, JComponent> components;
+
+    private boolean applied = false;
     
     public ConditionBox(App app, String title, Map<String, JComponent> components) {
+    	
+    	this.app = app;
         this.title = title;
         this.components = components;
         
@@ -105,18 +113,37 @@ public class ConditionBox {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!enabled) {
+                if (!applied) {
                     // Azione per quando si applica la condizione
-                    enableFields(false);  // Disabilita i campi
+                    enableFields(false);  
                     applySectionButton.setText("Rimuovi");
                     headerButton.setBackground(new Color(100, 149, 237));
-                    enabled = true;
+                    
+                	Map<String,Double> parameters = new HashMap<>();
+                	for (Map.Entry<String, JComponent> entry : components.entrySet()) {
+            		   String chiave = entry.getKey();
+            		   JComponent component = entry.getValue();
+            		    
+            		   Double valore = null;
+            		   if (component instanceof JSpinner) {
+            		       valore = ((JSpinner) component).getValue() instanceof Number ? 
+            		                ((Number) ((JSpinner) component).getValue()).doubleValue() : null;
+            		   } else {
+            		       valore = Double.parseDouble(component.toString());
+            		   }
+            		    
+            		   parameters.put(chiave, valore);
+                	}
+                    
+                    app.applyCondition(new Condition(title,parameters));
+                    applied = true;
                 } else {
                     // Azione per quando si rimuove la condizione
-                    enableFields(true);  // Riabilita i campi
+                    enableFields(true);  
                     applySectionButton.setText("Applica");
                     headerButton.setBackground(Color.DARK_GRAY);
-                    enabled = false;
+                    app.removeCondition(title);
+                    applied = false;
                 }
             }
         };
@@ -136,12 +163,30 @@ public class ConditionBox {
     
     // Metodo per verificare se è attiva
     public boolean isActive() {
-        return enabled;
+        return applied;
     }
     
     // Metodo per ottenere il titolo
     public String getTitle() {
         return title;
+    }
+    
+    public void enableBox(boolean enable) {
+    	enableFields(enable);
+    	applySectionButton.setEnabled(enable);
+    }
+    
+    public void reset() {
+        enableFields(true);  
+        applySectionButton.setText("Applica");
+        headerButton.setBackground(Color.DARK_GRAY);
+        for (Map.Entry<String, JComponent> entry : components.entrySet()) {
+            if (entry.getValue() instanceof JSpinner) {
+                JSpinner spinner = (JSpinner) entry.getValue();
+                spinner.setValue(0);  
+            }
+        }
+        applied = false;
     }
     
     //add space to title
