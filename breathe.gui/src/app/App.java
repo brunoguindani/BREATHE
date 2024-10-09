@@ -148,7 +148,7 @@ public class App extends JFrame implements GuiCallback {
 	}
     public boolean loadPatientData(String selectedPatientFilePath) {
     	return patientPanel.loadPatientData(selectedPatientFilePath);
-
+    }
     
     /*
      * SIMULATIONWORKER METHODS CALLS FROM GUI

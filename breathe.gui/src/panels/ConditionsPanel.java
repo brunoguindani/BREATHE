@@ -99,7 +99,7 @@ public class ConditionsPanel {
         rigidAreaPanel.setBackground(Color.LIGHT_GRAY); 
         conditionsContainer.add(rigidAreaPanel);
            	
-    	Dimension buttonSize = new Dimension(160, 50);
+    	Dimension buttonSize = new Dimension(150, 50);
     	
 		reset = new JButton("Reset Conditions");
 		reset.setToolTipText("remove all conditions and set values to 0");
