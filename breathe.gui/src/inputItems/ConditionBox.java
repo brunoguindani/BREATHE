@@ -76,7 +76,7 @@ public class ConditionBox {
         }
         
         // Pulsante "Applica"
-        applySectionButton = new JButton("Applica");
+        applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
         applySectionButton.setBackground(new Color(0, 122, 255));
         applySectionButton.setForeground(Color.WHITE);
@@ -192,9 +192,29 @@ public class ConditionBox {
     //add space to title
     private String addSpaceBeforeUpperCase(String input) {
         if (input == null || input.isEmpty()) {
-            return input; // Restituisce null o stringa vuota se l'input è nullo o vuoto
+            return input; 
         }
-        // Utilizza una regex per inserire uno spazio prima di ogni lettera maiuscola
         return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
+    }
+
+    public void setComponents(Map<String, Double> parameters) {
+        for (Map.Entry<String, Double> entry : parameters.entrySet()) {
+            String key = entry.getKey();          
+            Double value = entry.getValue();      
+
+            // Controlla se la chiave esiste in components
+            if (components.containsKey(key)) {
+            	
+                JComponent component = components.get(key);  
+                applySectionButton.setText("Rimuovi");
+                headerButton.setBackground(new Color(100, 149, 237));
+                app.applyCondition(new Condition(title,parameters));
+                applied = true;
+                if (component instanceof JSpinner) {
+                    JSpinner spinner = (JSpinner) component;
+                    spinner.setValue(value);  
+                }
+            }
+        }
     }
 }

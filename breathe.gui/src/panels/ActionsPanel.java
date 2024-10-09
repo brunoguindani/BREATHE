@@ -17,6 +17,7 @@ import javax.swing.SpinnerNumberModel;
 
 import app.App;
 import inputItems.ActionBox;
+import inputItems.ConditionBox;
 
 public class ActionsPanel {
 
@@ -131,6 +132,12 @@ public class ActionsPanel {
     // Metodo per restituire il mainPanel
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+    
+    public void enableButtons(boolean enable) {
+        for(ActionBox box : boxes) {
+        	box.enableButton(enable);
+        }    	
     }
 
 }

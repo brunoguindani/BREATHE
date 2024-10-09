@@ -1,6 +1,7 @@
 package app;
 
 import data.*;
+import data.Action;
 import interfaces.GuiCallback;
 import server.ZeroServer;
 
@@ -95,8 +96,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		pe.getInitialPatient(initialPatient);
 		
 		List<SECondition> list = new ArrayList<>();
+		List<Condition> temp_list = new ArrayList<>();
         pe.getConditions(list);
-        //gui.setInitialConditions(list);
+        for(SECondition c : list) {
+        	Condition temp = new Condition(c);
+        	temp_list.add(temp);
+        }
+        gui.setInitialCondition(temp_list);
 		
     	this.execute();
     }
@@ -416,6 +422,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		double pressure = zmqServer.getPressure();
 		ventilator_ext.getPressure().setValue(pressure,PressureUnit.mmHg);
 		gui.logPressureExternalVentilatorData(pressure);
+	}
+	
+	public void applyAction(Action action) {
+		pe.processAction(action.getAction());
 	}
 
 }

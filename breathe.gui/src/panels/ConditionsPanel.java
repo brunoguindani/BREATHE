@@ -64,7 +64,7 @@ public class ConditionsPanel {
 
         Map<String, JComponent> pericardialEffusionComponents = new HashMap<>();
         pericardialEffusionComponents.put("AccumulatedVolume", new JSpinner(new SpinnerNumberModel(0, 0, 100, 0.01)));
-        ConditionBox pericardialEffusionBox = new ConditionBox(app, "PericardialEffusion", pericardialEffusionComponents);
+        ConditionBox pericardialEffusionBox = new ConditionBox(app, "Pericardial Effusion", pericardialEffusionComponents);
         boxes.add(pericardialEffusionBox);
 
         Map<String, JComponent> renalStenosisComponents = new HashMap<>();
@@ -163,6 +163,31 @@ public class ConditionsPanel {
         for(ConditionBox box : boxes) {
         	box.enableBox(enable);
         }    	
+    }
+
+    public void setInitialCondition(List<Condition> list) {
+    	activeConditions.clear();
+        boolean found = false;
+        int i = 0;
+        for (ConditionBox box : boxes) {
+            found = false;
+            i = 0;
+
+            for (Condition condition : list) {
+                if (box.getTitle().equals(condition.getTitle())) {
+                    found = true;
+                    break;
+                }
+                i++;
+            }
+
+            if (found) {
+            	box.reset();
+            	box.setComponents(list.get(i).getParameters());
+            } else {
+            	box.reset();
+            }
+        }
     }
     
 }

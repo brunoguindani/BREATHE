@@ -207,12 +207,18 @@ public class App extends JFrame implements GuiCallback {
     		s.disconnectVentilator(v);	
     }
     
+	public void applyAction(Action action) {
+		s.applyAction(action);
+	}
+    
     /*
      * GUI METHODS CALLBACKS FROM SIMULATIONWORKER
      */
 	@Override
 	public void stabilizationComplete(boolean enable) {
-		controlPanel.showStartingButton(enable);
+		controlPanel.showStartingButton(!enable);
+		actionsPanel.enableButtons(enable);
+		conditionsPanel.enableButtons(!enable);
 	}
     
 	@Override
@@ -234,8 +240,10 @@ public class App extends JFrame implements GuiCallback {
 	public void logVolumeExternalVentilatorData(double volume) {
 		ventilatorsPanel.setEXTVolumeLabel(volume);
 	}
+	
 	@Override
-	public void setInitialCondition(List<Condition> list) {
-		// TODO Auto-generated method stud		
+	public void setInitialCondition(List<Condition> list) {	
+    	conditionsPanel.setInitialCondition(list);
 	}
+
 }
