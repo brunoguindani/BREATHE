@@ -222,8 +222,8 @@ public class App extends JFrame implements GuiCallback {
      */
 	@Override
 	public void stabilizationComplete(boolean enable) {
-		controlPanel.showStartingButton(!enable);
-    controlPanel.enableControlStartButton(!enable);
+		controlPanel.enableControlStartButton(!enable);
+		controlPanel.showControlStartButton(!enable);
 		actionsPanel.enableButtons(enable);
 		conditionsPanel.enableButtons(!enable);
 	}

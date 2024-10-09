@@ -72,6 +72,7 @@ public class ControlPanel {
         
         startButton.addActionListener(e -> {
         	startingStandardSimulation();
+        	enableControlStartButton(false);
         });
         
         //STOP SIMULATION BUTTON
@@ -133,6 +134,8 @@ public class ControlPanel {
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String file = fileChooser.getSelectedFile().getAbsolutePath();   
+            
+            enableControlStartButton(false);
         	if(app.startFromFileSimulation(file)) {
             	clearOutputDisplay();
         	}
@@ -153,9 +156,9 @@ public class ControlPanel {
                 JsonNode rootNode_scenario = mapper.readTree(new File(scenarioFilePath));
                 String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
 
+                enableControlStartButton(false);
                 if(app.loadPatientData(PatientFilePath)) {
-                	//CONDIZIONI ATTIVE
-                    //app.condition.getRemoveAllConditionsButton().doClick();
+                	
                 	if(app.startFromScenarioSimulation(scenarioFilePath)) {
                     	clearOutputDisplay();
                 	}
