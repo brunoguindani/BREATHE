@@ -19,6 +19,10 @@ import app.App;
 
 public class MinilogPanel {
 	
+	/*
+	 * SMALL LOG Always visibile to display most important messages 
+	 */
+	
     private JPanel mainPanel;
     private JScrollPane logScrollPane;
     static JTextArea logTextArea;

@@ -223,6 +223,7 @@ public class ControlPanel {
         return mainPanel;
     }
     
+    //From Start to Stop
     public void enableControlStartButton(boolean enable) {
         startButton.setEnabled(enable); 
         startFromFileButton.setEnabled(enable); 
@@ -231,6 +232,7 @@ public class ControlPanel {
         exportButton.setEnabled(!enable);
     }
     
+    //From Start to Stop
     public void showControlStartButton(boolean enable) {
         startButton.setVisible(enable); 
         startFromFileButton.setVisible(enable); 
@@ -239,11 +241,12 @@ public class ControlPanel {
         exportButton.setVisible(!enable);
     }
     
-
+    //Clean outputs graphs
 	private void clearOutputDisplay() {
 		app.clearOutputDisplay();
 	}
 	
+	//Reset ventilators
     private void resetVentilatorsButton() {
 		app.resetVentilatorsButton();
 	}

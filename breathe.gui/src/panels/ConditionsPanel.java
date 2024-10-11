@@ -21,19 +21,25 @@ import data.Condition;
 import inputItems.ConditionBox;
 
 public class ConditionsPanel {
+	
+	/*
+	 * PANEL WITH ALL CONDITION BOXES
+	 */
 
     private JPanel mainPanel = new JPanel();
     private List<ConditionBox> boxes = new ArrayList<>();
     private List<Condition> activeConditions = new ArrayList<>();
     private JButton reset;
+    private App app;
 
     public ConditionsPanel(App app) {
+        this.app = app;
     	 
         mainPanel.setBackground(Color.LIGHT_GRAY);
         mainPanel.setPreferredSize(new Dimension(550, 650));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); 
         
-        // Crea un pannello per le condition box e lo metti dentro lo scroll pane
+        // Panels containing all conditions
         JPanel conditionsContainer = new JPanel();
         conditionsContainer.setLayout(new BoxLayout(conditionsContainer, BoxLayout.Y_AXIS)); 
         conditionsContainer.setBorder(null);
@@ -44,6 +50,9 @@ public class ConditionsPanel {
         scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollablePanel.setBorder(null);
 
+        /*
+         * ADD CONDITIONS
+         */
         Map<String, JComponent> anemiaComponents = new HashMap<>();
         anemiaComponents.put("ReductionFactor", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
         ConditionBox anemiaBox = new ConditionBox(app, "Chronic Anemia", anemiaComponents);
@@ -89,11 +98,11 @@ public class ConditionsPanel {
         ConditionBox shuntBox = new ConditionBox(app, "Pulmonary Shunt", shuntComponents);
         boxes.add(shuntBox);
 
-
-        // Aggiungi i pannelli delle ConditionBox al mainPanel
         for(ConditionBox box : boxes) {
         	conditionsContainer.add(box.getSectionPanel());
         }
+        
+        //BUTTON TO RESET CONDITIONS
         JPanel rigidAreaPanel = new JPanel();
         rigidAreaPanel.setPreferredSize(new Dimension(500, 500));
         rigidAreaPanel.setBackground(Color.LIGHT_GRAY); 
@@ -156,6 +165,7 @@ public class ConditionsPanel {
         }
         
         activeConditions.removeAll(toRemove);
+        app.minilogStringData("Condition resetted");
     }
 
     public void enableButtons(boolean enable) {

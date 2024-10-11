@@ -11,6 +11,10 @@ import app.App;
 import data.Condition;
 
 public class ConditionBox {
+	
+	/*
+	 * ITEM to display a button for a single Condition
+	 */
     
     private JPanel sectionPanel;
     private JButton applySectionButton;
@@ -29,15 +33,13 @@ public class ConditionBox {
         this.title = title;
         this.components = components;
         
-        // Pannello principale che conterrà il tutto
         sectionPanel = new JPanel(new BorderLayout());
         sectionPanel.setBackground(Color.LIGHT_GRAY);
         
-        // Pannello che contiene il titolo e il pulsante di espansione
+        //Button with Conditions Name to show text fields
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
         
-        // Pulsante per espandere/contrarre i componenti
         headerButton = new JButton(title);
         headerButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         headerButton.setBackground(Color.DARK_GRAY);
@@ -45,20 +47,19 @@ public class ConditionBox {
         headerButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         headerButton.setFocusPainted(false);
         
-        // Pannello che contiene i campi e il pulsante "Applica"
+        // Text fields and Apply Buttons
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         fieldsPanel.setBackground(Color.LIGHT_GRAY);
-        fieldsPanel.setVisible(false);  // Inizialmente nascosto
+        fieldsPanel.setVisible(false);  
         
-        // Layout dei componenti nel pannello
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridy = 0;
         int gridX = 0;
         
-        // Aggiunge le coppie Label-Componenti al pannello dei campi
+        // Add Labels and JComponents
         for (Map.Entry<String, JComponent> entry : components.entrySet()) {
             JLabel label = new JLabel(addSpaceBeforeUpperCase(entry.getKey()) + ":");
             gbc.gridx = gridX++;
@@ -75,7 +76,7 @@ public class ConditionBox {
             gridX = 0;
         }
         
-        // Pulsante "Applica"
+        // "Apply" button
         applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
         applySectionButton.setBackground(new Color(0, 122, 255));
@@ -85,12 +86,11 @@ public class ConditionBox {
         applySectionButton.setEnabled(true);  // Abilitato inizialmente
         applySectionButton.addActionListener(buttonAction());
         
-        // Aggiunge il pulsante "Applica" alla fine del pannello dei campi
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         fieldsPanel.add(applySectionButton, gbc);
         
-        // Aggiunge un listener al pulsante header per mostrare/nascondere il pannello dei campi
+        //Show/Hide fields
         headerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,20 +101,18 @@ public class ConditionBox {
                 sectionPanel.repaint();
             }
         });
-        
-        // Aggiunge il pulsante header e i campi al pannello principale
-        headerPanel.add(headerButton, BorderLayout.NORTH);
+                headerPanel.add(headerButton, BorderLayout.NORTH);
         headerPanel.add(fieldsPanel, BorderLayout.CENTER);
         sectionPanel.add(headerPanel, BorderLayout.NORTH);
     }
     
-    // Metodo per l'azione del pulsante "Applica"
+    // Action Listener for Apply Button
     private ActionListener buttonAction() {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!applied) {
-                    // Azione per quando si applica la condizione
+                    // Adding condition
                     enableFields(false);  
                     applySectionButton.setText("Remove");
                     headerButton.setBackground(new Color(100, 149, 237));
@@ -133,40 +131,39 @@ public class ConditionBox {
             		   }
             		    
             		   parameters.put(chiave, valore);
+                       app.minilogStringData(chiave+" applied");
                 	}
                     
                     app.applyCondition(new Condition(title,parameters));
                     applied = true;
                 } else {
-                    // Azione per quando si rimuove la condizione
+                    // Removing Condition
                     enableFields(true);  
                     applySectionButton.setText("Apply");
                     headerButton.setBackground(Color.DARK_GRAY);
                     app.removeCondition(title);
+                    app.minilogStringData(chiave+" removed");
                     applied = false;
                 }
             }
         };
     }
     
-    // Abilita o disabilita i campi
+    // Enable/Disable fields
     private void enableFields(boolean enable) {
         for (Map.Entry<String, JComponent> entry : components.entrySet()) {
         	entry.getValue().setEnabled(enable);
         }
     }
     
-    // Metodo per ottenere il pannello
     public JPanel getSectionPanel() {
         return sectionPanel;
     }
     
-    // Metodo per verificare se è attiva
     public boolean isActive() {
         return applied;
     }
     
-    // Metodo per ottenere il titolo
     public String getTitle() {
         return title;
     }
@@ -176,6 +173,7 @@ public class ConditionBox {
     	applySectionButton.setEnabled(enable);
     }
     
+    //Set all values to 0 and remove conditions
     public void reset() {
         enableFields(true);  
         applySectionButton.setText("Applica");
@@ -197,12 +195,12 @@ public class ConditionBox {
         return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
     }
 
+    //Set initial Conditions
     public void setComponents(Map<String, Double> parameters) {
         for (Map.Entry<String, Double> entry : parameters.entrySet()) {
             String key = entry.getKey();          
             Double value = entry.getValue();      
 
-            // Controlla se la chiave esiste in components
             if (components.containsKey(key)) {
             	
                 JComponent component = components.get(key);  

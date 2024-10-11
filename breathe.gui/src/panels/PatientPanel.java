@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -141,6 +139,7 @@ public class PatientPanel {
         gbc.gridy++;
     }
     
+    //Generate Patient Data from text Values and Conditions
     public Patient generateInitialPatient(List<Condition> conditions) {
     	if(checkFieldsNumeric()){
         	String name = fieldMap.get("Name").getText();
@@ -174,7 +173,7 @@ public class PatientPanel {
     
 
 
-	//COMMENTS
+	//Check that all values are numeric
     private boolean checkFieldsNumeric() {
         for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
             String key = entry.getKey();
@@ -193,7 +192,8 @@ public class PatientPanel {
         }
         return true;
     }
-   //COMMETNS
+    
+   //Check that a number is a valid number
     public boolean isValidNumber(String str) {
         if (str == null || str.isEmpty()) {
             return false;
@@ -291,6 +291,7 @@ public class PatientPanel {
 		return fieldMap.get("Name").getText();
 	}
 	
+	//Enable/disable during simulation
 	public void enableComponents(boolean enabled) {
 	    for (JTextField field : fieldMap.values()) {
 	        field.setEnabled(enabled);

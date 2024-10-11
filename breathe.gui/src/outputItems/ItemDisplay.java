@@ -7,6 +7,10 @@ import java.awt.Dimension;
 public abstract class ItemDisplay extends JPanel {
     private static final long serialVersionUID = 1L;
     
+    /*
+     * Abstract class for output items
+     */
+    
     protected String title;
     protected String unit;
     protected double currentValue;  

@@ -39,5 +39,6 @@ public class Scenario {
         }
 
         sce.writeFile("./scenario/" + scenarioName + ".json");
+        gui.miniLog"./scenario/" + scenarioName + ".json");
     }
 }

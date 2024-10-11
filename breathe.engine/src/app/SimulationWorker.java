@@ -44,7 +44,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean stopRequest = false;
     
     SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
-
     SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
     //Data for scenario
@@ -56,16 +55,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
     private boolean ext_running = false;
     
-    
-    
-    /*
-     * Costruttore
-     */
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
     }
     
-    //Public method (for inputs)
+	/*
+	 * STARTING NORMAL SIMULATION
+	 */
     public void simulation(Patient patient) {
     	initializeMode = "standard";
         pe = new PulseEngine();
@@ -78,23 +74,29 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         {
           patient_configuration.getConditions().add(any.getCondition());
         }
-        
+        gui.minilogStringData("Loading...");
     	this.execute();
     }
     
+	/*
+	 * STARTING FILE SIMULATION
+	 */
     public void simulationFromFile(String file) {
     	initializeMode = "file";
     	pe = new PulseEngine();
 		
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
-    	
+        
+		gui.minilogStringData("Starting from file...");
 		pe.serializeFromFile(file, dataRequests);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
+		//get conditions
+		gui.minilogStringData("Setting initial Conditions...");
 		List<SECondition> list = new ArrayList<>();
 		List<Condition> temp_list = new ArrayList<>();
         pe.getConditions(list);
@@ -103,10 +105,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	temp_list.add(temp);
         }
         gui.setInitialCondition(temp_list);
-		
+
     	this.execute();
     }
     
+	/*
+	 * STARTING SCENARIO
+	 */
     public void simulationFromScenario(String scenarioFilePath) {
     	initializeMode = "scenario";
     	pe = new PulseEngine();
@@ -119,19 +124,19 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         JsonNode rootNode_scenario = null;
 		try {
 			rootNode_scenario = mapper.readTree(new File(scenarioFilePath));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException e) {		
 			e.printStackTrace();
 		}
         patientFilePath = rootNode_scenario.path("EngineStateFile").asText();
         
+        gui.minilogStringData("Starting Scenario...");
 		pe.serializeFromFile(patientFilePath, dataRequests);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
-		
+		gui.minilogStringData("Setting initial Conditions...");
 		List<SECondition> list = new ArrayList<>();
 		List<Condition> temp_list = new ArrayList<>();
         pe.getConditions(list);
@@ -140,20 +145,14 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	temp_list.add(temp);
         }
         gui.setInitialCondition(temp_list);
-		
+
     	this.execute();
-    }
-    
-    
-    public void simulationfromScenario() {
-    	initializeMode = "scenario";
     }
 
     public void stopSimulation() {
     	stopRequest = true;
     }
-  
-	
+    
 	@Override
 	protected Void doInBackground() throws Exception {
         
@@ -161,11 +160,12 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        pe.initializeEngine(patient_configuration, dataRequests);    
 	        exportInitialPatient(patient_configuration.getPatient());	
 	        
-	        //Advice for stabilaztion completed
+	        //Advice for stabilization completed
 			gui.stabilizationComplete(true);
-			
+			gui.minilogStringData("Simulation Started");
 		}else if(initializeMode.equals("file")) {
 			gui.stabilizationComplete(true);
+			gui.minilogStringData("Simulation Started");
 		}else if(initializeMode.equals("scenario")) {
 			run_scenario();
 		}
@@ -174,10 +174,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		while (!stopRequest) {
         	
             if (!pe.advanceTime(stime)) {
+        		gui.minilogStringData("Error!");
+        		gui.minilogStringData("Simulation stopped!");
                 return null;
             }
             
-
             //Send data (to gui and to ext ventilator)
             if(ext_running) {
             	manage_ext();
@@ -191,6 +192,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		
         pe.clear();
         pe.cleanUp();
+		gui.minilogStringData("Simulation has been stopped");
         return null;
 	}
 	
@@ -228,7 +230,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		try {
 			sce.readFile(scenarioFilePath);
 		} catch (InvalidProtocolBufferException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -242,17 +243,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
 		
-		//TAKE CONDITION
-		/*
-		pe.getConditions(app.condition.getActiveConditions());
-		for(SECondition any : app.condition.getActiveConditions())
-        {
-        	app.condition.setInitialConditions(any);
-        }*/
-		
 		//Advice for stabilaztion completed
 		gui.stabilizationComplete(true);
-		
+		gui.minilogStringData("Simulation Started");
+
 		for (SEAction a : sce.getActions()) {
 			if(stopRequest)
 		    	return;
@@ -261,7 +255,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		        
 		        for(int i = 0; i<50; i++){		  
 		            if (!pe.advanceTime(stime)) {
-		            	//ERRORR!
+		        		gui.minilogStringData("Error!");
+		        		gui.minilogStringData("Simulation stopped!");
 		                return;
 		            }
 
@@ -292,7 +287,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             filePath = basePath + patient.getName() + counter + "@0s.json";
             counter++;
         }
-        pe.serializeToFile(filePath);
+        if( pe.serializeToFile(filePath) ) 
+        	gui.minilogStringData("Exported Patient File to " + filePath);
     }
     
     
@@ -343,6 +339,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	SEMechanicalVentilatorPressureControl ventilator_PC = (SEMechanicalVentilatorPressureControl) v.getVentilator();
         	ventilator_PC.setConnection(eSwitch.On);
             pe.processAction(ventilator_PC);
+            gui.minilogStringData("PC Ventilator Connected ");
             break;
             
         case CPAP:
@@ -350,12 +347,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
         	ventilator_CPAP.setConnection(eSwitch.On);
             pe.processAction(ventilator_CPAP);
+            gui.minilogStringData("CPAP Ventilator Connected ");
+
             break;
 
         case VC:
         	SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) v.getVentilator();
         	ventilator_VC.setConnection(eSwitch.On);
             pe.processAction(ventilator_VC);
+            gui.minilogStringData("VC Ventilator Connected ");
             break;
 
         case EXTERNAL:
@@ -367,6 +367,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				e.printStackTrace();
 			}
         	//Server wait for data
+        	gui.minilogStringData("Searching for EXTERNAL ventilators...");
     		zmqServer.startReceiving();
     		ext_running = true;
             break;
@@ -379,18 +380,21 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	SEMechanicalVentilatorPressureControl ventilator_PC = (SEMechanicalVentilatorPressureControl) v.getVentilator();
         	ventilator_PC.setConnection(eSwitch.Off);
             pe.processAction(ventilator_PC);
+            gui.minilogStringData("PC Ventilator Disconnected ");
             break;
             
         case CPAP:
         	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
         	ventilator_CPAP.setConnection(eSwitch.Off);
             pe.processAction(ventilator_CPAP);
+            gui.minilogStringData("CPAP Ventilator Disconnected ");
             break;
 
         case VC:
         	SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) v.getVentilator();
         	ventilator_VC.setConnection(eSwitch.Off);
             pe.processAction(ventilator_VC);
+            gui.minilogStringData("VC Ventilator Disconnected ");
             break;
 
         case EXTERNAL:
@@ -398,6 +402,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	ventilator_ext.setState(eSwitch.Off);
         	pe.processAction(ventilator_ext);
         	zmqServer.close();
+        	gui.minilogStringData("EXTERNAL Ventilator server closed");
         	ext_running = false;
         	break;
         }
@@ -406,7 +411,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     //Methods for external ventilator
 	private void manage_ext(){
 		if(zmqServer.isConnectionStable() && zmqServer.getSelectedMode() != null) {
-			//here change to add ZeroMQ call	
+			if(zmqServer.isFirstConnection()) gui.minilogStringData("EXTERNAL Ventilator connected");
 			if (zmqServer.getSelectedMode().equals("VOLUME")) {
 	            setExtVolume();
 	        } else {
@@ -414,7 +419,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        }
 			ventilator_ext.setState(eSwitch.On);
 	        if(!pe.processAction(ventilator_ext)) {
-	        	//ERROR!
 	        }
 		}
     }
@@ -432,11 +436,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
 	
 	public void applyAction(Action action) {
+		gui.minilogStringData("Applying " +  action.getAction().toString());
 		pe.processAction(action.getAction());
 	}
 
 	public void exportSimulation(String exportFilePath) {
-		pe.serializeToFile(exportFilePath); 
+		if ( pe.serializeToFile(exportFilePath) )  
+			gui.minilogStringData("Exported Patient File to " + exportFilePath);
 	}
 
 }
