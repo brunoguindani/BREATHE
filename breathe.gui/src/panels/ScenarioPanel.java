@@ -14,7 +14,7 @@ import javax.swing.table.DefaultTableModel;
 
 import app.App;
 import data.Action;
-import data.Scenario;
+import interfaces.GuiCallback;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -25,12 +25,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 
-public class ScenarioPanel {
+public class ScenarioPanel{
 	
 	/*
 	 * Panel to create scenario
 	 */
     private JPanel mainPanel;
+    
+    private App app;
     
     private JComboBox<String> patientFileComboBox;
     private JTextField scenarioNameField;
@@ -39,9 +41,10 @@ public class ScenarioPanel {
     private JTable actionsTable;
     
     private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
-    private Scenario sce = new Scenario();
     
     public ScenarioPanel(App app) {
+    	
+    	this.app = app;
     	
     	//Main panel
     	mainPanel = new JPanel();
@@ -220,7 +223,7 @@ public class ScenarioPanel {
         else
         	patientFile = "./states/exported/" + patientFile;
         
-        sce.createScenario(patientFile, scenarioName, actions);
+        app.createScenario(patientFile, scenarioName, actions);
         
     }
     

@@ -131,7 +131,7 @@ public class ConditionBox {
             		   }
             		    
             		   parameters.put(chiave, valore);
-                       app.minilogStringData(chiave+" applied");
+                       app.minilogStringData(title+" applied");
                 	}
                     
                     app.applyCondition(new Condition(title,parameters));
@@ -142,7 +142,7 @@ public class ConditionBox {
                     applySectionButton.setText("Apply");
                     headerButton.setBackground(Color.DARK_GRAY);
                     app.removeCondition(title);
-                    app.minilogStringData(chiave+" removed");
+                    app.minilogStringData(title+" removed");
                     applied = false;
                 }
             }

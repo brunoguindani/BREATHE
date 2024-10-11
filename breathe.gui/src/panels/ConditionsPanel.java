@@ -115,8 +115,8 @@ public class ConditionsPanel {
 		reset.setPreferredSize(buttonSize);
 		reset.setMaximumSize(buttonSize);
 		reset.setAlignmentX(JButton.CENTER_ALIGNMENT);
-		reset.setBackground(new Color(0, 122, 255));
-		reset.setForeground(Color.WHITE);
+		reset.setBackground(Color.LIGHT_GRAY);
+		reset.setForeground(Color.BLACK);
 		reset.setFocusPainted(false);
 		 
 		reset.addActionListener(e -> {
@@ -165,7 +165,7 @@ public class ConditionsPanel {
         }
         
         activeConditions.removeAll(toRemove);
-        app.minilogStringData("Condition resetted");
+        app.minilogStringData("Conditions resetted");
     }
 
     public void enableButtons(boolean enable) {
