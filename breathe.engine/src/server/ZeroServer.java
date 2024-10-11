@@ -18,7 +18,6 @@ public class ZeroServer {
     private double volume;
     private double pressure;
     
-    private boolean firstConnection = true;
 
     private ArrayList<String> data;
 
@@ -55,23 +54,20 @@ public class ZeroServer {
 
                 case "requestData":
                     connectionStable = true;
+                    disconnecting = false;
                     sendData();
                     break;
 
                 default:
                     if (receivedData.startsWith("Volume")) {
-                    	if(firstConnection) {
-                        	firstConnection = false;  		
-                    	}
-                        connectionStable = true;
+                    	connectionStable = true;
+                    	disconnecting = false;
                         selectedMode = "Volume";
                         volume = Double.parseDouble(receivedData.split(": ")[1]);
                         socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
                     } else if (receivedData.startsWith("Pressure")) {
-                    	if(firstConnection) {
-                        	firstConnection = false;  		
-                    	}
-                        connectionStable = true;
+                    	connectionStable = true;
+                    	disconnecting = false;
                         selectedMode = "Pressure";
                         pressure = Double.parseDouble(receivedData.split(": ")[1]);
                         socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
@@ -85,8 +81,7 @@ public class ZeroServer {
     }
 
     private void stopReceiving() {
-        running = false;
-        firstConnection = true;  		
+        running = false;		
         if (receiveThread != null && receiveThread.isAlive()) {
             receiveThread.interrupt();
         }
@@ -125,10 +120,7 @@ public class ZeroServer {
     public boolean isDisconnecting() {
     	return disconnecting;
     }
-    
-    public void setDisconnecting() {
-    	disconnecting = false;
-    }
+
 
     public String getSelectedMode() {
         return selectedMode;
@@ -154,7 +146,4 @@ public class ZeroServer {
         this.data = data;
     }
     
-    public boolean isFirstConnection() {
-    	return firstConnection;
-    }
 }

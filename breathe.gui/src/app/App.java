@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
 import panels.*;
+import utils.Pair;
 import data.Action;
 import data.Condition;
 import data.Patient;
@@ -48,6 +50,7 @@ public class App extends JFrame implements GuiCallback {
     public App() {
     	
     	Initializer.initilizeJNI();
+		s = new SimulationWorker(this);
     	
     	//Main Panel Style
         setTitle("Breathe Simulation");
@@ -180,7 +183,6 @@ public class App extends JFrame implements GuiCallback {
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
-    		s = new SimulationWorker(this);
     		s.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
@@ -192,7 +194,6 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		s = new SimulationWorker(this);
     		s.simulationFromFile(file);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
@@ -205,7 +206,6 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromScenarioSimulation(String scenarioFile) {
     	if(scenarioFile != null) {
-    		s = new SimulationWorker(this);
     		s.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
         	patientPanel.enableComponents(false);
@@ -280,6 +280,9 @@ public class App extends JFrame implements GuiCallback {
 	
 	public void exportSimulation(String exportFilePath) {
 		s.exportSimulation(exportFilePath);
+	}
+	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
+		s.createScenario(patientFile, scenarioName, actions);
 	}
 
 }

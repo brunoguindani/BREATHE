@@ -65,7 +65,7 @@ public class MinilogPanel {
         gbc.insets = new Insets(5, 0, 0, 0);
         mainPanel.add(clearButton, gbc);
 
-        mainPanel.setPreferredSize(new Dimension(300, 210));
+        mainPanel.setPreferredSize(new Dimension(300, 200));
     }
 
     public JPanel getMainPanel() {

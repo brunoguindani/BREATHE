@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import app.App;
-
 public class ActionPanel {
 	
 	/*
