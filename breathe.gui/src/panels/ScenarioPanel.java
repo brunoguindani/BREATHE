@@ -18,7 +18,6 @@ import data.Scenario;
 import utils.Pair;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -173,7 +172,7 @@ public class ScenarioPanel {
         return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
     }
 
-    
+    //Update Table
     private void updateActionsDisplay() {
         tableModel.setRowCount(0);
 
@@ -192,7 +191,7 @@ public class ScenarioPanel {
         }
     }
     
-    
+    //Export scenario
     private void createScenario() {
         String scenarioName = scenarioNameField.getText();
 
@@ -271,6 +270,7 @@ public class ScenarioPanel {
         return actionValue == null || actionValue.toString().trim().isEmpty();
     }
     
+    //Select whole action
     private Pair<Action, Integer> getActionFromRow(int row) {
         int rowCount = 0;
 

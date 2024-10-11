@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LineChart extends ItemDisplay {
+	
     /**
 	 * Create a dynamic linechart 
 	 */
@@ -85,7 +86,9 @@ public class LineChart extends ItemDisplay {
     }
 
 
-
+    /*
+    * Draw Grids
+    */
     private void drawGrid(Graphics2D g2) {
         int chartWidth = getWidth() - 100; 
         int labelInterval = 50; 
@@ -124,6 +127,7 @@ public class LineChart extends ItemDisplay {
         }
     }
 
+    //Add new point to array and draw the new line
     public void addPoint(double x, double y) {
         if(minYValue > y) {
         	minYValue = (int) Math.floor(y);
@@ -139,6 +143,7 @@ public class LineChart extends ItemDisplay {
         repaint(); 
     }
     
+    //Set graph values depending on vital displayed
     private void setMaxY(){
         switch(this.title){
             case "Heart Rate":
@@ -179,6 +184,7 @@ public class LineChart extends ItemDisplay {
         }
     }
     
+    //Clear graph
     public void clear() {
         points.clear(); 
         setMaxY();

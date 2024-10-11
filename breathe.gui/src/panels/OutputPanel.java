@@ -3,8 +3,6 @@ package panels;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +18,10 @@ import app.App;
 
 public class OutputPanel{
 	
+	/*
+	 * PANEL to Display Output Items
+	 */
+	
     private JPanel mainPanel = new JPanel();
     
     private Map<String, String> chartsMap;
@@ -30,14 +32,13 @@ public class OutputPanel{
     JPanel infoBoxPanel;
     JScrollPane scrollInfoBoxPane;
     
-    private boolean mainChange = false;
-    
     public OutputPanel(App app) {
     	mainPanel.setBackground(Color.LIGHT_GRAY);
     	mainPanel.setPreferredSize(new Dimension(550, 700));
     	
     	chartsMap = new HashMap<>();
         
+    	//ALL display vitals
     	chartsMap.put("Total Lung Volume", "mL");
         chartsMap.put("ECG", "mV");
         chartsMap.put("CO2", "mmHg");
@@ -47,8 +48,7 @@ public class OutputPanel{
         chartsMap.put("Airway Pressure", "mmHg");
         
         chartPanels = new HashMap<>();
-        
-        
+             
         chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
         chartsPanel.setBackground(Color.BLACK);
 
@@ -70,7 +70,6 @@ public class OutputPanel{
         	    "ECG"
         	};
         
-        int i = 0;
         for (String chartName : chartOrder) {
             LineChart chart = new LineChart(chartName, chartsMap.get(chartName));
             chartPanels.put(chartName, chart);
@@ -78,7 +77,6 @@ public class OutputPanel{
             app.addOutputButton(chartName);
             
             chartsPanel.add(chartPanels.get(chartName));
-            i++;
         }
         
         //ADDING INFO BOXES
@@ -96,7 +94,6 @@ public class OutputPanel{
             app.addOutputButton(chartName);
             
             infoBoxPanel.add(chartPanels.get(chartName));
-            i++;
         }
         
         //SET UP MAIN PANEL
@@ -135,19 +132,8 @@ public class OutputPanel{
 
         if (infoBoxPanel.getComponentCount() == 0) {
             scrollInfoBoxPane.setPreferredSize(new Dimension(0, 0));
-            
-            if(!mainChange) {
-            	mainChange = true;
-                mainPanel.revalidate(); 
-                mainPanel.repaint(); 
-            }
         } else {
         	scrollInfoBoxPane.setPreferredSize(new Dimension(150, 300));  
-            if(mainChange) {
-            	mainChange = false;
-                mainPanel.revalidate(); 
-                mainPanel.repaint(); 
-            }
         }
 
         scrollInfoBoxPane.revalidate();
@@ -159,7 +145,7 @@ public class OutputPanel{
         infoBoxPanel.repaint();
     }
     
-    //ADDING VALUES 
+    //ADDING VALUES depending on name
     public void addValueToItemDisplay(String chartName, double x, double y) {
         String mapChartName;
 

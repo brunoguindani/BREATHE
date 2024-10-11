@@ -17,9 +17,12 @@ import javax.swing.SpinnerNumberModel;
 
 import app.App;
 import inputItems.ActionBox;
-import inputItems.ConditionBox;
 
 public class ActionsPanel {
+	
+	/*
+	 * PANEL CONTAINING ALL ACTIONS
+	 */
 
     private JPanel mainPanel = new JPanel();
     private List<ActionBox> boxes = new ArrayList<>();
@@ -30,17 +33,20 @@ public class ActionsPanel {
         mainPanel.setPreferredSize(new Dimension(550, 650));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); 
         
-        // Crea un pannello per le condition box e lo metti dentro lo scroll pane
+        // Panels with all actions
         JPanel actionsContainer = new JPanel();
         actionsContainer.setLayout(new BoxLayout(actionsContainer, BoxLayout.Y_AXIS)); 
         actionsContainer.setBorder(null);
         
-        JScrollPane scrollablePanel = new JScrollPane(actionsContainer);  // Avvolgi il pannello
+        JScrollPane scrollablePanel = new JScrollPane(actionsContainer);  
         scrollablePanel.setPreferredSize(new Dimension(550, 650)); 
         scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollablePanel.setBorder(null);
         
+        /*
+         * ADD ACTIONS
+         */
         Map<String, JComponent> ardsComponents = new HashMap<>();
         ardsComponents.put("LeftLungSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
         ardsComponents.put("RightLungSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
@@ -90,7 +96,7 @@ public class ActionsPanel {
         boxes.add(exerciseBox);
 
         Map<String, JComponent> pericardialEffusionComponents = new HashMap<>();
-        pericardialEffusionComponents.put("EffusionRate", new JSpinner(new SpinnerNumberModel(0, 0, 1000, 0.01)));
+        pericardialEffusionComponents.put("EffusionRate ml/s", new JSpinner(new SpinnerNumberModel(0, 0, 1000, 0.01)));
         ActionBox pericardialEffusionBox = new ActionBox(app, "Pericardial Effusion", pericardialEffusionComponents);
         boxes.add(pericardialEffusionBox);
 
@@ -118,7 +124,6 @@ public class ActionsPanel {
         ActionBox ventilatorLeakBox = new ActionBox(app, "Ventilator Leak", ventilatorLeakComponents);
         boxes.add(ventilatorLeakBox);
 
-        // Aggiungi i pannelli delle ConditionBox al mainPanel
         for(ActionBox box : boxes) {
         	actionsContainer.add(box.getSectionPanel());
         }

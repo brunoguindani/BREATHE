@@ -151,6 +151,7 @@ public class VentilatorsPanel {
         return mainPanel;
     }
     
+    //Selected ventilator
     private VentilationMode getCurrentMode() {
     	if (pcToggleButton.isSelected()) {
         	return VentilationMode.PC;
@@ -164,6 +165,7 @@ public class VentilatorsPanel {
     	return null;
     }
     
+    //Active ventilator 
     public Ventilator getCurrentVentilator() {
         switch (activeMode) {
             case PC:

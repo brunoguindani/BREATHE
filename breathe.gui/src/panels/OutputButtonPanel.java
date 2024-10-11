@@ -9,6 +9,10 @@ import javax.swing.*;
 import app.App;
 
 public class OutputButtonPanel {
+	
+	/*
+	 * CLASS WITH BUTTONS TO DECIDE WHAT TO DISPLAY IN OUTPUT PANEL
+	 */
 
     JPanel mainPanel;
     private List<JToggleButton> buttons;

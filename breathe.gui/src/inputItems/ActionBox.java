@@ -12,6 +12,10 @@ import app.App;
 import data.Action;
 
 public class ActionBox {
+	
+	/*
+	 * Item for Single Action Button
+	 */
     
     private JPanel sectionPanel;
     private String title;
@@ -27,15 +31,13 @@ public class ActionBox {
         this.title = title;
         this.components = components;
         
-        // Pannello principale che conterrà il tutto
         sectionPanel = new JPanel(new BorderLayout());
         sectionPanel.setBackground(Color.LIGHT_GRAY);
         
-        // Pannello che contiene il titolo e il pulsante di espansione
+        // Button with name of Action to display textfields
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(Color.LIGHT_GRAY);
         
-        // Pulsante per espandere/contrarre i componenti
         JButton headerButton = new JButton(title);
         headerButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         headerButton.setBackground(Color.DARK_GRAY);
@@ -43,20 +45,20 @@ public class ActionBox {
         headerButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         headerButton.setFocusPainted(false);
         
-        // Pannello che contiene i campi e il pulsante "Applica"
+        // Fields and Apply button
         JPanel fieldsPanel = new JPanel(new GridBagLayout());
         fieldsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         fieldsPanel.setBackground(Color.LIGHT_GRAY);
-        fieldsPanel.setVisible(false);  // Inizialmente nascosto
+        fieldsPanel.setVisible(false);
         
-        // Layout dei componenti nel pannello
+        // Layout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridy = 0;
         int gridX = 0;
         
-        // Aggiunge le coppie Label-Componenti al pannello dei campi
+        // Add Labels and components
         for (Map.Entry<String, JComponent> entry : components.entrySet()) {
             JLabel label = new JLabel(addSpaceBeforeUpperCase(entry.getKey()) + ":");
             gbc.gridx = gridX++;
@@ -70,7 +72,7 @@ public class ActionBox {
             gridX = 0;
         }
         
-        //Time
+        //Time for Scenario
         JLabel timeLabel = new JLabel("Time (hh:mm:ss)");
 
         time[0] = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1)); 
@@ -134,7 +136,7 @@ public class ActionBox {
         gbc.gridx--;
         fieldsPanel.add(timePanel, gbc);
         
-     // Pulsante "Applica"
+        // "Apply" Button
         applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
         applySectionButton.setBackground(new Color(0, 122, 255));
@@ -145,13 +147,11 @@ public class ActionBox {
         
         applySectionButton.addActionListener(buttonAction());
 
-        // Aggiunge il pulsante "Applica" alla fine del pannello dei campi
         gbc.gridx = 0;
-        gbc.gridwidth = 2; // Assicurati che il pulsante occupi più spazio orizzontale
+        gbc.gridwidth = 2; 
         gbc.gridy++;
         fieldsPanel.add(applySectionButton, gbc);
         
-        // Aggiunge un listener al pulsante header per mostrare/nascondere il pannello dei campi
         headerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,13 +163,12 @@ public class ActionBox {
             }
         });
         
-        // Aggiunge il pulsante header e i campi al pannello principale
         headerPanel.add(headerButton, BorderLayout.NORTH);
         headerPanel.add(fieldsPanel, BorderLayout.CENTER);
         sectionPanel.add(headerPanel, BorderLayout.NORTH);
     }
     
-    // Metodo per l'azione del pulsante "Applica"
+    // ActionListener for Apply Button
     private ActionListener buttonAction() {
         return new ActionListener() {
             @Override
@@ -206,12 +205,10 @@ public class ActionBox {
         return hours * 3600 + minutes * 60 + seconds;
     }
     
-    // Metodo per ottenere il pannello
     public JPanel getSectionPanel() {
         return sectionPanel;
     }
     
-    // Metodo per ottenere il titolo
     public String getTitle() {
         return title;
     }
@@ -220,12 +217,11 @@ public class ActionBox {
     	applySectionButton.setEnabled(enable);
     }
     
-    //add space to title
+    //add spaces to Title
     private String addSpaceBeforeUpperCase(String input) {
         if (input == null || input.isEmpty()) {
-            return input; // Restituisce null o stringa vuota se l'input è nullo o vuoto
+            return input; 
         }
-        // Utilizza una regex per inserire uno spazio prima di ogni lettera maiuscola
         return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
     }
 }

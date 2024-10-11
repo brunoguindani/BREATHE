@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -53,6 +51,6 @@ public class extVentilatorPanel{
     }
     
     public void setVolumeLabel(Double volume) {
-    	this.pressure.setText(""+volume);
+    	this.volume.setText(""+volume);
     }
 }

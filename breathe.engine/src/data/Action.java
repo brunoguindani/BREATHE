@@ -7,6 +7,7 @@ import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
+import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 
 public class Action {
 	/*
@@ -97,7 +98,7 @@ public class Action {
 
 	        case "Pericardial Effusion":
 	            SEPericardialEffusion effusion = new SEPericardialEffusion();
-	            effusion.getEffusionRate().setValue(parameters.get("EffusionRate"));
+	            effusion.getEffusionRate().setValue(parameters.get("EffusionRate ml/s"), VolumePerTimeUnit.mL_Per_s);
 	            action = effusion;
 	            break;
 

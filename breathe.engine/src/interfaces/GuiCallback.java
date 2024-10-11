@@ -6,6 +6,10 @@ import data.Condition;
 
 public interface GuiCallback {
 	
+	/*
+	 * INTERFACE TO LET SIMULATIONWORKER CALL GUI METHODS
+	 */
+	
     void stabilizationComplete(boolean enable);
     
     void logStringData(String data);
