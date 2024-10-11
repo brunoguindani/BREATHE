@@ -183,6 +183,7 @@ public class App extends JFrame implements GuiCallback {
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
+    		s = new SimulationWorker(this);
     		s.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
@@ -194,6 +195,7 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
+    		s = new SimulationWorker(this);
     		s.simulationFromFile(file);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
@@ -206,6 +208,7 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromScenarioSimulation(String scenarioFile) {
     	if(scenarioFile != null) {
+    		s = new SimulationWorker(this);
     		s.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
         	patientPanel.enableComponents(false);
