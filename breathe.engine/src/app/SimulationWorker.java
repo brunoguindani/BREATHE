@@ -87,7 +87,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     public void simulationFromFile(String file) {
     	initializeMode = "file";
     	pe = new PulseEngine();
-		
+    	
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
         
@@ -192,6 +192,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             stime.setValue(0.02, TimeUnit.s);
         }
 		
+		stopRequest = false;
         pe.clear();
         pe.cleanUp();
 		gui.minilogStringData("\nSimulation has been stopped");
@@ -455,7 +456,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        pe.processAction(ventilator_ext);
 	        resetLogExtVentilator();
 		}
-		System.out.println(zmqServer.isDisconnecting());
     }
     
 	private void setExtVolume() {
