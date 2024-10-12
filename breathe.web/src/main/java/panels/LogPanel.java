@@ -1,41 +1,44 @@
 package panels;
 
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
+
 import app.App;
 
-@Route("log-panel")
+@Route("logpanel")
 public class LogPanel extends VerticalLayout {
-
-    private StringBuilder logBuilder; // Utilizza StringBuilder per costruire i log
-    private TextArea resultArea; // Usa TextArea per visualizzare i log
-    private App app;
+    
+    private TextArea resultArea;
 
     public LogPanel(App app) {
-        this.app = app;
+        // Set layout properties
+        setWidth("550px");
+        setHeight("600px");
+        setPadding(false);
+        setMargin(false);
+        
+        // Initialize the text area
+        resultArea = new TextArea();
+        resultArea.setReadOnly(true); // Make it non-editable
+        resultArea.setWidth("100%");
+        resultArea.setHeight("100%");
+        resultArea.getStyle().set("background-color", "white");
+        resultArea.getStyle().set("font-family", "monospace");
+        resultArea.getStyle().set("font-size", "12px");
+        resultArea.setValue(""); // Initialize with empty value
 
-        // Impostazioni del layout principale
-        setWidthFull();  // Imposta la larghezza al 100%
-        setHeight("50vh");  // Imposta l'altezza al 50% della viewport
-        getStyle().set("background-color", "white");  // Colore di sfondo
-
-        // Inizializza il StringBuilder
-        logBuilder = new StringBuilder();
-
-        // Creazione del TextArea
-        resultArea = new TextArea("Log Area");
-        resultArea.setWidth("100%");  // Imposta la larghezza al 100%
-        resultArea.setHeight("100%"); // Imposta l'altezza al 100%
-        resultArea.setReadOnly(true); // Imposta come solo lettura
-
-        // Aggiungi il TextArea al layout
+        // Add the text area to the layout
         add(resultArea);
+
     }
 
-    public void append(String log) {
-        logBuilder.append(log);
-
-        resultArea.setValue(logBuilder.toString()); 
+    public void append(String message) {
+    	UI.getCurrent().access(() -> {
+    		resultArea.setValue(resultArea.getValue() + message + "\n");
+    	});
     }
+
 }

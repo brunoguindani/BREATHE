@@ -1,8 +1,11 @@
 package app;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -37,11 +40,12 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final HorizontalLayout controlPanel = new ControlPanel(this);
     
     private SimulationWorker s;
+    
 
     public App() {
     	
     	Initializer.initilizeJNI();
-		s = new SimulationWorker(this);
+		s = new SimulationWorker(this,UI.getCurrent());
 		
         VerticalLayout mainLayout = getContent();
         mainLayout.setWidthFull();
@@ -149,7 +153,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		s = new SimulationWorker(this);
+    		s = new SimulationWorker(this,UI.getCurrent());
             Notification.show(file);
     		s.simulationFromFile(file);	
     		return true;
@@ -169,8 +173,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-		//Notification.show("AA");
-		logPanel.append(data);
+	    logPanel.append(data);
 	}
 
 	@Override
