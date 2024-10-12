@@ -178,7 +178,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-	    logPanel.append(data);
+		logPanel.append(data); // Append il messaggio in modo sicuro
 	}
 
 	@Override
@@ -205,4 +205,5 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	public void setInitialCondition(List<Condition> list) {
 
 	}
+	
 }
