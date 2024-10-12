@@ -43,7 +43,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private String[] requestList;
     
     private GuiCallback gui;
-    private UI ui;
+    public UI ui;
     
     private boolean stopRequest = false;
     
@@ -523,7 +523,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     @Override
     protected void process(List<String> chunks) {
-        // Usa ui.access() per modificare la UI
+
     	if(ui != null) {
             ui.access(() -> {
                 for (String message : chunks) {

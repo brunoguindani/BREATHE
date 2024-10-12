@@ -1,14 +1,11 @@
 package panels;
 
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 
 import app.App;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Route("logpanel")
 public class LogPanel extends VerticalLayout {
@@ -38,9 +35,7 @@ public class LogPanel extends VerticalLayout {
     }
 
     public void append(String message) {
-    	UI.getCurrent().access(() -> {
-    		resultArea.setValue(resultArea.getValue() + message + "\n");
-    	});
+    	resultArea.setValue(resultArea.getValue() + message + "\n");
     }
 
 }

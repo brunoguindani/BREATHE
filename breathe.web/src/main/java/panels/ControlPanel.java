@@ -39,8 +39,8 @@ public class ControlPanel extends HorizontalLayout {
     }
     
     private void startingFileSimulation() {
-    	//app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
-    	app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
+    	app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
+    	//app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	/*
         Upload upload = new Upload();
         upload.setAcceptedFileTypes(".json"); // Imposta i tipi di file accettati, se necessario
