@@ -7,6 +7,8 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 
 import app.App;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Route("logpanel")
 public class LogPanel extends VerticalLayout {

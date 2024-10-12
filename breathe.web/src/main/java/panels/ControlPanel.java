@@ -1,5 +1,6 @@
 package panels;
 
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -22,6 +23,7 @@ public class ControlPanel extends HorizontalLayout {
         
         Button stopButton = new Button("Stop", e -> {
             Notification.show("Stop button clicked");
+            app.stopSimulation();
         });
         
         Button exportButton = new Button("Export", e -> {
