@@ -38,5 +38,11 @@
 			<scope>system</scope>
 			<systemPath>${project.basedir}/jar/Pulse.jar</systemPath>
 		</dependency>
+		
+		<dependency>
+		    <groupId>com.vaadin</groupId>
+		    <artifactId>vaadin-core</artifactId>
+		    <version>24.4.13</version>
+		</dependency>
 	</dependencies>
 </project>

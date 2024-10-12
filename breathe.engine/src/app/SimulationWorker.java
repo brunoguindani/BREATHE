@@ -10,12 +10,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import javax.swing.*;
 
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.properties.CommonUnits.*;
 import com.kitware.pulse.engine.PulseEngine;
+import com.vaadin.flow.component.UI;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
@@ -41,6 +43,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private String[] requestList;
     
     private GuiCallback gui;
+    private UI ui;
     
     private boolean stopRequest = false;
     
@@ -58,8 +61,14 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
     
+    public SimulationWorker(GuiCallback guiCallback, UI ui) {
+    	this.gui = guiCallback;
+    	this.ui = ui;
+    }
+    
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
+    	this.ui = null;
     }
     
 	/*
@@ -302,6 +311,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {
+        	//publish(any.toString());
             gui.logStringData(any.toString()+ "\n");
             data.add(any.toString());
         }
@@ -310,7 +320,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
         gui.logStringData("---------------------------\n");
+        //publish("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
+        	//publish(requestList[i] + ": " + dataValues.get(i) + "\n");
             gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
             data.add(requestList[i] + ": " + dataValues.get(i));
         }
@@ -320,6 +332,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
+        	//publish(any.toString()+ "\n");
         	gui.logStringData(any.toString()+ "\n");
           //Ext ventilator doesn't need the data actions
           //data.add(any.toString());
@@ -329,6 +342,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
         	y = dataValues.get(i);
+        	
             gui.logItemDisplayData(requestList[i],x, y);
         }
         
@@ -510,6 +524,18 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
         sce.writeFile("./scenario/" + scenarioName + ".json");
         gui.minilogStringData("\nScenario exported to: " + "./scenario/" + scenarioName + ".json");
+    }
+    
+    
+    @Override
+    protected void process(List<String> chunks) {
+        // Usa ui.access() per modificare la UI
+        ui.access(() -> {
+            for (String message : chunks) {
+                gui.logStringData(message); // chiama il metodo di log nella UI
+            }
+        });
+    
     }
     
 }
