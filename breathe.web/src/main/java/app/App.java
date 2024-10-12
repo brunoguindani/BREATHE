@@ -188,7 +188,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logItemDisplayData(String data, double x, double y) {
-		outputPanel.addValueToItemDisplay(data, x, y);
+		//outputPanel.addValueToItemDisplay(data, x, y);
 	}
 
 	@Override

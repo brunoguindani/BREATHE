@@ -311,19 +311,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {
-        	//publish(any.toString());
-            gui.logStringData(any.toString()+ "\n");
+        	publish(any.toString()+ "\n");
             data.add(any.toString());
         }
         
         //print requested data
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
-        gui.logStringData("---------------------------\n");
-        //publish("---------------------------\n");
+        publish("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
-        	//publish(requestList[i] + ": " + dataValues.get(i) + "\n");
-            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
+        	publish(requestList[i] + ": " + dataValues.get(i) + "\n");
             data.add(requestList[i] + ": " + dataValues.get(i));
         }
         
@@ -332,17 +329,14 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
-        	//publish(any.toString()+ "\n");
-        	gui.logStringData(any.toString()+ "\n");
-          //Ext ventilator doesn't need the data actions
-          //data.add(any.toString());
+        	publish(any.toString()+ "\n");
         }
+        
         //send data to graphs to be printed
         double x = dataValues.get(0);
         double y = 0;
         for (int i = 1; i < (dataValues.size()); i++) {
         	y = dataValues.get(i);
-        	
             gui.logItemDisplayData(requestList[i],x, y);
         }
         
@@ -530,12 +524,17 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     @Override
     protected void process(List<String> chunks) {
         // Usa ui.access() per modificare la UI
-        ui.access(() -> {
+    	if(ui != null) {
+            ui.access(() -> {
+                for (String message : chunks) {
+                    gui.logStringData(message); 
+                }
+            });   		
+    	}else {
             for (String message : chunks) {
-                gui.logStringData(message); // chiama il metodo di log nella UI
+                gui.logStringData(message); 
             }
-        });
-    
+    	}
     }
     
 }
