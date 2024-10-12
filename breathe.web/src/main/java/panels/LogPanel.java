@@ -4,38 +4,51 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.Route;
 import app.App;
+import java.util.Timer;
+import java.util.TimerTask;
 
-@Route("log-panel")
 public class LogPanel extends VerticalLayout {
 
-    private StringBuilder logBuilder; // Utilizza StringBuilder per costruire i log
-    private TextArea resultArea; // Usa TextArea per visualizzare i log
+    private StringBuilder logBuilder;
+    private TextArea resultArea;
     private App app;
+    private Timer timer;
+    private boolean hasNewData = false;
 
     public LogPanel(App app) {
         this.app = app;
 
-        // Impostazioni del layout principale
-        setWidthFull();  // Imposta la larghezza al 100%
-        setHeight("50vh");  // Imposta l'altezza al 50% della viewport
-        getStyle().set("background-color", "white");  // Colore di sfondo
+        setWidthFull();
+        setHeight("50vh");
+        getStyle().set("background-color", "white");
 
-        // Inizializza il StringBuilder
         logBuilder = new StringBuilder();
 
-        // Creazione del TextArea
         resultArea = new TextArea("Log Area");
-        resultArea.setWidth("100%");  // Imposta la larghezza al 100%
-        resultArea.setHeight("100%"); // Imposta l'altezza al 100%
-        resultArea.setReadOnly(true); // Imposta come solo lettura
+        resultArea.setWidth("100%");
+        resultArea.setHeight("100%");
+        resultArea.setReadOnly(true);
 
-        // Aggiungi il TextArea al layout
         add(resultArea);
+
+        // Inizializza il Timer per aggiornare periodicamente il TextArea
+        timer = new Timer(true);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Aggiorna l'interfaccia solo se ci sono nuovi dati
+                if (hasNewData) {
+                    getUI().ifPresent(ui -> ui.access(() -> {
+                        resultArea.setValue(logBuilder.toString());
+                        hasNewData = false;
+                    }));
+                }
+            }
+        }, 0, 200); // Aggiorna ogni 200 millisecondi
     }
 
     public void append(String log) {
         logBuilder.append(log);
-
-        resultArea.setValue(logBuilder.toString()); 
+        hasNewData = true; // Segnala che ci sono nuovi dati
     }
 }

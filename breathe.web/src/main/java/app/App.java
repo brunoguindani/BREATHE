@@ -17,6 +17,7 @@ import interfaces.GuiCallback;
 import panels.ControlPanel;
 import panels.LogPanel;
 import panels.PatientPanel;
+import panels.OutputPanel;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
@@ -29,7 +30,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final VerticalLayout ventilatorsPanel = new VerticalLayout();
 
     // Contenuti per il secondo gruppo di tabs
-    private final VerticalLayout outputPanel = new VerticalLayout();
+    private final OutputPanel outputPanel = new OutputPanel(this);
     private final VerticalLayout scenarioPanel = new VerticalLayout();
     private final LogPanel logPanel = new LogPanel(this);
     
@@ -158,6 +159,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	}
     }
     
+    public void stopSimulation() {
+    	s.stopSimulation();	
+    }
+    
     /*
      * SIMULATION WORKER TO GUI
      */
@@ -180,7 +185,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logItemDisplayData(String data, double x, double y) {
-	
+		outputPanel.addValueToItemDisplay(data, x, y);
 	}
 
 	@Override
