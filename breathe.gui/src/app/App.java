@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class App extends JFrame implements GuiCallback {
     public LogPanel logPanel = new LogPanel(this);
     public ScenarioPanel scenarioPanel = new ScenarioPanel(this);
     public MinilogPanel minilogPanel = new MinilogPanel(this);
+    
     
     //Left and Right Panel
     public JTabbedPane leftTabbedPane;
@@ -80,13 +82,15 @@ public class App extends JFrame implements GuiCallback {
 
         cardLayout = new CardLayout();
         patientConditionPanel = new JPanel(cardLayout);
-        patientConditionPanel.add(patientPanel.getMainPanel(), "Patient");
-        patientConditionPanel.add(conditionsPanel.getMainPanel(), "Condition");
+        patientConditionPanel.add(patientPanel, "Patient");
+        patientConditionPanel.add(conditionsPanel, "Condition");
 
         patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
         conditionsRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 
-        JPanel switchPanel = new JPanel(new BorderLayout());
+        JPanel switchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        switchPanel.setPreferredSize(new Dimension(550, 20));
+        switchPanel.setBackground(Color.LIGHT_GRAY);
         switchPanel.add(radioPanel, BorderLayout.NORTH);
         switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
 
@@ -95,9 +99,9 @@ public class App extends JFrame implements GuiCallback {
          */
         leftTabbedPane = new JTabbedPane();
         leftTabbedPane.addTab("Patient", switchPanel);
-        leftTabbedPane.addTab("Actions", actionsPanel.getMainPanel());
-        leftTabbedPane.addTab("Ventilators", ventilatorsPanel.getMainPanel());
-        leftTabbedPane.addTab("Output Settings", outputButtonPanel.getMainPanel());
+        leftTabbedPane.addTab("Actions", actionsPanel);
+        leftTabbedPane.addTab("Ventilators", ventilatorsPanel);
+        leftTabbedPane.addTab("Output Settings", outputButtonPanel);
         
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
@@ -107,9 +111,9 @@ public class App extends JFrame implements GuiCallback {
          * Right side of the main panel
          */
         rightTabbedPane = new JTabbedPane();
-        rightTabbedPane.addTab("Output", outputPanel.getMainPanel());
-        rightTabbedPane.addTab("Scenario", scenarioPanel.getMainPanel());
-        rightTabbedPane.addTab("Log", logPanel.getMainPanel());
+        rightTabbedPane.addTab("Output", outputPanel);
+        rightTabbedPane.addTab("Scenario", scenarioPanel);
+        rightTabbedPane.addTab("Log", logPanel);
         
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());
@@ -122,8 +126,8 @@ public class App extends JFrame implements GuiCallback {
         leftView.setLayout(new BoxLayout(leftView, BoxLayout.Y_AXIS));
         leftView.add(leftPanel);
         leftView.add(Box.createVerticalGlue());  
-        leftView.add(controlPanel.getMainPanel());
-        leftView.add(minilogPanel.getMainPanel());
+        leftView.add(controlPanel);
+        leftView.add(minilogPanel);
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftView, rightPanel);
         splitPane.setDividerLocation(550); 
@@ -172,7 +176,7 @@ public class App extends JFrame implements GuiCallback {
 	}
 	
 	public String getPatientName() {
-		return patientPanel.getName();
+		return patientPanel.getPatientName();
 	}
 	
 

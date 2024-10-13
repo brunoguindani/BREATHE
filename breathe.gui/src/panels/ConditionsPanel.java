@@ -1,7 +1,9 @@
 package panels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -11,22 +13,21 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.Box;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 
 import app.App;
 import data.Condition;
 import inputItems.ConditionBox;
 
-public class ConditionsPanel {
+public class ConditionsPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * PANEL WITH ALL CONDITION BOXES
 	 */
 
-    private JPanel mainPanel = new JPanel();
     private List<ConditionBox> boxes = new ArrayList<>();
     private List<Condition> activeConditions = new ArrayList<>();
     private JButton reset;
@@ -35,21 +36,18 @@ public class ConditionsPanel {
     public ConditionsPanel(App app) {
         this.app = app;
     	 
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setPreferredSize(new Dimension(550, 650));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); 
+        this.setBackground(Color.LIGHT_GRAY);
+        
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); 
+        
         
         // Panels containing all conditions
         JPanel conditionsContainer = new JPanel();
+        conditionsContainer.setBackground(Color.LIGHT_GRAY);
+        conditionsContainer.setPreferredSize(new Dimension(500, 50));
         conditionsContainer.setLayout(new BoxLayout(conditionsContainer, BoxLayout.Y_AXIS)); 
         conditionsContainer.setBorder(null);
         
-        JScrollPane scrollablePanel = new JScrollPane(conditionsContainer);  // Avvolgi il pannello
-        scrollablePanel.setPreferredSize(new Dimension(550, 650)); 
-        scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollablePanel.setBorder(null);
-
         /*
          * ADD CONDITIONS
          */
@@ -104,34 +102,33 @@ public class ConditionsPanel {
         
         //BUTTON TO RESET CONDITIONS
         JPanel rigidAreaPanel = new JPanel();
-        rigidAreaPanel.setPreferredSize(new Dimension(500, 500));
+        rigidAreaPanel.setPreferredSize(new Dimension(10, 140));
         rigidAreaPanel.setBackground(Color.LIGHT_GRAY); 
         conditionsContainer.add(rigidAreaPanel);
            	
-    	Dimension buttonSize = new Dimension(150, 50);
+    	Dimension buttonSize = new Dimension(150, 30);
     	
 		reset = new JButton("Reset Conditions");
 		reset.setToolTipText("remove all conditions and set values to 0");
 		reset.setPreferredSize(buttonSize);
-		reset.setMaximumSize(buttonSize);
 		reset.setAlignmentX(JButton.CENTER_ALIGNMENT);
-		reset.setBackground(Color.LIGHT_GRAY);
-		reset.setForeground(Color.BLACK);
 		reset.setFocusPainted(false);
-		 
 		reset.addActionListener(e -> {
 			resetConditions();
 		});
         
-        mainPanel.add(scrollablePanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(500, 10)));
-        mainPanel.add(reset);
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
+        buttonPanel.setBackground(Color.LIGHT_GRAY); 
+        buttonPanel.setPreferredSize(new Dimension(550, 60));
+        buttonPanel.add(reset);
         
-    }
-
-    // Metodo per restituire il mainPanel
-    public JPanel getMainPanel() {
-        return mainPanel;
+        JPanel borderPanel = new JPanel();
+        borderPanel.setLayout(new BorderLayout());
+        borderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        borderPanel.add(conditionsContainer, BorderLayout.CENTER);
+        borderPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+		this.add(borderPanel);
     }
     
     public void addCondition(Condition c) {

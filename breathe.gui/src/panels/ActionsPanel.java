@@ -18,24 +18,25 @@ import javax.swing.SpinnerNumberModel;
 import app.App;
 import inputItems.ActionBox;
 
-public class ActionsPanel {
+public class ActionsPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * PANEL CONTAINING ALL ACTIONS
 	 */
 
-    private JPanel mainPanel = new JPanel();
-    private List<ActionBox> boxes = new ArrayList<>();
+	private List<ActionBox> boxes = new ArrayList<>();
 
     public ActionsPanel(App app) {
     	 
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setPreferredSize(new Dimension(550, 650));
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); 
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setPreferredSize(new Dimension(550, 650));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); 
         
         // Panels with all actions
         JPanel actionsContainer = new JPanel();
         actionsContainer.setLayout(new BoxLayout(actionsContainer, BoxLayout.Y_AXIS)); 
+        actionsContainer.setBackground(Color.LIGHT_GRAY);
         actionsContainer.setBorder(null);
         
         JScrollPane scrollablePanel = new JScrollPane(actionsContainer);  
@@ -128,15 +129,10 @@ public class ActionsPanel {
         	actionsContainer.add(box.getSectionPanel());
         }
         
-        mainPanel.add(Box.createRigidArea(new Dimension(550, 10)));
-        mainPanel.add(scrollablePanel);
-        mainPanel.add(Box.createRigidArea(new Dimension(550, 10)));
+        this.add(Box.createRigidArea(new Dimension(550, 10)));
+        this.add(scrollablePanel);
+        this.add(Box.createRigidArea(new Dimension(550, 10)));
         
-    }
-
-    // Metodo per restituire il mainPanel
-    public JPanel getMainPanel() {
-        return mainPanel;
     }
     
     public void enableButtons(boolean enable) {

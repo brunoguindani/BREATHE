@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import app.App;
 import data.Action;
-import interfaces.GuiCallback;
 import utils.Pair;
 
 import java.util.ArrayList;
@@ -25,13 +24,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 
-public class ScenarioPanel{
+public class ScenarioPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * Panel to create scenario
 	 */
-    private JPanel mainPanel;
-    
     private App app;
     
     private JComboBox<String> patientFileComboBox;
@@ -47,9 +45,8 @@ public class ScenarioPanel{
     	this.app = app;
     	
     	//Main panel
-    	mainPanel = new JPanel();
-    	mainPanel.setLayout(new GridBagLayout());
-    	mainPanel.setBackground(Color.LIGHT_GRAY);
+    	this.setLayout(new GridBagLayout());
+    	this.setBackground(Color.LIGHT_GRAY);
     	
         GridBagConstraints gbc = new GridBagConstraints();
         
@@ -57,12 +54,12 @@ public class ScenarioPanel{
         patientFileComboBox = new JComboBox<>();
         String[] directories = {"./states/", "./states/exported/"};
         updatePatientFiles(directories);
-        addLabelAndField("Patient:", patientFileComboBox, mainPanel, gbc, 0);
+        addLabelAndField("Patient:", patientFileComboBox, this, gbc, 0);
         
         //SCENARIO NAME SETUP
         scenarioNameField = new JTextField(25);
         scenarioNameField.setPreferredSize(new Dimension(300, 30)); 
-        addLabelAndField("Scenario Name:", scenarioNameField, mainPanel, gbc, 1);
+        addLabelAndField("Scenario Name:", scenarioNameField, this, gbc, 1);
 
         
         //TABLE SETUP
@@ -97,7 +94,7 @@ public class ScenarioPanel{
         updateActionsDisplay();
         JScrollPane actionsScrollPane = new JScrollPane(actionsTable);
         actionsScrollPane.setPreferredSize(new Dimension(450, 350)); 
-        addLabelAndField("", actionsScrollPane, mainPanel, gbc, 2);
+        addLabelAndField("", actionsScrollPane, this, gbc, 2);
 
 
         //BUTTON SETUP
@@ -110,11 +107,11 @@ public class ScenarioPanel{
         removeActionButton.setForeground(Color.WHITE);
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.EAST;
-        mainPanel.add(removeActionButton, gbc); 
+        this.add(removeActionButton, gbc); 
         
         gbc.gridy++;
         gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(createScenarioButton, gbc);
+        this.add(createScenarioButton, gbc);
 
         createScenarioButton.addActionListener(e -> {
         	createScenario();
@@ -125,11 +122,6 @@ public class ScenarioPanel{
         });
     }
 
-
-	//method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
-    }
     
     //Add visuals to panel
     private void addLabelAndField(String labelText, JComponent textField, JPanel panel, GridBagConstraints gbc, int row) {

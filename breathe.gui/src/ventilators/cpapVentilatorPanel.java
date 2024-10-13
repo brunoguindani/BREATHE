@@ -1,39 +1,65 @@
 package ventilators;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-public class cpapVentilatorPanel{
-	private JPanel mainPanel = new JPanel(new GridBagLayout());
+import app.App;
+
+public class cpapVentilatorPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	private JSpinner fractionInspOxygen, deltaPressureSup, positiveEndExpPres, slope;
     
-    
+	private JButton applyButton;
+	
 	// MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
-	public cpapVentilatorPanel() {
-        mainPanel.setBackground(Color.LIGHT_GRAY);
+	public cpapVentilatorPanel(App app) {
+		
+		this.setLayout(new BorderLayout());
+		this.setBackground(Color.LIGHT_GRAY);
         
+		JPanel inputPanel = new JPanel(new GridBagLayout());
+		inputPanel.setBackground(Color.LIGHT_GRAY);
+		
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
     
-        addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygen = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), mainPanel, gbc);
-        addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSup = new JSpinner(new SpinnerNumberModel(10, 0, 50, 1)), mainPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPres = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), mainPanel, gbc);
-        addLabelAndField("Slope", slope = new JSpinner(new SpinnerNumberModel(0.2, 0, 2, 0.1)), mainPanel, gbc);
+        addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygen = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), inputPanel, gbc);
+        addLabelAndField("Delta Pressure Support - deltaPsupp", deltaPressureSup = new JSpinner(new SpinnerNumberModel(10, 0, 50, 1)), inputPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPres = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), inputPanel, gbc);
+        addLabelAndField("Slope", slope = new JSpinner(new SpinnerNumberModel(0.2, 0, 2, 0.1)), inputPanel, gbc);
+        
+        applyButton = new JButton("Apply");
+        applyButton.setEnabled(false);
+        applyButton.setFocusPainted(false);
+        applyButton.setPreferredSize(new Dimension(150, 30));
+        applyButton.addActionListener(e -> {
+            app.connectVentilator();
+        });
+        
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
+        buttonPanel.setBackground(Color.LIGHT_GRAY); 
+        buttonPanel.add(applyButton);
+        
+        this.add(buttonPanel, BorderLayout.SOUTH);
+        this.add(inputPanel, BorderLayout.CENTER);
 	}
 	
     //method to add visual to panel
@@ -47,11 +73,7 @@ public class cpapVentilatorPanel{
         gbc.gridy++;
     }
     
-    //method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
-    }
-    
+ 
     //Get ventilator data 
     public Map<String, Number> getData() {
         Map<String, Number> dataMap = new HashMap<>();
@@ -60,5 +82,9 @@ public class cpapVentilatorPanel{
         dataMap.put("PositiveEndExpiratoryPressure", (int) positiveEndExpPres.getValue());
         dataMap.put("Slope", (double) slope.getValue()); 
         return dataMap;
+    }
+    
+    public void setEnableApplyButton(boolean enable) {
+    	applyButton.setEnabled(enable);
     }
 }

@@ -10,14 +10,16 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class extVentilatorPanel{
-	private JPanel mainPanel = new JPanel(new GridBagLayout());
+public class extVentilatorPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	private JLabel pressure, volume;
     
 	// SEMechanicalVentilation (for external ventilators)
 	public extVentilatorPanel() {
-        mainPanel.setBackground(Color.LIGHT_GRAY);
+		
+		this.setLayout(new GridBagLayout());
+		this.setBackground(Color.LIGHT_GRAY);
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -25,8 +27,8 @@ public class extVentilatorPanel{
         gbc.gridx = 0;
         gbc.gridy = 0;       
         
-        addLabelAndField("Pressure", pressure = new JLabel(""), mainPanel, gbc);
-        addLabelAndField("Volume", volume = new JLabel(""), mainPanel, gbc);
+        addLabelAndField("Pressure", pressure = new JLabel(""), this, gbc);
+        addLabelAndField("Volume", volume = new JLabel(""), this, gbc);
 	}
 	
     //method to add visual to panel
@@ -40,11 +42,7 @@ public class extVentilatorPanel{
         gbc.gridy++;
     }
     
-    //method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
-    }
-    
+
     public void setPressureLabel(Double pressure) {
     	this.pressure.setText(""+pressure);
     }

@@ -16,13 +16,12 @@ import javax.swing.JToggleButton;
 import outputItems.*;
 import app.App;
 
-public class OutputPanel{
+public class OutputPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * PANEL to Display Output Items
 	 */
-	
-    private JPanel mainPanel = new JPanel();
     
     private Map<String, String> chartsMap;
     
@@ -33,8 +32,8 @@ public class OutputPanel{
     JScrollPane scrollInfoBoxPane;
     
     public OutputPanel(App app) {
-    	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 700));
+    	this.setBackground(Color.LIGHT_GRAY);
+    	this.setPreferredSize(new Dimension(550, 700));
     	
     	chartsMap = new HashMap<>();
         
@@ -102,16 +101,12 @@ public class OutputPanel{
         scrollChartPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollChartPane.setBorder(null);
         
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(scrollInfoBoxPane);
-        mainPanel.add(scrollChartPane);
-        mainPanel.setBackground(Color.BLACK);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.add(scrollInfoBoxPane);
+        this.add(scrollChartPane);
+        this.setBackground(Color.BLACK);
     }
-    
-    //method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
-    }
+
     
     //GRAPHIC UPDATE OF THE PANELS
     public void updateItemDisplay(List<JToggleButton> buttons) {

@@ -8,13 +8,13 @@ import javax.swing.*;
 
 import app.App;
 
-public class OutputButtonPanel {
+public class OutputButtonPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * CLASS WITH BUTTONS TO DECIDE WHAT TO DISPLAY IN OUTPUT PANEL
 	 */
 
-    JPanel mainPanel;
     private List<JToggleButton> buttons;
     private App app;
 
@@ -22,19 +22,14 @@ public class OutputButtonPanel {
         this.app = app;
         this.buttons = new ArrayList<>();
 
-        mainPanel = new JPanel();
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 10));
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 10));
 
-        JScrollPane scrollablePanel = new JScrollPane(mainPanel);
+        JScrollPane scrollablePanel = new JScrollPane(this);
         scrollablePanel.setPreferredSize(new Dimension(250, 120));
         scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollablePanel.setBorder(null);
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
     }
 
     public void addOutputButton(String outputName) {
@@ -52,8 +47,8 @@ public class OutputButtonPanel {
 
         button.setToolTipText(outputName);
         buttons.add(button);
-        mainPanel.add(button);
-        mainPanel.revalidate();
-        mainPanel.repaint();
+        this.add(button);
+        this.revalidate();
+        this.repaint();
     }
 }

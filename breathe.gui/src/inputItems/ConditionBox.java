@@ -83,7 +83,7 @@ public class ConditionBox {
         applySectionButton.setForeground(Color.WHITE);
         applySectionButton.setFocusPainted(false);
         applySectionButton.setMargin(new Insets(0, 0, 0, 0));
-        applySectionButton.setEnabled(true);  // Abilitato inizialmente
+        applySectionButton.setEnabled(true); 
         applySectionButton.addActionListener(buttonAction());
         
         gbc.gridx = 0;
@@ -97,8 +97,6 @@ public class ConditionBox {
                 boolean isVisible = !fieldsPanel.isVisible();
                 fieldsPanel.setVisible(isVisible);
                 headerButton.setText(isVisible ? title + " (Close)" : title);
-                sectionPanel.revalidate();
-                sectionPanel.repaint();
             }
         });
                 headerPanel.add(headerButton, BorderLayout.NORTH);
