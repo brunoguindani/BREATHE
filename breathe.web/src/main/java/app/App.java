@@ -1,5 +1,6 @@
 package app;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,11 +43,14 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
     private SimulationWorker s;
     
+    private boolean stopRequest;
+    private boolean takeData;
+    
 
     public App() {
     	
     	Initializer.initilizeJNI();
-		s = new SimulationWorker(this,UI.getCurrent());
+		s = new SimulationWorker(this);
 		
         VerticalLayout mainLayout = getContent();
         mainLayout.setWidthFull();
@@ -144,6 +148,37 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         }
     }
     
+    private void startDataUpdateThread() {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(() -> {
+            try {
+                while (!stopRequest) {
+                	
+                	if(takeData) {
+	                    ArrayList<String> data = s.getData();  
+	                    
+	                    if (data != null) {
+	                        getUI().ifPresent(ui -> ui.access(() -> {
+	                        	 for (String item : data) {
+	                                 logPanel.append(item);
+	                             }
+	                        }));
+	                    }
+	                    takeData=false;
+                	}
+                    Thread.sleep(10);  
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); 
+                e.printStackTrace();  
+            } catch (Exception e) {
+                e.printStackTrace();  
+            }
+        });
+    }
+
+    
     /*
      * GUI TO GUI
      */
@@ -154,9 +189,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		s = new SimulationWorker(this,UI.getCurrent());
+    		s = new SimulationWorker(this);
             Notification.show(file);
     		s.simulationFromFile(file);	
+    		stopRequest = false;
+    		startDataUpdateThread();
     		return true;
     	}else {
     		return false;
@@ -165,6 +202,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
     public void stopSimulation() {
     	s.stopSimulation();	
+    	stopRequest = true;
     }
     
     /*
@@ -178,7 +216,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-		logPanel.append(data); // Append il messaggio in modo sicuro
+		takeData = true;
 	}
 
 	@Override
