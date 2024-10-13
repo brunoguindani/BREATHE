@@ -40,6 +40,7 @@ public class ZeroClient {
                     disconnectFromServer();
                 }
                 frame.dispose();
+                System.exit(0);
             }
         });
 
@@ -173,7 +174,8 @@ public class ZeroClient {
                 connectButton.setEnabled(true);
                 disconnectButton.setEnabled(false);
                 outputArea.append("Disconnected.\n");
-                //frame.dispose();
+                frame.dispose();
+                System.exit(0);
             }
         });
 
@@ -217,6 +219,7 @@ public class ZeroClient {
 
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
+                	
 
                     socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");

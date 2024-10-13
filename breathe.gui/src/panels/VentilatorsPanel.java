@@ -147,7 +147,7 @@ public class VentilatorsPanel extends JPanel {
         } else if (vcToggleButton.isSelected()) {
             return VentilationMode.VC;
         } else if (extToggleButton.isSelected()) {
-            return VentilationMode.EXTERNAL;
+            return VentilationMode.EXT;
         }
         return null;
     }
@@ -160,8 +160,8 @@ public class VentilatorsPanel extends JPanel {
                 return new Ventilator(VentilationMode.CPAP, cpapPanel.getData());
             case VC:
                 return new Ventilator(VentilationMode.VC, vcPanel.getData());
-            case EXTERNAL:
-                return new Ventilator(VentilationMode.EXTERNAL);
+            case EXT:
+                return new Ventilator(VentilationMode.EXT);
             default:
                 return null; 
         }
