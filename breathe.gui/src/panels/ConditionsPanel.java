@@ -162,7 +162,7 @@ public class ConditionsPanel extends JPanel{
         }
         
         activeConditions.removeAll(toRemove);
-        app.minilogStringData("Conditions resetted");
+        app.minilogStringData("\nConditions resetted");
     }
 
     public void enableButtons(boolean enable) {

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import javax.swing.*;
 
@@ -47,16 +46,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     private boolean stopRequest = false;
     
-    SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
-    SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
+    private SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
+    private SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
     //Data for scenario
-    String scenarioFilePath = null;
-    String patientFilePath = null;
+    private String scenarioFilePath = null;
+    private String patientFilePath = null;
     
     //Data for external ventilator
-    ZeroServer zmqServer;
-    SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
+    private ZeroServer zmqServer;
+    private SEMechanicalVentilation ventilator_ext = new SEMechanicalVentilation();
     private boolean standardVent_running = false;
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
@@ -360,7 +359,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             break;
             
         case CPAP:
-            // Gestisci la connessione per un ventilatore CPAP
         	SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_CPAP = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) v.getVentilator();
         	ventilator_CPAP.setConnection(eSwitch.On);
         	if(pe.processAction(ventilator_CPAP)) {
@@ -386,7 +384,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             	gui.minilogStringData("\nVC Ventilator error!!! ");
             break;
 
-        case EXTERNAL:
+        case EXT:
         	ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
         	zmqServer = new ZeroServer();
         	try {
@@ -395,7 +393,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				e.printStackTrace();
 			}
         	//Server wait for data
-        	gui.minilogStringData("\nSearching for EXTERNAL ventilators...");
+        	gui.minilogStringData("\nSearching for EXTERNAL ventilators...\n");
     		zmqServer.startReceiving();
     		extVent_running = true;
             break;
@@ -425,7 +423,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             gui.minilogStringData("\nVC Ventilator Disconnected");
             break;
 
-        case EXTERNAL:	//CLOSED BY SERVER
+        case EXT:	//CLOSED BY SERVER
 	        ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
 			ventilator_ext.setState(eSwitch.Off);
 		    pe.processAction(ventilator_ext);
@@ -460,6 +458,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		} else if(zmqServer.isDisconnecting()) {	//CLOSED BY CLIENT
 			ventilator_ext.setState(eSwitch.Off);
 		    gui.minilogStringData("\nEXTERNAL Ventilator disconnected");
+		    gui.minilogStringData("Searching for EXTERNAL ventilators...\n");
 	        pe.processAction(ventilator_ext);
 	        resetLogExtVentilator();
 	        firstEXTConnection = true;

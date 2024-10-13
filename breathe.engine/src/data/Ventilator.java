@@ -45,7 +45,7 @@ public class Ventilator {
 	 */
 	public Ventilator(VentilationMode mode) {
 	    this.mode = mode;
-	    if(mode == VentilationMode.EXTERNAL) {
+	    if(mode == VentilationMode.EXT) {
 		    if(ventilator_EXTERNAL == null) 
 				ventilator_EXTERNAL = new SEMechanicalVentilation();
 	    }

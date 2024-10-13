@@ -43,7 +43,6 @@ public class ZeroServer {
         while (running && !Thread.currentThread().isInterrupted()) {
             byte[] reply = socket.recv(0);
             String receivedData = new String(reply, ZMQ.CHARSET);
-            System.out.println("Received: [" + receivedData + "]");
 
             switch (receivedData) {
                 case "disconnect":
@@ -85,6 +84,7 @@ public class ZeroServer {
         running = false;		
         if (receiveThread != null && receiveThread.isAlive()) {
             receiveThread.interrupt();
+            selectedMode = null;
         }
     }
 
@@ -122,21 +122,12 @@ public class ZeroServer {
     	return disconnecting;
     }
 
-
     public String getSelectedMode() {
         return selectedMode;
     }
 
     public double getVolume() {
         return volume;
-    }
-
-    public void setPressure(double p) {
-        pressure = p;
-    }
-    
-    public void setVolume(double v) {
-    	volume = v;
     }
 
     public double getPressure() {
