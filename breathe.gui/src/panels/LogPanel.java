@@ -11,15 +11,15 @@ import javax.swing.JTextArea;
 
 import app.App;
 
-public class LogPanel{
+public class LogPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
-    private JPanel mainPanel = new JPanel();
     JTextArea resultArea = new JTextArea();
     
     public LogPanel(App app) {
     	
-    	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 600));
+    	this.setBackground(Color.LIGHT_GRAY);
+    	this.setPreferredSize(new Dimension(550, 600));
     	
 		// Text area that updates with every new data retrieved from the engine
 	    resultArea.setEditable(false);
@@ -31,12 +31,7 @@ public class LogPanel{
 	    scrollLogPane.setPreferredSize(new Dimension(550, 600));
 	    scrollLogPane.setBackground(Color.LIGHT_GRAY);
 	    
-	    mainPanel.add(scrollLogPane);
-    }
-    
-    //method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
+	    this.add(scrollLogPane);
     }
     
     public void append(String log) {

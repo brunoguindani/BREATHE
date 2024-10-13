@@ -17,21 +17,21 @@ import javax.swing.SwingUtilities;
 
 import app.App;
 
-public class MinilogPanel {
+public class MinilogPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
 	/*
 	 * SMALL LOG Always visibile to display most important messages 
 	 */
 	
-    private JPanel mainPanel;
     private JScrollPane logScrollPane;
     static JTextArea logTextArea;
     private static JButton clearButton;
 
     public MinilogPanel(App app) {
-        mainPanel = new JPanel();
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setLayout(new GridBagLayout());
+    	
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
         logTextArea = new JTextArea(3, 20);
@@ -43,13 +43,14 @@ public class MinilogPanel {
 
         logScrollPane = new JScrollPane(logTextArea);
         logScrollPane.setPreferredSize(new Dimension(300, 80));
+        logScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        mainPanel.add(logScrollPane, gbc);
+        this.add(logScrollPane, gbc);
 
         clearButton = new JButton("Clear Log");
         clearButton.addActionListener(new ActionListener() {
@@ -63,14 +64,11 @@ public class MinilogPanel {
         gbc.weighty = 0.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 0, 0, 0);
-        mainPanel.add(clearButton, gbc);
+        this.add(clearButton, gbc);
 
-        mainPanel.setPreferredSize(new Dimension(300, 200));
+        this.setPreferredSize(new Dimension(300, 200));
     }
 
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
 
     public void append(String message) {
         logTextArea.append(message + "\n");

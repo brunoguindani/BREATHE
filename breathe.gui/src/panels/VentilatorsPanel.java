@@ -2,10 +2,11 @@ package panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.FlowLayout;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -16,164 +17,149 @@ import data.Ventilator;
 import utils.VentilationMode;
 import ventilators.*;
 
-public class VentilatorsPanel {
+public class VentilatorsPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
 
-	//Panels
-    private JPanel mainPanel = new JPanel();
+    private pcVentilatorPanel pcPanel;
+    private cpapVentilatorPanel cpapPanel;
+    private vcVentilatorPanel vcPanel;
+    private extVentilatorPanel extPanel;
 
-    private pcVentilatorPanel pc = new pcVentilatorPanel();
-    private cpapVentilatorPanel cpap = new cpapVentilatorPanel();
-    private vcVentilatorPanel vc = new vcVentilatorPanel();
-    private extVentilatorPanel ext = new extVentilatorPanel();
-    
     private VentilationMode activeMode = null;
-    
-    //Button
-    JToggleButton pcToggleButton,cpapToggleButton, vcToggleButton, extToggleButton;
-    
-    JButton connectButton, disconnectButton, applyButton;
-    
+
+    JToggleButton pcToggleButton, cpapToggleButton, vcToggleButton, extToggleButton;
+    JButton connectButton, disconnectButton;
+    JPanel buttonPanel;
+
     public VentilatorsPanel(App app) {
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setPreferredSize(new Dimension(550, 650));
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setPreferredSize(new Dimension(550, 650));
 
         CardLayout ventilatorCardLayout = new CardLayout();
         JPanel ventilatorsCardPanel = new JPanel(ventilatorCardLayout);
 
-        // get all the ventilators panels
-        JPanel pcPanel = pc.getMainPanel();
-        JPanel cpapPanel = cpap.getMainPanel();
-        JPanel vcPanel = vc.getMainPanel();
-        JPanel extPanel = ext.getMainPanel();
+        pcPanel = new pcVentilatorPanel(app);
+        cpapPanel = new cpapVentilatorPanel(app);
+        vcPanel = new vcVentilatorPanel(app);
+        extPanel = new extVentilatorPanel();
 
-        // add all the panels to the cardPanel
         ventilatorsCardPanel.add(pcPanel, "PC");
         ventilatorsCardPanel.add(cpapPanel, "CPAP");
         ventilatorsCardPanel.add(vcPanel, "VC");
         ventilatorsCardPanel.add(extPanel, "EXT");
 
-        // TOGGLEBUTTON
         pcToggleButton = new JToggleButton("PC");
         cpapToggleButton = new JToggleButton("CPAP");
         vcToggleButton = new JToggleButton("VC");
         extToggleButton = new JToggleButton("EXT");
+        Dimension buttonSize = new Dimension(125, 30);
+        
+        pcToggleButton.setPreferredSize(buttonSize);
+        cpapToggleButton.setPreferredSize(buttonSize);
+        vcToggleButton.setPreferredSize(buttonSize);
+        extToggleButton.setPreferredSize(buttonSize);
         
         pcToggleButton.setSelected(true);
-        
-        // Add toggle buttons to the ButtonGroup
+
         ButtonGroup ventilatorGroup = new ButtonGroup();
         ventilatorGroup.add(pcToggleButton);
         ventilatorGroup.add(cpapToggleButton);
         ventilatorGroup.add(vcToggleButton);
         ventilatorGroup.add(extToggleButton);
+
+        JPanel ventilatorsRadioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,0, 10));
         
-        // add all the toggle buttons to the radio panel
-        JPanel ventilatorsRadioPanel = new JPanel(new GridLayout(1, 3));
+        
         ventilatorsRadioPanel.setBackground(Color.LIGHT_GRAY);
         ventilatorsRadioPanel.add(pcToggleButton);
         ventilatorsRadioPanel.add(cpapToggleButton);
         ventilatorsRadioPanel.add(vcToggleButton);
         ventilatorsRadioPanel.add(extToggleButton);
 
-        // add action to the toggle buttons
         pcToggleButton.addActionListener(e -> {
             ventilatorCardLayout.show(ventilatorsCardPanel, "PC");
-            applyButton.setVisible(true);
         });
         cpapToggleButton.addActionListener(e -> {
             ventilatorCardLayout.show(ventilatorsCardPanel, "CPAP");
-            applyButton.setVisible(true);
         });
         vcToggleButton.addActionListener(e -> {
             ventilatorCardLayout.show(ventilatorsCardPanel, "VC");
-            applyButton.setVisible(true);
         });
         extToggleButton.addActionListener(e -> {
             ventilatorCardLayout.show(ventilatorsCardPanel, "EXT");
-            applyButton.setVisible(false);
         });
 
-        // buttons to manage the selected ventilator
         connectButton = new JButton("Connect");
         connectButton.setEnabled(false);
-        connectButton.setForeground(Color.WHITE);
-        connectButton.setBackground(new Color(0, 122, 255));
         connectButton.setFocusPainted(false);
         connectButton.addActionListener(e -> {
             activeMode = getCurrentMode();
             app.connectVentilator();
             connectButton.setEnabled(false);
-            applyButton.setEnabled(true);
+            setEnableApplyButton(getCurrentMode(), true);
             disconnectButton.setEnabled(true);
-            disconnectButton.setText("Disconnect "+getCurrentMode());
+            disconnectButton.setText("Disconnect " + getCurrentMode());
+            buttonPanel.revalidate();
+            buttonPanel.repaint();
         });
 
         disconnectButton = new JButton("Disconnect");
         disconnectButton.setEnabled(false);
+        disconnectButton.setFocusPainted(false);
         disconnectButton.setBackground(new Color(255, 59, 48));
         disconnectButton.setForeground(Color.WHITE);
-        disconnectButton.setFocusPainted(false);
         disconnectButton.addActionListener(e -> {
             app.disconnectVentilator();
             connectButton.setEnabled(true);
-            applyButton.setEnabled(false);
+            setEnableApplyButton(getCurrentMode(), false);
             disconnectButton.setEnabled(false);
             disconnectButton.setText("Disconnect");
             activeMode = null;
         });
 
-        applyButton = new JButton("Apply");
-        applyButton.setEnabled(false);
-        applyButton.setForeground(Color.WHITE);
-        applyButton.setBackground(new Color(0, 122, 255));
-        applyButton.setFocusPainted(false);
-        applyButton.addActionListener(e -> {
-            app.connectVentilator();
-        });
         
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1));
-        buttonPanel.add(applyButton);
-        buttonPanel.add(connectButton);
-        buttonPanel.add(disconnectButton);
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.setBackground(Color.LIGHT_GRAY);
+        
+        connectButton.setPreferredSize(buttonSize);
+        buttonPanel.add(connectButton);
+        
+        disconnectButton.setPreferredSize(buttonSize);
+        buttonPanel.add(disconnectButton);
 
         
-        // add all the elements to the main panel
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(ventilatorsRadioPanel, BorderLayout.NORTH);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-        mainPanel.add(ventilatorsCardPanel, BorderLayout.CENTER);
+        JPanel borderPanel = new JPanel();
+        borderPanel.setLayout(new BorderLayout());
+        borderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        borderPanel.add(ventilatorsCardPanel, BorderLayout.CENTER);
+        borderPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        this.setLayout(new BorderLayout());
+        this.add(ventilatorsRadioPanel, BorderLayout.NORTH);
+        this.add(borderPanel, BorderLayout.CENTER);
     }
-    
-    // method to return panel
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
-    
-    //Selected ventilator
+
     private VentilationMode getCurrentMode() {
-    	if (pcToggleButton.isSelected()) {
-        	return VentilationMode.PC;
+        if (pcToggleButton.isSelected()) {
+            return VentilationMode.PC;
         } else if (cpapToggleButton.isSelected()) {
-        	return VentilationMode.CPAP;
+            return VentilationMode.CPAP;
         } else if (vcToggleButton.isSelected()) {
-        	return VentilationMode.VC;
+            return VentilationMode.VC;
         } else if (extToggleButton.isSelected()) {
-        	return VentilationMode.EXTERNAL;
+            return VentilationMode.EXTERNAL;
         }
-    	return null;
+        return null;
     }
-    
-    //Active ventilator 
+
     public Ventilator getCurrentVentilator() {
         switch (activeMode) {
             case PC:
-                return new Ventilator(VentilationMode.PC, pc.getData());
+                return new Ventilator(VentilationMode.PC, pcPanel.getData());
             case CPAP:
-                return new Ventilator(VentilationMode.CPAP, cpap.getData());
+                return new Ventilator(VentilationMode.CPAP, cpapPanel.getData());
             case VC:
-                return new Ventilator(VentilationMode.VC, vc.getData());
+                return new Ventilator(VentilationMode.VC, vcPanel.getData());
             case EXTERNAL:
                 return new Ventilator(VentilationMode.EXTERNAL);
             default:
@@ -182,30 +168,41 @@ public class VentilatorsPanel {
     }
 
     public void resetButton() {
-    	connectButton.setEnabled(false);
-    	disconnectButton.setEnabled(false);
-    	applyButton.setEnabled(false);
-    	disconnectButton.setText("Disconnect");
-    }
-    
-    public void setEnableConnectButton(boolean enable) {
-    	connectButton.setEnabled(enable);
-    }
-    
-    public void setEnableApplyButton(boolean enable) {
-    	applyButton.setEnabled(enable);
-    }
-    
-    public void setEnableDisconnectButton(boolean enable) {
-    	disconnectButton.setEnabled(enable);
-    }
-    
-    public void setEXTPressureLabel(Double pressure) {
-    	ext.setPressureLabel(pressure);
-    }
-    
-    public void setEXTVolumeLabel(Double volume) {
-    	ext.setVolumeLabel(volume);
+        connectButton.setEnabled(false);
+        disconnectButton.setEnabled(false);
+        setEnableApplyButton(getCurrentMode(), false);
+        disconnectButton.setText("Disconnect");
     }
 
+    public void setEnableConnectButton(boolean enable) {
+        connectButton.setEnabled(enable);
+    }
+
+    private void setEnableApplyButton(VentilationMode mode, boolean enable) {
+        switch (mode) {
+            case PC:
+                pcPanel.setEnableApplyButton(enable);
+                break;
+            case CPAP:
+                cpapPanel.setEnableApplyButton(enable);
+                break;
+            case VC:
+                vcPanel.setEnableApplyButton(enable);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setEnableDisconnectButton(boolean enable) {
+        disconnectButton.setEnabled(enable);
+    }
+
+    public void setEXTPressureLabel(Double pressure) {
+        extPanel.setPressureLabel(pressure);
+    }
+
+    public void setEXTVolumeLabel(Double volume) {
+        extPanel.setVolumeLabel(volume);
+    }
 }

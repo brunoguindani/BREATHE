@@ -26,13 +26,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import app.App;
 import data.*;
 
-public class PatientPanel {
+public class PatientPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 	
-
 	/*
 	 * Fields
 	 */
-	private Map<String, JTextField> fieldMap = new HashMap<>();
+	private Map<String, JTextField> fieldMap = new HashMap<>();;
     private JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JComboBox<String> weightUnitComboBox, heightUnitComboBox;
 	
@@ -40,13 +40,11 @@ public class PatientPanel {
 	 * Inner Panels
 	 */
 	private JScrollPane dataPanel;
-    private JPanel mainPanel = new JPanel();
     
     public PatientPanel(App app) {
     	
     	//set up main panel
-    	mainPanel.setBackground(Color.LIGHT_GRAY);
-    	mainPanel.setPreferredSize(new Dimension(550, 650));
+    	this.setBackground(Color.LIGHT_GRAY);
     	
     	//set up dataPanel
     	dataPanel = new JScrollPane();
@@ -100,16 +98,13 @@ public class PatientPanel {
         
         //Add the new panel to the scrollable View
         dataPanel.setViewportView(innerPanel);
-        dataPanel.setPreferredSize(new Dimension(500, 400)); 
+        dataPanel.setPreferredSize(new Dimension(517, 432)); 
+        dataPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        
         dataPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         //Include everything to the main Panel
-        mainPanel.add(dataPanel, BorderLayout.CENTER);
-    }
-    
-    //method to return panel
-    public JPanel getMainPanel() {
-    	return mainPanel;
+        this.add(dataPanel, BorderLayout.CENTER);
     }
     
     //method to add visual to panel
@@ -287,7 +282,7 @@ public class PatientPanel {
 	    }
 	}
 
-	public String getName() {
+	public String getPatientName() {
 		return fieldMap.get("Name").getText();
 	}
 	

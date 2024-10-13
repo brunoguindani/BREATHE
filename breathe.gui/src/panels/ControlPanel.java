@@ -2,6 +2,7 @@ package panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,12 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.Box;
+import javax.swing.BorderFactory;
 import app.App;
 
-public class ControlPanel {
+public class ControlPanel extends JPanel{
+	private static final long serialVersionUID = 1L;
 
-    private JPanel mainPanel = new JPanel(); 
     JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
     
     App app;
@@ -27,17 +28,19 @@ public class ControlPanel {
     	this.app = app;
 
     	//set up main panel
-        mainPanel.setBackground(Color.LIGHT_GRAY);
-        mainPanel.setPreferredSize(new Dimension(550, 100));
+    	this.setBackground(Color.LIGHT_GRAY);
+    	this.setPreferredSize(new Dimension(550, 60));
+    	this.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+    	this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder())); 
 
-        Dimension buttonSize = new Dimension(150, 40); 
+
+        Dimension buttonSize = new Dimension(150, 30); 
 
         //START FROM FILE BUTTON
         startFromFileButton = new JButton("Start From File");
         startFromFileButton.setToolTipText("Start Simulation from Patient File");
         startFromFileButton.setPreferredSize(buttonSize);
         startFromFileButton.setMaximumSize(buttonSize);
-        startFromFileButton.setAlignmentX(JButton.CENTER_ALIGNMENT);
         startFromFileButton.setBackground(new Color(0, 122, 255));
         startFromFileButton.setForeground(Color.WHITE);
         startFromFileButton.setFocusPainted(false);
@@ -51,7 +54,6 @@ public class ControlPanel {
         startFromScenarioButton.setToolTipText("Start a Scenario");
         startFromScenarioButton.setPreferredSize(buttonSize);
         startFromScenarioButton.setMaximumSize(buttonSize);
-        startFromScenarioButton.setAlignmentX(JButton.CENTER_ALIGNMENT); 
         startFromScenarioButton.setBackground(new Color(0, 122, 255));
         startFromScenarioButton.setForeground(Color.WHITE);
         startFromScenarioButton.setFocusPainted(false);
@@ -65,7 +67,6 @@ public class ControlPanel {
         startButton.setToolTipText("Start new Simulation");
         startButton.setPreferredSize(buttonSize);
         startButton.setMaximumSize(buttonSize);
-        startButton.setAlignmentX(JButton.CENTER_ALIGNMENT); 
         startButton.setBackground(new Color(0, 122, 255));
         startButton.setForeground(Color.WHITE);
         startButton.setFocusPainted(false);
@@ -80,7 +81,6 @@ public class ControlPanel {
         stopButton.setToolTipText("Stop Simulation");
         stopButton.setPreferredSize(buttonSize);
         stopButton.setMaximumSize(buttonSize);
-        stopButton.setAlignmentX(JButton.CENTER_ALIGNMENT); 
         stopButton.setEnabled(false);
         stopButton.setBackground(new Color(255, 59, 48));
         stopButton.setForeground(Color.WHITE);
@@ -99,7 +99,6 @@ public class ControlPanel {
         exportButton.setToolTipText("Export current patient state");
         exportButton.setPreferredSize(buttonSize);
         exportButton.setMaximumSize(buttonSize);
-        exportButton.setAlignmentX(JButton.CENTER_ALIGNMENT); 
         exportButton.setEnabled(false);
         exportButton.setBackground(new Color(0, 128, 0));
         exportButton.setForeground(Color.WHITE);
@@ -155,14 +154,11 @@ public class ControlPanel {
         });
         
         //Add buttons to buttonPanel
-        mainPanel.add(startFromScenarioButton);
-        mainPanel.add(stopButton);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));  
-        mainPanel.add(startFromFileButton);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        mainPanel.add(startButton);
-        mainPanel.add(Box.createRigidArea(new Dimension(10, 0)));
-        mainPanel.add(exportButton);
+        this.add(startFromScenarioButton);
+        this.add(stopButton); 
+        this.add(startFromFileButton);
+        this.add(startButton);
+        this.add(exportButton);
     }
     
 
@@ -218,10 +214,6 @@ public class ControlPanel {
         }
 	}
     
-	//method to return panel
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
     
     //From Start to Stop
     public void enableControlStartButton(boolean enable) {
