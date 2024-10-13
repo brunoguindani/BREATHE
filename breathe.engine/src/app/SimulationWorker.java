@@ -449,7 +449,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				firstEXTConnection = false;
 			}
 			
-			if (zmqServer.getSelectedMode().equals("VOLUME")) {
+			if (zmqServer.getSelectedMode().equals("Volume")) {
 	            setExtVolume();
 	        } else {
 	            setExtPressure();
@@ -458,11 +458,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        	gui.minilogStringData("\nEXTERNAL Ventilator error!!!");
 	        }
 		} else if(zmqServer.isDisconnecting()) {	//CLOSED BY CLIENT
-			resetLogExtVentilator();
 			ventilator_ext.setState(eSwitch.Off);
 		    gui.minilogStringData("\nEXTERNAL Ventilator disconnected");
 	        pe.processAction(ventilator_ext);
 	        resetLogExtVentilator();
+	        firstEXTConnection = true;
 		}
     }
     

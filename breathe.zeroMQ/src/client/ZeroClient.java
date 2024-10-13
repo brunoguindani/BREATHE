@@ -173,7 +173,7 @@ public class ZeroClient {
                 connectButton.setEnabled(true);
                 disconnectButton.setEnabled(false);
                 outputArea.append("Disconnected.\n");
-                frame.dispose();
+                //frame.dispose();
             }
         });
 
