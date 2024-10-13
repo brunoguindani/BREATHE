@@ -13,8 +13,8 @@ public class ZeroServer {
     private boolean running = false;
     private boolean connectionStable = false;
     private boolean disconnecting = false;
-
-    private String selectedMode;
+    
+    private String selectedMode = null;
     private double volume;
     private double pressure;
     
@@ -48,8 +48,10 @@ public class ZeroServer {
             switch (receivedData) {
                 case "disconnect":
                     System.out.println("Disconnect message received.");
+                    socket.send("Disconnected client.".getBytes(ZMQ.CHARSET), 0);
                     connectionStable = false;
                     disconnecting = true;
+                    selectedMode = null;
                     break;
 
                 case "requestData":
@@ -60,14 +62,14 @@ public class ZeroServer {
 
                 default:
                     if (receivedData.startsWith("Volume")) {
-                    	connectionStable = true;
-                    	disconnecting = false;
+                        connectionStable = true;
+                        disconnecting = false;
                         selectedMode = "Volume";
                         volume = Double.parseDouble(receivedData.split(": ")[1]);
                         socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
                     } else if (receivedData.startsWith("Pressure")) {
-                    	connectionStable = true;
-                    	disconnecting = false;
+                        connectionStable = true;
+                        disconnecting = false;
                         selectedMode = "Pressure";
                         pressure = Double.parseDouble(receivedData.split(": ")[1]);
                         socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
@@ -77,7 +79,6 @@ public class ZeroServer {
                     break;
             }
         }
-        
     }
 
     private void stopReceiving() {

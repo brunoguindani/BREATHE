@@ -23,8 +23,7 @@ public class extVentilatorPanel{
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        
+        gbc.gridy = 0;       
         
         addLabelAndField("Pressure", pressure = new JLabel(""), mainPanel, gbc);
         addLabelAndField("Volume", volume = new JLabel(""), mainPanel, gbc);
