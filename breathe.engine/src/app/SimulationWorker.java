@@ -16,7 +16,6 @@ import javax.swing.*;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.properties.CommonUnits.*;
 import com.kitware.pulse.engine.PulseEngine;
-import com.vaadin.flow.component.UI;
 import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
@@ -42,7 +41,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private String[] requestList;
     
     private GuiCallback gui;
-    public UI ui;
     
     private boolean stopRequest = false;
     
@@ -60,14 +58,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
     
-    public SimulationWorker(GuiCallback guiCallback, UI ui) {
-    	this.gui = guiCallback;
-    	this.ui = ui;
-    }
-    
+    String dataa;
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
-    	this.ui = null;
     }
     
 	/*
@@ -310,16 +303,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {
-        	publish(any.toString()+ "\n");
+        	gui.logStringData(any.toString()+ "\n");
             data.add(any.toString());
         }
         
         //print requested data
     	List<Double> dataValues = pe.pullData();
         dataRequests.writeData(dataValues);
-        publish("---------------------------\n");
+        gui.logStringData("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
-        	publish(requestList[i] + ": " + dataValues.get(i) + "\n");
+        	gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
             data.add(requestList[i] + ": " + dataValues.get(i));
         }
         
@@ -328,7 +321,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
-        	publish(any.toString()+ "\n");
+        	gui.logStringData(any.toString()+ "\n");
         }
         
         //send data to graphs to be printed
@@ -520,20 +513,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     
-    @Override
-    protected void process(List<String> chunks) {
-
-    	if(ui != null) {
-            ui.access(() -> {
-                for (String message : chunks) {
-                    gui.logStringData(message); 
-                }
-            });   		
-    	}else {
-            for (String message : chunks) {
-                gui.logStringData(message); 
-            }
-    	}
+    public ArrayList<String> getData() {
+    	return sendData();
     }
-    
 }
