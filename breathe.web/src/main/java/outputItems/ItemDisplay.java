@@ -2,11 +2,11 @@ package outputItems;
 
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import java.text.DecimalFormat;
 
 public abstract class ItemDisplay extends VerticalLayout {
-
-    protected String title;
+	private static final long serialVersionUID = 1L;
+	
+	protected String title;
     protected String unit;
     protected double currentValue;
     
