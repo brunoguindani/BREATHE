@@ -1,15 +1,15 @@
 package panels;
 
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.upload.Upload;
 
 import app.App;
 
 public class ControlPanel extends HorizontalLayout {
+	private static final long serialVersionUID = 1L;
+	
 	
 	App app;
 
@@ -39,8 +39,8 @@ public class ControlPanel extends HorizontalLayout {
     }
     
     private void startingFileSimulation() {
-    	app.startFromFileSimulation("C:\\Documenti\\UniBG\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
-    	//app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
+    	//app.startFromFileSimulation("C:\\Documenti\\UniBG\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
+    	app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	//app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	/*
         Upload upload = new Upload();

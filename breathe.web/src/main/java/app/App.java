@@ -27,8 +27,10 @@ import panels.OutputPanel;
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
 @Route("")
 public class App extends Composite<VerticalLayout> implements GuiCallback {
-
-    // Contenuti per il primo gruppo di tabs
+	private static final long serialVersionUID = 1L;
+	
+	
+	// Contenuti per il primo gruppo di tabs
     private final PatientPanel patientPanel = new PatientPanel();  // Usa la classe PatientPanel
     private final VerticalLayout actionsPanel = new VerticalLayout(); 
     private final VerticalLayout ventilatorsPanel = new VerticalLayout();
