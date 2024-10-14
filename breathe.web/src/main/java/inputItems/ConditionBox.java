@@ -1,11 +1,10 @@
 package inputItems;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.NumberField;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,29 +20,33 @@ public class ConditionBox extends VerticalLayout {
     private App app;
 
     private String title;
-    private Map<String, TextField> components;
+    private Map<String, Component> components;
 
     private boolean applied = false;
 
-    public ConditionBox(App app, String title, Map<String, TextField> components) {
+    public ConditionBox(App app, String title, Map<String, Component> components) {
         this.app = app;
         this.title = title;
         this.components = components;
 
-        setBackgroundColor();
+        this.getStyle().set("background-color", "white");
 
         // Header Button
         headerButton = new Button(title);
+        headerButton.getStyle().set("text-align", "center");
+        headerButton.setWidth("90%");
+        headerButton.setMaxWidth("90%"); 
         headerButton.addClickListener(e -> toggleFields());
 
         // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
+        fieldsLayout.getStyle().set("border", "1px dashed lightgray");
+        //fieldsLayout.setWidth("90%");
+        fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
 
         // Add fields and spans
-        for (Map.Entry<String, TextField> entry : components.entrySet()) {
-            Span label = new Span(addSpaceBeforeUpperCase(entry.getKey()) + ":");
-            fieldsLayout.add(label);
+        for (Map.Entry<String, Component> entry : components.entrySet()) {
             fieldsLayout.add(entry.getValue());
         }
 
@@ -54,10 +57,6 @@ public class ConditionBox extends VerticalLayout {
 
         // Add components to the layout
         add(headerButton, fieldsLayout);
-    }
-
-    private void setBackgroundColor() {
-        this.getStyle().set("background-color", "lightgray");
     }
 
     private void toggleFields() {
@@ -74,30 +73,33 @@ public class ConditionBox extends VerticalLayout {
             headerButton.getStyle().set("background-color", "lightblue");
 
             Map<String, Double> parameters = new HashMap<>();
-            for (Map.Entry<String, TextField> entry : components.entrySet()) {
+            for (Map.Entry<String, Component> entry : components.entrySet()) {
                 String key = entry.getKey();
-                TextField textField = entry.getValue();
-                Double value = Double.parseDouble(textField.getValue());
-                parameters.put(key, value);
+                if (entry.getValue() instanceof NumberField) {
+                	NumberField textField = (NumberField) entry.getValue();
+	                Double value = textField.getValue();
+	                if (value == null) value = 0.00;
+	                parameters.put(key, value);
+                }
             }
 
-            //app.applyCondition(new Condition(title, parameters));
-            app.minilogStringData(title + " applied");
+            app.applyCondition(new Condition(title, parameters));
             applied = true;
         } else {
             // Removing Condition
             enableFields(true);
             applySectionButton.setText("Apply");
-            headerButton.getStyle().set("background-color", "darkgray");
-            //app.removeCondition(title);
-            app.minilogStringData(title + " removed");
+            headerButton.getStyle().set("background-color", "");
+            app.removeCondition(title);
             applied = false;
         }
     }
 
     private void enableFields(boolean enable) {
-        for (Map.Entry<String, TextField> entry : components.entrySet()) {
-            entry.getValue().setEnabled(enable);
+        for (Map.Entry<String, Component> entry : components.entrySet()) {
+        	if (entry.getValue() instanceof HasEnabled) { 
+    	        ((HasEnabled) entry.getValue()).setEnabled(enable); 
+    	    }
         }
     }
 
@@ -112,9 +114,12 @@ public class ConditionBox extends VerticalLayout {
     public void reset() {
         enableFields(true);
         applySectionButton.setText("Apply");
-        headerButton.getStyle().set("background-color", "darkgray");
-        for (Map.Entry<String, TextField> entry : components.entrySet()) {
-            entry.getValue().setValue("0");  // Resetting values
+        headerButton.getStyle().set("background-color", "");
+        for (Map.Entry<String, Component> entry : components.entrySet()) {
+        	if (entry.getValue() instanceof NumberField) {
+                NumberField numberField = (NumberField) entry.getValue();
+                numberField.setValue(0.00);
+        	}
         }
         applied = false;
     }
@@ -132,13 +137,20 @@ public class ConditionBox extends VerticalLayout {
             Double value = entry.getValue();
 
             if (components.containsKey(key)) {
-                TextField textField = components.get(key);
-                textField.setValue(value.toString());
-                applySectionButton.setText("Remove");
-                headerButton.getStyle().set("background-color", "lightblue");
-                //app.applyCondition(new Condition(title, parameters));
-                applied = true;
+            	 if (components.get(key) instanceof NumberField) {
+	            	NumberField textField = (NumberField) components.get(key);
+	                textField.setValue(value);
+	                applySectionButton.setText("Remove");
+	                headerButton.getStyle().set("background-color", "lightblue");
+	                app.applyCondition(new Condition(title, parameters));
+	                applied = true;
+            	 }
             }
         }
+    }
+    
+    public void enableBox(boolean enable) {
+    	applySectionButton.setEnabled(enable);
+    	enableFields(enable);
     }
 }

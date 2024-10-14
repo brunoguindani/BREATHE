@@ -64,9 +64,9 @@ public class LineChart extends ItemDisplay {
         
         points.add(new Point(x1, y1));
         for(Point point: points) {
-            System.out.print(point.x + "," + point.y + " - ");  	
+            //System.out.print(point.x + "," + point.y + " - ");  	
         }
-        System.out.println("");
+        //System.out.println("");
         drawChart();
     }
 

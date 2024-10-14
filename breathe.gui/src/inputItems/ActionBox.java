@@ -139,8 +139,6 @@ public class ActionBox {
         // "Apply" Button
         applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
-        applySectionButton.setBackground(new Color(0, 122, 255));
-        applySectionButton.setForeground(Color.WHITE);
         applySectionButton.setFocusPainted(false);
         applySectionButton.setMargin(new Insets(0, 0, 0, 0));
         applySectionButton.setEnabled(false); 

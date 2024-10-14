@@ -4,11 +4,14 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+
+import app.App;
+
 import com.vaadin.flow.component.html.Div;
 
 public class PatientPanel extends VerticalLayout {
 
-    public PatientPanel() {
+    public PatientPanel(App app) {
         // Main panel setup
         setWidthFull();  // Imposta la larghezza al 100%
         setHeight("50vh");  // Imposta l'altezza al 100% della viewport
@@ -18,7 +21,6 @@ public class PatientPanel extends VerticalLayout {
         Div fixedSizeDiv = new Div();
         fixedSizeDiv.setWidth("100%");  // Imposta la larghezza al 100%
         fixedSizeDiv.setHeight("100vh");  // Imposta l'altezza al 100% della viewport
-        //fixedSizeDiv.getStyle().set("border", "1px solid gray"); // Bordo per il riquadro
         fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
 
         // Form layout for patient data

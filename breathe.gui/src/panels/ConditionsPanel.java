@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
@@ -11,9 +13,11 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
@@ -47,6 +51,23 @@ public class ConditionsPanel extends JPanel{
         conditionsContainer.setPreferredSize(new Dimension(500, 50));
         conditionsContainer.setLayout(new BoxLayout(conditionsContainer, BoxLayout.Y_AXIS)); 
         conditionsContainer.setBorder(null);
+        conditionsContainer.setPreferredSize(null); 
+        conditionsContainer.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+        conditionsContainer.setLayout(new BoxLayout(conditionsContainer, BoxLayout.Y_AXIS));
+        
+        JScrollPane scrollablePanel = new JScrollPane(conditionsContainer);  
+        scrollablePanel.setPreferredSize(new Dimension(500, 350)); 
+        scrollablePanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollablePanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollablePanel.setBorder(null);
+        
+        conditionsContainer.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                conditionsContainer.revalidate();
+                scrollablePanel.repaint();
+            }
+        });
         
         /*
          * ADD CONDITIONS
@@ -102,7 +123,7 @@ public class ConditionsPanel extends JPanel{
         
         //BUTTON TO RESET CONDITIONS
         JPanel rigidAreaPanel = new JPanel();
-        rigidAreaPanel.setPreferredSize(new Dimension(10, 140));
+        rigidAreaPanel.setPreferredSize(new Dimension(10, 240));
         rigidAreaPanel.setBackground(Color.LIGHT_GRAY); 
         conditionsContainer.add(rigidAreaPanel);
            	
@@ -119,16 +140,16 @@ public class ConditionsPanel extends JPanel{
         
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); 
         buttonPanel.setBackground(Color.LIGHT_GRAY); 
-        buttonPanel.setPreferredSize(new Dimension(550, 60));
+        buttonPanel.setPreferredSize(new Dimension(500, 60));
         buttonPanel.add(reset);
         
         JPanel borderPanel = new JPanel();
         borderPanel.setLayout(new BorderLayout());
         borderPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        borderPanel.add(conditionsContainer, BorderLayout.CENTER);
-        borderPanel.add(buttonPanel, BorderLayout.SOUTH);
+        borderPanel.add(scrollablePanel, BorderLayout.CENTER);    
         
 		this.add(borderPanel);
+		this.add(buttonPanel, BorderLayout.SOUTH);
     }
     
     public void addCondition(Condition c) {
