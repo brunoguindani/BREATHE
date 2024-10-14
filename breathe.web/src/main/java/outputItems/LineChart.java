@@ -64,6 +64,7 @@ public class LineChart extends ItemDisplay {
             xData.remove(0);
             yData.remove(0);
         }
+
         xData.add(x);
         yData.add(y);
         updateValue(y);
@@ -73,6 +74,7 @@ public class LineChart extends ItemDisplay {
             updateChart();
             pointCount = 0;
         }
+
     }
 
     private void updateChart() {

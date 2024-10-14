@@ -79,8 +79,6 @@ public class ConditionBox {
         // "Apply" button
         applySectionButton = new JButton("Apply");
         applySectionButton.setPreferredSize(new Dimension(120, 30));
-        applySectionButton.setBackground(new Color(0, 122, 255));
-        applySectionButton.setForeground(Color.WHITE);
         applySectionButton.setFocusPainted(false);
         applySectionButton.setMargin(new Insets(0, 0, 0, 0));
         applySectionButton.setEnabled(true); 
@@ -99,7 +97,8 @@ public class ConditionBox {
                 headerButton.setText(isVisible ? title + " (Close)" : title);
             }
         });
-                headerPanel.add(headerButton, BorderLayout.NORTH);
+                
+        headerPanel.add(headerButton, BorderLayout.NORTH);
         headerPanel.add(fieldsPanel, BorderLayout.CENTER);
         sectionPanel.add(headerPanel, BorderLayout.NORTH);
     }
@@ -174,7 +173,7 @@ public class ConditionBox {
     //Set all values to 0 and remove conditions
     public void reset() {
         enableFields(true);  
-        applySectionButton.setText("Applica");
+        applySectionButton.setText("Apply");
         headerButton.setBackground(Color.DARK_GRAY);
         for (Map.Entry<String, JComponent> entry : components.entrySet()) {
             if (entry.getValue() instanceof JSpinner) {
@@ -202,7 +201,7 @@ public class ConditionBox {
             if (components.containsKey(key)) {
             	
                 JComponent component = components.get(key);  
-                applySectionButton.setText("Rimuovi");
+                applySectionButton.setText("Remove");
                 headerButton.setBackground(new Color(100, 149, 237));
                 app.applyCondition(new Condition(title,parameters));
                 applied = true;

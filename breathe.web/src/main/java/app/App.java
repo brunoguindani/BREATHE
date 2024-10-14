@@ -16,24 +16,26 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import data.Action;
 import data.Condition;
 import interfaces.GuiCallback;
+import panels.ConditionsPanel;
+import panels.ActionsPanel;
 import panels.ControlPanel;
 import panels.LogPanel;
-import panels.PatientPanel;
+import panels.PatientConditionPanel;
 import panels.OutputPanel;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
 @Route("")
 public class App extends Composite<VerticalLayout> implements GuiCallback {
-	private static final long serialVersionUID = 1L;
-	
-	
-	// Contenuti per il primo gruppo di tabs
-    private final PatientPanel patientPanel = new PatientPanel();  // Usa la classe PatientPanel
-    private final VerticalLayout actionsPanel = new VerticalLayout(); 
+
+    // Contenuti per il primo gruppo di tabs
+    private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
+    private final ActionsPanel actionsPanel = new ActionsPanel(this); 
     private final VerticalLayout ventilatorsPanel = new VerticalLayout();
+    //private final ConditionsPanel conditionsPanel = new ConditionsPanel(this);
 
     // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
@@ -43,15 +45,14 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     // Altre tabs
     private final HorizontalLayout controlPanel = new ControlPanel(this);
     
-    private SimulationWorker s;
+    private SimulationWorker sim;
     
     private boolean stopRequest;
     
-
     public App() {
     	
     	Initializer.initilizeJNI();
-		s = new SimulationWorker(this);
+		sim = new SimulationWorker(this);
 		
         VerticalLayout mainLayout = getContent();
         mainLayout.setWidthFull();
@@ -124,7 +125,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         String tabLabel = selectedTab.getLabel();
         switch (tabLabel) {
             case "Patient":
-                contentLayout.add(patientPanel);  // Aggiungi il pannello del paziente
+                contentLayout.add(patientConditionPanel);  // Aggiungi il pannello del paziente
                 break;
             case "Actions":
                 //actionsPanel.setText("This is Actions content");
@@ -156,8 +157,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
             try {
                 while (!stopRequest) {
                 	
-	                ArrayList<String> dataLog = s.getDataLog();  
-	                Map<String, double[]> dataOutput = s.getDataOutput();
+	                ArrayList<String> dataLog = sim.getDataLog();  
+	                Map<String, double[]> dataOutput = sim.getDataOutput();
 	                
                     if (dataLog != null) {
                         getUI().ifPresent(ui -> ui.access(() -> {
@@ -186,15 +187,25 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
      * GUI TO GUI
      */
     
+	public void applyCondition(Condition condition) {
+		patientConditionPanel.getConditionsPanel().addCondition(condition);
+		Notification.show("Added");
+	}
+	
+	public void removeCondition(String title) {
+		patientConditionPanel.getConditionsPanel().removeCondition(title);
+		Notification.show("Removed");
+	}
+    
     /*
      * GUI TO SIMULATION WORKER
      */
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		s = new SimulationWorker(this);
+    		sim = new SimulationWorker(this);
             Notification.show(file);
-    		s.simulationFromFile(file);	
+    		sim.simulationFromFile(file);	
     		stopRequest = false;
     		startDataUpdateThread();
     		return true;
@@ -204,8 +215,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     }
     
     public void stopSimulation() {
-    	s.stopSimulation();	
+    	sim.stopSimulation();	
     	stopRequest = true;
+		 getUI().ifPresent(ui -> ui.access(() -> {
+			actionsPanel.enableButtons(false);
+        }));
     }
     
     /*
@@ -214,21 +228,24 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
 	@Override
 	public void stabilizationComplete(boolean enable) {
-
+		 getUI().ifPresent(ui -> ui.access(() -> {
+			actionsPanel.enableButtons(enable);
+         }));
 	}
 
 	@Override
 	public void logStringData(String data) {
+		//not necessary
 	}
 
 	@Override
 	public void minilogStringData(String data) {
-
+		//not necessary
 	}
 
 	@Override
 	public void logItemDisplayData(String data, double x, double y) {
-		//outputPanel.addValueToItemDisplay(data, x, y);
+		//not necessary
 	}
 
 	@Override
@@ -244,6 +261,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	@Override
 	public void setInitialCondition(List<Condition> list) {
 
+	}
+
+	public void applyAction(Action action) {
+		sim.applyAction(action);
 	}
 	
 }

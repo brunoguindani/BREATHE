@@ -325,6 +325,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         for(SEAction any : actions)
         {
         	gui.logStringData(any.toString()+ "\n");
+            data.add(any.toString());
         }
         
         //send data to graphs to be printed
