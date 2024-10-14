@@ -20,8 +20,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @PWA(name = "Project Base for Vaadin with Spring", shortName = "Project Base")
 @Theme("my-theme")
 public class Main implements AppShellConfigurator {
+    private static final long serialVersionUID = 1L;
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
 

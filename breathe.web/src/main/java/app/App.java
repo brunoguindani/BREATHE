@@ -2,11 +2,11 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.vaadin.flow.component.Composite;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -44,7 +44,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private SimulationWorker s;
     
     private boolean stopRequest;
-    private boolean takeData;
     
 
     public App() {
@@ -155,17 +154,19 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
             try {
                 while (!stopRequest) {
                 	
-                	if(takeData) {
-	                    ArrayList<String> data = s.getData();  
-	                    
-	                    if (data != null) {
-	                        getUI().ifPresent(ui -> ui.access(() -> {
-	                        	 for (String item : data) {
-	                                 logPanel.append(item);
-	                             }
-	                        }));
-	                    }
-	                    takeData=false;
+	                ArrayList<String> dataLog = s.getDataLog();  
+	                Map<String, double[]> dataOutput = s.getDataOutput();
+	                
+                    if (dataLog != null) {
+                        getUI().ifPresent(ui -> ui.access(() -> {
+                        	logPanel.append("---------------------------");
+                        	 for (String item : dataLog) {
+                                 logPanel.append(item);
+                             }
+                        	 for (String item : dataOutput.keySet()) {
+                                 outputPanel.addValueToItemDisplay(item, dataOutput.get(item)[0], dataOutput.get(item)[1]);
+                             }
+                        }));
                 	}
                     Thread.sleep(10);  
                 }
@@ -216,7 +217,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-		takeData = true;
 	}
 
 	@Override
