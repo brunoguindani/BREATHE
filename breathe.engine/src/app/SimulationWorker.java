@@ -164,7 +164,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	protected Void doInBackground() throws Exception {
         
 		if(initializeMode.equals("standard")) {
-	        pe.initializeEngine(patient_configuration, dataRequests);    
+			System.out.println("AAAAAAAA");
+	        pe.initializeEngine(patient_configuration, dataRequests); 
+			System.out.println("CCCCCCC");
 	        exportInitialPatient(patient_configuration.getPatient());	
 	        
 	        //Advice for stabilization completed
@@ -176,8 +178,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		}else if(initializeMode.equals("scenario")) {
 			run_scenario();
 		}
-
-		
+	
 		while (!stopRequest) {
             if (!pe.advanceTime(stime)) {
         		gui.minilogStringData("\nError!");

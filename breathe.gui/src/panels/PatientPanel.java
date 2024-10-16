@@ -32,7 +32,7 @@ public class PatientPanel extends JPanel{
 	/*
 	 * Fields
 	 */
-	private Map<String, JTextField> fieldMap = new HashMap<>();;
+	private Map<String, JTextField> fieldMap = new HashMap<>();
     private JComboBox<String> sexComboBox_Patient = new JComboBox<>(new String[]{"Male", "Female"});
     private JComboBox<String> weightUnitComboBox, heightUnitComboBox;
 	
