@@ -13,6 +13,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 
 import data.Action;
 import data.Condition;
@@ -40,6 +41,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final ControlPanel controlPanel = new ControlPanel(this);
     
     private SimulationWorker sim;
+    private ProgressBar loadingIndicator;
     
     public App() {
         // Inizializzazione del JNI e del worker della simulazione
@@ -53,9 +55,19 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         
         HorizontalLayout topArea = new HorizontalLayout();
         topArea.add(controlPanel);
+        loadingIndicator = new ProgressBar();
+        loadingIndicator.setIndeterminate(true); // Imposta come indeterminato per indicare il caricamento
+        loadingIndicator.setVisible(false); // Inizialmente nascosto
+        loadingIndicator.setWidth("100px");
+
+        mainLayout.add(loadingIndicator); 
+        // Aggiungere controlPanel e loadingIndicator al layout
+        topArea.add(loadingIndicator);
         
         // Control Panel
         mainLayout.add(topArea);
+        
+
 
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
@@ -159,6 +171,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     /*
      * GUI TO GUI
      */
+    public void startLoading() {
+        loadingIndicator.setVisible(true); // Mostra l'indicatore di caricamento
+    }
+
+    public void stopLoading() {
+        loadingIndicator.setVisible(false); // Nascondi l'indicatore di caricamento
+    }
     
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
@@ -195,6 +214,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
 	
 	public boolean startSimulation() {
+		startLoading();
     	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
     		sim = new SimulationWorker(this);
@@ -207,6 +227,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
     
     public boolean startFromFileSimulation(String file) {
+		startLoading();
     	if(file != null) {
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);
@@ -221,6 +242,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	  	patientConditionPanel.getConditionsPanel().enableButtons(true);
 		patientConditionPanel.getPatientPanel().enableComponents(true);
 		ventilatorsPanel.resetButton();
+		stopLoading();
 	}
     
     public void exportSimulation(String exportFilePath) {
@@ -253,6 +275,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 			controlPanel.enableControlStartButton(!enable);
 			actionsPanel.enableButtons(enable);
 			ventilatorsPanel.setEnableConnectButton(true);
+			stopLoading();
          }));
 	}
 
