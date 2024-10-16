@@ -21,12 +21,7 @@ import data.Condition;
 import data.Ventilator;
 import data.Patient;
 import interfaces.GuiCallback;
-import panels.ActionsPanel;
-import panels.ControlPanel;
-import panels.LogPanel;
-import panels.PatientConditionPanel;
-import panels.VentilatorsPanel;
-import panels.OutputPanel;
+import panels.*;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
@@ -38,14 +33,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
     private final ActionsPanel actionsPanel = new ActionsPanel(this); 
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
-    //private final ConditionsPanel conditionsPanel = new ConditionsPanel(this);
-
-	
-
 
     // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
-    private final VerticalLayout scenarioPanel = new VerticalLayout();
+    private final ScenarioPanel scenarioPanel = new ScenarioPanel(this);
     private final LogPanel logPanel = new LogPanel(this);
     
     // Altre tabs
@@ -205,6 +196,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	
 	public List<Condition> getActiveConditions() {
 		return patientConditionPanel.getConditionsPanel().getActiveConditions();
+	}
+	
+	public void addActiontoScenario(Action action, int totalSeconds) {
+		scenarioPanel.addAction(action, totalSeconds);	
 	}
     
     /*

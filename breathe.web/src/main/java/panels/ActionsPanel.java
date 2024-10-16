@@ -50,8 +50,8 @@ public class ActionsPanel extends VerticalLayout {
         addActionBox(app, "Brain Injury", new String[]{"Severity"}, scrollableContent);
         addActionBox(app, "Bronchoconstriction", new String[]{"Severity"}, scrollableContent);
         addActionBox(app, "COPD Exacerbation", new String[]{
-                "BronchitisSeverity", "EmphysemaLeftLungSeverity", "EmphysemaRightLungSeverity"}, scrollableContent);
-        addActionBox(app, "Dyspnea", new String[]{"Severity"}, scrollableContent);
+                "BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, scrollableContent);
+        addActionBox(app, "Dyspnea", new String[]{"RespirationRateSeverity"}, scrollableContent);
         addActionBox(app, "Exercise", new String[]{"Intensity"}, scrollableContent);
         addActionBox(app, "Pericardial Effusion", new String[]{"EffusionRate ml/s"}, scrollableContent, 1000);
         addActionBox(app, "Pneumonia Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, scrollableContent);
