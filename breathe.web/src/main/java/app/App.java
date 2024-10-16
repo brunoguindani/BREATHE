@@ -1,7 +1,9 @@
 package app;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,6 +20,7 @@ import data.Ventilator;
 import data.Patient;
 import interfaces.GuiCallback;
 import panels.*;
+import utils.Pair;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
@@ -26,7 +29,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	private static final long serialVersionUID = 1L;
 
     // Contenuti per il primo gruppo di tabs
-    private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
+    private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  
     private final ActionsPanel actionsPanel = new ActionsPanel(this); 
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
 
@@ -39,20 +42,27 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private SimulationWorker sim;
     
     public App() {
-    	
-    	Initializer.initilizeJNI();
-		sim = new SimulationWorker(this);
-		
+        // Inizializzazione del JNI e del worker della simulazione
+        Initializer.initilizeJNI();
+        sim = new SimulationWorker(this);
+        
         VerticalLayout mainLayout = getContent();
         mainLayout.setWidthFull();
         mainLayout.setHeightFull();
         mainLayout.setFlexGrow(1);
         
+        HorizontalLayout topArea = new HorizontalLayout();
+        topArea.add(controlPanel);
+        
         // Control Panel
-        mainLayout.add(controlPanel);
+        mainLayout.add(topArea);
 
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
+        leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        leftColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
+        leftColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
         leftTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), leftContentLayout));
@@ -63,6 +73,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
         // Seconda colonna
         VerticalLayout rightColumn = createColumn();
+        rightColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        rightColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
+        rightColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+        
         Tabs rightTabs = createRightTabs();
         VerticalLayout rightContentLayout = new VerticalLayout();
         rightTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), rightContentLayout));
@@ -75,14 +89,16 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         HorizontalLayout mainRow = new HorizontalLayout(leftColumn, rightColumn);
         mainRow.setWidthFull();
         mainRow.setHeightFull();
-        mainRow.setFlexGrow(1, leftColumn, rightColumn);
+        
+        // Assicurati che entrambe le colonne abbiano la stessa dimensione
+        mainRow.setFlexGrow(1, leftColumn);
+        mainRow.setFlexGrow(1, rightColumn);
 
         mainLayout.add(mainRow);
 
         updateContent(leftTabs.getSelectedTab(), leftContentLayout);
         updateContent(rightTabs.getSelectedTab(), rightContentLayout);
     }
-
     // Metodo per creare un layout colonna
     private VerticalLayout createColumn() {
         VerticalLayout column = new VerticalLayout();
@@ -173,6 +189,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     /*
      * GUI TO SIMULATION WORKER
      */
+	
+	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
+		sim.createScenario(patientFile, scenarioName, actions);
+	}
 	
 	public boolean startSimulation() {
     	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());

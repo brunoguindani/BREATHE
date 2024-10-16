@@ -4,13 +4,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.selection.SelectionEvent;
-import com.vaadin.flow.data.selection.SelectionListener;
 
 import app.App;
 import data.Action;
@@ -30,7 +27,7 @@ public class ScenarioPanel extends VerticalLayout {
     private Grid<Pair<Action, Integer>> actionsGrid;
     private ListDataProvider<Pair<Action, Integer>> dataProvider;
 
-    private List<Pair<Action, Integer>> actions = new ArrayList<>();
+    private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
 
     public ScenarioPanel(App app) {
         this.app = app;
@@ -129,7 +126,7 @@ public class ScenarioPanel extends VerticalLayout {
             patientFile = "./states/exported/" + patientFile;
         }
 
-       // app.createScenario(patientFile, scenarioName, actions);
+        app.createScenario(patientFile, scenarioName, actions);
         Notification.show("Scenario \"" + scenarioName + "\" created successfully.", 3000, Notification.Position.MIDDLE);
     }
 
