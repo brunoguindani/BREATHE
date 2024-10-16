@@ -19,23 +19,27 @@ import com.vaadin.flow.router.Route;
 import data.Action;
 import data.Condition;
 import interfaces.GuiCallback;
-import panels.ConditionsPanel;
 import panels.ActionsPanel;
 import panels.ControlPanel;
 import panels.LogPanel;
 import panels.PatientConditionPanel;
+import panels.VentilatorsPanel;
 import panels.OutputPanel;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
 @Route("")
 public class App extends Composite<VerticalLayout> implements GuiCallback {
+	private static final long serialVersionUID = 1L;
 
     // Contenuti per il primo gruppo di tabs
     private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
     private final ActionsPanel actionsPanel = new ActionsPanel(this); 
-    private final VerticalLayout ventilatorsPanel = new VerticalLayout();
+    private final VerticalLayout ventilatorsPanel = new VentilatorsPanel();
     //private final ConditionsPanel conditionsPanel = new ConditionsPanel(this);
+
+	
+
 
     // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
