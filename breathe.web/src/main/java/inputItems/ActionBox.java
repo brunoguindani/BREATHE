@@ -23,9 +23,9 @@ public class ActionBox extends VerticalLayout {
     private Button applySectionButton;
 
     // TextFields for time input
-    private TextField hoursField;
-    private TextField minutesField;
-    private TextField secondsField;
+    private NumberField hoursField;
+    private NumberField minutesField;
+    private NumberField secondsField;
 
     private App app;
 
@@ -52,13 +52,14 @@ public class ActionBox extends VerticalLayout {
         for (Map.Entry<String, Component> entry : components2.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
+                numberField.setValue(0.0);
                 numberField.setWidth("30%"); 
             }
             fieldsLayout.add(entry.getValue()); 
         }
 
         // Time fields
-        //createTimeFields(fieldsLayout);
+        createTimeFields(fieldsLayout);
 
         // Apply Button
         applySectionButton = new Button("Apply", e -> applyAction());
@@ -76,13 +77,22 @@ public class ActionBox extends VerticalLayout {
         timeLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Centra orizzontalmente
         timeLayout.setAlignItems(Alignment.CENTER); // Centra verticalmente
 
-        hoursField = new TextField("Hours");
+        hoursField = new NumberField("Hours");
+        hoursField.setValue(0.0);
+        hoursField.setStep(1); 
+        hoursField.setMin(0); 
         hoursField.setWidth("10%"); // Imposta la larghezza al 10%
 
-        minutesField = new TextField("Minutes");
+        minutesField = new NumberField("Minutes");
+        minutesField.setValue(0.0);
+        minutesField.setStep(1); 
+        minutesField.setMin(0); 
         minutesField.setWidth("10%");
 
-        secondsField = new TextField("Seconds");
+        secondsField = new NumberField("Seconds");
+        secondsField.setValue(0.0);
+        secondsField.setStep(1); 
+        secondsField.setMin(0); 
         secondsField.setWidth("10%");
 
         // Set input restrictions
@@ -124,7 +134,7 @@ public class ActionBox extends VerticalLayout {
             }
         }
 
-        //app.addActiontoScenario(new Action(title, parameters), totalSeconds);
+        app.addActiontoScenario(new Action(title, parameters), totalSeconds);
         Notification.show("Action added to scenario!");
     }
 
@@ -145,16 +155,10 @@ public class ActionBox extends VerticalLayout {
     }
 
     public int getTotalTimeInSeconds() {
-        int hours = Integer.parseInt(hoursField.getValue());
-        int minutes = Integer.parseInt(minutesField.getValue());
-        int seconds = Integer.parseInt(secondsField.getValue());
+        int hours = hoursField.getValue().intValue();
+        int minutes = minutesField.getValue().intValue();
+        int seconds = secondsField.getValue().intValue();
         return hours * 3600 + minutes * 60 + seconds;
     }
 
-    private String addSpaceBeforeUpperCase(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
-    }
 }
