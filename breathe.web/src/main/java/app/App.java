@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 import data.Action;
 import data.Condition;
 import data.Ventilator;
+import data.Patient;
 import interfaces.GuiCallback;
 import panels.ActionsPanel;
 import panels.ControlPanel;
@@ -201,10 +202,30 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		patientConditionPanel.getConditionsPanel().removeCondition(title);
 		Notification.show("Removed");
 	}
+	
+	public List<Condition> getActiveConditions() {
+		return patientConditionPanel.getConditionsPanel().getActiveConditions();
+	}
     
     /*
      * GUI TO SIMULATION WORKER
      */
+	
+	public boolean startSimulation() {
+    	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());
+    	if(new_patient != null) {
+    		sim = new SimulationWorker(this);
+    		sim.simulation(new_patient);	
+    		getUI().ifPresent(ui -> ui.access(() -> {
+        		patientConditionPanel.getConditionsPanel().enableButtons(false);
+        		patientConditionPanel.getPatientPanel().enableComponents(false);
+            }));
+    		startDataUpdateThread();
+    		//ventilatorsPanel.setEnableConnectButton(true);
+    		return true;
+    	}
+    	return false;
+	}
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
@@ -224,6 +245,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	stopRequest = true;
 		 getUI().ifPresent(ui -> ui.access(() -> {
 			actionsPanel.enableButtons(false);
+	  		patientConditionPanel.getConditionsPanel().enableButtons(true);
+    		patientConditionPanel.getPatientPanel().enableComponents(true);
         }));
     }
     
