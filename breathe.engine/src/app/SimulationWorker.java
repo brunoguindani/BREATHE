@@ -160,9 +160,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	protected Void doInBackground() throws Exception {
         
 		if(initializeMode.equals("standard")) {
-			System.out.println("AAAAAAAA");
 	        pe.initializeEngine(patient_configuration, dataRequests); 
-			System.out.println("CCCCCCC");
 	        exportInitialPatient(patient_configuration.getPatient());	
 	        
 	        //Advice for stabilization completed

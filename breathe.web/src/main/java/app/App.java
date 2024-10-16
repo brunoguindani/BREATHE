@@ -1,7 +1,9 @@
 package app;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 
 import data.Action;
 import data.Condition;
@@ -18,6 +21,7 @@ import data.Ventilator;
 import data.Patient;
 import interfaces.GuiCallback;
 import panels.*;
+import utils.Pair;
 
 @PageTitle("Breathe")
 @Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
@@ -26,7 +30,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	private static final long serialVersionUID = 1L;
 
     // Contenuti per il primo gruppo di tabs
-    private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
+    private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  
     private final ActionsPanel actionsPanel = new ActionsPanel(this); 
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
 
@@ -37,22 +41,40 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final ControlPanel controlPanel = new ControlPanel(this);
     
     private SimulationWorker sim;
+    private ProgressBar loadingIndicator;
     
     public App() {
-    	
-    	Initializer.initilizeJNI();
-		sim = new SimulationWorker(this);
-		
+        // Inizializzazione del JNI e del worker della simulazione
+        Initializer.initilizeJNI();
+        sim = new SimulationWorker(this);
+        
         VerticalLayout mainLayout = getContent();
         mainLayout.setWidthFull();
         mainLayout.setHeightFull();
         mainLayout.setFlexGrow(1);
         
+        HorizontalLayout topArea = new HorizontalLayout();
+        topArea.add(controlPanel);
+        loadingIndicator = new ProgressBar();
+        loadingIndicator.setIndeterminate(true); // Imposta come indeterminato per indicare il caricamento
+        loadingIndicator.setVisible(false); // Inizialmente nascosto
+        loadingIndicator.setWidth("100px");
+
+        mainLayout.add(loadingIndicator); 
+        // Aggiungere controlPanel e loadingIndicator al layout
+        topArea.add(loadingIndicator);
+        
         // Control Panel
-        mainLayout.add(controlPanel);
+        mainLayout.add(topArea);
+        
+
 
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
+        leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        leftColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
+        leftColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
         leftTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), leftContentLayout));
@@ -63,6 +85,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
         // Seconda colonna
         VerticalLayout rightColumn = createColumn();
+        rightColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        rightColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
+        rightColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+        
         Tabs rightTabs = createRightTabs();
         VerticalLayout rightContentLayout = new VerticalLayout();
         rightTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), rightContentLayout));
@@ -75,14 +101,16 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         HorizontalLayout mainRow = new HorizontalLayout(leftColumn, rightColumn);
         mainRow.setWidthFull();
         mainRow.setHeightFull();
-        mainRow.setFlexGrow(1, leftColumn, rightColumn);
+        
+        // Assicurati che entrambe le colonne abbiano la stessa dimensione
+        mainRow.setFlexGrow(1, leftColumn);
+        mainRow.setFlexGrow(1, rightColumn);
 
         mainLayout.add(mainRow);
 
         updateContent(leftTabs.getSelectedTab(), leftContentLayout);
         updateContent(rightTabs.getSelectedTab(), rightContentLayout);
     }
-
     // Metodo per creare un layout colonna
     private VerticalLayout createColumn() {
         VerticalLayout column = new VerticalLayout();
@@ -143,6 +171,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     /*
      * GUI TO GUI
      */
+    public void startLoading() {
+        loadingIndicator.setVisible(true); // Mostra l'indicatore di caricamento
+    }
+
+    public void stopLoading() {
+        loadingIndicator.setVisible(false); // Nascondi l'indicatore di caricamento
+    }
     
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
@@ -174,7 +209,12 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
      * GUI TO SIMULATION WORKER
      */
 	
+	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
+		sim.createScenario(patientFile, scenarioName, actions);
+	}
+	
 	public boolean startSimulation() {
+		startLoading();
     	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
     		sim = new SimulationWorker(this);
@@ -187,6 +227,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
     
     public boolean startFromFileSimulation(String file) {
+		startLoading();
     	if(file != null) {
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);
@@ -201,6 +242,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	  	patientConditionPanel.getConditionsPanel().enableButtons(true);
 		patientConditionPanel.getPatientPanel().enableComponents(true);
 		ventilatorsPanel.resetButton();
+		stopLoading();
 	}
     
     public void exportSimulation(String exportFilePath) {
@@ -233,6 +275,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 			controlPanel.enableControlStartButton(!enable);
 			actionsPanel.enableButtons(enable);
 			ventilatorsPanel.setEnableConnectButton(true);
+			stopLoading();
          }));
 	}
 

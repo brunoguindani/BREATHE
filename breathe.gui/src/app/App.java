@@ -27,8 +27,6 @@ public class App extends JFrame implements GuiCallback {
     
     //All panels
     public ControlPanel controlPanel = new ControlPanel(this);
-    public PatientPanel patientPanel = new PatientPanel(this);
-    public ConditionsPanel conditionsPanel = new ConditionsPanel(this);
     public ActionsPanel actionsPanel = new ActionsPanel(this);
     public VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
     public OutputButtonPanel outputButtonPanel = new OutputButtonPanel(this);
@@ -36,16 +34,12 @@ public class App extends JFrame implements GuiCallback {
     public LogPanel logPanel = new LogPanel(this);
     public ScenarioPanel scenarioPanel = new ScenarioPanel(this);
     public MinilogPanel minilogPanel = new MinilogPanel(this);
-    
+    public PatientConditionsPanel patientConditionsPanel = new PatientConditionsPanel(this);
     
     //Left and Right Panel
     public JTabbedPane leftTabbedPane;
     public JTabbedPane rightTabbedPane; 
-    
-    //Panel for switching between patient and condition during setUp
-    private JPanel patientConditionPanel;
-    private CardLayout cardLayout;  
-    
+
     //create a simulationWorker
     private SimulationWorker sim;
    
@@ -63,42 +57,10 @@ public class App extends JFrame implements GuiCallback {
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
         /*
-         * Set up switch between Patient and Condition
-         */
-        JToggleButton patientRadioButton = new JToggleButton("Patient");
-        JToggleButton conditionsRadioButton = new JToggleButton("Conditions");
-        patientRadioButton.setPreferredSize(new Dimension(150, 30));
-        conditionsRadioButton.setPreferredSize(new Dimension(150, 30));
-        
-        ButtonGroup group = new ButtonGroup();
-        group.add(patientRadioButton);
-        group.add(conditionsRadioButton);
-        patientRadioButton.setSelected(true);  
-        
-        JPanel radioPanel = new JPanel();
-        radioPanel.setBackground(Color.LIGHT_GRAY); 
-        radioPanel.add(patientRadioButton);
-        radioPanel.add(conditionsRadioButton);
-
-        cardLayout = new CardLayout();
-        patientConditionPanel = new JPanel(cardLayout);
-        patientConditionPanel.add(patientPanel, "Patient");
-        patientConditionPanel.add(conditionsPanel, "Condition");
-
-        patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
-        conditionsRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
-
-        JPanel switchPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        switchPanel.setPreferredSize(new Dimension(550, 20));
-        switchPanel.setBackground(Color.LIGHT_GRAY);
-        switchPanel.add(radioPanel, BorderLayout.NORTH);
-        switchPanel.add(patientConditionPanel, BorderLayout.CENTER);
-
-        /*
          * Left side of the main panel
          */
         leftTabbedPane = new JTabbedPane();
-        leftTabbedPane.addTab("Patient", switchPanel);
+        leftTabbedPane.addTab("Patient", patientConditionsPanel);
         leftTabbedPane.addTab("Actions", actionsPanel);
         leftTabbedPane.addTab("Ventilators", ventilatorsPanel);
         leftTabbedPane.addTab("Output Settings", outputButtonPanel);
@@ -153,18 +115,18 @@ public class App extends JFrame implements GuiCallback {
     }
     
 	public void applyCondition(Condition condition) {
-		conditionsPanel.addCondition(condition);
+		patientConditionsPanel.getConditionsPanel().addCondition(condition);
 	}
 	
 	public void removeCondition(String title) {
-		conditionsPanel.removeCondition(title);
+		patientConditionsPanel.getConditionsPanel().removeCondition(title);
 	}
 	
 	public List<Condition> getActiveConditions() {
-		return conditionsPanel.getActiveConditions();
+		return patientConditionsPanel.getConditionsPanel().getActiveConditions();
 	}
     public boolean loadPatientData(String selectedPatientFilePath) {
-    	return patientPanel.loadPatientData(selectedPatientFilePath);
+    	return patientConditionsPanel.getPatientPanel().loadPatientData(selectedPatientFilePath);
     }
     
 	public void clearOutputDisplay() {
@@ -176,7 +138,7 @@ public class App extends JFrame implements GuiCallback {
 	}
 	
 	public String getPatientName() {
-		return patientPanel.getPatientName();
+		return patientConditionsPanel.getPatientPanel().getPatientName();
 	}
 	
 
@@ -185,13 +147,13 @@ public class App extends JFrame implements GuiCallback {
      * GUI TO SIMULATIONWORKER
      */
     public boolean startSimulation() {
-    	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
+    	Patient new_patient = patientConditionsPanel.getPatientPanel().generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
     		sim = new SimulationWorker(this);
     		sim.simulation(new_patient);	
-        	conditionsPanel.enableButtons(false);
+    		patientConditionsPanel.getConditionsPanel().enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
-        	patientPanel.enableComponents(false);
+    		patientConditionsPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}
     	return false;
@@ -201,9 +163,9 @@ public class App extends JFrame implements GuiCallback {
     	if(file != null) {
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);	
-        	conditionsPanel.enableButtons(false);
+    		patientConditionsPanel.getConditionsPanel().enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
-        	patientPanel.enableComponents(false);
+    		patientConditionsPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {
     		return false;
@@ -215,7 +177,7 @@ public class App extends JFrame implements GuiCallback {
     		sim = new SimulationWorker(this);
     		sim.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
-        	patientPanel.enableComponents(false);
+    		patientConditionsPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {
     		return false;
@@ -224,8 +186,8 @@ public class App extends JFrame implements GuiCallback {
     
     public void stopSimulation() {
     	sim.stopSimulation();	
-    	conditionsPanel.enableButtons(true);
-    	patientPanel.enableComponents(true);
+    	patientConditionsPanel.getConditionsPanel().enableButtons(true);
+    	patientConditionsPanel.getPatientPanel().enableComponents(true);
     	actionsPanel.enableButtons(false);
     	ventilatorsPanel.resetButton();
     }
@@ -263,7 +225,7 @@ public class App extends JFrame implements GuiCallback {
 		controlPanel.enableControlStartButton(!enable);
 		controlPanel.showControlStartButton(!enable);
 		actionsPanel.enableButtons(enable);
-		conditionsPanel.enableButtons(!enable);
+		patientConditionsPanel.getConditionsPanel().enableButtons(!enable);
 	}
     
 	@Override
@@ -292,7 +254,7 @@ public class App extends JFrame implements GuiCallback {
 	
 	@Override
 	public void setInitialCondition(List<Condition> list) {	
-    	conditionsPanel.setInitialCondition(list);
+		patientConditionsPanel.getConditionsPanel().setInitialCondition(list);
 	}
 
 }

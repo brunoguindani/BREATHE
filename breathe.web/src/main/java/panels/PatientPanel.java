@@ -48,7 +48,8 @@ public class PatientPanel extends VerticalLayout {
         NumberField ageField = new NumberField("Age");
         ageField.setValue(44.0);
         ageField.setStep(1); 
-        ageField.setMin(0); 
+        ageField.setMin(18); 
+        ageField.setMax(65);
         fieldMap.put("Age", ageField);
 
         NumberField weightField = new NumberField("Weight");
@@ -60,29 +61,40 @@ public class PatientPanel extends VerticalLayout {
         heightField.setValue(180.0);
         heightField.setStep(1);
         fieldMap.put("Height", heightField);
+        heightField.setHelperText("Value must be between 163cm and 190cm for male patients and between 151cm and 175cm for female patients");
+
 
         NumberField bodyFatField = new NumberField("Body Fat Fraction");
         bodyFatField.setValue(0.21); 
+        bodyFatField.setHelperText("Value must be between 0.02% and 0.25% for male patients and 0.32% for female patients");
         fieldMap.put("BodyFatFraction", bodyFatField);
 
         NumberField heartRateField = new NumberField("Heart Rate Baseline");
         heartRateField.setValue(72.0);
         heartRateField.setStep(1);
+        heartRateField.setMin(50); 
+        heartRateField.setMax(110);
         fieldMap.put("HeartRateBaseline", heartRateField);
 
         NumberField diastolicPressureField = new NumberField("Diastolic Pressure");
         diastolicPressureField.setValue(72.0);
         diastolicPressureField.setStep(1);
+        diastolicPressureField.setMin(60); 
+        diastolicPressureField.setMax(80);
         fieldMap.put("DiastolicArterialPressureBaseline", diastolicPressureField);
 
         NumberField systolicPressureField = new NumberField("Systolic Pressure");
         systolicPressureField.setValue(114.0);
         systolicPressureField.setStep(1);
+        systolicPressureField.setMin(90); 
+        systolicPressureField.setMax(120);
         fieldMap.put("SystolicArterialPressureBaseline", systolicPressureField);
 
         NumberField respirationRateField = new NumberField("Respiration Rate Baseline");
         respirationRateField.setValue(16.0);
         respirationRateField.setStep(1);
+        respirationRateField.setMin(8); 
+        respirationRateField.setMax(20);
         fieldMap.put("RespirationRateBaseline", respirationRateField);
 
         NumberField basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
@@ -103,23 +115,11 @@ public class PatientPanel extends VerticalLayout {
         heightUnitComboBox.setItems("cm", "m", "in", "ft"); 
         heightUnitComboBox.setValue("cm");
 
-        // Add tooltips
-        ageField.setHelperText("Value must be between 18 and 65");
-        heightField.setHelperText("Value must be between 163cm and 190cm for male patients and between 151cm and 175cm for female patients");
-        bodyFatField.setHelperText("Value must be between 0.02% and 0.25% for male patients and 0.32% for female patients");
-        heartRateField.setHelperText("Value must be between 50bpm and 110bpm");
-        diastolicPressureField.setHelperText("Value must be between 60mmHg and 80mmHg");
-        systolicPressureField.setHelperText("Value must be between 90mmHg and 120mmHg");
-        respirationRateField.setHelperText("Value must be between 8bpm and 20bpm");
-
-        // Add fields to form layout (in a similar manner to GridBagLayout in Swing)
-        formLayout.add(nameField);
-        formLayout.add(sexComboBox);
+        // Add fields to form layout in pairs
+        formLayout.add(nameField, sexComboBox);
         formLayout.add(ageField, 1);
-        formLayout.add(weightField);
-        formLayout.add(weightUnitComboBox);
-        formLayout.add(heightField);
-        formLayout.add(heightUnitComboBox);
+        formLayout.add(weightField, weightUnitComboBox);
+        formLayout.add(heightField, heightUnitComboBox);
         formLayout.add(bodyFatField);
         formLayout.add(heartRateField);
         formLayout.add(diastolicPressureField);
@@ -147,11 +147,22 @@ public class PatientPanel extends VerticalLayout {
     	
     	char sex = 'F';
     	for (Map.Entry<String, NumberField> entry : fieldMap.entrySet()) {
-    	    String chiave = entry.getKey();
     	    
-    	    if(!chiave.equals("Name")) {
-        	    Double valore = entry.getValue().getValue();
-    	    	parameters.put(chiave, valore);
+    	    if(!entry.getKey().equals("Name")) {
+            	NumberField numberField = (NumberField) entry.getValue();
+            	Double value = numberField.getValue();
+            	Double minValue = numberField.getMin();
+            	Double maxValue = numberField.getMax();
+
+            	// Controlla se il valore è fuori dall'intervallo
+            	if (value < minValue || value > maxValue) {
+            	    numberField.setInvalid(true);
+            	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+            	    return null; 
+            	}
+
+            	numberField.setInvalid(false);
+            	parameters.put(entry.getKey(), value);
     	    }
     	}
     	
