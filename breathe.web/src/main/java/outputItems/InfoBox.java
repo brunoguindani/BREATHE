@@ -44,6 +44,7 @@ public class InfoBox extends ItemDisplay {
 
     @Override
     public void addPoint(double x, double y) {
+        y = Math.round(y * 1000.0) / 1000.0; 
         updateValue(y);
     }
 

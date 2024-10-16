@@ -1,9 +1,12 @@
 package panels;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.KeyDownEvent;
 import outputItems.InfoBox;
 import outputItems.LineChart;
 import outputItems.ItemDisplay;
@@ -12,6 +15,7 @@ import app.App;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class OutputPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
@@ -41,6 +45,14 @@ public class OutputPanel extends VerticalLayout {
         chartsMap.put("Heart Rate", "1/min");
         chartsMap.put("Respiratory Rate", "1/min");
         chartsMap.put("Airway Pressure", "mmHg");
+        
+        MultiSelectComboBox<String> comboBox = new MultiSelectComboBox<>();
+        comboBox.setLabel("Seleziona le opzioni");
+        comboBox.setItems(chartsMap.keySet());
+        comboBox.setItemLabelGenerator(item -> item); 
+        comboBox.addValueChangeListener(event -> updateItemDisplay(comboBox.getValue()));
+        
+        add(comboBox);
         
         chartPanels = new HashMap<>();
              
@@ -92,13 +104,12 @@ public class OutputPanel extends VerticalLayout {
     }
 
     // Metodo per aggiornare i display degli oggetti
-    public void updateItemDisplay(List<Checkbox> checkboxes) {
+    public void updateItemDisplay(Set<String> selectedCharts) { // Modifica il tipo di parametro
         chartsPanel.removeAll();
         infoBoxPanel.removeAll();
 
-        for (Checkbox checkbox : checkboxes) {
-            String chartName = checkbox.getLabel();
-            if (checkbox.getValue()) {
+        for (String chartName : selectedCharts) {
+            if (chartPanels.containsKey(chartName)) {
                 if (chartPanels.get(chartName) instanceof LineChart) {
                     chartsPanel.add(chartPanels.get(chartName));
                 } else if (chartPanels.get(chartName) instanceof InfoBox) {
@@ -108,9 +119,9 @@ public class OutputPanel extends VerticalLayout {
         }
 
         if (infoBoxPanel.getComponentCount() == 0) {
-        	infoBoxPanel.setWidth("0px");
+            infoBoxPanel.setWidth("0px");
         } else {
-        	infoBoxPanel.setWidth("160px");  // Imposta la larghezza quando ci sono componenti
+            infoBoxPanel.setWidth("160px");
         }
 
         scrollChartPane.getElement().executeJs("this.scrollTop = 0");

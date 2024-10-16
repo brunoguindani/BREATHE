@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @Push
-@PWA(name = "Project Base for Vaadin with Spring", shortName = "Project Base")
+@PWA(name = "Project Base for Vaadin with Spring", shortName = "Project Base", iconPath = "icons/output.jpg")
 @Theme("my-theme")
 public class Main implements AppShellConfigurator {
     private static final long serialVersionUID = 1L;

@@ -45,7 +45,7 @@ public class LineChart extends ItemDisplay {
                 .withMin(0.0)   
                 .withMax(400.0) 
                 .withTickPlacement(TickPlacement.BETWEEN)
-                .withLabels(LabelsBuilder.get().withShow(false).build()) 
+                .withLabels(LabelsBuilder.get().withShow(true).build()) 
                 .build())
             .withYaxis(YAxisBuilder.get()
         		.withLabels(com.github.appreciated.apexcharts.config.yaxis.builder.LabelsBuilder.get()
