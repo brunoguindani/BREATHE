@@ -47,12 +47,12 @@ public class App extends JFrame implements GuiCallback {
     private CardLayout cardLayout;  
     
     //create a simulationWorker
-    private SimulationWorker s;
+    private SimulationWorker sim;
    
     public App() {
     	
     	Initializer.initilizeJNI();
-		s = new SimulationWorker(this);
+		sim = new SimulationWorker(this);
     	
     	//Main Panel Style
         setTitle("Breathe Simulation");
@@ -187,8 +187,8 @@ public class App extends JFrame implements GuiCallback {
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
-    		s = new SimulationWorker(this);
-    		s.simulation(new_patient);	
+    		sim = new SimulationWorker(this);
+    		sim.simulation(new_patient);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
         	patientPanel.enableComponents(false);
@@ -199,8 +199,8 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		s = new SimulationWorker(this);
-    		s.simulationFromFile(file);	
+    		sim = new SimulationWorker(this);
+    		sim.simulationFromFile(file);	
         	conditionsPanel.enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
         	patientPanel.enableComponents(false);
@@ -212,8 +212,8 @@ public class App extends JFrame implements GuiCallback {
     
     public boolean startFromScenarioSimulation(String scenarioFile) {
     	if(scenarioFile != null) {
-    		s = new SimulationWorker(this);
-    		s.simulationFromScenario(scenarioFile);	
+    		sim = new SimulationWorker(this);
+    		sim.simulationFromScenario(scenarioFile);	
     		ventilatorsPanel.setEnableConnectButton(true);
         	patientPanel.enableComponents(false);
     		return true;
@@ -223,7 +223,7 @@ public class App extends JFrame implements GuiCallback {
     }
     
     public void stopSimulation() {
-    	s.stopSimulation();	
+    	sim.stopSimulation();	
     	conditionsPanel.enableButtons(true);
     	patientPanel.enableComponents(true);
     	actionsPanel.enableButtons(false);
@@ -232,17 +232,17 @@ public class App extends JFrame implements GuiCallback {
     public void connectVentilator() {
     	Ventilator v = ventilatorsPanel.getCurrentVentilator();
     	if(v != null)
-    		s.connectVentilator(v);	
+    		sim.connectVentilator(v);	
     }
     
     public void disconnectVentilator() {
     	Ventilator v = ventilatorsPanel.getCurrentVentilator();
     	if(v != null)
-    		s.disconnectVentilator(v);
+    		sim.disconnectVentilator(v);
     }
     
 	public void applyAction(Action action) {
-		s.applyAction(action);
+		sim.applyAction(action);
 	}
     
     /*
@@ -286,10 +286,10 @@ public class App extends JFrame implements GuiCallback {
 	}
 	
 	public void exportSimulation(String exportFilePath) {
-		s.exportSimulation(exportFilePath);
+		sim.exportSimulation(exportFilePath);
 	}
 	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
-		s.createScenario(patientFile, scenarioName, actions);
+		sim.createScenario(patientFile, scenarioName, actions);
 	}
 
 }

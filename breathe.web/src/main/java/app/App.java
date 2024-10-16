@@ -18,6 +18,7 @@ import com.vaadin.flow.router.Route;
 
 import data.Action;
 import data.Condition;
+import data.Ventilator;
 import interfaces.GuiCallback;
 import panels.ActionsPanel;
 import panels.ControlPanel;
@@ -35,7 +36,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     // Contenuti per il primo gruppo di tabs
     private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  // Usa la classe PatientPanel
     private final ActionsPanel actionsPanel = new ActionsPanel(this); 
-    private final VerticalLayout ventilatorsPanel = new VentilatorsPanel();
+    private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
     //private final ConditionsPanel conditionsPanel = new ConditionsPanel(this);
 
 	
@@ -166,9 +167,9 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	                
                     if (dataLog != null) {
                         getUI().ifPresent(ui -> ui.access(() -> {
-                        	logPanel.append("---------------------------");
+                        	//logPanel.append("---------------------------");
                         	 for (String item : dataLog) {
-                                 logPanel.append(item);
+                                 //logPanel.append(item);
                              }
                         	 for (String item : dataOutput.keySet()) {
                                  outputPanel.addValueToItemDisplay(item, dataOutput.get(item)[0], dataOutput.get(item)[1]);
@@ -210,8 +211,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     		sim = new SimulationWorker(this);
             Notification.show(file);
     		sim.simulationFromFile(file);	
-    		stopRequest = false;
     		startDataUpdateThread();
+    		stopRequest = false;
     		return true;
     	}else {
     		return false;
@@ -226,6 +227,19 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         }));
     }
     
+	public void connectVentilator() {
+		Ventilator v = ventilatorsPanel.getCurrentVentilator();
+    	if(v != null) {
+    		sim.connectVentilator(v);	
+    	}
+	}
+	
+	public void disconnectVentilator() {
+    	Ventilator v = ventilatorsPanel.getCurrentVentilator();
+    	if(v != null)
+    		sim.disconnectVentilator(v);
+    }
+	
     /*
      * SIMULATION WORKER TO GUI
      */
@@ -239,7 +253,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-		//not necessary
+		getUI().ifPresent(ui -> ui.access(() -> {
+			logPanel.append(data);
+         }));
+		
 	}
 
 	@Override
@@ -270,5 +287,5 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	public void applyAction(Action action) {
 		sim.applyAction(action);
 	}
-	
+
 }
