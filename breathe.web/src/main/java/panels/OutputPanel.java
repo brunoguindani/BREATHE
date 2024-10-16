@@ -84,7 +84,7 @@ public class OutputPanel extends VerticalLayout {
         // Imposta il pannello principale
         scrollChartPane = new Div(chartsPanel);
         scrollChartPane.getStyle().set("overflow-y", "auto").set("overflow-x", "hidden");
-        scrollChartPane.setHeight("300px");
+        scrollChartPane.setHeight("500px");
         scrollChartPane.setWidthFull();
         
         mainPanel.add(infoBoxPanel, scrollChartPane);
