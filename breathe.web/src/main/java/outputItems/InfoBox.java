@@ -4,8 +4,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 public class InfoBox extends ItemDisplay {
-
-    private Span unitLabel;
+	private static final long serialVersionUID = 1L;
+	
+	
+	private Span unitLabel;
 
     public InfoBox(String title, String unit) {
         super(title, unit);

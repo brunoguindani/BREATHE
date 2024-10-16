@@ -2,7 +2,6 @@ package ventilators;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 
@@ -80,7 +79,6 @@ public class cpapVentilatorPanel extends VerticalLayout {
     // Apply ventilator settings
     private void applySettings() {
     	app.connectVentilator();
-        Notification.show("Settings updated");
     }
 
     // Get ventilator data as a map

@@ -20,8 +20,9 @@ import java.util.Map;
 
 @Route("conditions-panel")
 public class ConditionsPanel extends VerticalLayout {
-
-    private List<ConditionBox> boxes = new ArrayList<>();
+	private static final long serialVersionUID = 1L;
+	
+	private List<ConditionBox> boxes = new ArrayList<>();
     private List<Condition> activeConditions = new ArrayList<>();
     private Button resetButton;
 

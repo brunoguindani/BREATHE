@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -20,6 +18,8 @@ import data.Patient;
 import com.vaadin.flow.component.html.Div;
 
 public class PatientPanel extends VerticalLayout {
+	private static final long serialVersionUID = 1L;
+	
 	
 	private TextField nameField;
 	private ComboBox<String> sexComboBox,weightUnitComboBox,heightUnitComboBox;
@@ -199,4 +199,10 @@ public class PatientPanel extends VerticalLayout {
 	        field.setEnabled(enabled);
 	    }
 	}
+
+	public String getPatientName() {
+		return fieldMap.get("Name").getValue().toString();
+	}
+	
+	
 }

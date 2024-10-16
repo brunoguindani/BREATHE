@@ -9,9 +9,7 @@ import utils.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.*;
 
@@ -60,8 +58,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
     
-    private ArrayList<String> dataLog;
-    private Map<String, double[]> dataOutput = new HashMap<>();
     
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
@@ -335,10 +331,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         for (int i = 1; i < (dataValues.size()); i++) {
         	y = dataValues.get(i);
             gui.logItemDisplayData(requestList[i],x, y);
-            dataOutput.put(requestList[i], new double[] {x, y});
         }
         
-        dataLog = data;
         return data;
     }
     
@@ -517,22 +511,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
         sce.writeFile("./scenario/" + scenarioName + ".json");
         gui.minilogStringData("\nScenario exported to: " + "./scenario/" + scenarioName + ".json");
-    }
-    
-    
-    public ArrayList<String> getDataLog() {
-    	ArrayList<String> data = this.dataLog;
-    	this.dataLog = null;
-    	return data;
-    }
-
-    public Map<String, double[]> getDataOutput() {
-        Map<String, double[]> dataOutputCopy = new HashMap<>();
-        for (Map.Entry<String, double[]> entry : dataOutput.entrySet()) {
-            double[] valueCopy = entry.getValue().clone();
-            dataOutputCopy.put(entry.getKey(), valueCopy);
-        }
-        return dataOutputCopy; 
     }
     
 }

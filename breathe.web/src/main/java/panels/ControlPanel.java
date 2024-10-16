@@ -1,9 +1,9 @@
 package panels;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import app.App;
@@ -11,26 +11,35 @@ import app.App;
 public class ControlPanel extends HorizontalLayout {
     private static final long serialVersionUID = 1L;
 
+    private Button startButton, stopButton, exportButton;
+    
+    
     App app;
 
     public ControlPanel(App app) {
         this.app = app;
-        // Crea pulsanti
-        Button startButton = new Button("Start", e -> showStartOptions());
-        Button stopButton = new Button("Stop", e -> {
-            Notification.show("Stop button clicked");
+        
+        
+        startButton = new Button("Start", e -> showStartOptions());
+        startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
+        
+        stopButton = new Button("Stop");
+        stopButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        stopButton.setEnabled(false);
+        stopButton.addClickListener(e -> {
             app.stopSimulation();
+            enableControlStartButton(true);
         });
-        Button exportButton = new Button("Export", e -> {
-            Notification.show("Export button clicked");
+        
+        exportButton = new Button("Export");
+        exportButton.setEnabled(false);
+        exportButton.addClickListener(e -> {
+        	exportSimulation();
         });
 
-        // Aggiungi i pulsanti al layout orizzontale
+        
         add(startButton, stopButton, exportButton);
 
-        // Imposta uno stile semplice ai pulsanti
-        startButton.getStyle().set("margin-right", "10px");
-        stopButton.getStyle().set("margin-right", "10px");
     }
 
 
@@ -38,44 +47,57 @@ public class ControlPanel extends HorizontalLayout {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select Start Option");
 
-        // Crea i pulsanti per le opzioni
+        
         Button startSimulationButton = new Button("Start Simulation", e -> {
-            Notification.show("Start Simulation selected");
             dialog.close();
-            startingSimulation(); // Puoi cambiare il metodo a seconda della logica
+            startingSimulation();
         });
 
         Button startFromFileButton = new Button("Start from File", e -> {
-            Notification.show("Start from File selected");
             dialog.close();
             startingFileSimulation(); 
         });
 
         Button startScenarioButton = new Button("Start Scenario", e -> {
-            Notification.show("Start Scenario selected");
             dialog.close();
             startingScenario();
         });
 
-        // Aggiungi i pulsanti al layout del dialogo
         VerticalLayout dialogLayout = new VerticalLayout(startSimulationButton, startFromFileButton, startScenarioButton);
         dialog.add(dialogLayout);
 
-        // Mostra il dialogo
         dialog.open();
     }
     
     private void startingSimulation() {
+    	app.clearOutputDisplay();
     	app.startSimulation();
     }
 
     private void startingFileSimulation() {
+    	app.clearOutputDisplay();
         //app.startFromFileSimulation("C:\\Documenti\\UniBG\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	//app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     }
     
     private void startingScenario() {
+    	app.clearOutputDisplay();
     	
     }
+    
+    //TODO -> AGGIUNGERE CONTROLLO ESISTE GIA IL NOME DEL FILE IN MODO DA NON SOVRASCRIVERLO
+    private void exportSimulation() {
+    	 String defaultFileName = "./states/exported/" + app.getPatientName() + ".json";
+         app.exportSimulation(defaultFileName);
+    }
+    
+    
+    //From Start to Stop
+    public void enableControlStartButton(boolean enable) {
+        startButton.setEnabled(enable); 
+        stopButton.setEnabled(!enable);
+        exportButton.setEnabled(!enable);
+    }
+    
 }

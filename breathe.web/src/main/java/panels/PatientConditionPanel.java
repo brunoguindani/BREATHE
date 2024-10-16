@@ -1,6 +1,5 @@
 package panels;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.html.Div;
@@ -10,8 +9,9 @@ import app.App;
 
 @Route("patient-condition-panel")
 public class PatientConditionPanel extends VerticalLayout {
-    
-    private final PatientPanel patientPanel; // Assuming you have a PatientPanel class
+	private static final long serialVersionUID = 1L;
+	
+	private final PatientPanel patientPanel; // Assuming you have a PatientPanel class
     private final ConditionsPanel conditionsPanel; // Assuming you have a ConditionsPanel class
 
     public PatientConditionPanel(App app) {

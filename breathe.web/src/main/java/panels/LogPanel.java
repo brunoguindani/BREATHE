@@ -13,7 +13,7 @@ public class LogPanel extends VerticalLayout {
     
 	private TextArea resultArea;
     private LinkedList<String> logLines; 
-    private static final int MAX_LINES = 35; 
+    private static final int MAX_LINES = 30; 
 
     public LogPanel(App app) {
         setWidth("550px");
