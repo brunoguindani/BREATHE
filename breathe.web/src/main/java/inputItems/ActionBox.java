@@ -52,7 +52,9 @@ public class ActionBox extends VerticalLayout {
         for (Map.Entry<String, Component> entry : components2.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
+                numberField.setMin(0.0);
                 numberField.setValue(0.0);
+                if(!title.equals("Pericardial Effusion")) numberField.setMax(1.0);
                 numberField.setWidth("30%"); 
             }
             fieldsLayout.add(entry.getValue()); 
@@ -128,9 +130,20 @@ public class ActionBox extends VerticalLayout {
 
         for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
-                NumberField numberField = (NumberField) entry.getValue();
-                Double value = numberField.getValue();
-                parameters.put(entry.getKey(), value);
+            	NumberField numberField = (NumberField) entry.getValue();
+            	Double value = numberField.getValue();
+            	Double minValue = numberField.getMin();
+            	Double maxValue = numberField.getMax();
+
+            	// Controlla se il valore è fuori dall'intervallo
+            	if (value < minValue || value > maxValue) {
+            	    numberField.setInvalid(true);
+            	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+            	    return; 
+            	}
+
+            	numberField.setInvalid(false);
+            	parameters.put(entry.getKey(), value);
             }
         }
 
@@ -146,7 +159,18 @@ public class ActionBox extends VerticalLayout {
                 NumberField numberField = (NumberField) entry.getValue();
                 Double value = numberField.getValue();
                 if (value == null) value = 0.00;
-                parameters.put(entry.getKey(), value);
+            	Double minValue = numberField.getMin();
+            	Double maxValue = numberField.getMax();
+
+            	// Controlla se il valore è fuori dall'intervallo
+            	if (value < minValue || value > maxValue) {
+            	    numberField.setInvalid(true);
+            	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+            	    return; 
+            	}
+
+            	numberField.setInvalid(false);
+            	parameters.put(entry.getKey(), value);
             }
         }
 
@@ -154,9 +178,9 @@ public class ActionBox extends VerticalLayout {
     }
 
     public int getTotalTimeInSeconds() {
-        int hours = hoursField.getValue().intValue();
-        int minutes = minutesField.getValue().intValue();
-        int seconds = secondsField.getValue().intValue();
+        int hours = Math.max(0, hoursField.getValue().intValue());
+        int minutes = Math.max(0, minutesField.getValue().intValue());
+        int seconds = Math.max(0, secondsField.getValue().intValue());
         return hours * 3600 + minutes * 60 + seconds;
     }
 

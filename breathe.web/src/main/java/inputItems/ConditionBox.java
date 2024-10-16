@@ -48,7 +48,14 @@ public class ConditionBox extends VerticalLayout {
 
         // Add fields and spans
         for (Map.Entry<String, Component> entry : components.entrySet()) {
-            fieldsLayout.add(entry.getValue());
+            if (entry.getValue() instanceof NumberField) {
+                NumberField numberField = (NumberField) entry.getValue(); 
+                numberField.setMin(0.0);
+                numberField.setValue(0.0);
+                if(!title.equals("Pericardial Effusion")) numberField.setMax(1.0);
+                numberField.setWidth("30%"); 
+            }
+            fieldsLayout.add(entry.getValue()); 
         }
 
         // "Apply" button
@@ -69,21 +76,31 @@ public class ConditionBox extends VerticalLayout {
 
     private void applyCondition() {
         if (!applied) {
-            enableFields(false);
-            applySectionButton.setText("Remove");
-            headerButton.getStyle().set("background-color", "lightblue");
 
             Map<String, Double> parameters = new HashMap<>();
             for (Map.Entry<String, Component> entry : components.entrySet()) {
-                String key = entry.getKey();
                 if (entry.getValue() instanceof NumberField) {
-                	NumberField textField = (NumberField) entry.getValue();
-	                Double value = textField.getValue();
+                	NumberField numberField = (NumberField) entry.getValue();
+	                Double value = numberField.getValue();
 	                if (value == null) value = 0.00;
-	                parameters.put(key, value);
+	            	Double minValue = numberField.getMin();
+	            	Double maxValue = numberField.getMax();
+
+	            	// Controlla se il valore è fuori dall'intervallo
+	            	if (value < minValue || value > maxValue) {
+	            	    numberField.setInvalid(true);
+	            	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+	            	    return; 
+	            	}
+
+	            	numberField.setInvalid(false);
+	            	parameters.put(entry.getKey(), value);
                 }
             }
-
+            
+            enableFields(false);
+            applySectionButton.setText("Remove");
+            headerButton.getStyle().set("background-color", "lightblue");
             app.applyCondition(new Condition(title, parameters));
             applied = true;
         } else {
