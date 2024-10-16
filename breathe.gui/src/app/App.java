@@ -138,7 +138,7 @@ public class App extends JFrame implements GuiCallback {
         
     }
     /*
-     * GUI PANEL to another GUI PANEL
+     * GUI TO GUI
      */
 	public void addOutputButton(String outputName) {
 		outputButtonPanel.addOutputButton(outputName);
@@ -182,7 +182,7 @@ public class App extends JFrame implements GuiCallback {
 
     
     /*
-     * SIMULATIONWORKER METHODS CALLS FROM GUI
+     * GUI TO SIMULATIONWORKER
      */
     public boolean startSimulation() {
     	Patient new_patient = patientPanel.generateInitialPatient(getActiveConditions());
@@ -227,7 +227,20 @@ public class App extends JFrame implements GuiCallback {
     	conditionsPanel.enableButtons(true);
     	patientPanel.enableComponents(true);
     	actionsPanel.enableButtons(false);
+    	ventilatorsPanel.resetButton();
     }
+    
+    public void exportSimulation(String exportFilePath) {
+		sim.exportSimulation(exportFilePath);
+	}
+    
+    public void applyAction(Action action) {
+		sim.applyAction(action);
+	}
+    
+	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
+		sim.createScenario(patientFile, scenarioName, actions);
+	}
     
     public void connectVentilator() {
     	Ventilator v = ventilatorsPanel.getCurrentVentilator();
@@ -241,12 +254,9 @@ public class App extends JFrame implements GuiCallback {
     		sim.disconnectVentilator(v);
     }
     
-	public void applyAction(Action action) {
-		sim.applyAction(action);
-	}
     
     /*
-     * GUI METHODS CALLBACKS FROM SIMULATIONWORKER
+     * SIMULATIONWORKER TO GUI
      */
 	@Override
 	public void stabilizationComplete(boolean enable) {
@@ -283,13 +293,6 @@ public class App extends JFrame implements GuiCallback {
 	@Override
 	public void setInitialCondition(List<Condition> list) {	
     	conditionsPanel.setInitialCondition(list);
-	}
-	
-	public void exportSimulation(String exportFilePath) {
-		sim.exportSimulation(exportFilePath);
-	}
-	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
-		sim.createScenario(patientFile, scenarioName, actions);
 	}
 
 }

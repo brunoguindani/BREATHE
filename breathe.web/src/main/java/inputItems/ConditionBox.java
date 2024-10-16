@@ -13,8 +13,9 @@ import app.App;
 import data.Condition;
 
 public class ConditionBox extends VerticalLayout {
-
-    private Button applySectionButton;
+	private static final long serialVersionUID = 1L;
+	
+	private Button applySectionButton;
     private Button headerButton;
 
     private App app;

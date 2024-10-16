@@ -6,7 +6,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -17,8 +16,9 @@ import app.App;
 import data.Action;
 
 public class ActionBox extends VerticalLayout {
-
-    private String title;
+	private static final long serialVersionUID = 1L;
+	
+	private String title;
     private Map<String, Component> components;
     private Button applySectionButton;
 
@@ -151,7 +151,6 @@ public class ActionBox extends VerticalLayout {
         }
 
         app.applyAction(new Action(title, parameters));
-        Notification.show("Action applied!");
     }
 
     public int getTotalTimeInSeconds() {

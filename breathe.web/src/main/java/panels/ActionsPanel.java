@@ -18,8 +18,9 @@ import java.util.Map;
 
 @Route("actions-panel")
 public class ActionsPanel extends VerticalLayout {
+	private static final long serialVersionUID = 1L;
 	
-    private List<ActionBox> boxes = new ArrayList<>();
+	private List<ActionBox> boxes = new ArrayList<>();
 
     public ActionsPanel(App app) {
         //setSizeFull();

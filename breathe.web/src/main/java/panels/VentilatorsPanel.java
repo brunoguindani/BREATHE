@@ -1,10 +1,10 @@
 package panels;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 
@@ -61,8 +61,12 @@ public class VentilatorsPanel extends VerticalLayout {
         // Connect and disconnect buttons
         connectButton = new Button("Connect", e -> connectVentilator());
         disconnectButton = new Button("Disconnect", e -> disconnectVentilator());
+        
+        connectButton.setEnabled(false);
         disconnectButton.setEnabled(false);
 
+        disconnectButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        
         // Buttons layout
         HorizontalLayout buttonLayout = new HorizontalLayout(connectButton, disconnectButton);
         buttonLayout.setPadding(true);
@@ -92,20 +96,21 @@ public class VentilatorsPanel extends VerticalLayout {
 
     private void connectVentilator() {
         if (selectedMode != null) {
-            Notification.show("Connected to " + selectedMode);
+        	app.connectVentilator();
             connectButton.setEnabled(false);
             disconnectButton.setEnabled(true);
             activeMode = selectedMode;
-            app.connectVentilator();
             setEnableApplyButton(modeGroup.getValue(), true);
+            disconnectButton.setText("Disconnect "+ modeGroup.getValue());
         }
     }
 
 	private void disconnectVentilator() {
-        Notification.show("Disconnected from " + activeMode);
+		app.disconnectVentilator();
         connectButton.setEnabled(true);
         disconnectButton.setEnabled(false);
-        app.disconnectVentilator();
+        setEnableApplyButton(modeGroup.getValue(), false);
+        disconnectButton.setText("Disconnect");
     }
     
 
@@ -145,4 +150,8 @@ public class VentilatorsPanel extends VerticalLayout {
         setEnableApplyButton(activeMode, false);
         disconnectButton.setText("Disconnect");
     }
+
+	public void setEnableConnectButton(boolean b) {
+		connectButton.setEnabled(b);
+	}
 }

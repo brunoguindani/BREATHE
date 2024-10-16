@@ -91,7 +91,6 @@ public class ControlPanel extends JPanel{
         	app.stopSimulation();
         	enableControlStartButton(true);
         	showControlStartButton(true);
-        	resetVentilatorsButton();
         });
 
         //EXPORT BUTTON
@@ -164,13 +163,13 @@ public class ControlPanel extends JPanel{
 
 	//start simulation
     private void startingStandardSimulation() {
-    	if(app.startSimulation()) {
-        	clearOutputDisplay();
-    	}
+    	clearOutputDisplay();
+    	app.startSimulation();
 	}
 
     //start from file
     private void startingFileSimulation() {
+    	clearOutputDisplay();
     	JFileChooser fileChooser = new JFileChooser("./states/");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -178,18 +177,15 @@ public class ControlPanel extends JPanel{
             
             enableControlStartButton(false);
 
-            if(app.loadPatientData(patientFilePath)) {
-            	
-            	if(app.startFromFileSimulation(patientFilePath)) {
-                	clearOutputDisplay();
-            	}
-            }
+            if(app.loadPatientData(patientFilePath)) 
+            	app.startFromFileSimulation(patientFilePath);
         }
     }   
 
 
 	//start from scenario simulation
     private void startingScenarioSimulation() {
+    	clearOutputDisplay();
     	JFileChooser fileChooser = new JFileChooser("./scenario/");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -201,12 +197,8 @@ public class ControlPanel extends JPanel{
                 String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
 
                 enableControlStartButton(false);
-                if(app.loadPatientData(PatientFilePath)) {
-                	
-                	if(app.startFromScenarioSimulation(scenarioFilePath)) {
-                    	clearOutputDisplay();
-                	}
-                }
+                if(app.loadPatientData(PatientFilePath)) 
+                	app.startFromScenarioSimulation(scenarioFilePath);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error loading scenario JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -238,9 +230,5 @@ public class ControlPanel extends JPanel{
 		app.clearOutputDisplay();
 	}
 	
-	//Reset ventilators
-    private void resetVentilatorsButton() {
-		app.resetVentilatorsButton();
-	}
-   
+
 }
