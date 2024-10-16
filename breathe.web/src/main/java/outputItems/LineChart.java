@@ -6,6 +6,7 @@ import com.github.appreciated.apexcharts.config.builder.*;
 import com.github.appreciated.apexcharts.config.chart.builder.ZoomBuilder;
 import com.github.appreciated.apexcharts.config.stroke.Curve;
 import com.github.appreciated.apexcharts.config.xaxis.TickPlacement;
+import com.github.appreciated.apexcharts.config.xaxis.builder.LabelsBuilder;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.router.Route;
 
@@ -41,13 +42,15 @@ public class LineChart extends ItemDisplay {
                 .withShow(false)
                 .build())
             .withXaxis(XAxisBuilder.get()
-                .withMin(0.0)    
-                .withMax(400.0)  
-                .withCategories() 
+                .withMin(0.0)   
+                .withMax(400.0) 
                 .withTickPlacement(TickPlacement.BETWEEN)
+                .withLabels(LabelsBuilder.get().withShow(false).build()) 
                 .build())
             .withYaxis(YAxisBuilder.get()
-                .withShow(false) 
+        		.withLabels(com.github.appreciated.apexcharts.config.yaxis.builder.LabelsBuilder.get()
+        				.withFormatter("function(value) { return Math.round(value); }") 
+                        .build())
                 .build())
             .withSeries(new Series<>("Data", yData.toArray())) 
             .build();
@@ -58,6 +61,7 @@ public class LineChart extends ItemDisplay {
         add(apexChart);
     }
 
+
     @Override
     public void addPoint(double x, double y) {
         if (xData.size() >= 400) {
@@ -65,6 +69,7 @@ public class LineChart extends ItemDisplay {
             yData.remove(0);
         }
 
+        
         xData.add(x);
         yData.add(y);
         updateValue(y);
@@ -81,7 +86,9 @@ public class LineChart extends ItemDisplay {
         String[] categories = xData.stream().map(String::valueOf).toArray(String[]::new);
         
         apexChart.updateSeries(new Series<>("Data", yData.toArray()));
-        apexChart.setXaxis(XAxisBuilder.get().withCategories(categories).build());
+        apexChart.setXaxis(XAxisBuilder.get()
+                .withCategories(categories)
+                .build());
     }
 
     @Override
