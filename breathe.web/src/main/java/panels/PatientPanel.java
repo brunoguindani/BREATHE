@@ -1,15 +1,29 @@
 package panels;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.NumberField;
 
 import app.App;
+import data.Condition;
+import data.Patient;
 
 import com.vaadin.flow.component.html.Div;
 
 public class PatientPanel extends VerticalLayout {
+	
+	private TextField nameField;
+	private ComboBox<String> sexComboBox,weightUnitComboBox,heightUnitComboBox;
+	private Map<String, NumberField> fieldMap = new HashMap<>();
 
     public PatientPanel(App app) {
         // Main panel setup
@@ -28,22 +42,66 @@ public class PatientPanel extends VerticalLayout {
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));  // Layout reattivo
         formLayout.setWidthFull();  // Imposta la larghezza al 100%
 
-        // Define text fields
-        TextField nameField = new TextField("Name");
-        TextField ageField = new TextField("Age");
-        TextField weightField = new TextField("Weight");
-        TextField heightField = new TextField("Height");
-        TextField bodyFatField = new TextField("Body Fat Fraction");
-        TextField heartRateField = new TextField("Heart Rate Baseline");
-        TextField diastolicPressureField = new TextField("Diastolic Pressure");
-        TextField systolicPressureField = new TextField("Systolic Pressure");
-        TextField respirationRateField = new TextField("Respiration Rate Baseline");
-        TextField basalMetabolicRateField = new TextField("Basal Metabolic Rate");
+        nameField = new TextField("Name");
+        nameField.setValue("Standard");
+
+        NumberField ageField = new NumberField("Age");
+        ageField.setValue(44.0);
+        ageField.setStep(1); 
+        ageField.setMin(0); 
+        fieldMap.put("Age", ageField);
+
+        NumberField weightField = new NumberField("Weight");
+        weightField.setValue(77.0);
+        weightField.setStep(1);
+        fieldMap.put("Weight", weightField);
+
+        NumberField heightField = new NumberField("Height");
+        heightField.setValue(180.0);
+        heightField.setStep(1);
+        fieldMap.put("Height", heightField);
+
+        NumberField bodyFatField = new NumberField("Body Fat Fraction");
+        bodyFatField.setValue(0.21); 
+        fieldMap.put("BodyFatFraction", bodyFatField);
+
+        NumberField heartRateField = new NumberField("Heart Rate Baseline");
+        heartRateField.setValue(72.0);
+        heartRateField.setStep(1);
+        fieldMap.put("HeartRateBaseline", heartRateField);
+
+        NumberField diastolicPressureField = new NumberField("Diastolic Pressure");
+        diastolicPressureField.setValue(72.0);
+        diastolicPressureField.setStep(1);
+        fieldMap.put("DiastolicArterialPressureBaseline", diastolicPressureField);
+
+        NumberField systolicPressureField = new NumberField("Systolic Pressure");
+        systolicPressureField.setValue(114.0);
+        systolicPressureField.setStep(1);
+        fieldMap.put("SystolicArterialPressureBaseline", systolicPressureField);
+
+        NumberField respirationRateField = new NumberField("Respiration Rate Baseline");
+        respirationRateField.setValue(16.0);
+        respirationRateField.setStep(1);
+        fieldMap.put("RespirationRateBaseline", respirationRateField);
+
+        NumberField basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
+        basalMetabolicRateField.setValue(1600.0);
+        basalMetabolicRateField.setStep(1);
+        fieldMap.put("BasalMetabolicRate", basalMetabolicRateField);
 
         // Define ComboBoxes for units
-        ComboBox<String> sexComboBox = new ComboBox<>("Sex", "Male", "Female");
-        ComboBox<String> weightUnitComboBox = new ComboBox<>("Weight Unit", "kg", "lb");
-        ComboBox<String> heightUnitComboBox = new ComboBox<>("Height Unit", "cm", "m", "in", "ft");
+        sexComboBox = new ComboBox<>("Sex");
+        sexComboBox.setItems("Male", "Female"); 
+        sexComboBox.setValue("Male"); 
+
+        weightUnitComboBox = new ComboBox<>("Weight Unit");
+        weightUnitComboBox.setItems("kg", "lb"); 
+        weightUnitComboBox.setValue("kg");
+
+        heightUnitComboBox = new ComboBox<>("Height Unit");
+        heightUnitComboBox.setItems("cm", "m", "in", "ft"); 
+        heightUnitComboBox.setValue("cm");
 
         // Add tooltips
         ageField.setHelperText("Value must be between 18 and 65");
@@ -82,4 +140,63 @@ public class PatientPanel extends VerticalLayout {
         // Add the fixed size Div to the main layout
         add(fixedSizeDiv);
     }
+    
+    public Patient generateInitialPatient(List<Condition> conditions) {
+    	String name = nameField.getValue();
+    	Map<String,Double> parameters = new HashMap<>();
+    	
+    	char sex = 'F';
+    	for (Map.Entry<String, NumberField> entry : fieldMap.entrySet()) {
+    	    String chiave = entry.getKey();
+    	    
+    	    if(!chiave.equals("Name")) {
+        	    Double valore = entry.getValue().getValue();
+    	    	parameters.put(chiave, valore);
+    	    }
+    	}
+    	
+		if (sexComboBox.getValue().equals("Male")) 
+		    sex = 'M';
+		
+		//methods to convert weight and height (kg and cm)
+		checkUnits(parameters);
+
+    	return new Patient(name,sex,parameters,conditions); 	
+    }
+    
+	private void checkUnits(Map<String, Double> parameters) {
+		
+	    // weight conversion (if necessary)
+	    if(weightUnitComboBox.getValue().equals("lb")) {
+	    	parameters.put("Weight", fieldMap.get("Weight").getValue() * 0.453592); 
+	    }
+
+	    // height conversion (if necessary)
+	    switch ((String) heightUnitComboBox.getValue()) {
+	        case "m":
+	        	parameters.put("Height", fieldMap.get("Height").getValue() * 100); // m to cm
+	            break;
+	        case "in":
+	        	parameters.put("Height", fieldMap.get("Height").getValue() * 2.54); // in to cm
+	            break;
+	        case "ft":
+	        	parameters.put("Height", fieldMap.get("Height").getValue() * 30.48); // feat to cm
+	            break;
+	    }
+	}
+
+	public void enableComponents(boolean enabled) {
+	    // Abilita o disabilita i TextField
+	    nameField.setEnabled(enabled);
+
+	    // Abilita o disabilita i ComboBox
+	    sexComboBox.setEnabled(enabled);
+	    weightUnitComboBox.setEnabled(enabled);
+	    heightUnitComboBox.setEnabled(enabled);
+
+	    // Abilita o disabilita tutti i NumberField nella mappa
+	    for (NumberField field : fieldMap.values()) {
+	        field.setEnabled(enabled);
+	    }
+	}
 }

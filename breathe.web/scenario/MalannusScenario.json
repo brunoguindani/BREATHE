@@ -1,0 +1,105 @@
+{
+  "Name": "MalannusScenario",
+  "EngineStateFile": "./states/exported/Malannus.json",
+  "AnyAction": [{
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "PatientAction": {
+      "AcuteStress": {
+        "PatientAction": {
+          "Action": {
+          }
+        },
+        "Severity": {
+          "Scalar0To1": {
+          }
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "PatientAction": {
+      "AcuteRespiratoryDistressSyndromeExacerbation": {
+        "PatientAction": {
+          "Action": {
+          }
+        },
+        "Severity": [{
+          "Compartment": "RightLung",
+          "Severity": {
+            "Scalar0To1": {
+            }
+          }
+        }, {
+          "Severity": {
+            "Scalar0To1": {
+            }
+          }
+        }]
+      }
+    }
+  }]
+}
