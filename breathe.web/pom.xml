@@ -132,7 +132,7 @@
 				<directory>../breathe.engine/substances</directory>
 			</resource>
 			<resource>
-				<directory>../breathe.engine</directory>
+				<directory>../breathe.engine/</directory>
 				<includes>
 					<include>PulseJNI.dll</include>
 					<include>PulseC.dll</include>
