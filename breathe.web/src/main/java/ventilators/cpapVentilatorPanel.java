@@ -31,7 +31,6 @@ public class cpapVentilatorPanel extends VerticalLayout {
     	
         setSpacing(true);
         setPadding(true);
-        setSizeFull();
         
         // Form for CPAP ventilator settings
         FormLayout formLayout = new FormLayout();

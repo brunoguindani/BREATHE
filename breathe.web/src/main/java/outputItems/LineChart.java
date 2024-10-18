@@ -20,7 +20,7 @@ public class LineChart extends ItemDisplay {
         super(title, unit);
         xPoints = new ArrayList<>();
         yPoints = new ArrayList<>();
-        initializeChart(title);
+        initializeChart(title); 
     }
 
     private void initializeChart(String title) {
@@ -33,7 +33,7 @@ public class LineChart extends ItemDisplay {
         add(chartContainer);
 
         // Initialize the chart in JavaScript
-        getElement().executeJs("initLineChart($0)", chartContainer.getElement());
+        getElement().executeJs("initLineChart($0)", title);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class LineChart extends ItemDisplay {
         yPoints.add(y);
 
         // Update the chart with the new point
-        getElement().executeJs("updateLineChart($0, $1)", 
-            chartContainer.getElement(), 
+        getElement().executeJs("updateLineChart($0, $1, $2)", 
+            title, 
             x, 
             y);
     }

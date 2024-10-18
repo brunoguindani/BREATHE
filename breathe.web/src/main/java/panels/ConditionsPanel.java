@@ -30,18 +30,14 @@ public class ConditionsPanel extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
         getStyle().set("background-color", "white");
-this.setWidth("0px");
-this.setHeight("0px");
 
         FlexLayout conditionsContainer = new FlexLayout();
         conditionsContainer.setFlexDirection(FlexDirection.COLUMN);
-        conditionsContainer.setWidth("90%");
         conditionsContainer.getStyle().set("overflow", "auto");
 
         // Scrollable container for all conditions
         VerticalLayout scrollableContent = new VerticalLayout();
         scrollableContent.setPadding(false);
-        scrollableContent.setWidth("90%");
         scrollableContent.setSpacing(false);
         
         conditionsContainer.add(scrollableContent);
@@ -58,8 +54,6 @@ this.setHeight("0px");
 
         // Create a scrollable panel for conditions data
         Div scrollableDiv = new Div();
-        scrollableDiv.setWidth("100%");
-        scrollableDiv.setHeight("50vh");
         scrollableDiv.getStyle().set("overflow-y", "auto");
         scrollableDiv.add(conditionsContainer);
 

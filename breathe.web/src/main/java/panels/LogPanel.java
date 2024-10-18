@@ -16,16 +16,12 @@ public class LogPanel extends VerticalLayout {
     private static final int MAX_LINES = 30; 
 
     public LogPanel(App app) {
-		this.setWidthFull();
-		this.setMaxHeight("70%");  
 		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo 
         setPadding(false);
         setMargin(false);
 
         resultArea = new TextArea();
         resultArea.setReadOnly(true); 
-        resultArea.setWidth("100%");
-        resultArea.setHeight("100%");
         resultArea.getStyle().set("background-color", "white");
         resultArea.getStyle().set("font-family", "monospace");
         resultArea.getStyle().set("font-size", "12px");

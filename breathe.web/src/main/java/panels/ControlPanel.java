@@ -21,9 +21,7 @@ public class ControlPanel extends HorizontalLayout {
     App app;
 
     public ControlPanel(App app) {
-        this.app = app;
-		this.setWidth("100%");
-		this.setHeight("10%");        
+        this.app = app;      
         
         startButton = new Button("Start", e -> showStartOptions());
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
@@ -128,7 +126,7 @@ public class ControlPanel extends HorizontalLayout {
         
         VerticalLayout dialogLayout = new VerticalLayout(upload);
         
-        Button startSimulationButton = new Button("Start Scenario", e -> {
+        Button startScenarioButton = new Button("Start Scenario", e -> {
             if (uploadedFileName != null) {
                 String filePath = "../breathe.engine/scenario/" + uploadedFileName;
                 dialog.close();
@@ -138,7 +136,7 @@ public class ControlPanel extends HorizontalLayout {
             }
         });
 
-        dialog.add(dialogLayout, startSimulationButton);
+        dialog.add(dialogLayout, startScenarioButton);
         dialog.open();
     	
     }
