@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -13,8 +12,9 @@ import javax.swing.JToggleButton;
 import app.App;
 
 public class PatientConditionsPanel extends JPanel{
-
-	 public PatientPanel patientPanel;
+	private static final long serialVersionUID = 1L;
+	
+	public PatientPanel patientPanel;
 	 public ConditionsPanel conditionsPanel;
 	 
 	 private JPanel patientConditionPanel;

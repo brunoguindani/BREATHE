@@ -11,8 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class DownloadLinksArea extends VerticalLayout {
-
-    private final File uploadFolder;
+	private static final long serialVersionUID = 1L;
+	
+	private final File uploadFolder;
 
     public DownloadLinksArea(File uploadFolder) {
         this.uploadFolder = uploadFolder;

@@ -11,8 +11,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 public class UploadArea extends VerticalLayout {
-
-    private final Upload uploadField;
+	private static final long serialVersionUID = 1L;
+	
+	private final Upload uploadField;
     private final Span errorField;
 
     public UploadArea(File uploadFolder) {
