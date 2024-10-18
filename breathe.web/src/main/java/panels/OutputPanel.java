@@ -1,19 +1,15 @@
 package panels;
 
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.KeyDownEvent;
 import outputItems.InfoBox;
 import outputItems.LineChart;
 import outputItems.ItemDisplay;
 import app.App;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

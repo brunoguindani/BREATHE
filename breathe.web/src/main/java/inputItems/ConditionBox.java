@@ -138,12 +138,6 @@ public class ConditionBox extends VerticalLayout {
         applied = false;
     }
 
-    private String addSpaceBeforeUpperCase(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return input.replaceAll("(?<!^)([A-Z])", " $1").trim();
-    }
 
     public void setComponents(Map<String, Double> parameters) {
         for (Map.Entry<String, Double> entry : parameters.entrySet()) {

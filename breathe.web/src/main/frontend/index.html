@@ -19,12 +19,11 @@
     <script>
     const { lightningChart } = lcjs;
 
-    let charts = {}; // Oggetto per memorizzare i grafici
+    let charts = {}; 
 
     function initLineChart(name) {
         if (charts[name]) {
-            // Se il grafico esiste già, non fare nulla
-            console.warn(`Il grafico con il nome "${name}" esiste già.`);
+            console.warn(` "${name}" alredy exists.`);
             return;
         }
 
@@ -36,12 +35,13 @@
             },
         });
 
-        // Crea il grafico e memorizza le informazioni nel dizionario
+        
         const chart = lc.ChartXY();
+        chart.setTitle(name);
         const series = chart.addLineSeries();
         const dataPoints = [];
 
-        // Aggiungi il grafico al dizionario
+        
         charts[name] = {
             chart: chart,
             series: series,
@@ -52,23 +52,18 @@
     function updateLineChart(name, x, y) {
         const chartData = charts[name];
         if (!chartData) {
-            console.warn(`Il grafico con il nome "${name}" non esiste.`);
+            console.warn(`"${name}" doesn't exists.`);
             return;
         }
 
-        // Aggiungi il nuovo punto all'array
         chartData.dataPoints.push({ x: x, y: y });
 
-        // Mantieni solo gli ultimi 200 punti
-        if (chartData.dataPoints.length > 200) {
-            chartData.dataPoints.shift(); // Rimuovi il primo elemento
+        if (chartData.dataPoints.length > 400) {
+            chartData.dataPoints.shift(); 
         }
 
-        // Aggiorna la serie con i dati più recenti
-        chartData.series.clear(); // Cancella i dati esistenti nella serie
-        chartData.series.add(chartData.dataPoints); // Aggiungi i dati aggiornati alla serie
-
-        console.log(`Aggiornato il grafico "${name}" con il punto x: ${x}`);
+        chartData.series.clear(); 
+        chartData.series.add(chartData.dataPoints); 
     }
 
   </script>

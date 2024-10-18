@@ -21,35 +21,29 @@ Ventilator Hold
 Ventilator Pressure Control
 
 
+
+
 #############################
 ###TODO###
 ############################
+/*PATIENT*/
+- Quando creo da fai devo fare set patient di patient data e Add conditions
+- La conversione delle unità di misura è da f
 
-*Se clicco tra i pulsanti di Chart Panel si sballa il layout.
-dovrei chiamare mainpanel.repaint() ma poi fa casino negli altri casi.
+
 
 *JSpinner ventilatori:
 	-Controllare i valori minimi e massimi
 	
-#########################
-*Sarebbe bello vedere i dati del paziente prima di lanciarli
-	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
-	far partire la simulazione dal file sneaky sneaky
-	
-CHIEDERE 
-#########################
 
-#########################
-*Quando il programma crasha ho messo che stampa errore nel minilog, ma vorrei stampare quello che viene scritto in rosso in eclipse!! 
-	esempio: ventilatore pc se metto peep troppo alto
+*Provare nuovo pulse per errori nel minilog piu che altro
 
-Esiste la classe listener creata da pulse che prende i messaggi di c++ e li stampa ma in questi casi non funziona
-(Guarda in howtoscenario.java, la classe MyListener mettendo listen(true) e invece dei vari Log. metti MiniLogPanel.append(msg);
-##########################
 
 OPZIONALI:
 
 *Aggiungere altre opzioni per paziente
 
-*Quando carico scenario lo vedo nel panel (forse valutare se serve) 
+*Sarebbe bello vedere i dati del paziente prima di lanciarli
+	potremo fare il bottone load patient file, che carica i dati e se poi non vengono aggiunte condizioni o modificate cose del paziente 
+	far partire la simulazione dal file sneaky sneaky
 
