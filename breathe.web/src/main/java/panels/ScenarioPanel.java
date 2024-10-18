@@ -3,6 +3,7 @@ package panels;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -11,6 +12,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 
 import app.App;
 import data.Action;
+import files.DownloadLinksArea;
 import utils.Pair;
 
 import java.io.File;
@@ -31,10 +33,13 @@ public class ScenarioPanel extends VerticalLayout {
 
     public ScenarioPanel(App app) {
         this.app = app;
-
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        
         // ComboBox for patient files
         patientFileComboBox = new ComboBox<>("Patient");
-        String[] directories = {"./states/", "./states/exported/"};
+        String[] directories = {"../breathe.engine/states/exported/", "../breathe.engine/states/"};
         updatePatientFiles(directories);
 
         // TextField for scenario name
@@ -119,15 +124,29 @@ public class ScenarioPanel extends VerticalLayout {
             return;
         }
 
-        File patientTempFile = new File("./states/" + patientFile);
+        File patientTempFile = new File("../breathe.engine/states/" + patientFile);
         if (patientTempFile.exists()) {
-            patientFile = "./states/" + patientFile;
+            patientFile = "../breathe.engine/states/" + patientFile;
         } else {
-            patientFile = "./states/exported/" + patientFile;
+            patientFile = "../breathe.engine/states/exported/" + patientFile;
         }
 
         app.createScenario(patientFile, scenarioName, actions);
         Notification.show("Scenario \"" + scenarioName + "\" created successfully.", 3000, Notification.Position.MIDDLE);
+        Dialog dialog = new Dialog();
+        
+        File uploadFolder = app.getFolder("scenario");
+        DownloadLinksArea linksArea = new DownloadLinksArea(uploadFolder);
+        VerticalLayout dialogLayout = new VerticalLayout(linksArea);
+
+        Button closeButton = new Button("Close", e -> {
+            dialog.close();
+        });
+      
+        dialog.setHeaderTitle("Select File Option");
+        dialog.add(dialogLayout, closeButton);
+        
+        dialog.open();
     }
 
     private void removeSelectedActions() {

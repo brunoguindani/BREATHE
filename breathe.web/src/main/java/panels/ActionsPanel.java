@@ -27,7 +27,9 @@ public class ActionsPanel extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
         getStyle().set("background-color", "white"); // Light gray
-        setMaxWidth("90%"); 
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
 
         FlexLayout actionsContainer = new FlexLayout();
         actionsContainer.setFlexDirection(FlexDirection.COLUMN);

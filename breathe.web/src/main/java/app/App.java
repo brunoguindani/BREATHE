@@ -1,5 +1,6 @@
 package app;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         leftColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
         leftColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+        leftColumn.setHeight("90%");
 
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
@@ -88,6 +90,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         rightColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         rightColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
         rightColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+        rightColumn.setHeight("90%");
         
         Tabs rightTabs = createRightTabs();
         VerticalLayout rightContentLayout = new VerticalLayout();
@@ -172,6 +175,14 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     /*
      * GUI TO GUI
      */
+    public File getFolder(String f) {
+        File folder = new File("../breathe.engine/" + f);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        return folder;
+    }
+    
     public void startLoading() {
         loadingIndicator.setVisible(true); // Mostra l'indicatore di caricamento
     }
@@ -226,12 +237,22 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	}
     	return false;
 	}
+	
+	public boolean startScenario(String file) {
+		startLoading();
+    	if(file != null) {
+    		sim = new SimulationWorker(this);
+    		sim.simulationFromScenario(file);
+    		return true;
+    	}else 
+    		return false;
+	}
     
     public boolean startFromFileSimulation(String file) {
 		startLoading();
     	if(file != null) {
     		sim = new SimulationWorker(this);
-    		sim.simulationFromFile(file);
+    		sim.simulationFromScenario(file);
     		return true;
     	}else 
     		return false;
@@ -262,10 +283,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	if(v != null)
     		sim.disconnectVentilator(v);
     }
-	
-	
-	
-	
+		
     /*
      * SIMULATION WORKER TO GUI
      */

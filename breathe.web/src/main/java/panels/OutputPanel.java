@@ -28,6 +28,9 @@ public class OutputPanel extends VerticalLayout {
     private Div scrollChartPane;
 
     public OutputPanel(App app) {
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         mainPanel = new VerticalLayout();
         mainPanel.setWidthFull();
         mainPanel.getStyle().set("background-color", "black");

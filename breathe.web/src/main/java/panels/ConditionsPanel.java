@@ -30,7 +30,8 @@ public class ConditionsPanel extends VerticalLayout {
         setPadding(false);
         setSpacing(false);
         getStyle().set("background-color", "white");
-        setWidth("90%");
+this.setWidth("0px");
+this.setHeight("0px");
 
         FlexLayout conditionsContainer = new FlexLayout();
         conditionsContainer.setFlexDirection(FlexDirection.COLUMN);

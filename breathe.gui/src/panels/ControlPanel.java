@@ -105,8 +105,8 @@ public class ControlPanel extends JPanel{
         exportButton.setFocusPainted(false);
         
         exportButton.addActionListener(e -> {
-            String defaultFileName = "./states/exported/" + app.getPatientName() + ".json";
-            JFileChooser fileChooser = new JFileChooser("./states/exported/");
+            String defaultFileName = "../breathe.engine/states/exported/" + app.getPatientName() + ".json";
+            JFileChooser fileChooser = new JFileChooser("../breathe.engine/states/exported/");
             fileChooser.setDialogTitle("Export simulation");
             fileChooser.setSelectedFile(new File(defaultFileName)); // Pre-set default filename
             fileChooser.setApproveButtonText("Export");
@@ -170,7 +170,7 @@ public class ControlPanel extends JPanel{
     //start from file
     private void startingFileSimulation() {
     	clearOutputDisplay();
-    	JFileChooser fileChooser = new JFileChooser("./states/");
+    	JFileChooser fileChooser = new JFileChooser("../breathe.engine/states");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String patientFilePath = fileChooser.getSelectedFile().getAbsolutePath();   
@@ -186,7 +186,7 @@ public class ControlPanel extends JPanel{
 	//start from scenario simulation
     private void startingScenarioSimulation() {
     	clearOutputDisplay();
-    	JFileChooser fileChooser = new JFileChooser("./scenario/");
+    	JFileChooser fileChooser = new JFileChooser("../breathe.engine/scenario/");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String scenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
