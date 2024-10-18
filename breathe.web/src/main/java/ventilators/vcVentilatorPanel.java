@@ -35,7 +35,6 @@ public class vcVentilatorPanel extends VerticalLayout {
     	
         setSpacing(true);
         setPadding(true);
-        setSizeFull();
 
         // Create form layout for ventilator settings
         FormLayout formLayout = new FormLayout();

@@ -13,8 +13,6 @@ public class InfoBox extends ItemDisplay {
         super(title, unit);
         
         // Imposta il layout principale
-        setWidth("150px"); // Larghezza fissa
-        setHeight("100px"); // Altezza fissa
         getStyle().set("background-color", "#282c34"); // Colore di sfondo scuro
         getStyle().set("border", "1px solid #61dafb"); // Bordo blu
         getStyle().set("border-radius", "8px"); // Angoli arrotondati

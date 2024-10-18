@@ -7,10 +7,12 @@ import java.util.List;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.tabs.Tabs.Orientation;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -50,8 +52,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         sim = new SimulationWorker(this);
         
         VerticalLayout mainLayout = getContent();
-        mainLayout.setWidthFull();
-        mainLayout.setHeightFull();
         mainLayout.setFlexGrow(1);
         
         HorizontalLayout topArea = new HorizontalLayout();
@@ -62,20 +62,16 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         loadingIndicator.setWidth("100px");
 
         mainLayout.add(loadingIndicator); 
-        // Aggiungere controlPanel e loadingIndicator al layout
         topArea.add(loadingIndicator);
         
         // Control Panel
         mainLayout.add(topArea);
         
-
-
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
         leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         leftColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
         leftColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
-        leftColumn.setHeight("90%");
 
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
@@ -90,7 +86,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         rightColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         rightColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
         rightColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
-        rightColumn.setHeight("90%");
         
         Tabs rightTabs = createRightTabs();
         VerticalLayout rightContentLayout = new VerticalLayout();
@@ -102,8 +97,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
         // Layout principale con due colonne
         HorizontalLayout mainRow = new HorizontalLayout(leftColumn, rightColumn);
-        mainRow.setWidthFull();
-        mainRow.setHeightFull();
         
         // Assicurati che entrambe le colonne abbiano la stessa dimensione
         mainRow.setFlexGrow(1, leftColumn);
@@ -252,7 +245,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		startLoading();
     	if(file != null) {
     		sim = new SimulationWorker(this);
-    		sim.simulationFromScenario(file);
+    		sim.simulationFromFile(file);
     		return true;
     	}else 
     		return false;

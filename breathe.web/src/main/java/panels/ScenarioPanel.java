@@ -33,8 +33,6 @@ public class ScenarioPanel extends VerticalLayout {
 
     public ScenarioPanel(App app) {
         this.app = app;
-		this.setWidthFull();
-		this.setMaxHeight("70%");  
 		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         
         // ComboBox for patient files
@@ -44,7 +42,6 @@ public class ScenarioPanel extends VerticalLayout {
 
         // TextField for scenario name
         scenarioNameField = new TextField("Scenario Name");
-        scenarioNameField.setWidth("300px");
 
         // Grid for actions
         actionsGrid = new Grid<>();

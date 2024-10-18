@@ -35,14 +35,11 @@ public class ConditionBox extends VerticalLayout {
         // Header Button
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
-        headerButton.setWidth("90%");
-        headerButton.setMaxWidth("90%"); 
         headerButton.addClickListener(e -> toggleFields());
 
         // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
         fieldsLayout.getStyle().set("border", "1px dashed lightgray");
-        //fieldsLayout.setWidth("90%");
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
 
@@ -53,7 +50,6 @@ public class ConditionBox extends VerticalLayout {
                 numberField.setMin(0.0);
                 numberField.setValue(0.0);
                 if(!title.equals("Pericardial Effusion")) numberField.setMax(1.0);
-                numberField.setWidth("30%"); 
             }
             fieldsLayout.add(entry.getValue()); 
         }

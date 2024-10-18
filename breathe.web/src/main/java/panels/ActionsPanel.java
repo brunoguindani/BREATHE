@@ -26,20 +26,15 @@ public class ActionsPanel extends VerticalLayout {
         //setSizeFull();
         setPadding(false);
         setSpacing(false);
-        getStyle().set("background-color", "white"); // Light gray
-		this.setWidthFull();
-		this.setMaxHeight("70%");  
+        getStyle().set("background-color", "white"); // Light gray 
 		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
 
         FlexLayout actionsContainer = new FlexLayout();
         actionsContainer.setFlexDirection(FlexDirection.COLUMN);
-        //actionsContainer.setSizeFull();
-        actionsContainer.setMaxWidth("90%"); 
         
         // Scrollable container for all actions
         VerticalLayout scrollableContent = new VerticalLayout();
         scrollableContent.setPadding(false);
-        scrollableContent.setMaxWidth("90%"); 
         scrollableContent.setSpacing(false);
 
         actionsContainer.add(scrollableContent);
@@ -65,8 +60,6 @@ public class ActionsPanel extends VerticalLayout {
 
         // Create a scrollable panel for patient data
         Div scrollableDiv = new Div();
-        scrollableDiv.setWidth("100%");  // Imposta la larghezza al 100%
-        scrollableDiv.setHeight("50vh"); // Altezza calcolata per il contenuto, sottraendo il bordo
         scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
         scrollableDiv.add(actionsContainer);
         

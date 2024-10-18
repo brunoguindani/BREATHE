@@ -19,7 +19,6 @@ public abstract class ItemDisplay extends VerticalLayout {
         this.currentValue = 0.0;
         
         // Imposta il layout verticale
-        setWidthFull();
         setPadding(true);
         setSpacing(true);
         getStyle().set("background-color", "black");

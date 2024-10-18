@@ -26,21 +26,16 @@ public class PatientPanel extends VerticalLayout {
 	private Map<String, NumberField> fieldMap = new HashMap<>();
 
     public PatientPanel(App app) {
-        // Main panel setup
-this.setWidth("0px");
-this.setHeight("0px");  
+        // Main panel setup  
         getStyle().set("background-color", "white");  // Colore di sfondo
 
         // Create a fixed size Div for the panel
         Div fixedSizeDiv = new Div();
-        fixedSizeDiv.setWidth("100%");  // Imposta la larghezza al 100%
-        fixedSizeDiv.setHeight("100vh");  // Imposta l'altezza al 100% della viewport
         fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
 
         // Form layout for patient data
         FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1));  // Layout reattivo
-        formLayout.setWidthFull();  // Imposta la larghezza al 100%
 
         nameField = new TextField("Name");
         nameField.setValue("Standard");
@@ -129,8 +124,6 @@ this.setHeight("0px");
 
         // Create a scrollable panel for patient data
         Div scrollableDiv = new Div();
-        scrollableDiv.setWidth("100%");  // Imposta la larghezza al 100%
-        scrollableDiv.setHeight("50vh"); // Altezza calcolata per il contenuto, sottraendo il bordo
         scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
         scrollableDiv.add(formLayout);
 

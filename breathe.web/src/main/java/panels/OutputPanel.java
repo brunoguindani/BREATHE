@@ -29,10 +29,8 @@ public class OutputPanel extends VerticalLayout {
 
     public OutputPanel(App app) {
 		this.setWidthFull();
-		this.setMaxHeight("70%");  
 		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         mainPanel = new VerticalLayout();
-        mainPanel.setWidthFull();
         mainPanel.getStyle().set("background-color", "black");
         mainPanel.getStyle().set("border", "2px solid #fff");  // Bordo bianco
         mainPanel.getStyle().set("border-radius", "10px");
@@ -60,11 +58,9 @@ public class OutputPanel extends VerticalLayout {
         chartPanels = new HashMap<>();
              
         chartsPanel = new VerticalLayout();
-        chartsPanel.setWidthFull();
         chartsPanel.getStyle().set("padding", "10px");  // Padding per distanziare gli oggetti
 
         infoBoxPanel = new FlexLayout();
-        infoBoxPanel.setWidthFull(); 
         
         // Aggiunta dei grafici a linee
         String[] chartOrder = {
@@ -89,8 +85,6 @@ public class OutputPanel extends VerticalLayout {
         
         for (String chartName : infoOrder) {
             InfoBox infoBox = new InfoBox(chartName, chartsMap.get(chartName));
-            infoBox.setWidth("150px");
-            infoBox.setHeight("100px");
             infoBox.getStyle().set("margin", "5px");  // Margine per distanziare le info box
             chartPanels.put(chartName, infoBox);
             infoBoxPanel.add(infoBox);
@@ -99,7 +93,6 @@ public class OutputPanel extends VerticalLayout {
         // Imposta il pannello principale
         scrollChartPane = new Div(chartsPanel);
         scrollChartPane.getStyle().set("overflow-y", "auto").set("overflow-x", "hidden");
-        scrollChartPane.setHeight("500px");
         scrollChartPane.setWidthFull();
         
         mainPanel.add(infoBoxPanel, scrollChartPane);
@@ -147,15 +140,15 @@ public class OutputPanel extends VerticalLayout {
             case "TotalLungVolume":
                 mapChartName = "Total Lung Volume";
                 break;
-//            case "Lead3ElectricPotential":
-//                mapChartName = "ECG";
-//                break;
-//            case "CarbonDioxide":
-//                mapChartName = "CO2";
-//                break;
-//            case "ArterialPressure":
-//                mapChartName = "Pleth";
-//                break;
+            case "Lead3ElectricPotential":
+                mapChartName = "ECG";
+                break;
+            case "CarbonDioxide":
+                mapChartName = "CO2";
+                break;
+            case "ArterialPressure":
+                mapChartName = "Pleth";
+                break;
             default:
                 mapChartName = null; 
                 break;
