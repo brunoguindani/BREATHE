@@ -482,6 +482,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	public void exportSimulation(String exportFilePath) {
 		if ( pe.serializeToFile(exportFilePath) )  
 			gui.minilogStringData("\nExported Patient File to " + exportFilePath);
+		else
+			gui.minilogStringData("\nExported Failed to " + exportFilePath);
 	}
 
 	

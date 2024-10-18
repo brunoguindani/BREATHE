@@ -3,6 +3,7 @@ package panels;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -78,7 +79,7 @@ public class ControlPanel extends HorizontalLayout {
     	app.clearOutputDisplay();
         //app.startFromFileSimulation("C:\\Documenti\\UniBG\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
     	//app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
-    	app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
+    	app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.engine\\states\\StandardMale@0s.json");
     }
     
     private void startingScenario() {
@@ -88,7 +89,7 @@ public class ControlPanel extends HorizontalLayout {
     
     //TODO -> AGGIUNGERE CONTROLLO ESISTE GIA IL NOME DEL FILE IN MODO DA NON SOVRASCRIVERLO
     private void exportSimulation() {
-    	 String defaultFileName = "./states/exported/" + app.getPatientName() + ".json";
+    	 String defaultFileName = "../breathe.engine/states/exported/Test.json";
          app.exportSimulation(defaultFileName);
     }
     
