@@ -16,8 +16,9 @@ public class LogPanel extends VerticalLayout {
     private static final int MAX_LINES = 30; 
 
     public LogPanel(App app) {
-        setWidth("550px");
-        setHeight("600px");
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo 
         setPadding(false);
         setMargin(false);
 
