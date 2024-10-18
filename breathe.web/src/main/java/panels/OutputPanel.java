@@ -159,7 +159,6 @@ public class OutputPanel extends VerticalLayout {
         }
     }
     
-    // Pulisci tutti i display
     public void clearOutputDisplay() {
         for (Map.Entry<String, ItemDisplay> entry : chartPanels.entrySet()) {
             entry.getValue().clear();

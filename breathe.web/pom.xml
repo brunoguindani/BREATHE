@@ -74,12 +74,6 @@
 			<artifactId>engine</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<!-- ApexCharts.js-->
-		<dependency>
-			<groupId>com.github.appreciated</groupId>
-			<artifactId>apexcharts</artifactId>
-			<version>24.0.2</version>
-		</dependency>
 	</dependencies>
 
 	<build>
