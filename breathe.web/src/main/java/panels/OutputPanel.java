@@ -147,15 +147,15 @@ public class OutputPanel extends VerticalLayout {
             case "TotalLungVolume":
                 mapChartName = "Total Lung Volume";
                 break;
-            case "Lead3ElectricPotential":
-                mapChartName = "ECG";
-                break;
-            case "CarbonDioxide":
-                mapChartName = "CO2";
-                break;
-            case "ArterialPressure":
-                mapChartName = "Pleth";
-                break;
+//            case "Lead3ElectricPotential":
+//                mapChartName = "ECG";
+//                break;
+//            case "CarbonDioxide":
+//                mapChartName = "CO2";
+//                break;
+//            case "ArterialPressure":
+//                mapChartName = "Pleth";
+//                break;
             default:
                 mapChartName = null; 
                 break;

@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -113,6 +113,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
         updateContent(leftTabs.getSelectedTab(), leftContentLayout);
         updateContent(rightTabs.getSelectedTab(), rightContentLayout);
+        
     }
     // Metodo per creare un layout colonna
     private VerticalLayout createColumn() {

@@ -1,101 +1,59 @@
 package outputItems;
 
-import com.github.appreciated.apexcharts.ApexCharts;
-import com.github.appreciated.apexcharts.ApexChartsBuilder;
-import com.github.appreciated.apexcharts.config.builder.*;
-import com.github.appreciated.apexcharts.config.chart.builder.ZoomBuilder;
-import com.github.appreciated.apexcharts.config.stroke.Curve;
-import com.github.appreciated.apexcharts.config.xaxis.TickPlacement;
-import com.github.appreciated.apexcharts.config.xaxis.builder.LabelsBuilder;
-import com.github.appreciated.apexcharts.helper.Series;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.component.page.Push;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Route
+@Push
 public class LineChart extends ItemDisplay {
     private static final long serialVersionUID = 1L;
-    
-    private ApexCharts apexChart; 
-    private List<Double> xData = new ArrayList<>(); 
-    private List<Double> yData = new ArrayList<>(); 
-    
-    //change!!!
-    private static final int UPDATE_THRESHOLD = 10;
-    private int pointCount = 0;
+
+    private Div chartContainer; 
+    private List<Double> xPoints; // List to hold x points
+    private List<Double> yPoints; // List to hold y points
 
     public LineChart(String title, String unit) {
         super(title, unit);
-        initializeChart();
+        xPoints = new ArrayList<>();
+        yPoints = new ArrayList<>();
+        initializeChart(title);
     }
 
-    private void initializeChart() {
-        apexChart = ApexChartsBuilder.get()
-            .withChart(ChartBuilder.get()
-                .withZoom(ZoomBuilder.get().withEnabled(false).build())
-                .build())
-            .withStroke(StrokeBuilder.get()
-                .withCurve(Curve.STRAIGHT)
-                .build())
-            .withGrid(GridBuilder.get()
-                .withShow(false)
-                .build())
-            .withXaxis(XAxisBuilder.get()
-                .withMin(0.0)   
-                .withMax(400.0) 
-                .withTickPlacement(TickPlacement.BETWEEN)
-                .withLabels(LabelsBuilder.get().withShow(true).build()) 
-                .build())
-            .withYaxis(YAxisBuilder.get()
-        		.withLabels(com.github.appreciated.apexcharts.config.yaxis.builder.LabelsBuilder.get()
-        				.withFormatter("function(value) { return Math.round(value); }") 
-                        .build())
-                .build())
-            .withSeries(new Series<>("Data", yData.toArray())) 
-            .build();
+    private void initializeChart(String title) {
+        chartContainer = new Div();
+        chartContainer.setId(title); // Set ID for the chart container
+        chartContainer.getElement().getStyle().set("width", "150px");
+        chartContainer.getElement().getStyle().set("height", "50px");
 
-        apexChart.setWidth("600px");  
-        apexChart.setHeight("250px"); 
+        // Add the container to the UI
+        add(chartContainer);
 
-        add(apexChart);
+        // Initialize the chart in JavaScript
+        getElement().executeJs("initLineChart($0)", chartContainer.getElement());
     }
-
 
     @Override
     public void addPoint(double x, double y) {
-        if (xData.size() >= 400) {
-            xData.remove(0);
-            yData.remove(0);
-        }
+        // Add the new point to the lists
+        xPoints.add(x);
+        yPoints.add(y);
 
-        
-        xData.add(x);
-        yData.add(y);
-        updateValue(y);
-
-        pointCount++;
-        if (pointCount >= UPDATE_THRESHOLD) {
-            updateChart();
-            pointCount = 0;
-        }
-
+        // Update the chart with the new point
+        getElement().executeJs("updateLineChart($0, $1)", 
+            chartContainer.getElement(), 
+            x, 
+            y);
     }
-
-    private void updateChart() {
-        String[] categories = xData.stream().map(String::valueOf).toArray(String[]::new);
-        
-        apexChart.updateSeries(new Series<>("Data", yData.toArray()));
-        apexChart.setXaxis(XAxisBuilder.get()
-                .withCategories(categories)
-                .build());
-    }
+    
 
     @Override
     public void clear() {
-        xData.clear();
-        yData.clear();
-        pointCount = 0;
-        updateChart();
+        // Clear the points and reset the chart
+        xPoints.clear();
+        yPoints.clear();
     }
 }
