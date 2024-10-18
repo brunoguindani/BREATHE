@@ -17,8 +17,10 @@ public class PatientConditionPanel extends VerticalLayout {
     public PatientConditionPanel(App app) {
         this.patientPanel = new PatientPanel(app);
         this.conditionsPanel = new ConditionsPanel(app);
-        setWidth("100%");
-        setHeight("100%"); // Imposta l'altezza al 100%
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+
         
         // Create RadioButtonGroup for switching
         RadioButtonGroup<String> radioButtonGroup = new RadioButtonGroup<>();

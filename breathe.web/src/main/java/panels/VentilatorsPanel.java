@@ -35,9 +35,10 @@ public class VentilatorsPanel extends VerticalLayout {
 
     public VentilatorsPanel(App app) {
     	this.app = app;
-    	
         setSpacing(true);
-        setSizeFull();
+		this.setWidthFull();
+		this.setMaxHeight("70%");  
+		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
 
         // Create the panels for each ventilation mode
         pcPanel = new pcVentilatorPanel(app);

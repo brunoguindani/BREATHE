@@ -27,8 +27,8 @@ public class PatientPanel extends VerticalLayout {
 
     public PatientPanel(App app) {
         // Main panel setup
-        setWidthFull();  // Imposta la larghezza al 100%
-        setHeight("50vh");  // Imposta l'altezza al 100% della viewport
+this.setWidth("0px");
+this.setHeight("0px");  
         getStyle().set("background-color", "white");  // Colore di sfondo
 
         // Create a fixed size Div for the panel
@@ -212,7 +212,7 @@ public class PatientPanel extends VerticalLayout {
 	}
 
 	public String getPatientName() {
-		return fieldMap.get("Name").getValue().toString();
+		return nameField.getValue();
 	}
 	
 	

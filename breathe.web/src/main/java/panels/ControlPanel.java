@@ -6,20 +6,24 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import java.io.File;
 
+import files.DownloadLinksArea;
+import files.UploadArea;
 import app.App;
 
 public class ControlPanel extends HorizontalLayout {
     private static final long serialVersionUID = 1L;
 
     private Button startButton, stopButton, exportButton;
-    
+    private String uploadedFileName;
     
     App app;
 
     public ControlPanel(App app) {
         this.app = app;
-        
+		this.setWidth("100%");
+		this.setHeight("10%");        
         
         startButton = new Button("Start", e -> showStartOptions());
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
@@ -76,21 +80,87 @@ public class ControlPanel extends HorizontalLayout {
     }
 
     private void startingFileSimulation() {
-    	app.clearOutputDisplay();
-        //app.startFromFileSimulation("C:\\Documenti\\UniBG\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
-    	//app.startFromFileSimulation("D:\\Unibg\\Tesi\\BREATHE\\breathe.gui\\states\\StandardMale@0s.json");
-    	app.startFromFileSimulation("C:\\Users\\doubl\\Desktop\\Breathe\\BREATHE\\breathe.engine\\states\\StandardMale@0s.json");
+        app.clearOutputDisplay();
+        
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Select File Option");
+        
+        File uploadFolder = app.getFolder("states/uploaded");
+        
+        UploadArea upload = new UploadArea(uploadFolder);
+        upload.getUploadField().addSucceededListener(e -> {
+            upload.hideErrorField();
+            uploadedFileName = e.getFileName();
+        });
+        
+        VerticalLayout dialogLayout = new VerticalLayout(upload);
+        
+        Button startSimulationButton = new Button("Start Simulation", e -> {
+            if (uploadedFileName != null) {
+                String filePath = "../breathe.engine/states/uploaded/" + uploadedFileName;
+                dialog.close();
+                app.startFromFileSimulation(filePath);
+            } else {
+                Notification.show("Please upload a file before starting the simulation.");
+            	String filePath = "../breathe.engine/states/uploaded/Standard.json";
+                dialog.close();
+                app.startFromFileSimulation(filePath);
+            }
+        });
+
+        dialog.add(dialogLayout, startSimulationButton);
+        dialog.open();
     }
     
     private void startingScenario() {
-    	app.clearOutputDisplay();
+        app.clearOutputDisplay();
+        
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Select File Option");
+        
+        File uploadFolder = app.getFolder("scenario");
+        
+        UploadArea upload = new UploadArea(uploadFolder);
+        upload.getUploadField().addSucceededListener(e -> {
+            upload.hideErrorField();
+            uploadedFileName = e.getFileName();
+        });
+        
+        VerticalLayout dialogLayout = new VerticalLayout(upload);
+        
+        Button startSimulationButton = new Button("Start Scenario", e -> {
+            if (uploadedFileName != null) {
+                String filePath = "../breathe.engine/scenario/" + uploadedFileName;
+                dialog.close();
+                app.startScenario(filePath);
+            } else {
+                Notification.show("Please upload a file before starting the simulation.");
+            }
+        });
+
+        dialog.add(dialogLayout, startSimulationButton);
+        dialog.open();
     	
     }
     
-    //TODO -> AGGIUNGERE CONTROLLO ESISTE GIA IL NOME DEL FILE IN MODO DA NON SOVRASCRIVERLO
     private void exportSimulation() {
-    	 String defaultFileName = "../breathe.engine/states/exported/Test.json";
+    	 String defaultFileName = "../breathe.engine/states/exported/"+ app.getPatientName()+ ".json";
          app.exportSimulation(defaultFileName);
+         
+         Dialog dialog = new Dialog();
+         
+         File uploadFolder = app.getFolder("states/exported");
+         DownloadLinksArea linksArea = new DownloadLinksArea(uploadFolder);
+         VerticalLayout dialogLayout = new VerticalLayout(linksArea);
+
+         Button closeButton = new Button("Close", e -> {
+             dialog.close();
+         });
+       
+         dialog.setHeaderTitle("Select File Option");
+         dialog.add(dialogLayout, closeButton);
+         
+         dialog.open();
     }
     
     

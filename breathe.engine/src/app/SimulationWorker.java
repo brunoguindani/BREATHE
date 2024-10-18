@@ -280,7 +280,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
     
     private void exportInitialPatient(SEPatient patient) {
-        String basePath = "./states/";
+        String basePath = "./states/exported";
         String baseFileName = patient.getName() + "@0s.json";
         String filePath = basePath + baseFileName;
 
@@ -509,8 +509,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        }
         }
 
-        sce.writeFile("./scenario/" + scenarioName + ".json");
-        gui.minilogStringData("\nScenario exported to: " + "./scenario/" + scenarioName + ".json");
+        sce.writeFile("../breathe.engine/scenario/" + scenarioName + ".json");
+        gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/" + scenarioName + ".json");
     }
     
 }

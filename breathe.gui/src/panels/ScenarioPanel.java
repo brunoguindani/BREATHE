@@ -52,7 +52,7 @@ public class ScenarioPanel extends JPanel{
         
         //PATIENT NAME SETUP
         patientFileComboBox = new JComboBox<>();
-        String[] directories = {"./states/", "./states/exported/"};
+        String[] directories = {"../breathe.engine/states/", "../breathe.engine/states/exported/"};
         updatePatientFiles(directories);
         addLabelAndField("Patient:", patientFileComboBox, this, gbc, 0);
         
@@ -209,11 +209,11 @@ public class ScenarioPanel extends JPanel{
         }
 
         String patientFile = (String) patientFileComboBox.getSelectedItem();
-        File patientTempFile = new File("./states/" + patientFile);
+        File patientTempFile = new File("../breathe.engine/states/" + patientFile);
         if (patientTempFile.exists())
-            patientFile = "./states/" + patientFile;
+            patientFile = "../breathe.engine/states/" + patientFile;
         else
-        	patientFile = "./states/exported/" + patientFile;
+        	patientFile = "../breathe.engine/states/exported/" + patientFile;
         
         app.createScenario(patientFile, scenarioName, actions);
         
