@@ -3,8 +3,10 @@ package panels;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.router.Route;
 
@@ -26,8 +28,6 @@ public class VentilatorsPanel extends VerticalLayout {
     private VentilationMode selectedMode = VentilationMode.PC; // Default mode is PC
     private VentilationMode activeMode = VentilationMode.PC; // Default mode is PC
     
-    RadioButtonGroup<VentilationMode> modeGroup;
-
     private Button connectButton, disconnectButton;
     private FlexLayout ventilatorLayout;
     
@@ -35,8 +35,16 @@ public class VentilatorsPanel extends VerticalLayout {
 
     public VentilatorsPanel(App app) {
     	this.app = app;
-        setSpacing(true);
-		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        setSpacing(false);
+        getStyle().set("margin","0px" );
+        getStyle().set("padding","0px" );
+        
+        // Crea i bottoni per la selezione
+        Button pcButton = new Button("PC");
+        Button cpapButton = new Button("CPAP");
+        Button vcButton = new Button("VC");
+        
+        pcButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         // Create the panels for each ventilation mode
         pcPanel = new pcVentilatorPanel(app);
@@ -47,14 +55,40 @@ public class VentilatorsPanel extends VerticalLayout {
 
         // Initially show only the PC panel
         ventilatorLayout.add(pcPanel);
+        
+        // Listener per il pulsante "Patient"
+        pcButton.addClickListener(event -> {
+        	updateVentilatorView(VentilationMode.PC);
+            pcButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            cpapButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            vcButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        });
 
-        // Radio buttons for selecting ventilation mode
-        modeGroup = new RadioButtonGroup<>();
-        modeGroup.setItems(VentilationMode.PC, VentilationMode.CPAP, VentilationMode.VC);
-        modeGroup.setLabel("Select Ventilation Mode");
-        modeGroup.setValue(VentilationMode.PC); // Default selected value
+        // Listener per il pulsante "Conditions"
+        cpapButton.addClickListener(event -> {
+        	updateVentilatorView(VentilationMode.CPAP);
+            pcButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            cpapButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            vcButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        });
+        
+        vcButton.addClickListener(event -> {
+        	updateVentilatorView(VentilationMode.VC);
+            pcButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            cpapButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            vcButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        });
 
-        modeGroup.addValueChangeListener(event -> updateVentilatorView(event.getValue()));
+        // Aggiungi i pulsanti e il layout del contenuto al layout principale
+        HorizontalLayout topArea = new HorizontalLayout();
+        topArea.setWidthFull(); 
+        topArea.setJustifyContentMode(JustifyContentMode.CENTER); 
+        
+        pcButton.setMaxWidth("20%");
+        vcButton.setMaxWidth("20%");
+        cpapButton.setMaxWidth("20%");
+
+        topArea.add(pcButton,cpapButton ,vcButton);
 
         // Connect and disconnect buttons
         connectButton = new Button("Connect", e -> connectVentilator());
@@ -67,9 +101,10 @@ public class VentilatorsPanel extends VerticalLayout {
         
         // Buttons layout
         HorizontalLayout buttonLayout = new HorizontalLayout(connectButton, disconnectButton);
-        buttonLayout.setPadding(true);
-
-        add(modeGroup, ventilatorLayout, buttonLayout);
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+		buttonLayout.setWidthFull(); 
+		
+        add(topArea, ventilatorLayout, buttonLayout);
     }
 
     private void updateVentilatorView(VentilationMode mode) {
@@ -98,8 +133,8 @@ public class VentilatorsPanel extends VerticalLayout {
             connectButton.setEnabled(false);
             disconnectButton.setEnabled(true);
             activeMode = selectedMode;
-            setEnableApplyButton(modeGroup.getValue(), true);
-            disconnectButton.setText("Disconnect "+ modeGroup.getValue());
+            setEnableApplyButton(selectedMode, true);
+            disconnectButton.setText("Disconnect "+ selectedMode);
         }
     }
 
@@ -107,13 +142,12 @@ public class VentilatorsPanel extends VerticalLayout {
 		app.disconnectVentilator();
         connectButton.setEnabled(true);
         disconnectButton.setEnabled(false);
-        setEnableApplyButton(modeGroup.getValue(), false);
+        setEnableApplyButton(selectedMode, false);
         disconnectButton.setText("Disconnect");
     }
     
 
     public Ventilator getCurrentVentilator() {
-    	System.out.println(activeMode);
         switch (activeMode) {
             case PC:
                 return new Ventilator(VentilationMode.PC, pcPanel.getData());

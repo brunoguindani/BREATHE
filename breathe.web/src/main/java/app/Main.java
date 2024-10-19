@@ -17,13 +17,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @Push
-@PWA(name = "Project Base for Vaadin with Spring", shortName = "Project Base", iconPath = "icons/output.jpg")
+@PWA(name = "Breathe Simulator Web version", shortName = "Breathe", iconPath = "icons/bicon.svg")
 @Theme("my-theme")
 public class Main implements AppShellConfigurator {
     private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+
     }
 
 }

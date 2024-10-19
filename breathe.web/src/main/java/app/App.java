@@ -14,6 +14,8 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.html.Image;
 
 import data.Action;
 import data.Condition;
@@ -53,57 +55,55 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         
         HorizontalLayout topArea = new HorizontalLayout();
         topArea.add(controlPanel);
+        topArea.getStyle().set("border-bottom", "2px dotted #ccc"); // Imposta il bordo
+        topArea.setWidth("95vw");
         loadingIndicator = new ProgressBar();
         loadingIndicator.setIndeterminate(true); // Imposta come indeterminato per indicare il caricamento
         loadingIndicator.setVisible(false); // Inizialmente nascosto
         loadingIndicator.setWidth("100px");
 
-        mainLayout.add(loadingIndicator); 
-        topArea.add(loadingIndicator);
+        Image logo = new Image("frontend/icons/breathe.png", "Logo");
+        logo.setWidth("10px");
+        logo.setHeight("10px");
+
+        // Layout verticale per il logo e la barra di caricamento
+        VerticalLayout logoLayout = new VerticalLayout(logo, loadingIndicator);
+        logoLayout.setSpacing(false);
+        logoLayout.setPadding(false);
+        logoLayout.setAlignItems(Alignment.END); // Centra gli elementi nel layout
+
+        // Aggiungi il layout con il logo all'area superiore
+        topArea.add(logoLayout);
+        topArea.setAlignItems(Alignment.END); // Allinea a destra il contenuto di topArea
         
         // Control Panel
         mainLayout.add(topArea);
         
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
-        leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
-        leftColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
-        leftColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
+        //leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+        leftColumn.getStyle().set("padding", "0px"); // Padding per aggiungere spazio interno (opzionale)
+        leftColumn.setWidth("25vw");
 
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
+        leftContentLayout.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
         leftTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), leftContentLayout));
 
         // Aggiungi componenti alla colonna sinistra
         leftColumn.add(leftTabs);
         leftColumn.add(leftContentLayout);
-
-        // Seconda colonna
-        VerticalLayout rightColumn = createColumn();
-        rightColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
-        rightColumn.getStyle().set("border-radius", "8px"); // Angoli arrotondati (opzionale)
-        rightColumn.getStyle().set("padding", "10px"); // Padding per aggiungere spazio interno (opzionale)
         
-        Tabs rightTabs = createRightTabs();
-        VerticalLayout rightContentLayout = new VerticalLayout();
-        rightTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), rightContentLayout));
-
-        // Aggiungi componenti alla colonna destra
-        rightColumn.add(rightTabs);
-        rightColumn.add(rightContentLayout);
+        outputPanel.setWidth("75vw");
 
         // Layout principale con due colonne
-        HorizontalLayout mainRow = new HorizontalLayout(leftColumn, rightColumn);
-        
-        // Assicurati che entrambe le colonne abbiano la stessa dimensione
-        mainRow.setFlexGrow(1, leftColumn);
-        mainRow.setFlexGrow(1, rightColumn);
+        HorizontalLayout mainRow = new HorizontalLayout(leftColumn, outputPanel);
+	    
+	    mainRow.setWidthFull();
+	
+	    mainLayout.add(mainRow);
 
-        mainLayout.add(mainRow);
-
-        updateContent(leftTabs.getSelectedTab(), leftContentLayout);
-        updateContent(rightTabs.getSelectedTab(), rightContentLayout);
-        
+        updateContent(leftTabs.getSelectedTab(), leftContentLayout);        
     }
     // Metodo per creare un layout colonna
     private VerticalLayout createColumn() {
@@ -118,15 +118,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private Tabs createLeftTabs() {
         Tabs tabs = new Tabs();
         tabs.setWidthFull();
+        tabs.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
         tabs.add(new Tab("Patient"), new Tab("Actions"), new Tab("Ventilators"));
-        return tabs;
-    }
-
-    // Metodo per creare un insieme di tabs con dati di esempio
-    private Tabs createRightTabs() {
-        Tabs tabs = new Tabs();
-        tabs.setWidthFull();
-        tabs.add(new Tab("Output"), new Tab("Scenario"), new Tab("Log"));
         return tabs;
     }
 
