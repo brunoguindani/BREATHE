@@ -29,17 +29,23 @@ public class ConditionBox extends VerticalLayout {
         this.app = app;
         this.title = title;
         this.components = components;
+        
+        setSpacing(false);
 
         this.getStyle().set("background-color", "white");
+		getStyle().set("margin","0px" );
+		getStyle().set("padding","0px" );
 
         // Header Button
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
+        headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
         // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
-        fieldsLayout.getStyle().set("border", "1px dashed lightgray");
+        fieldsLayout.getStyle().set("margin","0px" );
+        fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
 
@@ -48,6 +54,8 @@ public class ConditionBox extends VerticalLayout {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
                 numberField.setMin(0.0);
+                numberField.setStep(0.01);
+                numberField.setStepButtonsVisible(true);
                 numberField.setValue(0.0);
                 if(!title.equals("Pericardial Effusion")) numberField.setMax(1.0);
             }

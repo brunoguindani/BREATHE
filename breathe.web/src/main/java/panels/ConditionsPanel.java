@@ -3,7 +3,9 @@ package panels;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.html.Div;
@@ -27,41 +29,52 @@ public class ConditionsPanel extends VerticalLayout {
     private Button resetButton;
 
     public ConditionsPanel(App app) {
-        setPadding(false);
-        setSpacing(false);
-        getStyle().set("background-color", "white");
+    	
+		getStyle().set("background-color", "white");  // Colore di sfondo
+		getStyle().set("margin","0px" );
+		getStyle().set("padding","2px" );
 
-        FlexLayout conditionsContainer = new FlexLayout();
-        conditionsContainer.setFlexDirection(FlexDirection.COLUMN);
-        conditionsContainer.getStyle().set("overflow", "auto");
+        setSpacing(false);
+
+        Div fixedSizeDiv = new Div();
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
 
         // Scrollable container for all conditions
-        VerticalLayout scrollableContent = new VerticalLayout();
-        scrollableContent.setPadding(false);
-        scrollableContent.setSpacing(false);
+        VerticalLayout conditionLayout = new VerticalLayout();
+        conditionLayout.setPadding(false);
+        conditionLayout.setSpacing(false);
         
-        conditionsContainer.add(scrollableContent);
+        //conditionsContainer.add(scrollableContent);
 
         // Add ConditionBoxes
-        addConditionBox(app, "Chronic Anemia", new String[]{"ReductionFactor"}, scrollableContent);
-        addConditionBox(app, "ARDS", new String[]{"LeftLungSeverity", "RightLungSeverity"}, scrollableContent);
-        addConditionBox(app, "COPD", new String[]{"BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, scrollableContent);
-        addConditionBox(app, "Pericardial Effusion", new String[]{"AccumulatedVolume"}, scrollableContent, 100);
-        addConditionBox(app, "Renal Stenosis", new String[]{"LeftKidneySeverity", "RightKidneySeverity"}, scrollableContent);
-        addConditionBox(app, "Pneumonia", new String[]{"LeftLungSeverity", "RightLungSeverity"}, scrollableContent);
-        addConditionBox(app, "Pulmonary Fibrosis", new String[]{"Severity"}, scrollableContent);
-        addConditionBox(app, "Pulmonary Shunt", new String[]{"Severity"}, scrollableContent);
+        addConditionBox(app, "Chronic Anemia", new String[]{"ReductionFactor"}, conditionLayout);
+        addConditionBox(app, "ARDS", new String[]{"LeftLungSeverity", "RightLungSeverity"}, conditionLayout);
+        addConditionBox(app, "COPD", new String[]{"BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, conditionLayout);
+        addConditionBox(app, "Pericardial Effusion", new String[]{"AccumulatedVolume"}, conditionLayout, 100);
+        addConditionBox(app, "Renal Stenosis", new String[]{"LeftKidneySeverity", "RightKidneySeverity"}, conditionLayout);
+        addConditionBox(app, "Pneumonia", new String[]{"LeftLungSeverity", "RightLungSeverity"}, conditionLayout);
+        addConditionBox(app, "Pulmonary Fibrosis", new String[]{"Severity"}, conditionLayout);
+        addConditionBox(app, "Pulmonary Shunt", new String[]{"Severity"}, conditionLayout);
 
         // Create a scrollable panel for conditions data
         Div scrollableDiv = new Div();
-        scrollableDiv.getStyle().set("overflow-y", "auto");
-        scrollableDiv.add(conditionsContainer);
+        scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+        scrollableDiv.getStyle().set("scrollbar-width", "none");
+        
+        scrollableDiv.setHeight("60vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.add(conditionLayout);
+        fixedSizeDiv.add(scrollableDiv);
+        fixedSizeDiv.setHeight("60vh");
+        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
 
-        add(scrollableDiv);
+        add(fixedSizeDiv);
 
         // Reset Button
         resetButton = new Button("Reset Conditions", e -> resetConditions());
-        add(resetButton);
+        HorizontalLayout buttonLayout = new HorizontalLayout(resetButton);
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+		buttonLayout.setWidthFull(); 
+        add(buttonLayout);
     }
 
     private void addConditionBox(App app, String title, String[] fields, VerticalLayout container) {

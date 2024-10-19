@@ -1,3 +1,0 @@
-/*PATIENT*/
-- Quando creo da fai devo fare set patient di patient data e Add conditions
-- La conversione delle unità di misura è da fare nella giu prima di passare il valore!!

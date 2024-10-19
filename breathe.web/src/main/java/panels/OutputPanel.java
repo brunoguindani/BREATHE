@@ -28,9 +28,9 @@ public class OutputPanel extends VerticalLayout {
 		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         mainPanel = new VerticalLayout();
         mainPanel.getStyle().set("background-color", "black");
-        mainPanel.getStyle().set("border", "2px solid #fff");  // Bordo bianco
-        mainPanel.getStyle().set("border-radius", "10px");
-        mainPanel.getStyle().set("box-shadow", "inset 0 0 10px rgba(255, 255, 255, 0.5)");  // Ombra interna
+        setSizeFull();
+        getStyle().set("margin","0px" );
+        getStyle().set("padding","0px" );
 
         chartsMap = new HashMap<>();
         
@@ -43,14 +43,6 @@ public class OutputPanel extends VerticalLayout {
         chartsMap.put("Respiratory Rate", "1/min");
         chartsMap.put("Airway Pressure", "mmHg");
         
-        MultiSelectComboBox<String> comboBox = new MultiSelectComboBox<>();
-        comboBox.setLabel("Seleziona le opzioni");
-        comboBox.setItems(chartsMap.keySet());
-        comboBox.setItemLabelGenerator(item -> item); 
-        comboBox.addValueChangeListener(event -> updateItemDisplay(comboBox.getValue()));
-        
-        add(comboBox);
-        
         chartPanels = new HashMap<>();
              
         chartsPanel = new VerticalLayout();
@@ -60,10 +52,10 @@ public class OutputPanel extends VerticalLayout {
         
         // Aggiunta dei grafici a linee
         String[] chartOrder = {
-            "Total Lung Volume",
+           /* "Total Lung Volume",
             "CO2",
             "Pleth",
-            "ECG"
+            "ECG"*/
         };
         
         for (String chartName : chartOrder) {
@@ -133,18 +125,18 @@ public class OutputPanel extends VerticalLayout {
             case "RespirationRate":
                 mapChartName = "Respiratory Rate";
                 break;
-            case "TotalLungVolume":
-                mapChartName = "Total Lung Volume";
-                break;
-            case "Lead3ElectricPotential":
-                mapChartName = "ECG";
-                break;
-            case "CarbonDioxide":
-                mapChartName = "CO2";
-                break;
-            case "ArterialPressure":
-                mapChartName = "Pleth";
-                break;
+//            case "TotalLungVolume":
+//                mapChartName = "Total Lung Volume";
+//                break;
+//            case "Lead3ElectricPotential":
+//                mapChartName = "ECG";
+//                break;
+//            case "CarbonDioxide":
+//                mapChartName = "CO2";
+//                break;
+//            case "ArterialPressure":
+//                mapChartName = "Pleth";
+//                break;
             default:
                 mapChartName = null; 
                 break;
