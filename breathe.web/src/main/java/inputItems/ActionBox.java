@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -28,27 +29,37 @@ public class ActionBox extends VerticalLayout {
 
     private App app;
 
-    public ActionBox(App app, String title, Map<String, Component> components2) {
+    public ActionBox(App app, String title, Map<String, Component> components2, boolean forScenario) {
         this.app = app;
         this.title = title;
         this.components = components2;
+        
+        setSpacing(false);
+
+        this.getStyle().set("background-color", "white");
+		getStyle().set("margin","0px" );
+		getStyle().set("padding","0px" );
       
         // Header Button
         Button headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
+        headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
         // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
-        fieldsLayout.getStyle().set("border", "1px dashed lightgray");
+        fieldsLayout.getStyle().set("margin","0px" );
+        fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
         
         // Add fields and spans
-        for (Map.Entry<String, Component> entry : components2.entrySet()) {
+        for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
                 numberField.setMin(0.0);
+                numberField.setStep(0.01);
+                numberField.setStepButtonsVisible(true);
                 numberField.setValue(0.0);
                 if(!title.equals("Pericardial Effusion")) numberField.setMax(1.0);
             }
@@ -56,12 +67,16 @@ public class ActionBox extends VerticalLayout {
         }
 
         // Time fields
-        createTimeFields(fieldsLayout);
 
-        // Apply Button
+        // "Apply" button
         applySectionButton = new Button("Apply", e -> applyAction());
         applySectionButton.setEnabled(false);
-        fieldsLayout.add(applySectionButton);
+        
+        if(forScenario) {
+            createTimeFields(fieldsLayout); 	
+        }else{
+            fieldsLayout.add(applySectionButton);     	
+        }
 
         // Add components to the layout
         add(headerButton, fieldsLayout);
@@ -69,6 +84,7 @@ public class ActionBox extends VerticalLayout {
 
     private void createTimeFields(VerticalLayout fieldsLayout) {
         HorizontalLayout timeLayout = new HorizontalLayout();
+        timeLayout.setWidth("23vw");
         
         // Imposta l'allineamento orizzontale e verticale
         timeLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Centra orizzontalmente
@@ -77,20 +93,20 @@ public class ActionBox extends VerticalLayout {
         hoursField = new NumberField("Hours");
         hoursField.setValue(0.0);
         hoursField.setStep(1); 
-        hoursField.setMin(0); 
-        hoursField.setWidth("10%"); // Imposta la larghezza al 10%
+        hoursField.setMin(0);
+        hoursField.setWidth("20%");
 
         minutesField = new NumberField("Minutes");
         minutesField.setValue(0.0);
         minutesField.setStep(1); 
         minutesField.setMin(0); 
-        minutesField.setWidth("10%");
+        minutesField.setWidth("20%");
 
         secondsField = new NumberField("Seconds");
         secondsField.setValue(0.0);
         secondsField.setStep(1); 
         secondsField.setMin(0); 
-        secondsField.setWidth("10%");
+        secondsField.setWidth("20%");
 
         // Set input restrictions
         hoursField.setPlaceholder("0");
@@ -100,7 +116,10 @@ public class ActionBox extends VerticalLayout {
         timeLayout.add(hoursField, minutesField, secondsField);
 
         Button plusButton = new Button("+", e -> addToScenario());
+        plusButton.setWidth("10%");
         timeLayout.add(plusButton);
+
+        timeLayout.setAlignItems(Alignment.BASELINE);
 
         fieldsLayout.add(timeLayout);
     }

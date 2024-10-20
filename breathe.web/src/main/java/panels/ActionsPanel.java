@@ -2,8 +2,6 @@ package panels;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
-import com.vaadin.flow.component.orderedlayout.FlexLayout.FlexDirection;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
@@ -22,55 +20,58 @@ public class ActionsPanel extends VerticalLayout {
 	
 	private List<ActionBox> boxes = new ArrayList<>();
 
-    public ActionsPanel(App app) {
-        //setSizeFull();
-        setPadding(false);
+    public ActionsPanel(App app, boolean forScenario) {
+    	getStyle().set("background-color", "white");  // Colore di sfondo
+		getStyle().set("margin","0px" );
+		getStyle().set("padding","2px" );
+
         setSpacing(false);
-        getStyle().set("background-color", "white"); // Light gray 
-		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
 
-        FlexLayout actionsContainer = new FlexLayout();
-        actionsContainer.setFlexDirection(FlexDirection.COLUMN);
+        Div fixedSizeDiv = new Div();
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+
+        // Scrollable container for all conditions
+        VerticalLayout actionLayout = new VerticalLayout();
+        actionLayout.setPadding(false);
+        actionLayout.setSpacing(false);
         
-        // Scrollable container for all actions
-        VerticalLayout scrollableContent = new VerticalLayout();
-        scrollableContent.setPadding(false);
-        scrollableContent.setSpacing(false);
-
-        actionsContainer.add(scrollableContent);
-        actionsContainer.getStyle().set("overflow", "auto");  // Enable scrolling
-
         // Add ActionBoxes
-        addActionBox(app, "ARDS Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, scrollableContent);
-        addActionBox(app, "Acute Stress", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Airway Obstruction", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Asthma Attack", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Brain Injury", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Bronchoconstriction", new String[]{"Severity"}, scrollableContent);
+        addActionBox(app, "ARDS Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, actionLayout, forScenario);
+        addActionBox(app, "Acute Stress", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Airway Obstruction", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Asthma Attack", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Brain Injury", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Bronchoconstriction", new String[]{"Severity"}, actionLayout, forScenario);
         addActionBox(app, "COPD Exacerbation", new String[]{
-                "BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, scrollableContent);
-        addActionBox(app, "Dyspnea", new String[]{"RespirationRateSeverity"}, scrollableContent);
-        addActionBox(app, "Exercise", new String[]{"Intensity"}, scrollableContent);
-        addActionBox(app, "Pericardial Effusion", new String[]{"EffusionRate ml/s"}, scrollableContent, 1000);
-        addActionBox(app, "Pneumonia Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, scrollableContent);
-        addActionBox(app, "Pulmonary Shunt Exacerbation", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Respiratory Fatigue", new String[]{"Severity"}, scrollableContent);
-        addActionBox(app, "Urinate", new String[]{}, scrollableContent);
-        addActionBox(app, "Ventilator Leak", new String[]{"Severity"}, scrollableContent);
+                "BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, actionLayout, forScenario);
+        addActionBox(app, "Dyspnea", new String[]{"RespirationRateSeverity"}, actionLayout, forScenario);
+        addActionBox(app, "Exercise", new String[]{"Intensity"}, actionLayout, forScenario);
+        addActionBox(app, "Pericardial Effusion", new String[]{"EffusionRate ml/s"}, actionLayout, 1000, forScenario);
+        addActionBox(app, "Pneumonia Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, actionLayout, forScenario);
+        addActionBox(app, "Pulmonary Shunt Exacerbation", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Respiratory Fatigue", new String[]{"Severity"}, actionLayout, forScenario);
+        addActionBox(app, "Urinate", new String[]{}, actionLayout, forScenario);
+        addActionBox(app, "Ventilator Leak", new String[]{"Severity"}, actionLayout, forScenario);
 
-        // Create a scrollable panel for patient data
         Div scrollableDiv = new Div();
         scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
-        scrollableDiv.add(actionsContainer);
+        scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        add(scrollableDiv);
+        scrollableDiv.setHeight("75vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.add(actionLayout);
+        fixedSizeDiv.add(scrollableDiv);
+        fixedSizeDiv.setHeight("75vh");
+        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+
+        add(fixedSizeDiv);
+
     }
 
-    private void addActionBox(App app, String title, String[] fields, VerticalLayout container) {
-        addActionBox(app, title, fields, container, 1.0);  // Default max value 1.0
+    private void addActionBox(App app, String title, String[] fields, VerticalLayout container, boolean fs) {
+        addActionBox(app, title, fields, container, 1.0, fs);  // Default max value 1.0
     }
 
-    private void addActionBox(App app, String title, String[] fields, VerticalLayout container, double max) {
+    private void addActionBox(App app, String title, String[] fields, VerticalLayout container, double max, boolean fs) {
         Map<String, Component> components = new HashMap<>();
         for (String field : fields) {
             NumberField spinner = new NumberField(field);
@@ -79,7 +80,7 @@ public class ActionsPanel extends VerticalLayout {
             spinner.setStep(0.01);
             components.put(field, spinner);
         }
-        ActionBox actionBox = new ActionBox(app, title, components);
+        ActionBox actionBox = new ActionBox(app, title, components, fs);
         boxes.add(actionBox);
         container.add(actionBox);
     }
