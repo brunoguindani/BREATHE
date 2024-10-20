@@ -25,12 +25,16 @@ public class OutputPanel extends VerticalLayout {
 
     public OutputPanel(App app) {
 		this.setWidthFull();
-		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
-        mainPanel = new VerticalLayout();
+		mainPanel = new VerticalLayout();
         mainPanel.getStyle().set("background-color", "black");
+		mainPanel.getStyle().set("border-radius", "8px"); // Angoli arrotondati
+		mainPanel.getStyle().set("margin","0px" );
+		mainPanel.getStyle().set("padding","0px" );
         setSizeFull();
-        getStyle().set("margin","0px" );
-        getStyle().set("padding","0px" );
+        getStyle().set("margin","5px" );
+        getStyle().set("padding","5px" );
+        
+        setSpacing(false);
 
         chartsMap = new HashMap<>();
         

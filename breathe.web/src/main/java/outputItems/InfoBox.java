@@ -1,13 +1,10 @@
 package outputItems;
 
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class InfoBox extends ItemDisplay {
-	private static final long serialVersionUID = 1L;
-	
-	
-	private Span unitLabel;
+    private static final long serialVersionUID = 1L;
     
     protected Span titleLabel;
     protected Span valueLabel;
@@ -16,43 +13,46 @@ public class InfoBox extends ItemDisplay {
         super(title, unit);
         
         // Imposta il layout principale
-        getStyle().set("background-color", "#282c34"); // Colore di sfondo scuro
-        getStyle().set("border", "1px solid #61dafb"); // Bordo blu
-        getStyle().set("border-radius", "8px"); // Angoli arrotondati
-        getStyle().set("padding", "10px"); // Padding per spazio interno
-        getStyle().set("box-shadow", "0 2px 10px rgba(0, 0, 0, 0.5)"); // Ombra per profondità
-
-        // Configura l'etichetta dell'unità di misura
-        unitLabel = new Span("(" + unit + ")");
-        unitLabel.getStyle().set("color", "#61dafb"); // Colore dell'unità
-        unitLabel.getStyle().set("font-size", "14px");
+        getStyle().set("padding", "0px"); // Padding per spazio interno
+        setWidth("15vw");
         
         // Aggiorna lo stile delle etichette del titolo e del valore
-        titleLabel = new Span(title);
+        titleLabel = new Span(title + " (" + unit + ") ");
         titleLabel.getStyle().set("font-size", "16px");
-        titleLabel.getStyle().set("color", "white"); // Colore del titolo
+        titleLabel.getStyle().set("color", "#ccc"); // Colore del titolo
 
         valueLabel = new Span();
-        valueLabel.getStyle().set("font-size", "24px");
-        valueLabel.getStyle().set("color", "#61dafb"); // Colore del valore
+        valueLabel.getStyle().set("font-size", "20px");
+        valueLabel.getStyle().set("color", "#ccc"); // Colore del valore
         
-        // Layout orizzontale per titolo e valore
-        HorizontalLayout layout = new HorizontalLayout(titleLabel, valueLabel);
-        layout.setAlignItems(Alignment.CENTER); // Allinea verticalmente al centro
-        layout.setSpacing(true); // Spaziatura tra titolo e valore
+        // Layout verticale per titolo e valore
+        VerticalLayout layout = new VerticalLayout(titleLabel, valueLabel);
+        
+        // Aggiorna il layout principale
+        layout.getStyle().set("border", "1px solid #ccc"); // Bordo
+        layout.getStyle().set("border-radius", "8px"); // Angoli arrotondati
+        layout.getStyle().set("background-color", "#222"); // Colore di sfondo
+        layout.getStyle().set("padding", "2px"); // Padding interno
+        layout.getStyle().set("margin", "2px"); // Margine esterno
 
+        // Allineamento orizzontale e verticale
+        layout.setAlignItems(Alignment.CENTER); // Centra verticalmente
+        layout.setSpacing(false);
+        
         // Aggiungi al layout principale
-        add(layout, unitLabel);
+        addPoint(0.00, 0.00);
+        add(layout);
     }
 
     @Override
     public void addPoint(double x, double y) {
-        y = Math.round(y * 1000.0) / 1000.0; 
-        valueLabel.setText("" + y);
+        y = Math.round(y * 100.0) / 100.0; 
+        valueLabel.setText(y + "");
+        valueLabel.getElement().getStyle().set("font-style", "italic");  
     }
 
     @Override
     public void clear() {
-    	valueLabel.setText("");
+        valueLabel.setText("0.0");
     }
 }
