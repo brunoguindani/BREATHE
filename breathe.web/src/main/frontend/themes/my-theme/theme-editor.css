@@ -5,6 +5,7 @@
 @import url(https://cdn.jsdelivr.net/fontsource/css/inter@latest/index.css);
 
 html {
+  --lumo-base-color:rgba(255,255,255,1);
   --lumo-font-family:Inter;
   --lumo-font-size-l:1.125rem;
   --lumo-font-size-m:1rem;

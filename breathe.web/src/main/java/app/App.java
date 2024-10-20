@@ -17,7 +17,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
@@ -61,12 +60,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         topArea.setWidth("98vw");
         topArea.setHeight("9vh");
         topArea.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        topArea.setAlignItems(FlexComponent.Alignment.CENTER);
 
         // Barra di caricamento
         loadingIndicator = new ProgressBar();
-        loadingIndicator.setIndeterminate(true);
-        loadingIndicator.setVisible(false);
-        loadingIndicator.setWidth("140px");
+        loadingIndicator.setIndeterminate(false);
+        loadingIndicator.setVisible(true);
+        loadingIndicator.setWidth("145px");
 
         // Logo
         H1 logo = new H1("Breathe");
@@ -128,7 +128,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         Tabs tabs = new Tabs();
         tabs.setWidthFull();
         tabs.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
-        tabs.add(new Tab(VaadinIcon.USER_HEART.create()), new Tab("Actions"), new Tab("Ventilators"));
+        tabs.add(new Tab("Patient"), new Tab("Actions"), new Tab("Ventilators"));
         tabs.addThemeVariants(TabsVariant.LUMO_EQUAL_WIDTH_TABS);
         return tabs;
     }
@@ -138,15 +138,16 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         contentLayout.removeAll();  // Rimuovi tutto il contenuto esistente
         String tabLabel = selectedTab.getLabel();
         switch (tabLabel) {
+	        case "Patient":
+	            contentLayout.add(patientConditionPanel); 
+	            break;
             case "Actions":
                 contentLayout.add(actionsPanel);
                 break;
             case "Ventilators":
                 contentLayout.add(ventilatorsPanel);
                 break;
-            default:
-	            contentLayout.add(patientConditionPanel); 
-	            break;
+            
         }
     }
     
@@ -164,11 +165,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     }
     
     public void startLoading() {
-        loadingIndicator.setVisible(true); // Mostra l'indicatore di caricamento
+        loadingIndicator.setIndeterminate(true);
     }
 
     public void stopLoading() {
-        loadingIndicator.setVisible(false); // Nascondi l'indicatore di caricamento
+    	loadingIndicator.setIndeterminate(false); // Nascondi l'indicatore di caricamento
     }
     
 	public void applyCondition(Condition condition) {

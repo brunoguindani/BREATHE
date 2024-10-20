@@ -4,6 +4,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -34,9 +35,11 @@ public class ControlPanel extends HorizontalLayout {
         scenarioPanel = new ScenarioPanel(app);
         
         startButton = new Button(VaadinIcon.PLAY.create(), e -> showStartOptions());
+        startButton.setTooltipText("Start simulation");
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
         
         stopButton = new Button(VaadinIcon.STOP.create());
+        stopButton.setTooltipText("Stop simulation");
         stopButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         stopButton.setEnabled(false);
         stopButton.addClickListener(e -> {
@@ -45,12 +48,14 @@ public class ControlPanel extends HorizontalLayout {
         });
         
         exportButton = new Button(LumoIcon.DOWNLOAD.create());
+        exportButton.setTooltipText("Export simulation");
         exportButton.setEnabled(false);
         exportButton.addClickListener(e -> {
         	exportSimulation();
         });
         
         scenarioButton = new Button(VaadinIcon.CLIPBOARD_TEXT.create());
+        scenarioButton.setTooltipText("Create Scenario");
         scenarioButton.getStyle().set("margin-right", "0px");
         scenarioButton.addClickListener(e -> {
         	openScenarioDialog();
@@ -125,7 +130,7 @@ public class ControlPanel extends HorizontalLayout {
                 dialog.close();
                 app.startFromFileSimulation(filePath);
             } else {
-                Notification.show("Please upload a file before starting the simulation.");
+                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END);
             	String filePath = "../breathe.engine/states/StandardMale@0s.json";
                 dialog.close();
                 app.startFromFileSimulation(filePath);
@@ -157,7 +162,7 @@ public class ControlPanel extends HorizontalLayout {
                 dialog.close();
                 app.startScenario(filePath);
             } else {
-                Notification.show("Please upload a file before starting the simulation.");
+                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END);
             }
         });
 
