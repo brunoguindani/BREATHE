@@ -26,7 +26,7 @@ public class OutputPanel extends VerticalLayout {
     public OutputPanel(App app) {
 		this.setWidthFull();
 		mainPanel = new VerticalLayout();
-        mainPanel.getStyle().set("background-color", "black");
+        mainPanel.getStyle().set("background-color", "#03070a");
 		mainPanel.getStyle().set("border-radius", "8px"); // Angoli arrotondati
 		mainPanel.getStyle().set("margin","0px" );
 		mainPanel.getStyle().set("padding","0px" );
@@ -53,6 +53,8 @@ public class OutputPanel extends VerticalLayout {
         chartsPanel.getStyle().set("padding", "10px");  // Padding per distanziare gli oggetti
 
         infoBoxPanel = new FlexLayout();
+        infoBoxPanel.setAlignItems(Alignment.CENTER);
+        infoBoxPanel.setJustifyContentMode(JustifyContentMode.CENTER);
         
         // Aggiunta dei grafici a linee
         String[] chartOrder = {
@@ -65,6 +67,8 @@ public class OutputPanel extends VerticalLayout {
         int count = 0;
         LineChart oldLine = null;
         chartsPanel.setSpacing(false);
+        chartsPanel.setWidth("100%");
+
         for (String chartName : chartOrder) {
             LineChart chart = new LineChart(chartName, chartsMap.get(chartName));
             chartPanels.put(chartName, chart);
@@ -100,6 +104,8 @@ public class OutputPanel extends VerticalLayout {
         scrollChartPane.setWidthFull();
         
         mainPanel.add(infoBoxPanel, scrollChartPane);
+        mainPanel.setAlignItems(Alignment.CENTER);
+        mainPanel.setJustifyContentMode(JustifyContentMode.CENTER);
         add(mainPanel);
     }
 

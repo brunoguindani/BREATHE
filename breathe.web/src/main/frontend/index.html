@@ -8,6 +8,7 @@
         body {
             height: 100vh;
             margin: 0;
+            background: none; /* Rimuove lo sfondo */
         }
 
         #outlet {
@@ -17,7 +18,7 @@
     <!-- index.ts is included here automatically (either by the dev server or during the build) -->
     <script src="https://cdn.jsdelivr.net/npm/@lightningchart/lcjs@6.0.3/dist/lcjs.iife.js"></script>
     <script>
-    const { lightningChart} = lcjs;
+    const { lightningChart,  Themes, AxisScrollStrategies} = lcjs;
 
     let charts = {}; 
 
@@ -39,9 +40,23 @@
         });
 
 
-        const chart = lc.ChartXY();
+        const chart = lc.ChartXY({
+            theme: Themes.turquoiseHexagon,
+        });
+
         chart.setTitle(name);
+        chart.setMouseInteractions(false);
+        chart.getDefaultAxisX()
+            .setScrollStrategy(AxisScrollStrategies.progressive)
+            .setInterval({
+                start: 0,
+                end: 6,   // 60 seconds as milliseconds
+                stopAxisAfter: false
+            });
+
         const series = chart.addLineSeries();
+        series.setStrokeStyle((stroke) => stroke.setThickness(4));
+        
         const dataPoints = [];
 
         charts[name] = {
@@ -58,12 +73,7 @@
             console.warn(`"${name}" doesn't exists.`);
             return;
         }
-
         chartData.dataPoints.push({ x: x, y: y });
-
-        if (chartData.dataPoints.length > 300) {
-            chartData.dataPoints.shift(); 
-        }
 
         chartData.series.clear(); 
         chartData.series.add(chartData.dataPoints); 

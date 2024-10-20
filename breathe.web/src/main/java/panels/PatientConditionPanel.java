@@ -25,7 +25,9 @@ public class PatientConditionPanel extends VerticalLayout {
 
         // Crea i bottoni per la selezione
         Button patientButton = new Button("Patient");
+        patientButton.setWidth("9vw");
         Button conditionsButton = new Button("Conditions");
+        conditionsButton.setWidth("9vw");
 
         // Imposta il pulsante "Patient" come attivo di default
         patientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -55,9 +57,6 @@ public class PatientConditionPanel extends VerticalLayout {
         HorizontalLayout topArea = new HorizontalLayout();
         topArea.setWidthFull(); 
         topArea.setJustifyContentMode(JustifyContentMode.CENTER); 
-        
-        patientButton.setMaxWidth("30%");
-        conditionsButton.setMaxWidth("30%");
 
         topArea.add(patientButton, conditionsButton);
         add(topArea, contentLayout);

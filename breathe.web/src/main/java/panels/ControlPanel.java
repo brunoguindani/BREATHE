@@ -4,8 +4,12 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.html.Div;
+
 import java.io.File;
 
 import files.DownloadLinksArea;
@@ -29,10 +33,10 @@ public class ControlPanel extends HorizontalLayout {
         actionsPanel = new ActionsPanel(app, true); 
         scenarioPanel = new ScenarioPanel(app);
         
-        startButton = new Button("Start", e -> showStartOptions());
+        startButton = new Button(VaadinIcon.PLAY.create(), e -> showStartOptions());
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
         
-        stopButton = new Button("Stop");
+        stopButton = new Button(VaadinIcon.STOP.create());
         stopButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         stopButton.setEnabled(false);
         stopButton.addClickListener(e -> {
@@ -40,18 +44,23 @@ public class ControlPanel extends HorizontalLayout {
             enableControlStartButton(true);
         });
         
-        exportButton = new Button("Export");
+        exportButton = new Button(LumoIcon.DOWNLOAD.create());
         exportButton.setEnabled(false);
         exportButton.addClickListener(e -> {
         	exportSimulation();
         });
         
-        scenarioButton = new Button("Scenario");
+        scenarioButton = new Button(VaadinIcon.CLIPBOARD_TEXT.create());
+        scenarioButton.getStyle().set("margin-right", "0px");
         scenarioButton.addClickListener(e -> {
         	openScenarioDialog();
         });
         
-        add(startButton, stopButton, exportButton, scenarioButton);
+        setWidth("100%");
+        Div spacer = new Div();
+        spacer.getStyle().set("flex-grow", "1");
+
+        add(startButton, stopButton, exportButton, spacer, scenarioButton);
     }
     
     private void openScenarioDialog() {

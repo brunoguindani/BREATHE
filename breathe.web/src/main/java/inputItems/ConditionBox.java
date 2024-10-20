@@ -3,6 +3,7 @@ package inputItems;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 
@@ -65,6 +66,7 @@ public class ConditionBox extends VerticalLayout {
         // "Apply" button
         applySectionButton = new Button("Apply", e -> applyCondition());
         applySectionButton.setEnabled(true);
+        applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         fieldsLayout.add(applySectionButton);
 
         // Add components to the layout
