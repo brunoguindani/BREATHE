@@ -96,7 +96,6 @@ public class ControlPanel extends HorizontalLayout {
     }
 
     private void startingFileSimulation() {
-        app.clearOutputDisplay();
         
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select File Option");
@@ -118,7 +117,7 @@ public class ControlPanel extends HorizontalLayout {
                 app.startFromFileSimulation(filePath);
             } else {
                 Notification.show("Please upload a file before starting the simulation.");
-            	String filePath = "../breathe.engine/states/uploaded/Standard.json";
+            	String filePath = "../breathe.engine/states/StandardMale@0s.json";
                 dialog.close();
                 app.startFromFileSimulation(filePath);
             }
@@ -129,7 +128,6 @@ public class ControlPanel extends HorizontalLayout {
     }
     
     private void startingScenario() {
-        app.clearOutputDisplay();
         
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select File Option");

@@ -8,6 +8,9 @@ public class InfoBox extends ItemDisplay {
 	
 	
 	private Span unitLabel;
+    
+    protected Span titleLabel;
+    protected Span valueLabel;
 
     public InfoBox(String title, String unit) {
         super(title, unit);
@@ -25,9 +28,11 @@ public class InfoBox extends ItemDisplay {
         unitLabel.getStyle().set("font-size", "14px");
         
         // Aggiorna lo stile delle etichette del titolo e del valore
+        titleLabel = new Span(title);
         titleLabel.getStyle().set("font-size", "16px");
         titleLabel.getStyle().set("color", "white"); // Colore del titolo
 
+        valueLabel = new Span();
         valueLabel.getStyle().set("font-size", "24px");
         valueLabel.getStyle().set("color", "#61dafb"); // Colore del valore
         
@@ -43,11 +48,11 @@ public class InfoBox extends ItemDisplay {
     @Override
     public void addPoint(double x, double y) {
         y = Math.round(y * 1000.0) / 1000.0; 
-        updateValue(y);
+        valueLabel.setText("" + y);
     }
 
     @Override
     public void clear() {
-        updateValue(0);
+    	valueLabel.setText("");
     }
 }
