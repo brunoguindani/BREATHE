@@ -17,10 +17,15 @@ public class LineChart extends ItemDisplay {
     }
 
     private void initializeChart(String title) {
+    	getElement().getStyle().set("padding", "0");
+    	getElement().getStyle().set("margin", "0");
+    	
         chartContainer = new Div();
         chartContainer.setId(title); // Set ID for the chart container
-        chartContainer.getElement().getStyle().set("width", "150px");
-        chartContainer.getElement().getStyle().set("height", "50px");
+        chartContainer.getElement().getStyle().set("width", "35vw");
+        chartContainer.getElement().getStyle().set("height", "35vh");
+        
+
 
         // Add the container to the UI
         add(chartContainer);
@@ -31,7 +36,6 @@ public class LineChart extends ItemDisplay {
 
     @Override
     public void addPoint(double x, double y) {
-
         // Update the chart with the new point
         getElement().executeJs("updateLineChart($0, $1, $2)", 
             title, 
@@ -41,5 +45,6 @@ public class LineChart extends ItemDisplay {
 
     @Override
     public void clear() {
+    	getElement().executeJs("clearLineChart($0)", title);
     }
 }

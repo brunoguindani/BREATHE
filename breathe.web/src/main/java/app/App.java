@@ -39,7 +39,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
     // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
-    private final LogPanel logPanel = new LogPanel(this);
+   // private final LogPanel logPanel = new LogPanel(this);
     private final ControlPanel controlPanel = new ControlPanel(this);
     
     private SimulationWorker sim;
@@ -218,6 +218,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	public boolean startScenario(String file) {
 		startLoading();
     	if(file != null) {
+    		clearOutputDisplay();
     		sim = new SimulationWorker(this);
     		sim.simulationFromScenario(file);
     		return true;
@@ -228,6 +229,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     public boolean startFromFileSimulation(String file) {
 		startLoading();
     	if(file != null) {
+    		clearOutputDisplay();
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);
     		return true;
@@ -277,9 +279,9 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	@Override
 	public void logStringData(String data) {
-		getUI().ifPresent(ui -> ui.access(() -> {
-			logPanel.append(data);
-         }));
+//		getUI().ifPresent(ui -> ui.access(() -> {
+//			logPanel.append(data);
+//         }));
 		
 	}
 

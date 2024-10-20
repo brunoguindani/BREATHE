@@ -1,6 +1,5 @@
 package outputItems;
 
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public abstract class ItemDisplay extends VerticalLayout {
@@ -9,9 +8,7 @@ public abstract class ItemDisplay extends VerticalLayout {
 	protected String title;
     protected String unit;
     protected double currentValue;
-    
-    protected Span titleLabel;
-    protected Span valueLabel;
+
 
     public ItemDisplay(String title, String unit) {
         this.title = title;
@@ -22,21 +19,7 @@ public abstract class ItemDisplay extends VerticalLayout {
         setPadding(true);
         setSpacing(true);
         getStyle().set("background-color", "black");
-        
-        // Crea i componenti comuni
-        titleLabel = new Span(title);
-        titleLabel.getStyle().set("color", "white");
-        valueLabel = new Span("" + currentValue);
-        valueLabel.getStyle().set("color", "white");
 
-        // Aggiungi i componenti al layout
-        add(titleLabel, valueLabel);
-    }
-
-    // Metodo per aggiornare il valore e visualizzarlo
-    public void updateValue(double newValue) {
-        this.currentValue = newValue;
-        valueLabel.setText("" + newValue);
     }
 
     // Metodi astratti per le sottoclassi

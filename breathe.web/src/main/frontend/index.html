@@ -17,7 +17,7 @@
     <!-- index.ts is included here automatically (either by the dev server or during the build) -->
     <script src="https://cdn.jsdelivr.net/npm/@lightningchart/lcjs@6.0.3/dist/lcjs.iife.js"></script>
     <script>
-    const { lightningChart } = lcjs;
+    const { lightningChart} = lcjs;
 
     let charts = {}; 
 
@@ -27,26 +27,29 @@
             return;
         }
 
+        const chartContainer = document.getElementById(name);
+
         const lc = lightningChart({
             license: "0002-n96ucKX1C700BOZwz7IAGHHjEuT4KwDfrkmx7QCyIBztfxcK2B2YdzqRkuyh0bv4JWu/viN/aCm4HYmBbVnGHphV-MEUCIQCoAbM5nVG3lu6EAeoZcsrvewNpdn+DEGKL6UpNeDXEbAIgCV8gVBAZ3XKPAkbuQDarCfg/BnBK4sN+L00cqoYMu5E=",
             licenseInformation: {
                 appTitle: "LightningChart JS Trial",
                 company: "LightningChart Ltd."
             },
+            container: chartContainer
         });
 
-        
+
         const chart = lc.ChartXY();
         chart.setTitle(name);
         const series = chart.addLineSeries();
         const dataPoints = [];
 
-        
         charts[name] = {
             chart: chart,
             series: series,
             dataPoints: dataPoints
         };
+
     }
 
     function updateLineChart(name, x, y) {
@@ -58,13 +61,27 @@
 
         chartData.dataPoints.push({ x: x, y: y });
 
-        if (chartData.dataPoints.length > 400) {
+        if (chartData.dataPoints.length > 300) {
             chartData.dataPoints.shift(); 
         }
 
         chartData.series.clear(); 
         chartData.series.add(chartData.dataPoints); 
     }
+
+    function clearLineChart(name) {
+        const chartData = charts[name];
+        if (!chartData) {
+            console.warn(`"${name}" doesn't exists.`);
+            return;
+        }
+
+        chartData.dataPoints.length = 0; 
+
+        chartData.series.clear(); 
+        chartData.series.add(chartData.dataPoints); 
+    }
+
 
   </script>
 </head>
