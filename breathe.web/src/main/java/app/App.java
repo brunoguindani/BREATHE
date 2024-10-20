@@ -15,7 +15,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Div;
 
 import data.Action;
 import data.Condition;
@@ -33,12 +34,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
     // Contenuti per il primo gruppo di tabs
     private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  
-    private final ActionsPanel actionsPanel = new ActionsPanel(this); 
+    private final ActionsPanel actionsPanel = new ActionsPanel(this, false); 
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
 
     // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
-    private final ScenarioPanel scenarioPanel = new ScenarioPanel(this);
     private final LogPanel logPanel = new LogPanel(this);
     private final ControlPanel controlPanel = new ControlPanel(this);
     
@@ -55,27 +55,35 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         
         HorizontalLayout topArea = new HorizontalLayout();
         topArea.add(controlPanel);
-        topArea.getStyle().set("border-bottom", "2px dotted #ccc"); // Imposta il bordo
+        topArea.getStyle().set("border-bottom", "1px solid #ccc");
         topArea.setWidth("95vw");
+        topArea.setHeight("7vh");
+
+        // Barra di caricamento
         loadingIndicator = new ProgressBar();
-        loadingIndicator.setIndeterminate(true); // Imposta come indeterminato per indicare il caricamento
-        loadingIndicator.setVisible(false); // Inizialmente nascosto
+        loadingIndicator.setIndeterminate(true);
+        loadingIndicator.setVisible(false);
         loadingIndicator.setWidth("100px");
 
-        Image logo = new Image("frontend/icons/breathe.png", "Logo");
-        logo.setWidth("10px");
-        logo.setHeight("10px");
+        // Logo
+        H1 logo = new H1("Breathe");
+        logo.getStyle().set("font-size", "32px");
+        logo.setWidth("auto");
+        logo.setHeight("auto");
 
-        // Layout verticale per il logo e la barra di caricamento
-        VerticalLayout logoLayout = new VerticalLayout(logo, loadingIndicator);
-        logoLayout.setSpacing(false);
-        logoLayout.setPadding(false);
-        logoLayout.setAlignItems(Alignment.END); // Centra gli elementi nel layout
+        // Contenitore per il logo e la barra di caricamento
+        Div logoContainer = new Div(logo, loadingIndicator);
+        logoContainer.getStyle().set("text-align", "right"); // Allinea a destra il contenuto
+        logoContainer.getStyle().set("width", "100%"); // Occupa tutta la larghezza disponibile
+        logoContainer.getStyle().set("margin", "0").set("padding", "0");
+        loadingIndicator.getStyle().set("padding", "0");
+        loadingIndicator.getStyle().set("margin-top", "0");
+        loadingIndicator.getStyle().set("margin-left", "auto"); // Spinge la barra verso destra
 
-        // Aggiungi il layout con il logo all'area superiore
-        topArea.add(logoLayout);
-        topArea.setAlignItems(Alignment.END); // Allinea a destra il contenuto di topArea
-        
+        // Aggiungi il contenitore all'area superiore
+        topArea.add(logoContainer);
+        topArea.setAlignItems(Alignment.START); // Mantieni il logo in alto
+
         // Control Panel
         mainLayout.add(topArea);
         
@@ -129,27 +137,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         String tabLabel = selectedTab.getLabel();
         switch (tabLabel) {
             case "Patient":
-                contentLayout.add(patientConditionPanel);  // Aggiungi il pannello del paziente
+                contentLayout.add(patientConditionPanel); 
                 break;
             case "Actions":
-                //actionsPanel.setText("This is Actions content");
                 contentLayout.add(actionsPanel);
                 break;
             case "Ventilators":
-                //ventilatorsPanel.setText("This is Ventilators content");
                 contentLayout.add(ventilatorsPanel);
-                break;
-            case "Output":
-            	//outputPanel.setText("This is Output content");
-                contentLayout.add(outputPanel);
-                break;
-            case "Scenario":
-            	//scenarioPanel.setText("This is Scenario content");
-                contentLayout.add(scenarioPanel);
-                break;
-            case "Log":
-            	//logPanel.setText("This is Log content");
-                contentLayout.add(logPanel);
                 break;
         }
     }
@@ -189,7 +183,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
 	
 	public void addActiontoScenario(Action action, int totalSeconds) {
-		scenarioPanel.addAction(action, totalSeconds);	
+		controlPanel.getScenarioPanel().addAction(action, totalSeconds);	
 	}
     
 	public String getPatientName() {

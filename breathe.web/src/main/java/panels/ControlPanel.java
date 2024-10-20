@@ -15,13 +15,19 @@ import app.App;
 public class ControlPanel extends HorizontalLayout {
     private static final long serialVersionUID = 1L;
 
-    private Button startButton, stopButton, exportButton;
+    private Button startButton, stopButton, exportButton, scenarioButton;
     private String uploadedFileName;
+    
+    private final ActionsPanel actionsPanel; 
+    private final ScenarioPanel scenarioPanel;
     
     App app;
 
     public ControlPanel(App app) {
         this.app = app;      
+        
+        actionsPanel = new ActionsPanel(app, true); 
+        scenarioPanel = new ScenarioPanel(app);
         
         startButton = new Button("Start", e -> showStartOptions());
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
@@ -39,17 +45,29 @@ public class ControlPanel extends HorizontalLayout {
         exportButton.addClickListener(e -> {
         	exportSimulation();
         });
-
         
-        add(startButton, stopButton, exportButton);
-
+        scenarioButton = new Button("Scenario");
+        scenarioButton.addClickListener(e -> {
+        	openScenarioDialog();
+        });
+        
+        add(startButton, stopButton, exportButton, scenarioButton);
     }
+    
+    private void openScenarioDialog() {
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("New Scenario");
 
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.add(actionsPanel, scenarioPanel);
+        dialog.add(hl);
+
+        dialog.open();
+    }
 
     private void showStartOptions() {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select Start Option");
-
         
         Button startSimulationButton = new Button("Start Simulation", e -> {
             dialog.close();
@@ -167,6 +185,10 @@ public class ControlPanel extends HorizontalLayout {
         startButton.setEnabled(enable); 
         stopButton.setEnabled(!enable);
         exportButton.setEnabled(!enable);
+    }
+    
+    public ScenarioPanel getScenarioPanel() {
+    	return scenarioPanel;
     }
     
 }

@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -24,139 +25,160 @@ public class ScenarioPanel extends VerticalLayout {
 
 	private App app;
 
-    private ComboBox<String> patientFileComboBox;
-    private TextField scenarioNameField;
+	private ComboBox<String> patientFileComboBox;
+	private TextField scenarioNameField;
 
-    private Grid<Pair<Action, Integer>> actionsGrid;
-    private ListDataProvider<Pair<Action, Integer>> dataProvider;
+	private Grid<Pair<Action, Integer>> actionsGrid;
+	private ListDataProvider<Pair<Action, Integer>> dataProvider;
 
-    private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
+	private ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
 
-    public ScenarioPanel(App app) {
-        this.app = app;
-		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
+	public ScenarioPanel(App app) {
+		this.app = app;
+		setSpacing(false);
+		setWidth("33vw");
+		getStyle().set("margin", "0px");
+		getStyle().set("padding", "0px");
+
+		scenarioNameField = new TextField("Scenario Name");
+		scenarioNameField.setWidth("70%");
+		
+		patientFileComboBox = new ComboBox<>("Patient");
+		patientFileComboBox.setWidth("70%");
+		String[] directories = { "../breathe.engine/states/exported/", "../breathe.engine/states/" };
+		updatePatientFiles(directories);
+
+
+	    Div fixedSizeDiv = new Div();
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+
+        // Scrollable container for all conditions
+        VerticalLayout tableLayout = new VerticalLayout();
+        tableLayout.setPadding(false);
+        tableLayout.setSpacing(false);
+
+		actionsGrid = new Grid<>();
+		actionsGrid.addColumn(pair -> pair.getKey().toString().split("\n")[0]).setHeader("Action")
+				.setTooltipGenerator(pair -> pair.getKey().toString());
+
+		actionsGrid.addColumn(pair -> formatTime(pair.getValue())).setHeader("Time");
+
+		actionsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+
+		dataProvider = new ListDataProvider<>(actions);
+		actionsGrid.setDataProvider(dataProvider);
+        actionsGrid.setWidth("30vw");
+		
+		Div scrollableDiv = new Div();
+        scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+        scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        // ComboBox for patient files
-        patientFileComboBox = new ComboBox<>("Patient");
-        String[] directories = {"../breathe.engine/states/exported/", "../breathe.engine/states/"};
-        updatePatientFiles(directories);
+        scrollableDiv.setHeight("40vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.add(actionsGrid); 
+        fixedSizeDiv.add(scrollableDiv);
+        fixedSizeDiv.setHeight("40vh");
+        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
 
-        // TextField for scenario name
-        scenarioNameField = new TextField("Scenario Name");
 
-        // Grid for actions
-        actionsGrid = new Grid<>();
+		Button createScenarioButton = new Button("Create Scenario", e -> createScenario());
 
-     // Colonna per il nome dell'azione
-	     actionsGrid.addColumn(pair -> pair.getKey().toString().split("\n")[0])
-	         .setHeader("Action")
-	         .setTooltipGenerator(pair -> pair.getKey().toString()); 
-	
-	     // Colonna per il tempo
-	     actionsGrid.addColumn(pair -> formatTime(pair.getValue())).setHeader("Time");
-	
-	     // Imposta la modalità di selezione
-	     actionsGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+		Button removeActionButton = new Button("Remove Selected Actions", e -> removeSelectedActions());
+		removeActionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        dataProvider = new ListDataProvider<>(actions);
-        actionsGrid.setDataProvider(dataProvider);
+        VerticalLayout fieldLayout = new VerticalLayout();
+        fieldLayout.setAlignItems(Alignment.CENTER);
+        fieldLayout.setPadding(false);
+        fieldLayout.setSpacing(false);
+        fieldLayout.add(scenarioNameField, patientFileComboBox);
+        add(fieldLayout);
+        add(fixedSizeDiv);
+		add(removeActionButton, createScenarioButton);
+	}
 
-        // Buttons
-        Button createScenarioButton = new Button("Create Scenario", e -> createScenario());
+	private void updatePatientFiles(String[] directories) {
+		List<String> patientFiles = new ArrayList<>(); // Crea una lista per i file paziente
 
-        Button removeActionButton = new Button("Remove Selected Actions", e -> removeSelectedActions());
-        removeActionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		for (String dirPath : directories) {
+			File dir = new File(dirPath);
+			if (dir.isDirectory()) {
+				File[] files = dir.listFiles();
+				if (files != null) {
+					for (File file : files) {
+						if (file.isFile() && file.getName().endsWith(".json")) {
+							patientFiles.add(file.getName()); // Aggiungi il nome del file alla lista
+						}
+					}
+				}
+			}
+		}
 
-        // Add components to layout
-        add(patientFileComboBox, scenarioNameField, actionsGrid, removeActionButton, createScenarioButton);
-        setPadding(true);
-        setSpacing(true);
-    }
+		patientFileComboBox.setItems(patientFiles); // Imposta gli elementi del ComboBox
+	}
 
-    private void updatePatientFiles(String[] directories) {
-        List<String> patientFiles = new ArrayList<>(); // Crea una lista per i file paziente
+	private String formatTime(int seconds) {
+		int hours = seconds / 3600;
+		int minutes = (seconds % 3600) / 60;
+		int remainingSeconds = seconds % 60;
 
-        for (String dirPath : directories) {
-            File dir = new File(dirPath);
-            if (dir.isDirectory()) {
-                File[] files = dir.listFiles();
-                if (files != null) {
-                    for (File file : files) {
-                        if (file.isFile() && file.getName().endsWith(".json")) {
-                            patientFiles.add(file.getName()); // Aggiungi il nome del file alla lista
-                        }
-                    }
-                }
-            }
-        }
+		return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
+	}
 
-        patientFileComboBox.setItems(patientFiles); // Imposta gli elementi del ComboBox
-    }
+	public void addAction(Action action, int seconds) {
+		Pair<Action, Integer> newAction = new Pair<>(action, seconds);
+		actions.add(newAction);
+		actions.sort((pair1, pair2) -> pair1.getValue().compareTo(pair2.getValue()));
+		dataProvider.refreshAll();
+	}
 
-    private String formatTime(int seconds) {
-        int hours = seconds / 3600;
-        int minutes = (seconds % 3600) / 60;
-        int remainingSeconds = seconds % 60;
+	private void createScenario() {
+		String scenarioName = scenarioNameField.getValue();
 
-        return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
-    }
+		if (scenarioName.isEmpty()) {
+			Notification.show("Please enter a name for the scenario.", 3000, Notification.Position.MIDDLE);
+			return;
+		}
 
-    public void addAction(Action action, int seconds) {
-        Pair<Action, Integer> newAction = new Pair<>(action, seconds);
-        actions.add(newAction);
-        actions.sort((pair1, pair2) -> pair1.getValue().compareTo(pair2.getValue()));
-        dataProvider.refreshAll();
-    }
+		String patientFile = patientFileComboBox.getValue();
+		if (patientFile == null || patientFile.isEmpty()) {
+			Notification.show("Please select a patient file.", 3000, Notification.Position.MIDDLE);
+			return;
+		}
 
-    private void createScenario() {
-        String scenarioName = scenarioNameField.getValue();
+		File patientTempFile = new File("../breathe.engine/states/" + patientFile);
+		if (patientTempFile.exists()) {
+			patientFile = "../breathe.engine/states/" + patientFile;
+		} else {
+			patientFile = "../breathe.engine/states/exported/" + patientFile;
+		}
 
-        if (scenarioName.isEmpty()) {
-            Notification.show("Please enter a name for the scenario.", 3000, Notification.Position.MIDDLE);
-            return;
-        }
+		app.createScenario(patientFile, scenarioName, actions);
+		Notification.show("Scenario \"" + scenarioName + "\" created successfully.");
+		Dialog dialog = new Dialog();
 
-        String patientFile = patientFileComboBox.getValue();
-        if (patientFile == null || patientFile.isEmpty()) {
-            Notification.show("Please select a patient file.", 3000, Notification.Position.MIDDLE);
-            return;
-        }
+		File uploadFolder = app.getFolder("scenario");
+		DownloadLinksArea linksArea = new DownloadLinksArea(uploadFolder);
+		VerticalLayout dialogLayout = new VerticalLayout(linksArea);
 
-        File patientTempFile = new File("../breathe.engine/states/" + patientFile);
-        if (patientTempFile.exists()) {
-            patientFile = "../breathe.engine/states/" + patientFile;
-        } else {
-            patientFile = "../breathe.engine/states/exported/" + patientFile;
-        }
+		Button closeButton = new Button("Close", e -> {
+			dialog.close();
+		});
 
-        app.createScenario(patientFile, scenarioName, actions);
-        Notification.show("Scenario \"" + scenarioName + "\" created successfully.", 3000, Notification.Position.MIDDLE);
-        Dialog dialog = new Dialog();
-        
-        File uploadFolder = app.getFolder("scenario");
-        DownloadLinksArea linksArea = new DownloadLinksArea(uploadFolder);
-        VerticalLayout dialogLayout = new VerticalLayout(linksArea);
+		dialog.setHeaderTitle("Select File Option");
+		dialog.add(dialogLayout, closeButton);
 
-        Button closeButton = new Button("Close", e -> {
-            dialog.close();
-        });
-      
-        dialog.setHeaderTitle("Select File Option");
-        dialog.add(dialogLayout, closeButton);
-        
-        dialog.open();
-    }
+		dialog.open();
+	}
 
-    private void removeSelectedActions() {
-        List<Pair<Action, Integer>> selectedActions = new ArrayList<>(actionsGrid.getSelectedItems());
+	private void removeSelectedActions() {
+		List<Pair<Action, Integer>> selectedActions = new ArrayList<>(actionsGrid.getSelectedItems());
 
-        if (selectedActions.isEmpty()) {
-            Notification.show("Please select actions to remove.", 3000, Notification.Position.MIDDLE);
-            return;
-        }
+		if (selectedActions.isEmpty()) {
+			Notification.show("Please select actions to remove.", 3000, Notification.Position.MIDDLE);
+			return;
+		}
 
-        actions.removeAll(selectedActions);
-        dataProvider.refreshAll();
-        Notification.show("Selected actions removed.", 3000, Notification.Position.MIDDLE);
-    }
+		actions.removeAll(selectedActions);
+		dataProvider.refreshAll();
+		Notification.show("Selected actions removed.", 3000, Notification.Position.MIDDLE);
+	}
 }
