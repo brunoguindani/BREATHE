@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ScenarioPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
-
+	
 	private App app;
 
 	private ComboBox<String> patientFileComboBox;
