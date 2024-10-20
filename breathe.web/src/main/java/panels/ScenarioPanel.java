@@ -7,6 +7,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -159,7 +160,7 @@ public class ScenarioPanel extends VerticalLayout {
 		}
 
 		app.createScenario(patientFile, scenarioName, actions);
-		Notification.show("Scenario \"" + scenarioName + "\" created successfully.");
+		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END);
 		Dialog dialog = new Dialog();
 
 		File uploadFolder = app.getFolder("scenario");

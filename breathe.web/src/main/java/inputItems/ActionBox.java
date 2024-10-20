@@ -3,10 +3,11 @@ package inputItems;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.textfield.NumberField;
 
 import java.util.Map;
@@ -20,7 +21,7 @@ public class ActionBox extends VerticalLayout {
 	
 	private String title;
     private Map<String, Component> components;
-    private Button applySectionButton;
+    private Button applySectionButton, headerButton;
 
     // TextFields for time input
     private NumberField hoursField;
@@ -41,7 +42,7 @@ public class ActionBox extends VerticalLayout {
 		getStyle().set("padding","0px" );
       
         // Header Button
-        Button headerButton = new Button(title);
+        headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
         headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
@@ -115,7 +116,7 @@ public class ActionBox extends VerticalLayout {
 
         timeLayout.add(hoursField, minutesField, secondsField);
 
-        Button plusButton = new Button("+", e -> addToScenario());
+        Button plusButton = new Button(VaadinIcon.PLUS_CIRCLE.create(), e -> addToScenario());
         plusButton.setWidth("10%");
         timeLayout.add(plusButton);
 
@@ -127,6 +128,7 @@ public class ActionBox extends VerticalLayout {
     private void toggleFields() {
         boolean isVisible = !getComponentAt(1).isVisible();
         getComponentAt(1).setVisible(isVisible);
+        headerButton.setText(isVisible ? title + " (Close)" : title);
     }
     
     public void enableButton(boolean enable) {
@@ -162,7 +164,7 @@ public class ActionBox extends VerticalLayout {
         }
 
         app.addActiontoScenario(new Action(title, parameters), totalSeconds);
-        Notification.show("Action added to scenario!");
+        Notification.show("Action added to scenario!",3000,Position.BOTTOM_END);
     }
 
     private void applyAction() {

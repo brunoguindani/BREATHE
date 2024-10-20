@@ -3,6 +3,7 @@ package panels;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -24,9 +25,11 @@ public class PatientConditionPanel extends VerticalLayout {
         getStyle().set("padding","0px" );
 
         // Crea i bottoni per la selezione
-        Button patientButton = new Button("Patient");
+        Button patientButton = new Button(VaadinIcon.USER.create());
+        patientButton.setTooltipText("Patients info");
         patientButton.setWidth("9vw");
-        Button conditionsButton = new Button("Conditions");
+        Button conditionsButton = new Button(VaadinIcon.CLIPBOARD_HEART.create());
+        conditionsButton.setTooltipText("Conditions");
         conditionsButton.setWidth("9vw");
 
         // Imposta il pulsante "Patient" come attivo di default

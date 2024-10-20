@@ -5,6 +5,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -129,7 +130,7 @@ public class pcVentilatorPanel extends VerticalLayout {
 
     private void applySettings() {
         app.connectVentilator();
-        Notification.show("Settings updated");
+        Notification.show("Settings updated",3000,Position.BOTTOM_END);
     }
 
     // Get ventilator data as a map
