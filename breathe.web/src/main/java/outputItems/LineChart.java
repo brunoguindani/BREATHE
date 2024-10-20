@@ -22,8 +22,9 @@ public class LineChart extends ItemDisplay {
     	
         chartContainer = new Div();
         chartContainer.setId(title); // Set ID for the chart container
-        chartContainer.getElement().getStyle().set("width", "34vw");
+        chartContainer.getElement().getStyle().set("width", "35vw");
         chartContainer.getElement().getStyle().set("height", "34vh");
+        chartContainer.getElement().getStyle().set("box-shadow", "inset 5px 5px 5px 5px #03070a");
         
         // Add the container to the UI
         add(chartContainer);

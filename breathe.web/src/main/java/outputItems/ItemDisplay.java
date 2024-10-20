@@ -18,8 +18,7 @@ public abstract class ItemDisplay extends VerticalLayout {
         // Imposta il layout verticale
         setPadding(true);
         setSpacing(true);
-        getStyle().set("background-color", "black");
-
+        getStyle().set("background-color", "transparent");
     }
 
     // Metodi astratti per le sottoclassi

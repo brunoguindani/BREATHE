@@ -6,17 +6,20 @@ import java.util.List;
 
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.progressbar.ProgressBar;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
 import data.Action;
 import data.Condition;
@@ -54,42 +57,40 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         mainLayout.setFlexGrow(1);
         
         HorizontalLayout topArea = new HorizontalLayout();
-        topArea.add(controlPanel);
         topArea.getStyle().set("border-bottom", "1px solid #ccc");
-        topArea.setWidth("95vw");
-        topArea.setHeight("7vh");
+        topArea.setWidth("98vw");
+        topArea.setHeight("9vh");
+        topArea.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         // Barra di caricamento
         loadingIndicator = new ProgressBar();
         loadingIndicator.setIndeterminate(true);
         loadingIndicator.setVisible(false);
-        loadingIndicator.setWidth("100px");
+        loadingIndicator.setWidth("140px");
 
         // Logo
         H1 logo = new H1("Breathe");
-        logo.getStyle().set("font-size", "32px");
-        logo.setWidth("auto");
-        logo.setHeight("auto");
+        logo.getStyle().set("font-size", "40px");
+        logo.getStyle().set("font-style", "italic");
 
         // Contenitore per il logo e la barra di caricamento
         Div logoContainer = new Div(logo, loadingIndicator);
-        logoContainer.getStyle().set("text-align", "right"); // Allinea a destra il contenuto
-        logoContainer.getStyle().set("width", "100%"); // Occupa tutta la larghezza disponibile
         logoContainer.getStyle().set("margin", "0").set("padding", "0");
         loadingIndicator.getStyle().set("padding", "0");
         loadingIndicator.getStyle().set("margin-top", "0");
-        loadingIndicator.getStyle().set("margin-left", "auto"); // Spinge la barra verso destra
 
-        // Aggiungi il contenitore all'area superiore
-        topArea.add(logoContainer);
-        topArea.setAlignItems(Alignment.START); // Mantieni il logo in alto
+        HorizontalLayout buttonContainer = new HorizontalLayout(controlPanel);
+        buttonContainer.setWidth("100vw");
+        buttonContainer.setAlignItems(FlexComponent.Alignment.CENTER);
+
+        // Aggiungi i contenitori aggiornati a topArea
+        topArea.add(logoContainer, buttonContainer);
 
         // Control Panel
         mainLayout.add(topArea);
         
         // Prima colonna
         VerticalLayout leftColumn = createColumn();
-        //leftColumn.getStyle().set("border", "1px solid #ccc"); // Imposta il bordo
         leftColumn.getStyle().set("padding", "0px"); // Padding per aggiungere spazio interno (opzionale)
         leftColumn.setWidth("25vw");
 
@@ -127,7 +128,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         Tabs tabs = new Tabs();
         tabs.setWidthFull();
         tabs.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
-        tabs.add(new Tab("Patient"), new Tab("Actions"), new Tab("Ventilators"));
+        tabs.add(new Tab(VaadinIcon.USER_HEART.create()), new Tab("Actions"), new Tab("Ventilators"));
+        tabs.addThemeVariants(TabsVariant.LUMO_EQUAL_WIDTH_TABS);
         return tabs;
     }
 
@@ -136,17 +138,18 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         contentLayout.removeAll();  // Rimuovi tutto il contenuto esistente
         String tabLabel = selectedTab.getLabel();
         switch (tabLabel) {
-            case "Patient":
-                contentLayout.add(patientConditionPanel); 
-                break;
             case "Actions":
                 contentLayout.add(actionsPanel);
                 break;
             case "Ventilators":
                 contentLayout.add(ventilatorsPanel);
                 break;
+            default:
+	            contentLayout.add(patientConditionPanel); 
+	            break;
         }
     }
+    
     
     
     /*
@@ -170,12 +173,12 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
-		Notification.show("Added");
+		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END);
 	}
 	
 	public void removeCondition(String title) {
 		patientConditionPanel.getConditionsPanel().removeCondition(title);
-		Notification.show("Removed");
+		Notification.show(title + " removed",3000,Position.BOTTOM_END);
 	}
 	
 	public List<Condition> getActiveConditions() {
@@ -288,7 +291,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	@Override
 	public void minilogStringData(String data) {
 		getUI().ifPresent(ui -> ui.access(() -> {
-			Notification.show(data);
+			Notification.show(data,3000,Position.BOTTOM_END);
 		}));
 	}
 

@@ -10,6 +10,8 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 import app.App;
 import data.Action;
@@ -68,22 +70,27 @@ public class ScenarioPanel extends VerticalLayout {
 		dataProvider = new ListDataProvider<>(actions);
 		actionsGrid.setDataProvider(dataProvider);
         actionsGrid.setWidth("30vw");
+        actionsGrid.setHeight("50vh");
 		
 		Div scrollableDiv = new Div();
         scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
         scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        scrollableDiv.setHeight("40vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.setHeight("50vh");  // Altezza fissa per il pannello scorrevole
         scrollableDiv.add(actionsGrid); 
         fixedSizeDiv.add(scrollableDiv);
-        fixedSizeDiv.setHeight("40vh");
-        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
-
+        fixedSizeDiv.setHeight("50vh");
 
 		Button createScenarioButton = new Button("Create Scenario", e -> createScenario());
 
 		Button removeActionButton = new Button("Remove Selected Actions", e -> removeSelectedActions());
 		removeActionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+		
+        HorizontalLayout buttonsLayout = new HorizontalLayout();
+        buttonsLayout.add(removeActionButton, createScenarioButton);
+        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        buttonsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        buttonsLayout.setWidth("100%");
 
         VerticalLayout fieldLayout = new VerticalLayout();
         fieldLayout.setAlignItems(Alignment.CENTER);
@@ -92,7 +99,7 @@ public class ScenarioPanel extends VerticalLayout {
         fieldLayout.add(scenarioNameField, patientFileComboBox);
         add(fieldLayout);
         add(fixedSizeDiv);
-		add(removeActionButton, createScenarioButton);
+		add(buttonsLayout);
 	}
 
 	private void updatePatientFiles(String[] directories) {
