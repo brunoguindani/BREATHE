@@ -1,11 +1,14 @@
 package panels;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,6 +28,7 @@ public class ControlPanel extends HorizontalLayout {
     
     private final ActionsPanel actionsPanel; 
     private final ScenarioPanel scenarioPanel;
+    
     
     App app;
 
@@ -61,12 +65,25 @@ public class ControlPanel extends HorizontalLayout {
         	openScenarioDialog();
         });
         
+        Button themeButton = new Button(VaadinIcon.MOON.create());
+        themeButton.getStyle().set("margin-right", "0px");
+        themeButton.addClickListener(e -> {
+            if (UI.getCurrent().getElement().getThemeList().contains(Lumo.DARK)) {
+                UI.getCurrent().getElement().getThemeList().remove(Lumo.DARK);
+                UI.getCurrent().getElement().getThemeList().add(Lumo.LIGHT);
+            } else {
+                UI.getCurrent().getElement().getThemeList().remove(Lumo.LIGHT);
+                UI.getCurrent().getElement().getThemeList().add(Lumo.DARK);
+            }
+        });
+        
         setWidth("100%");
         Div spacer = new Div();
         spacer.getStyle().set("flex-grow", "1");
 
-        add(startButton, stopButton, exportButton, spacer, scenarioButton);
+        add(startButton, stopButton, exportButton, spacer, scenarioButton,themeButton);
     }
+
     
     private void openScenarioDialog() {
         Dialog dialog = new Dialog();
@@ -98,6 +115,10 @@ public class ControlPanel extends HorizontalLayout {
             startingScenario();
         });
 
+        startSimulationButton.setWidth("100%");
+        startFromFileButton.setWidth("100%");
+        startScenarioButton.setWidth("100%");
+        
         VerticalLayout dialogLayout = new VerticalLayout(startSimulationButton, startFromFileButton, startScenarioButton);
         dialog.add(dialogLayout);
 
@@ -130,7 +151,7 @@ public class ControlPanel extends HorizontalLayout {
                 dialog.close();
                 app.startFromFileSimulation(filePath);
             } else {
-                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END);
+                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
             	String filePath = "../breathe.engine/states/StandardMale@0s.json";
                 dialog.close();
                 app.startFromFileSimulation(filePath);
@@ -162,7 +183,7 @@ public class ControlPanel extends HorizontalLayout {
                 dialog.close();
                 app.startScenario(filePath);
             } else {
-                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END);
+                Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
             }
         });
 

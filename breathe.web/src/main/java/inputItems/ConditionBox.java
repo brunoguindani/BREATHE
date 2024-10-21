@@ -33,7 +33,6 @@ public class ConditionBox extends VerticalLayout {
         
         setSpacing(false);
 
-        this.getStyle().set("background-color", "white");
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
 
@@ -65,8 +64,8 @@ public class ConditionBox extends VerticalLayout {
 
         // "Apply" button
         applySectionButton = new Button("Apply", e -> applyCondition());
-        applySectionButton.setEnabled(true);
         applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
+        applySectionButton.setEnabled(true);
         fieldsLayout.add(applySectionButton);
 
         // Add components to the layout

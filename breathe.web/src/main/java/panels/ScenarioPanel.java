@@ -6,7 +6,9 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -84,14 +86,25 @@ public class ScenarioPanel extends VerticalLayout {
 
 		Button createScenarioButton = new Button("Create Scenario", e -> createScenario());
 
-		Button removeActionButton = new Button("Remove Selected Actions", e -> removeSelectedActions());
+		Button removeActionButton = new Button(VaadinIcon.TRASH.create(), e -> removeSelectedActions());
+		removeActionButton.setTooltipText("Remove Selected Actions");
 		removeActionButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
 		
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.add(removeActionButton, createScenarioButton);
-        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        buttonsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        buttonsLayout.setWidth("100%");
+		HorizontalLayout removeButtonLayout = new HorizontalLayout();
+		removeButtonLayout.add(removeActionButton);
+		removeButtonLayout.setWidth("100%");
+		removeButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+
+		// Layout per il bottone "create"
+		HorizontalLayout createButtonLayout = new HorizontalLayout();
+		createButtonLayout.add(createScenarioButton);
+		createButtonLayout.setWidth("100%");
+		createButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+		// Aggiunta dei layout a un VerticalLayout
+		VerticalLayout buttonsLayout = new VerticalLayout();
+		buttonsLayout.add(removeButtonLayout, createButtonLayout);
+		buttonsLayout.setWidth("100%");
 
         VerticalLayout fieldLayout = new VerticalLayout();
         fieldLayout.setAlignItems(Alignment.CENTER);
@@ -142,13 +155,13 @@ public class ScenarioPanel extends VerticalLayout {
 		String scenarioName = scenarioNameField.getValue();
 
 		if (scenarioName.isEmpty()) {
-			Notification.show("Please enter a name for the scenario.", 3000, Notification.Position.MIDDLE);
+			Notification.show("Please enter a name for the scenario.", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 			return;
 		}
 
 		String patientFile = patientFileComboBox.getValue();
 		if (patientFile == null || patientFile.isEmpty()) {
-			Notification.show("Please select a patient file.", 3000, Notification.Position.MIDDLE);
+			Notification.show("Please select a patient file.", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 			return;
 		}
 
@@ -160,7 +173,7 @@ public class ScenarioPanel extends VerticalLayout {
 		}
 
 		app.createScenario(patientFile, scenarioName, actions);
-		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END);
+		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 		Dialog dialog = new Dialog();
 
 		File uploadFolder = app.getFolder("scenario");
@@ -181,12 +194,12 @@ public class ScenarioPanel extends VerticalLayout {
 		List<Pair<Action, Integer>> selectedActions = new ArrayList<>(actionsGrid.getSelectedItems());
 
 		if (selectedActions.isEmpty()) {
-			Notification.show("Please select actions to remove.", 3000, Notification.Position.MIDDLE);
+			Notification.show("Please select actions to remove.", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 			return;
 		}
 
 		actions.removeAll(selectedActions);
 		dataProvider.refreshAll();
-		Notification.show("Selected actions removed.", 3000, Notification.Position.MIDDLE);
+		Notification.show("Selected actions removed.", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 	}
 }

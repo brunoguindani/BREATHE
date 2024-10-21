@@ -7,6 +7,7 @@ import java.util.List;
 import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -169,17 +170,17 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     }
 
     public void stopLoading() {
-    	loadingIndicator.setIndeterminate(false); // Nascondi l'indicatore di caricamento
+    	loadingIndicator.setIndeterminate(false); 
     }
     
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
-		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END);
+		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 	}
 	
 	public void removeCondition(String title) {
 		patientConditionPanel.getConditionsPanel().removeCondition(title);
-		Notification.show(title + " removed",3000,Position.BOTTOM_END);
+		Notification.show(title + " removed",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 	}
 	
 	public List<Condition> getActiveConditions() {
@@ -292,7 +293,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	@Override
 	public void minilogStringData(String data) {
 		getUI().ifPresent(ui -> ui.access(() -> {
-			Notification.show(data,3000,Position.BOTTOM_END);
+			Notification.show(data,3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
 		}));
 	}
 

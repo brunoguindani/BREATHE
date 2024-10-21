@@ -28,7 +28,6 @@ public class cpapVentilatorPanel extends VerticalLayout {
 	// Constructor
 	public cpapVentilatorPanel(App app) {
 		this.app = app;
-		getStyle().set("background-color", "white"); // Colore di sfondo
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "2px");
 		getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
@@ -83,7 +82,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		applyButton.setEnabled(false);
 		applyButton.addClickListener(e -> applySettings());
 		HorizontalLayout buttonLayout = new HorizontalLayout(applyButton);
-		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); 
 		buttonLayout.setWidthFull(); 
 
 		Div scrollableDiv = new Div();

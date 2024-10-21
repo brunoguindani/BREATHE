@@ -27,3 +27,10 @@ html {
   --lumo-space-xl:1.875rem;
   --lumo-space-xs:0.1875rem;
 }
+
+[theme~="dark"] {
+  --lumo-base-color: #0b2c36;
+  --lumo-primary-color: #0c8699;
+  --lumo-primary-text-color:rgba(255,255,255,1);
+  --lumo-shade:#0c8699;
+}
