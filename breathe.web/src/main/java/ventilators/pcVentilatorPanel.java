@@ -31,20 +31,18 @@ public class pcVentilatorPanel extends VerticalLayout {
 
     private App app;
 
-    // Constructor
     public pcVentilatorPanel(App app) {
         this.app = app;
 
         getStyle().set("margin", "0px");
         getStyle().set("padding", "2px");
-        getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+        getStyle().set("border-bottom", "2px solid #ccc"); 
 
         setSpacing(false);
 
         Div fixedSizeDiv = new Div();
-        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
-        // Create form layout for PC ventilator settings
         VerticalLayout fieldLayout = new VerticalLayout();
         fieldLayout.setPadding(false);
         fieldLayout.setSpacing(false);
@@ -54,7 +52,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         fractionInspOxygen.setMin(0);
         fractionInspOxygen.setMax(1);
         fractionInspOxygen.setStep(0.01);
-        fractionInspOxygen.setWidth("23vw"); // Larghezza consistente
+        fractionInspOxygen.setWidth("23vw"); 
         fractionInspOxygen.setStepButtonsVisible(true);
 
         inspiratoryPeriod = new NumberField("Inspiratory Period - Ti");
@@ -102,28 +100,24 @@ public class pcVentilatorPanel extends VerticalLayout {
         assistedMode.setValue("AC");
         assistedMode.setWidth("23vw");
 
-        // Add fields to the form layout
         fieldLayout.add(fractionInspOxygen, inspiratoryPeriod, inspiratoryPressure,
                 positiveEndExpPres, respirationRate, slope, assistedMode);
 
-        // Create a scrollable panel for fields
         Div scrollableDiv = new Div();
-        scrollableDiv.getStyle().set("overflow-y", "auto"); // Scorrimento verticale
+        scrollableDiv.getStyle().set("overflow-y", "auto"); 
         scrollableDiv.getStyle().set("scrollbar-width", "none");
-        scrollableDiv.setHeight("55vh"); // Altezza fissa per il pannello scorrevole
+        scrollableDiv.setHeight("55vh"); 
         scrollableDiv.add(fieldLayout);
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("55vh");
 
-        // Apply button
         applyButton = new Button("Apply");
         applyButton.setEnabled(false);
         applyButton.addClickListener(e -> applySettings());
         HorizontalLayout buttonLayout = new HorizontalLayout(applyButton);
-        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+        buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); 
         buttonLayout.setWidthFull();
 
-        // Add the fixed size Div and button layout to the main layout
         add(fixedSizeDiv);
         add(buttonLayout);
     }
@@ -133,7 +127,6 @@ public class pcVentilatorPanel extends VerticalLayout {
         Notification.show("Settings updated",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
-    // Get ventilator data as a map
     public Map<String, Number> getData() {
         Map<String, Number> dataMap = new HashMap<>();
         dataMap.put("FractionInspiredOxygen", fractionInspOxygen.getValue());
@@ -142,11 +135,10 @@ public class pcVentilatorPanel extends VerticalLayout {
         dataMap.put("PositiveEndExpiratoryPressure", positiveEndExpPres.getValue().intValue());
         dataMap.put("RespirationRate", respirationRate.getValue().intValue());
         dataMap.put("Slope", slope.getValue());
-        dataMap.put("AssistedMode", assistedMode.getValue().equals("AC") ? 0 : 1);  // Convert assisted mode to 0 or 1
+        dataMap.put("AssistedMode", assistedMode.getValue().equals("AC") ? 0 : 1);  
         return dataMap;
     }
 
-    // Enable or disable the apply button
     public void setEnableApplyButton(boolean enable) {
         applyButton.setEnabled(enable);
     }

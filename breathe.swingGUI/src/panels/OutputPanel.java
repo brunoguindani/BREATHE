@@ -33,7 +33,7 @@ public class OutputPanel extends JPanel{
     
     public OutputPanel(App app) {
     	this.setBackground(Color.LIGHT_GRAY);
-    	this.setPreferredSize(new Dimension(550, 700));
+    	this.setPreferredSize(new Dimension(650, 700));
     	
     	chartsMap = new HashMap<>();
         
@@ -45,6 +45,7 @@ public class OutputPanel extends JPanel{
         chartsMap.put("Heart Rate", "1/min");
         chartsMap.put("Respiratory Rate", "1/min");
         chartsMap.put("Airway Pressure", "mmHg");
+        chartsMap.put("Oxygen Saturation", "%");
         
         chartPanels = new HashMap<>();
              
@@ -82,7 +83,8 @@ public class OutputPanel extends JPanel{
         String[] infoOrder = {
         	    "Heart Rate",
         	    "Respiratory Rate",
-        	    "Airway Pressure"
+        	    "Airway Pressure",
+        	    "Oxygen Saturation"
         	};
         
         for (String chartName : infoOrder) {
@@ -165,6 +167,9 @@ public class OutputPanel extends JPanel{
                 break;
             case "AirwayPressure":
             	mapChartName = "Airway Pressure";
+                break;
+            case "OxygenSaturation":
+            	mapChartName = "Oxygen Saturation";
                 break;
             default:
             	mapChartName = null; 

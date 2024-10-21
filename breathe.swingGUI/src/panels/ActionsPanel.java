@@ -137,7 +137,7 @@ public class ActionsPanel extends JPanel{
     
     public void enableButtons(boolean enable) {
         for(ActionBox box : boxes) {
-        	box.enableButton(enable);
+        	box.enableBox(enable);
         }    	
     }
 

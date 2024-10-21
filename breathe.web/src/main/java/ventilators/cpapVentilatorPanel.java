@@ -25,19 +25,17 @@ public class cpapVentilatorPanel extends VerticalLayout {
 
 	private App app;
 
-	// Constructor
 	public cpapVentilatorPanel(App app) {
 		this.app = app;
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "2px");
-		getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+		getStyle().set("border-bottom", "2px solid #ccc"); 
 
 		setSpacing(false);
 		
 		Div fixedSizeDiv = new Div();
-		fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+		fixedSizeDiv.getStyle().set("box-sizing", "border-box");
 
-		// Form for CPAP ventilator settings
         VerticalLayout fieldLayout = new VerticalLayout();
         fieldLayout.setPadding(false);
         fieldLayout.setSpacing(false);
@@ -74,10 +72,8 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		slope.setStep(0.1);
 		slope.setStepButtonsVisible(true);
 
-		// Add fields to the form layout
 		fieldLayout.add(fractionInspOxygen, deltaPressureSup, positiveEndExpPres, slope);
 
-		// Apply button
 		applyButton = new Button("Apply");
 		applyButton.setEnabled(false);
 		applyButton.addClickListener(e -> applySettings());
@@ -86,10 +82,10 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		buttonLayout.setWidthFull(); 
 
 		Div scrollableDiv = new Div();
-		scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+		scrollableDiv.getStyle().set("overflow-y", "auto");  
 		scrollableDiv.getStyle().set("scrollbar-width", "none");
 
-	    scrollableDiv.setHeight("55vh");  // Altezza fissa per il pannello scorrevole
+	    scrollableDiv.setHeight("55vh");  
         scrollableDiv.add(fieldLayout);
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("55vh");
@@ -98,12 +94,10 @@ public class cpapVentilatorPanel extends VerticalLayout {
         add(buttonLayout);
 	}
 
-	// Apply ventilator settings
 	private void applySettings() {
 		app.connectVentilator();
 	}
 
-	// Get ventilator data as a map
 	public Map<String, Number> getData() {
 		Map<String, Number> dataMap = new HashMap<>();
 		dataMap.put("FractionInspiredOxygen", fractionInspOxygen.getValue());
@@ -113,7 +107,6 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		return dataMap;
 	}
 
-	// Enable or disable the apply button
 	public void setEnableApplyButton(boolean enable) {
 		applyButton.setEnabled(enable);
 	}

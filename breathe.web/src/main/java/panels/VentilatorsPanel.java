@@ -23,9 +23,10 @@ public class VentilatorsPanel extends VerticalLayout {
     private cpapVentilatorPanel cpapPanel;
     private vcVentilatorPanel vcPanel;
 
-    private VentilationMode selectedMode = VentilationMode.PC; // Default mode is PC
     private VentilationMode activeMode = VentilationMode.PC; // Default mode is PC
+    private VentilationMode selectedMode = VentilationMode.PC; // Default mode is PC
     
+    private Button pcButton, cpapButton, vcButton;
     private Button connectButton, disconnectButton;
     private FlexLayout ventilatorLayout;
     
@@ -37,10 +38,9 @@ public class VentilatorsPanel extends VerticalLayout {
         getStyle().set("margin","0px" );
         getStyle().set("padding","0px" );
         
-        // Crea i bottoni per la selezione
-        Button pcButton = new Button("PC");
-        Button cpapButton = new Button("CPAP");
-        Button vcButton = new Button("VC");
+        pcButton = new Button("PC");
+        cpapButton = new Button("CPAP");
+        vcButton = new Button("VC");
         
         pcButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

@@ -21,21 +21,18 @@ public class LineChart extends ItemDisplay {
     	getElement().getStyle().set("margin", "0");
     	
         chartContainer = new Div();
-        chartContainer.setId(title); // Set ID for the chart container
+        chartContainer.setId(title); 
         chartContainer.getElement().getStyle().set("width", "35vw");
         chartContainer.getElement().getStyle().set("height", "34vh");
         chartContainer.getElement().getStyle().set("box-shadow", "inset 5px 5px 5px 5px #03070a");
         
-        // Add the container to the UI
         add(chartContainer);
 
-        // Initialize the chart in JavaScript
         getElement().executeJs("initLineChart($0)", title);
     }
 
     @Override
     public void addPoint(double x, double y) {
-        // Update the chart with the new point
         getElement().executeJs("updateLineChart($0, $1, $2)", 
             title, 
             x, 

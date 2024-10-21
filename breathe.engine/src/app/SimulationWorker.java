@@ -209,7 +209,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				"Lead3ElectricPotential",
 				"CarbonDioxide",
 				"ArterialPressure",
-				"AirwayPressure"
+				"AirwayPressure",
+				"OxygenSaturation"
 				};
     	
     	this.requestList = requestList;
@@ -222,6 +223,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
         dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
         dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.mmHg);
+        dataRequests.createPhysiologyDataRequest(requestList[8]);
     }
     
     

@@ -16,13 +16,13 @@ public class LineChart extends ItemDisplay {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final List<Point> points = new ArrayList<>();
-    private int maxXValue = 500;  
+    private int maxXValue = 600;  
     private int maxYValue;  
     private int minYValue = 0;  
     private int yStep;       
 
     public LineChart(String title, String unit) {
-        super(title, unit, new Dimension(450, 300)); 
+        super(title, unit, new Dimension(550, 300)); 
         this.setMaxY();
     }
 
@@ -58,7 +58,7 @@ public class LineChart extends ItemDisplay {
 
         g2.setColor(Color.WHITE); 
         g2.setStroke(new java.awt.BasicStroke(1.5f)); 
-        g2.drawLine(50, 250, 500, 250); 
+        g2.drawLine(50, 250, 600, 250); 
         g2.drawLine(50, 50, 50, 250);   
 
         g2.setColor(new Color(255, 255, 255, 80)); 
@@ -101,7 +101,7 @@ public class LineChart extends ItemDisplay {
 
         for (int i = minYValue; i <= maxYValue; i += yStep) {
             int y = 250 - ((i - minYValue) * 200 / (maxYValue - minYValue)); 
-            g2.drawLine(50, y, 500, y);
+            g2.drawLine(50, y, 600, y);
         }
     }
 
@@ -136,7 +136,7 @@ public class LineChart extends ItemDisplay {
         	maxYValue = (int) Math.floor(y);
         };
     	
-        int x1 = (int) (x * 45 + 50);
+        int x1 = (int) (x * 45 + 60);
         int y1 = (int) (250 - ((y - minYValue) * 200 / (maxYValue - minYValue)));
         points.add(new Point(x1, y1));
         currentValue = y;  

@@ -36,20 +36,17 @@ public class ConditionBox extends VerticalLayout {
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
 
-        // Header Button
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
         headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
-        // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
         fieldsLayout.getStyle().set("margin","0px" );
         fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
 
-        // Add fields and spans
         for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
@@ -62,13 +59,11 @@ public class ConditionBox extends VerticalLayout {
             fieldsLayout.add(entry.getValue()); 
         }
 
-        // "Apply" button
         applySectionButton = new Button("Apply", e -> applyCondition());
         applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         applySectionButton.setEnabled(true);
         fieldsLayout.add(applySectionButton);
 
-        // Add components to the layout
         add(headerButton, fieldsLayout);
     }
 
@@ -91,7 +86,6 @@ public class ConditionBox extends VerticalLayout {
 	            	Double minValue = numberField.getMin();
 	            	Double maxValue = numberField.getMax();
 
-	            	// Controlla se il valore è fuori dall'intervallo
 	            	if (value < minValue || value > maxValue) {
 	            	    numberField.setInvalid(true);
 	            	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
@@ -109,7 +103,6 @@ public class ConditionBox extends VerticalLayout {
             app.applyCondition(new Condition(title, parameters));
             applied = true;
         } else {
-            // Removing Condition
             enableFields(true);
             applySectionButton.setText("Apply");
             headerButton.getStyle().set("background-color", "");
@@ -126,7 +119,7 @@ public class ConditionBox extends VerticalLayout {
         }
     }
 
-    public boolean isActive() {
+    public boolean isApplied() {
         return applied;
     }
 

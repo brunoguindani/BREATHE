@@ -15,13 +15,11 @@ public abstract class ItemDisplay extends VerticalLayout {
         this.unit = unit;
         this.currentValue = 0.0;
         
-        // Imposta il layout verticale
         setPadding(true);
         setSpacing(true);
         getStyle().set("background-color", "transparent");
     }
 
-    // Metodi astratti per le sottoclassi
     public abstract void clear();
 
     public abstract void addPoint(double x, double y);

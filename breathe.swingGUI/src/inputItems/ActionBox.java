@@ -211,7 +211,7 @@ public class ActionBox {
         return title;
     }
     
-    public void enableButton(boolean enable) {
+    public void enableBox(boolean enable) {
     	applySectionButton.setEnabled(enable);
     }
     
