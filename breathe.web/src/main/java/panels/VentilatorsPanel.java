@@ -3,8 +3,6 @@ package panels;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
@@ -96,12 +94,13 @@ public class VentilatorsPanel extends VerticalLayout {
         
         connectButton.setEnabled(false);
         disconnectButton.setEnabled(false);
-
+        
+        connectButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         disconnectButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         
         // Buttons layout
         HorizontalLayout buttonLayout = new HorizontalLayout(connectButton, disconnectButton);
-		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); 
 		buttonLayout.setWidthFull(); 
 		
         add(topArea, ventilatorLayout, buttonLayout);
@@ -142,7 +141,7 @@ public class VentilatorsPanel extends VerticalLayout {
 		app.disconnectVentilator();
         connectButton.setEnabled(true);
         disconnectButton.setEnabled(false);
-        setEnableApplyButton(selectedMode, false);
+        setEnableApplyButton(activeMode, false);
         disconnectButton.setText("Disconnect");
     }
     

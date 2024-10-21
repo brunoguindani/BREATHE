@@ -26,7 +26,6 @@ public class PatientPanel extends VerticalLayout {
 
 	public PatientPanel(App app) {
 		// Main panel setup
-		getStyle().set("background-color", "white"); // Colore di sfondo
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "2px");
 		getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo

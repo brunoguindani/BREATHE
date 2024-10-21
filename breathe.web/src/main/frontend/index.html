@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>###Breathe###</title>
+    <title>Breathe</title>
     <style>
         body {
             height: 100vh;
@@ -50,7 +50,7 @@
             .setScrollStrategy(AxisScrollStrategies.progressive)
             .setInterval({
                 start: 0,
-                end: 6,   // 60 seconds as milliseconds
+                end: 6,   
                 stopAxisAfter: false
             });
 
@@ -80,17 +80,25 @@
     }
 
     function clearLineChart(name) {
-        const chartData = charts[name];
-        if (!chartData) {
-            console.warn(`"${name}" doesn't exists.`);
-            return;
-        }
-
-        chartData.dataPoints.length = 0; 
-
-        chartData.series.clear(); 
-        chartData.series.add(chartData.dataPoints); 
+    const chartData = charts[name];
+    if (!chartData) {
+        console.warn(`"${name}" doesn't exist.`);
+        return;
     }
+    chartData.dataPoints.length = 0; 
+
+    chartData.series.clear();
+
+    chartData.chart.getDefaultAxisX()
+    .setInterval({
+        start: 0,
+        end: 10, 
+        stopAxisAfter: false
+    });
+
+    chartData.chart.getDefaultAxisX().setScrollStrategy(AxisScrollStrategies.progressive);
+}
+
 
 
   </script>

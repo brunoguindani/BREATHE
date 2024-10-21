@@ -3,6 +3,7 @@ package ventilators;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -34,7 +35,6 @@ public class vcVentilatorPanel extends VerticalLayout {
     // Constructor for VC ventilator panel
     public vcVentilatorPanel(App app) {
         this.app = app;
-        getStyle().set("background-color", "white"); // Colore di sfondo
         getStyle().set("margin", "0px");
         getStyle().set("padding", "2px");
         getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
@@ -129,7 +129,7 @@ public class vcVentilatorPanel extends VerticalLayout {
 
     private void applySettings() {
     	app.connectVentilator();
-        Notification.show("Settings updated",3000,Position.BOTTOM_END);
+        Notification.show("Settings updated",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
     // Get ventilator data as a map

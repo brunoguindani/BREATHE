@@ -3,10 +3,12 @@ package inputItems;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasEnabled;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.textfield.NumberField;
 
@@ -37,7 +39,6 @@ public class ActionBox extends VerticalLayout {
         
         setSpacing(false);
 
-        this.getStyle().set("background-color", "white");
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
       
@@ -71,6 +72,7 @@ public class ActionBox extends VerticalLayout {
 
         // "Apply" button
         applySectionButton = new Button("Apply", e -> applyAction());
+        applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         applySectionButton.setEnabled(false);
         
         if(forScenario) {
@@ -164,7 +166,7 @@ public class ActionBox extends VerticalLayout {
         }
 
         app.addActiontoScenario(new Action(title, parameters), totalSeconds);
-        Notification.show("Action added to scenario!",3000,Position.BOTTOM_END);
+        Notification.show("Action added to scenario!",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
     private void applyAction() {

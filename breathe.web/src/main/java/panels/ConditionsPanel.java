@@ -28,7 +28,6 @@ public class ConditionsPanel extends VerticalLayout {
 
     public ConditionsPanel(App app) {
     	
-		getStyle().set("background-color", "white");  // Colore di sfondo
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","2px" );
 

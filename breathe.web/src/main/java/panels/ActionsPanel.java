@@ -21,7 +21,6 @@ public class ActionsPanel extends VerticalLayout {
 	private List<ActionBox> boxes = new ArrayList<>();
 
     public ActionsPanel(App app, boolean forScenario) {
-    	getStyle().set("background-color", "white");  // Colore di sfondo
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","2px" );
 
