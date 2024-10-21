@@ -25,20 +25,17 @@ public class PatientPanel extends VerticalLayout {
 	private Map<String, NumberField> fieldMap = new HashMap<>();
 
 	public PatientPanel(App app) {
-		// Main panel setup
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "2px");
-		getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+		getStyle().set("border-bottom", "2px solid #ccc"); 
 
 		setSpacing(false);
 
-		// Create a fixed size Div for the panel
 		Div fixedSizeDiv = new Div();
-		fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+		fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
-		// Form layout for patient data
 		FormLayout formLayout = new FormLayout();
-		formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1)); // Layout reattivo
+		formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1)); 
 
 		nameField = new TextField("Name");
 		nameField.setValue("Standard");
@@ -56,12 +53,14 @@ public class PatientPanel extends VerticalLayout {
 		weightField.setValue(77.0);
 		weightField.setStep(1);
 		weightField.setStepButtonsVisible(true);
+		weightField.setWidth("10vw");
 		fieldMap.put("Weight", weightField);
 
 		NumberField heightField = new NumberField("Height");
 		heightField.setValue(180.0);
 		heightField.setStep(1);
 		heightField.setStepButtonsVisible(true);
+		heightField.setWidth("10vw");
 		fieldMap.put("Height", heightField);
 		heightField.setTooltipText(
 				"Value must be between 163cm and 190cm for male patients and between 151cm and 175cm for female patients");
@@ -70,6 +69,7 @@ public class PatientPanel extends VerticalLayout {
 		bodyFatField.setValue(0.21);
 		bodyFatField.setStep(0.01);
 		bodyFatField.setStepButtonsVisible(true);
+		bodyFatField.setWidth("10vw");
 		bodyFatField.setTooltipText(
 				"Value must be between 0.02% and 0.25% for male patients and 0.32% for female patients");
 		fieldMap.put("BodyFatFraction", bodyFatField);
@@ -79,6 +79,7 @@ public class PatientPanel extends VerticalLayout {
 		heartRateField.setStep(1);
 		heartRateField.setMin(50);
 		heartRateField.setMax(110);
+		heartRateField.setWidth("10vw");
 		heartRateField.setStepButtonsVisible(true);
 		fieldMap.put("HeartRateBaseline", heartRateField);
 
@@ -87,6 +88,7 @@ public class PatientPanel extends VerticalLayout {
 		diastolicPressureField.setStep(1);
 		diastolicPressureField.setMin(60);
 		diastolicPressureField.setMax(80);
+		diastolicPressureField.setWidth("10vw");
 		diastolicPressureField.setStepButtonsVisible(true);
 		fieldMap.put("DiastolicArterialPressureBaseline", diastolicPressureField);
 
@@ -95,6 +97,7 @@ public class PatientPanel extends VerticalLayout {
 		systolicPressureField.setStep(1);
 		systolicPressureField.setMin(90);
 		systolicPressureField.setMax(120);
+		systolicPressureField.setWidth("10vw");
 		systolicPressureField.setStepButtonsVisible(true);
 		fieldMap.put("SystolicArterialPressureBaseline", systolicPressureField);
 
@@ -103,6 +106,7 @@ public class PatientPanel extends VerticalLayout {
 		respirationRateField.setStep(1);
 		respirationRateField.setMin(8);
 		respirationRateField.setMax(20);
+		respirationRateField.setWidth("10vw");
 		respirationRateField.setStepButtonsVisible(true);
 		fieldMap.put("RespirationRateBaseline", respirationRateField);
 
@@ -110,12 +114,13 @@ public class PatientPanel extends VerticalLayout {
 		basalMetabolicRateField.setValue(1600.0);
 		basalMetabolicRateField.setStep(10);
 		basalMetabolicRateField.setStepButtonsVisible(true);
+		basalMetabolicRateField.setWidth("10vw");
 		fieldMap.put("BasalMetabolicRate", basalMetabolicRateField);
 
-		// Define ComboBoxes for units
 		sexComboBox = new ComboBox<>("Sex");
 		sexComboBox.setItems("Male", "Female");
 		sexComboBox.setValue("Male");
+		sexComboBox.setWidth("10vw");
 
 		weightUnitComboBox = new ComboBox<>("   ");
 		weightUnitComboBox.setItems("kg", "lb");
@@ -126,8 +131,6 @@ public class PatientPanel extends VerticalLayout {
 		heightUnitComboBox.setItems("cm", "m", "in", "ft");
 		heightUnitComboBox.setValue("cm");
 		heightUnitComboBox.setWidth("5vw");
-
-		// Add fields to form layout in pairs
 
 		formLayout.add(nameField);
 		HorizontalLayout user = new HorizontalLayout(ageField, sexComboBox);
@@ -146,17 +149,15 @@ public class PatientPanel extends VerticalLayout {
 		formLayout.add(basalMetabolicRateField);
 
 		Div scrollableDiv = new Div();
-		scrollableDiv.getStyle().set("overflow-y", "auto"); // Scorrimento verticale
+		scrollableDiv.getStyle().set("overflow-y", "auto");
 		scrollableDiv.getStyle().set("scrollbar-width", "none");
 
-		scrollableDiv.setHeight("70vh"); // Altezza fissa per il pannello scorrevole
+		scrollableDiv.setHeight("70vh"); 
 		scrollableDiv.add(formLayout);
 
-		// Add the scrollable panel to the fixed size Div
 		fixedSizeDiv.add(scrollableDiv);
 		fixedSizeDiv.setHeight("70vh");
 
-		// Add the fixed size Div to the main layout
 		add(fixedSizeDiv);
 
 	}
@@ -189,7 +190,6 @@ public class PatientPanel extends VerticalLayout {
 		if (sexComboBox.getValue().equals("Male"))
 			sex = 'M';
 
-		// methods to convert weight and height (kg and cm)
 		checkUnits(parameters);
 
 		return new Patient(name, sex, parameters, conditions);
@@ -197,35 +197,30 @@ public class PatientPanel extends VerticalLayout {
 
 	private void checkUnits(Map<String, Double> parameters) {
 
-		// weight conversion (if necessary)
 		if (weightUnitComboBox.getValue().equals("lb")) {
 			parameters.put("Weight", fieldMap.get("Weight").getValue() * 0.453592);
 		}
 
-		// height conversion (if necessary)
 		switch ((String) heightUnitComboBox.getValue()) {
 		case "m":
-			parameters.put("Height", fieldMap.get("Height").getValue() * 100); // m to cm
+			parameters.put("Height", fieldMap.get("Height").getValue() * 100); 
 			break;
 		case "in":
-			parameters.put("Height", fieldMap.get("Height").getValue() * 2.54); // in to cm
+			parameters.put("Height", fieldMap.get("Height").getValue() * 2.54); 
 			break;
 		case "ft":
-			parameters.put("Height", fieldMap.get("Height").getValue() * 30.48); // feat to cm
+			parameters.put("Height", fieldMap.get("Height").getValue() * 30.48);
 			break;
 		}
 	}
 
 	public void enableComponents(boolean enabled) {
-		// Abilita o disabilita i TextField
 		nameField.setEnabled(enabled);
 
-		// Abilita o disabilita i ComboBox
 		sexComboBox.setEnabled(enabled);
 		weightUnitComboBox.setEnabled(enabled);
 		heightUnitComboBox.setEnabled(enabled);
 
-		// Abilita o disabilita tutti i NumberField nella mappa
 		for (NumberField field : fieldMap.values()) {
 			field.setEnabled(enabled);
 		}

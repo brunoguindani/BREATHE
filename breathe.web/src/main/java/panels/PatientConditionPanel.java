@@ -14,8 +14,8 @@ import app.App;
 public class PatientConditionPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
-	private final PatientPanel patientPanel; // Assuming you have a PatientPanel class
-    private final ConditionsPanel conditionsPanel; // Assuming you have a ConditionsPanel class
+	private final PatientPanel patientPanel; 
+    private final ConditionsPanel conditionsPanel; 
 
     public PatientConditionPanel(App app) {
         this.patientPanel = new PatientPanel(app);
@@ -24,7 +24,6 @@ public class PatientConditionPanel extends VerticalLayout {
         getStyle().set("margin","0px" );
         getStyle().set("padding","0px" );
 
-        // Crea i bottoni per la selezione
         Button patientButton = new Button(VaadinIcon.USER.create());
         patientButton.setTooltipText("Patients info");
         patientButton.setWidth("9vw");
@@ -32,15 +31,12 @@ public class PatientConditionPanel extends VerticalLayout {
         conditionsButton.setTooltipText("Conditions");
         conditionsButton.setWidth("9vw");
 
-        // Imposta il pulsante "Patient" come attivo di default
         patientButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         
-        // Div per contenere il pannello attuale
         Div contentLayout = new Div();
-        contentLayout.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
-        contentLayout.add(patientPanel); // Pannello di default
-
-        // Listener per il pulsante "Patient"
+        contentLayout.getStyle().set("margin", "0").set("padding", "0"); 
+        contentLayout.add(patientPanel); 
+        
         patientButton.addClickListener(event -> {
             contentLayout.removeAll();
             contentLayout.add(patientPanel);
@@ -48,7 +44,6 @@ public class PatientConditionPanel extends VerticalLayout {
             conditionsButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
         });
 
-        // Listener per il pulsante "Conditions"
         conditionsButton.addClickListener(event -> {
             contentLayout.removeAll();
             contentLayout.add(conditionsPanel);
@@ -56,7 +51,6 @@ public class PatientConditionPanel extends VerticalLayout {
             patientButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
         });
 
-        // Aggiungi i pulsanti e il layout del contenuto al layout principale
         HorizontalLayout topArea = new HorizontalLayout();
         topArea.setWidthFull(); 
         topArea.setJustifyContentMode(JustifyContentMode.CENTER); 

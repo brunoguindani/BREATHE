@@ -55,9 +55,8 @@ public class ScenarioPanel extends VerticalLayout {
 
 
 	    Div fixedSizeDiv = new Div();
-        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
-        // Scrollable container for all conditions
         VerticalLayout tableLayout = new VerticalLayout();
         tableLayout.setPadding(false);
         tableLayout.setSpacing(false);
@@ -76,10 +75,10 @@ public class ScenarioPanel extends VerticalLayout {
         actionsGrid.setHeight("50vh");
 		
 		Div scrollableDiv = new Div();
-        scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+        scrollableDiv.getStyle().set("overflow-y", "auto"); 
         scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        scrollableDiv.setHeight("50vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.setHeight("50vh"); 
         scrollableDiv.add(actionsGrid); 
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("50vh");
@@ -95,13 +94,11 @@ public class ScenarioPanel extends VerticalLayout {
 		removeButtonLayout.setWidth("100%");
 		removeButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
-		// Layout per il bottone "create"
 		HorizontalLayout createButtonLayout = new HorizontalLayout();
 		createButtonLayout.add(createScenarioButton);
 		createButtonLayout.setWidth("100%");
 		createButtonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
-		// Aggiunta dei layout a un VerticalLayout
 		VerticalLayout buttonsLayout = new VerticalLayout();
 		buttonsLayout.add(removeButtonLayout, createButtonLayout);
 		buttonsLayout.setWidth("100%");
@@ -117,7 +114,7 @@ public class ScenarioPanel extends VerticalLayout {
 	}
 
 	private void updatePatientFiles(String[] directories) {
-		List<String> patientFiles = new ArrayList<>(); // Crea una lista per i file paziente
+		List<String> patientFiles = new ArrayList<>();
 
 		for (String dirPath : directories) {
 			File dir = new File(dirPath);
@@ -126,7 +123,7 @@ public class ScenarioPanel extends VerticalLayout {
 				if (files != null) {
 					for (File file : files) {
 						if (file.isFile() && file.getName().endsWith(".json")) {
-							patientFiles.add(file.getName()); // Aggiungi il nome del file alla lista
+							patientFiles.add(file.getName()); 
 						}
 					}
 				}

@@ -50,7 +50,8 @@ public class InfoBox extends ItemDisplay {
 
     @Override
     public void addPoint(double x, double y) {
-        currentValue = y;  
+    	if(unit.equals("%")) y = y*100;
+    	currentValue = y;  
         repaint(); 
     }
 

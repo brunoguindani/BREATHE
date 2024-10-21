@@ -27,7 +27,7 @@ public class OutputPanel extends VerticalLayout {
 		this.setWidthFull();
 		mainPanel = new VerticalLayout();
         mainPanel.getStyle().set("background-color", "#03070a");
-		mainPanel.getStyle().set("border-radius", "8px"); // Angoli arrotondati
+		mainPanel.getStyle().set("border-radius", "8px"); 
 		mainPanel.getStyle().set("margin","0px" );
 		mainPanel.getStyle().set("padding","0px" );
         setSizeFull();
@@ -38,7 +38,6 @@ public class OutputPanel extends VerticalLayout {
 
         chartsMap = new HashMap<>();
         
-        // Mappatura delle unità di misura
         chartsMap.put("Total Lung Volume", "mL");
         chartsMap.put("ECG", "mV");
         chartsMap.put("CO2", "mmHg");
@@ -46,17 +45,17 @@ public class OutputPanel extends VerticalLayout {
         chartsMap.put("Heart Rate", "1/min");
         chartsMap.put("Respiratory Rate", "1/min");
         chartsMap.put("Airway Pressure", "mmHg");
+        chartsMap.put("Oxygen Saturation", "%");
         
         chartPanels = new HashMap<>();
              
         chartsPanel = new VerticalLayout();
-        chartsPanel.getStyle().set("padding", "10px");  // Padding per distanziare gli oggetti
+        chartsPanel.getStyle().set("padding", "10px");  
 
         infoBoxPanel = new FlexLayout();
         infoBoxPanel.setAlignItems(Alignment.CENTER);
         infoBoxPanel.setJustifyContentMode(JustifyContentMode.CENTER);
         
-        // Aggiunta dei grafici a linee
         String[] chartOrder = {
             "Total Lung Volume",
             "CO2",
@@ -82,23 +81,22 @@ public class OutputPanel extends VerticalLayout {
             oldLine = chart;
         }
         if(count == 1)
-        	chartsPanel.add(new HorizontalLayout(oldLine, null));	//SISTEMARE
+        	chartsPanel.add(new HorizontalLayout(oldLine, null));
         
-        // Aggiunta delle info box
         String[] infoOrder = {
             "Heart Rate",
             "Respiratory Rate",
-            "Airway Pressure"
+            "Airway Pressure",
+            "Oxygen Saturation"
         };
         
         for (String chartName : infoOrder) {
             InfoBox infoBox = new InfoBox(chartName, chartsMap.get(chartName));
-            infoBox.getStyle().set("margin", "5px");  // Margine per distanziare le info box
+            infoBox.getStyle().set("margin", "5px"); 
             chartPanels.put(chartName, infoBox);
             infoBoxPanel.add(infoBox);
         }
         
-        // Imposta il pannello principale
         scrollChartPane = new Div(chartsPanel);
         scrollChartPane.getStyle().set("overflow-y", "auto").set("overflow-x", "hidden");
         scrollChartPane.setWidthFull();
@@ -109,8 +107,7 @@ public class OutputPanel extends VerticalLayout {
         add(mainPanel);
     }
 
-    // Metodo per aggiornare i display degli oggetti
-    public void updateItemDisplay(Set<String> selectedCharts) { // Modifica il tipo di parametro
+    public void updateItemDisplay(Set<String> selectedCharts) { 
         chartsPanel.removeAll();
         infoBoxPanel.removeAll();
 
@@ -133,7 +130,6 @@ public class OutputPanel extends VerticalLayout {
         scrollChartPane.getElement().executeJs("this.scrollTop = 0");
     }
 
-    // Aggiunta dei valori ai display
     public void addValueToItemDisplay(String chartName, double x, double y) {
         String mapChartName;
 
@@ -146,6 +142,9 @@ public class OutputPanel extends VerticalLayout {
                 break;
             case "RespirationRate":
                 mapChartName = "Respiratory Rate";
+                break;
+            case "OxygenSaturation":
+            	mapChartName = "Oxygen Saturation";
                 break;
             case "TotalLungVolume":
                 mapChartName = "Total Lung Volume";

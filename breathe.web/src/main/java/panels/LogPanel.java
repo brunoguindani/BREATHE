@@ -6,6 +6,9 @@ import com.vaadin.flow.router.Route;
 
 import app.App;
 import java.util.LinkedList;
+/*
+    CLASS NOT USED
+*/
 
 @Route("logpanel")
 public class LogPanel extends VerticalLayout {
@@ -16,7 +19,7 @@ public class LogPanel extends VerticalLayout {
     private static final int MAX_LINES = 30; 
 
     public LogPanel(App app) {
-		getStyle().set("border", "1px solid #ccc"); // Imposta il bordo 
+		getStyle().set("border", "1px solid #ccc"); 
         setPadding(false);
         setMargin(false);
 

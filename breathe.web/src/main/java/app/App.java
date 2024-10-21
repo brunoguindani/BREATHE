@@ -35,21 +35,16 @@ import utils.Pair;
 public class App extends Composite<VerticalLayout> implements GuiCallback {
 	private static final long serialVersionUID = 1L;
 
-    // Contenuti per il primo gruppo di tabs
     private final PatientConditionPanel patientConditionPanel = new PatientConditionPanel(this);  
     private final ActionsPanel actionsPanel = new ActionsPanel(this, false); 
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
-
-    // Contenuti per il secondo gruppo di tabs
     private final OutputPanel outputPanel = new OutputPanel(this);
-   // private final LogPanel logPanel = new LogPanel(this);
     private final ControlPanel controlPanel = new ControlPanel(this);
     
     private SimulationWorker sim;
     private ProgressBar loadingIndicator;
     
     public App() {
-        // Inizializzazione del JNI e del worker della simulazione
         Initializer.initilizeJNI();
         sim = new SimulationWorker(this);
         
@@ -63,18 +58,15 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         topArea.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         topArea.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        // Barra di caricamento
         loadingIndicator = new ProgressBar();
         loadingIndicator.setIndeterminate(false);
         loadingIndicator.setVisible(true);
         loadingIndicator.setWidth("145px");
 
-        // Logo
         H1 logo = new H1("Breathe");
         logo.getStyle().set("font-size", "40px");
         logo.getStyle().set("font-style", "italic");
 
-        // Contenitore per il logo e la barra di caricamento
         Div logoContainer = new Div(logo, loadingIndicator);
         logoContainer.getStyle().set("margin", "0").set("padding", "0");
         loadingIndicator.getStyle().set("padding", "0");
@@ -84,38 +76,31 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         buttonContainer.setWidth("100vw");
         buttonContainer.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        // Aggiungi i contenitori aggiornati a topArea
         topArea.add(logoContainer, buttonContainer);
 
-        // Control Panel
         mainLayout.add(topArea);
         
-        // Prima colonna
         VerticalLayout leftColumn = createColumn();
-        leftColumn.getStyle().set("padding", "0px"); // Padding per aggiungere spazio interno (opzionale)
-        leftColumn.setWidth("25vw");
+        leftColumn.getStyle().set("padding", "0px"); 
+        //leftColumn.setWidth("25vw");
 
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
-        leftContentLayout.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
+        leftContentLayout.getStyle().set("margin", "0").set("padding", "0");
         leftTabs.addSelectedChangeListener(event -> updateContent(event.getSelectedTab(), leftContentLayout));
 
-        // Aggiungi componenti alla colonna sinistra
         leftColumn.add(leftTabs);
         leftColumn.add(leftContentLayout);
         
         outputPanel.setWidth("75vw");
 
-        // Layout principale con due colonne
         HorizontalLayout mainRow = new HorizontalLayout(leftColumn, outputPanel);
-	    
 	    mainRow.setWidthFull();
-	
 	    mainLayout.add(mainRow);
 
         updateContent(leftTabs.getSelectedTab(), leftContentLayout);        
     }
-    // Metodo per creare un layout colonna
+
     private VerticalLayout createColumn() {
         VerticalLayout column = new VerticalLayout();
         column.setWidthFull();
@@ -124,19 +109,17 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         return column;
     }
 
-    // Metodo per creare un insieme di tabs con dati di esempio
     private Tabs createLeftTabs() {
         Tabs tabs = new Tabs();
         tabs.setWidthFull();
-        tabs.getStyle().set("margin", "0").set("padding", "0"); // Imposta margine e padding a zero
+        tabs.getStyle().set("margin", "0").set("padding", "0"); 
         tabs.add(new Tab("Patient"), new Tab("Actions"), new Tab("Ventilators"));
         tabs.addThemeVariants(TabsVariant.LUMO_EQUAL_WIDTH_TABS);
         return tabs;
     }
 
-    // Metodo per aggiornare il contenuto del layout in base al tab selezionato
     private void updateContent(Tab selectedTab, VerticalLayout contentLayout) {
-        contentLayout.removeAll();  // Rimuovi tutto il contenuto esistente
+        contentLayout.removeAll(); 
         String tabLabel = selectedTab.getLabel();
         switch (tabLabel) {
 	        case "Patient":
@@ -201,8 +184,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	
     /*
      * GUI TO SIMULATION WORKER
-     */
-	
+     */	
 	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
 		sim.createScenario(patientFile, scenarioName, actions);
 	}
@@ -267,6 +249,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	if(v != null)
     		sim.disconnectVentilator(v);
     }
+	
+	public void applyAction(Action action) {
+		sim.applyAction(action);
+	}
 		
     /*
      * SIMULATION WORKER TO GUI
@@ -283,14 +269,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
 
 	@Override
-	public void logStringData(String data) {
-//		getUI().ifPresent(ui -> ui.access(() -> {
-//			logPanel.append(data);
-//         }));
-		
-	}
-
-	@Override
 	public void minilogStringData(String data) {
 		getUI().ifPresent(ui -> ui.access(() -> {
 			Notification.show(data,3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
@@ -302,6 +280,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		getUI().ifPresent(ui -> ui.access(() -> {
 			 outputPanel.addValueToItemDisplay(data, x, y);
          }));
+	}
+	
+	@Override
+	public void logStringData(String data) {
 	}
 
 	@Override
@@ -317,12 +299,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	@Override
 	public void setInitialCondition(List<Condition> list) {
 
-	}
-
-	public void applyAction(Action action) {
-		sim.applyAction(action);
-	}
-
-	
+	}	
 
 }

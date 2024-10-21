@@ -60,7 +60,6 @@ public class ControlPanel extends HorizontalLayout {
         
         scenarioButton = new Button(VaadinIcon.CLIPBOARD_TEXT.create());
         scenarioButton.setTooltipText("Create Scenario");
-        scenarioButton.getStyle().set("margin-right", "0px");
         scenarioButton.addClickListener(e -> {
         	openScenarioDialog();
         });
@@ -81,7 +80,7 @@ public class ControlPanel extends HorizontalLayout {
         Div spacer = new Div();
         spacer.getStyle().set("flex-grow", "1");
 
-        add(startButton, stopButton, exportButton, spacer, scenarioButton,themeButton);
+        add(startButton, stopButton, exportButton, scenarioButton, spacer, themeButton);
     }
 
     
@@ -212,8 +211,6 @@ public class ControlPanel extends HorizontalLayout {
          dialog.open();
     }
     
-    
-    //From Start to Stop
     public void enableControlStartButton(boolean enable) {
         startButton.setEnabled(enable); 
         stopButton.setEnabled(!enable);

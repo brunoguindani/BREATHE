@@ -34,16 +34,12 @@ public class ConditionsPanel extends VerticalLayout {
         setSpacing(false);
 
         Div fixedSizeDiv = new Div();
-        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
-        // Scrollable container for all conditions
         VerticalLayout conditionLayout = new VerticalLayout();
         conditionLayout.setPadding(false);
         conditionLayout.setSpacing(false);
         
-        //conditionsContainer.add(scrollableContent);
-
-        // Add ConditionBoxes
         addConditionBox(app, "Chronic Anemia", new String[]{"ReductionFactor"}, conditionLayout);
         addConditionBox(app, "ARDS", new String[]{"LeftLungSeverity", "RightLungSeverity"}, conditionLayout);
         addConditionBox(app, "COPD", new String[]{"BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, conditionLayout);
@@ -53,29 +49,28 @@ public class ConditionsPanel extends VerticalLayout {
         addConditionBox(app, "Pulmonary Fibrosis", new String[]{"Severity"}, conditionLayout);
         addConditionBox(app, "Pulmonary Shunt", new String[]{"Severity"}, conditionLayout);
 
-        // Create a scrollable panel for conditions data
         Div scrollableDiv = new Div();
-        scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+        scrollableDiv.getStyle().set("overflow-y", "auto");  
         scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        scrollableDiv.setHeight("60vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.setHeight("60vh"); 
         scrollableDiv.add(conditionLayout);
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("60vh");
-        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); 
 
         add(fixedSizeDiv);
 
         // Reset Button
         resetButton = new Button("Reset Conditions", e -> resetConditions());
         HorizontalLayout buttonLayout = new HorizontalLayout(resetButton);
-		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); // Centra orizzontalmente
+		buttonLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER); 
 		buttonLayout.setWidthFull(); 
         add(buttonLayout);
     }
 
     private void addConditionBox(App app, String title, String[] fields, VerticalLayout container) {
-        addConditionBox(app, title, fields, container, 1.0);  // Default max value 1.0
+        addConditionBox(app, title, fields, container, 1.0);
     }
 
     private void addConditionBox(App app, String title, String[] fields, VerticalLayout container, double max) {
@@ -114,7 +109,7 @@ public class ConditionsPanel extends VerticalLayout {
     public void enableButtons(boolean enable) {
         resetButton.setEnabled(enable);
         for (ConditionBox box : boxes) {
-            box.enableBox(enable); // Assuming ConditionBox has a method to enable/disable
+            box.enableBox(enable); 
         }
     }
 
@@ -125,7 +120,7 @@ public class ConditionsPanel extends VerticalLayout {
             for (Condition condition : list) {
                 if (box.getTitle().equals(condition.getTitle())) {
                     found = true;
-                    box.setComponents(condition.getParameters()); // Assuming ConditionBox has this method
+                    box.setComponents(condition.getParameters()); 
                     break;
                 }
             }

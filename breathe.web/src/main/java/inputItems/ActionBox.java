@@ -25,7 +25,6 @@ public class ActionBox extends VerticalLayout {
     private Map<String, Component> components;
     private Button applySectionButton, headerButton;
 
-    // TextFields for time input
     private NumberField hoursField;
     private NumberField minutesField;
     private NumberField secondsField;
@@ -42,20 +41,17 @@ public class ActionBox extends VerticalLayout {
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
       
-        // Header Button
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
         headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
-        // Create fields layout
         VerticalLayout fieldsLayout = new VerticalLayout();
         fieldsLayout.getStyle().set("margin","0px" );
         fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
         
-        // Add fields and spans
         for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
@@ -68,9 +64,6 @@ public class ActionBox extends VerticalLayout {
             fieldsLayout.add(entry.getValue()); 
         }
 
-        // Time fields
-
-        // "Apply" button
         applySectionButton = new Button("Apply", e -> applyAction());
         applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         applySectionButton.setEnabled(false);
@@ -81,7 +74,6 @@ public class ActionBox extends VerticalLayout {
             fieldsLayout.add(applySectionButton);     	
         }
 
-        // Add components to the layout
         add(headerButton, fieldsLayout);
     }
 
@@ -89,9 +81,8 @@ public class ActionBox extends VerticalLayout {
         HorizontalLayout timeLayout = new HorizontalLayout();
         timeLayout.setWidth("23vw");
         
-        // Imposta l'allineamento orizzontale e verticale
-        timeLayout.setJustifyContentMode(JustifyContentMode.CENTER); // Centra orizzontalmente
-        timeLayout.setAlignItems(Alignment.CENTER); // Centra verticalmente
+        timeLayout.setJustifyContentMode(JustifyContentMode.CENTER); 
+        timeLayout.setAlignItems(Alignment.CENTER); 
 
         hoursField = new NumberField("Hours");
         hoursField.setValue(0.0);
@@ -111,7 +102,6 @@ public class ActionBox extends VerticalLayout {
         secondsField.setMin(0); 
         secondsField.setWidth("20%");
 
-        // Set input restrictions
         hoursField.setPlaceholder("0");
         minutesField.setPlaceholder("0");
         secondsField.setPlaceholder("0");
@@ -133,7 +123,7 @@ public class ActionBox extends VerticalLayout {
         headerButton.setText(isVisible ? title + " (Close)" : title);
     }
     
-    public void enableButton(boolean enable) {
+    public void enableBox(boolean enable) {
     	applySectionButton.setEnabled(enable);
     	for (Map.Entry<String, Component> entry : components.entrySet()) {
     	    if (entry.getValue() instanceof HasEnabled) { 
@@ -153,7 +143,6 @@ public class ActionBox extends VerticalLayout {
             	Double minValue = numberField.getMin();
             	Double maxValue = numberField.getMax();
 
-            	// Controlla se il valore è fuori dall'intervallo
             	if (value < minValue || value > maxValue) {
             	    numberField.setInvalid(true);
             	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
@@ -180,7 +169,6 @@ public class ActionBox extends VerticalLayout {
             	Double minValue = numberField.getMin();
             	Double maxValue = numberField.getMax();
 
-            	// Controlla se il valore è fuori dall'intervallo
             	if (value < minValue || value > maxValue) {
             	    numberField.setInvalid(true);
             	    numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);

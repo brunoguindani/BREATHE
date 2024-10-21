@@ -27,14 +27,12 @@ public class ActionsPanel extends VerticalLayout {
         setSpacing(false);
 
         Div fixedSizeDiv = new Div();
-        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); // Include padding e bordo nelle dimensioni
+        fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
-        // Scrollable container for all conditions
         VerticalLayout actionLayout = new VerticalLayout();
         actionLayout.setPadding(false);
         actionLayout.setSpacing(false);
         
-        // Add ActionBoxes
         addActionBox(app, "ARDS Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, actionLayout, forScenario);
         addActionBox(app, "Acute Stress", new String[]{"Severity"}, actionLayout, forScenario);
         addActionBox(app, "Airway Obstruction", new String[]{"Severity"}, actionLayout, forScenario);
@@ -53,21 +51,21 @@ public class ActionsPanel extends VerticalLayout {
         addActionBox(app, "Ventilator Leak", new String[]{"Severity"}, actionLayout, forScenario);
 
         Div scrollableDiv = new Div();
-        scrollableDiv.getStyle().set("overflow-y", "auto");  // Scorrimento verticale
+        scrollableDiv.getStyle().set("overflow-y", "auto");  
         scrollableDiv.getStyle().set("scrollbar-width", "none");
         
-        scrollableDiv.setHeight("75vh");  // Altezza fissa per il pannello scorrevole
+        scrollableDiv.setHeight("75vh"); 
         scrollableDiv.add(actionLayout);
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("75vh");
-        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); // Imposta il bordo
+        scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); 
 
         add(fixedSizeDiv);
 
     }
 
     private void addActionBox(App app, String title, String[] fields, VerticalLayout container, boolean fs) {
-        addActionBox(app, title, fields, container, 1.0, fs);  // Default max value 1.0
+        addActionBox(app, title, fields, container, 1.0, fs); 
     }
 
     private void addActionBox(App app, String title, String[] fields, VerticalLayout container, double max, boolean fs) {
@@ -86,7 +84,7 @@ public class ActionsPanel extends VerticalLayout {
 
     public void enableButtons(boolean enable) {
         for (ActionBox box : boxes) {
-            box.enableButton(enable);
+            box.enableBox(enable);
         }
     }
 }

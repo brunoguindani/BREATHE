@@ -25,28 +25,28 @@ public class PatientConditionsPanel extends JPanel{
 		   patientPanel = new PatientPanel(app);
 		   conditionsPanel = new ConditionsPanel(app);
 		 	
-		   JToggleButton patientRadioButton = new JToggleButton("Patient");
-	       JToggleButton conditionsRadioButton = new JToggleButton("Conditions");
-	       patientRadioButton.setPreferredSize(new Dimension(150, 30));
-	       conditionsRadioButton.setPreferredSize(new Dimension(150, 30));
+		   JToggleButton patientButton = new JToggleButton("Patient");
+	       JToggleButton conditionsButton = new JToggleButton("Conditions");
+	       patientButton.setPreferredSize(new Dimension(150, 30));
+	       conditionsButton.setPreferredSize(new Dimension(150, 30));
 	        
 	       ButtonGroup group = new ButtonGroup();
-	       group.add(patientRadioButton);
-	       group.add(conditionsRadioButton);
-	       patientRadioButton.setSelected(true);  
+	       group.add(patientButton);
+	       group.add(conditionsButton);
+	       patientButton.setSelected(true);  
 	        
 	       JPanel radioPanel = new JPanel();
 	       radioPanel.setBackground(Color.LIGHT_GRAY); 
-	       radioPanel.add(patientRadioButton);
-	       radioPanel.add(conditionsRadioButton);
+	       radioPanel.add(patientButton);
+	       radioPanel.add(conditionsButton);
 	
 	       cardLayout = new CardLayout();
 	       patientConditionPanel = new JPanel(cardLayout);
 	       patientConditionPanel.add(patientPanel, "Patient");
 	       patientConditionPanel.add(conditionsPanel, "Condition");
 	
-	       patientRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
-	       conditionsRadioButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
+	       patientButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Patient"));
+	       conditionsButton.addActionListener(e -> cardLayout.show(patientConditionPanel, "Condition"));
 	       
 	       setPreferredSize(new Dimension(550, 20));
 	       setBackground(Color.LIGHT_GRAY);
