@@ -147,35 +147,35 @@ public class OutputPanel extends JPanel{
         String mapChartName;
 
         switch (chartName) {
-            case "HeartRate":
-            	mapChartName = "Heart Rate";
-                break;
-            case "TotalLungVolume":
-            	mapChartName = "Total Lung Volume";
-                break;
-            case "RespirationRate":
-            	mapChartName = "Respiratory Rate";
-                break;
-            case "Lead3ElectricPotential":
-            	mapChartName = "ECG";
-                break;
-            case "CarbonDioxide":
-            	mapChartName = "CO2";
-                break;
-            case "ArterialPressure":
-            	mapChartName = "Pleth";
-                break;
-            case "AirwayPressure":
-            	mapChartName = "Airway Pressure";
-                break;
-            case "OxygenSaturation":
-            	mapChartName = "Oxygen Saturation";
-                break;
-            default:
-            	mapChartName = null; 
-                break;
-        }
-        
+	        case "HeartRate":
+	            mapChartName = "Heart Rate";
+	            break;
+	        case "AirwayPressure":
+	            mapChartName = "Airway Pressure";
+	            break;
+	        case "RespirationRate":
+	            mapChartName = "Respiratory Rate";
+	            break;
+	        case "OxygenSaturation":
+	        	mapChartName = "Oxygen Saturation";
+	            break;
+	        case "TotalLungVolume":
+	            mapChartName = "Total Lung Volume";
+	            break;
+	        case "Lead3ElectricPotential":
+	            mapChartName = "ECG";
+	            break;
+	        case "CarbonDioxide":
+	            mapChartName = "CO2";
+	            break;
+	        case "ArterialPressure":
+	            mapChartName = "Pleth";
+	            break;
+	        default:
+	            mapChartName = null; 
+	            break;
+	    }
+    
         if (mapChartName != null) {
             chartPanels.get(mapChartName).addPoint(x, y);
         }

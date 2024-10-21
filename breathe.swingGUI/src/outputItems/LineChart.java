@@ -136,7 +136,7 @@ public class LineChart extends ItemDisplay {
         	maxYValue = (int) Math.floor(y);
         };
     	
-        int x1 = (int) (x * 45 + 60);
+        int x1 = (int) (x * 45 + 50);
         int y1 = (int) (250 - ((y - minYValue) * 200 / (maxYValue - minYValue)));
         points.add(new Point(x1, y1));
         currentValue = y;  

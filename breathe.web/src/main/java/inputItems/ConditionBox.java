@@ -99,13 +99,13 @@ public class ConditionBox extends VerticalLayout {
             
             enableFields(false);
             applySectionButton.setText("Remove");
-            headerButton.getStyle().set("background-color", "lightblue");
+            headerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             app.applyCondition(new Condition(title, parameters));
             applied = true;
         } else {
             enableFields(true);
             applySectionButton.setText("Apply");
-            headerButton.getStyle().set("background-color", "");
+            headerButton.removeThemeVariants(ButtonVariant.LUMO_PRIMARY);
             app.removeCondition(title);
             applied = false;
         }
@@ -152,11 +152,11 @@ public class ConditionBox extends VerticalLayout {
 	                textField.setValue(value);
 	                applySectionButton.setText("Remove");
 	                headerButton.getStyle().set("background-color", "lightblue");
-	                app.applyCondition(new Condition(title, parameters));
 	                applied = true;
             	 }
             }
         }
+        app.applyCondition(new Condition(title, parameters));
     }
     
     public void enableBox(boolean enable) {

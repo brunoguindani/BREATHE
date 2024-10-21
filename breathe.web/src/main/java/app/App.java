@@ -158,7 +158,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
-		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
+		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
 	}
 	
 	public void removeCondition(String title) {
@@ -284,7 +284,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	
 	@Override
 	public void logStringData(String data) {
+		//DATA FOR LOGPANEL
 	}
+
+	@Override
+	public void setInitialCondition(List<Condition> list) {
+		patientConditionPanel.getConditionsPanel().setInitialConditions(list);
+	}	
 
 	@Override
 	public void logPressureExternalVentilatorData(double pressure) {
@@ -296,9 +302,5 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 
 	}
 
-	@Override
-	public void setInitialCondition(List<Condition> list) {
-
-	}	
 
 }
