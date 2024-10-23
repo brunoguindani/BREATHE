@@ -20,9 +20,11 @@ public class UploadArea extends VerticalLayout {
         uploadField = new Upload(createFileReceiver(uploadFolder));
         uploadField.setMaxFiles(1);
         uploadField.setMaxFileSize(50 * 1024 * 1024);
+        uploadField.setDropAllowed(true);
         uploadField.setDropLabel(new Span("Drop file here"));
         
         uploadField.setAcceptedFileTypes("application/json");
+        uploadField.setAcceptedFileTypes(".json");
 
         errorField = new Span();
         errorField.setVisible(false);
