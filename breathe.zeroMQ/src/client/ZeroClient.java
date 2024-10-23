@@ -26,6 +26,7 @@ public class ZeroClient {
     private Thread communicationThread;
 
     private Map<String, Double> receivedDataMap;
+    private String simTime;
 
     public ZeroClient() {
         receivedDataMap = new HashMap<>();
@@ -226,7 +227,7 @@ public class ZeroClient {
 
                     byte[] reply = socket.recv(0);
                     String receivedData = new String(reply, ZMQ.CHARSET);
-                    outputArea.append("Received: " + receivedData + "\n");
+                    //outputArea.append("Received: " + receivedData + "\n");
 
                     storeData(receivedData);
 
@@ -312,13 +313,28 @@ public class ZeroClient {
     }
 
     private void storeData(String data) {
-        String[] parts = data.split(",");
-        for (String part : parts) {
-            String[] keyValue = part.split(":");
-            if (keyValue.length == 2) {
-                String key = keyValue[0].trim();
-                double value = Double.parseDouble(keyValue[1].trim());
-                receivedDataMap.put(key, value);
+        String[] patientDataParts = data.split("Patient Data:");
+        if (patientDataParts.length > 1) {
+            String patientData = patientDataParts[1].trim();
+            
+            String[] keyValuePairs = patientData.split(";");
+            for (String pair : keyValuePairs) {
+                String[] keyValue = pair.split(":");
+                if (keyValue.length == 2) {
+                    String key = keyValue[0].trim();
+                    String valueStr = keyValue[1].trim();
+                    
+                    if (key.equals("SimTime")) {
+                        simTime = valueStr;
+                    } else {
+                        try {
+                            double value = Double.parseDouble(valueStr);
+                            receivedDataMap.put(key, value);
+                        } catch (NumberFormatException e) {
+                            outputArea.append("Errore nel parsing del valore: " + valueStr + "\n");
+                        }
+                    }
+                }
             }
         }
     }
@@ -330,30 +346,28 @@ public class ZeroClient {
     }
 
     private double processPressure() {
-        // Retrieve values from spinners
-        int respiratoryRate = (int) rrSpinner.getValue(); // RR in cicli al minuto
-        double ieRatio = (double) ieRatioSpinner.getValue(); // I:E ratio
-        double pinsp = (double) pinspSpinner.getValue(); // Pressure during inspiration (cm H2O)
-        double peep = (double) peepSpinner.getValue(); // PEEP (cm H2O)
+        int respiratoryRate = (int) rrSpinner.getValue();
+        double ieRatio = (double) ieRatioSpinner.getValue();
+        double pinsp = (double) pinspSpinner.getValue();
+        double peep = (double) peepSpinner.getValue();
 
-        // Calculate total cycle duration in seconds
-        double totalCycleDuration = 60.0 / respiratoryRate; // in seconds
-        double inspiratoryTime = totalCycleDuration * (ieRatio / (1 + ieRatio)); // duration of inspiration
-
-        // Simulate one complete cycle (inspiration followed by expiration)
-        long currentTime = System.currentTimeMillis();
-        long elapsedTime = currentTime % (long) (totalCycleDuration * 1000); // elapsed time in the current cycle
-
-        double pressure;
-        if (elapsedTime < inspiratoryTime * 1000) {
-            // Inspiration phase
-            pressure = pinsp; // Pressure during inspiration
-        } else {
-            // Expiration phase
-            pressure = peep; // Pressure during expiration
+        if (simTime == null) {
+            return peep; 
         }
 
-        return pressure; // Return the current pressure value
+        outputArea.append("Time: " + simTime + "\n");
+        double currentSimTime = Double.parseDouble(simTime);
+        
+        double totalCycleDuration = 60.0 / respiratoryRate;
+        double inspiratoryTime = totalCycleDuration * (ieRatio / (1 + ieRatio));
+
+        double cycleTime = currentSimTime % totalCycleDuration;
+
+        if (cycleTime < inspiratoryTime) {
+            return pinsp;
+        } else {
+            return peep; 
+        }
     }
 
     public static void main(String[] args) {
