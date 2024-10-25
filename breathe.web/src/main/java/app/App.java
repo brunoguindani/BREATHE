@@ -178,6 +178,10 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		return patientConditionPanel.getPatientPanel().getPatientName();
 	}
 	
+    public boolean loadPatientData(String selectedPatientFilePath) {
+    	return patientConditionPanel.getPatientPanel().loadPatientData(selectedPatientFilePath);
+    }
+	
 	public void clearOutputDisplay() {
 		outputPanel.clearOutputDisplay();
 	}
@@ -202,7 +206,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	return false;
 	}
 	
-	public boolean startScenario(String file) {
+	public boolean startFromScenarioSimulation(String file) {
 		startLoading();
     	if(file != null) {
     		clearOutputDisplay();

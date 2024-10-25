@@ -169,6 +169,7 @@ public class ScenarioPanel extends VerticalLayout {
 			patientFile = "../breathe.engine/states/exported/" + patientFile;
 		}
 
+		
 		app.createScenario(patientFile, scenarioName, actions);
 		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 		Dialog dialog = new Dialog();

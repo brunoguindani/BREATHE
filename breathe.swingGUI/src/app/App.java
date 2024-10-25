@@ -230,6 +230,7 @@ public class App extends JFrame implements GuiCallback {
 		logPanel.append(data);
 	}
 	
+	@Override
 	public void minilogStringData(String data){
 		minilogPanel.append(data);
 	}
