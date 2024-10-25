@@ -73,7 +73,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
         patient_configuration = patient.getPatientConfiguration();
-        patient_configuration.setDataRootDir("../breathe.engine/");
+        patient_configuration.setDataRootDir("../breathe.engine/resources");
         
         for(Condition any : patient.getConditions())
         {
@@ -283,13 +283,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
     
     private void exportInitialPatient(SEPatient patient) {
-        String basePath = "./states/exported";
+        String basePath = "../breathe.engine/states/exported";
         String baseFileName = patient.getName() + "@0s.json";
         String filePath = basePath + baseFileName;
 
         int counter = 1;
         while (new File(filePath).exists()) {
-            filePath = basePath + patient.getName() + counter + "@0s.json";
+            filePath = basePath + patient.getName() + "@0 (" + counter+ ").json";
             counter++;
         }
         if( pe.serializeToFile(filePath) ) 
@@ -333,7 +333,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	y = dataValues.get(i);
             gui.logItemDisplayData(requestList[i],x, y);
         }
-        
         return data;
     }
     
@@ -511,8 +510,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	            sce.getActions().add(action.getKey().getAction());
 	        }
         }
-
-        sce.writeFile("../breathe.engine/scenario/" + scenarioName + ".json");
+        String filePath = "../breathe.engine/scenario/" + scenarioName + ".json";
+        int counter = 1;
+        while (new File(filePath).exists()) {
+            filePath = "../breathe.engine/scenario/"+ scenarioName + " (" + counter+ ").json";
+            counter++;
+        }
+        sce.writeFile(filePath);
         gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/" + scenarioName + ".json");
     }
     
