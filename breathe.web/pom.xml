@@ -99,31 +99,10 @@
 		</plugins>
 		<resources>
 			<resource>
-				<directory>../breathe.engine/config</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/docs</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/ecg</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/environments</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/patients</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/resource</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/scenario</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/states</directory>
-			</resource>
-			<resource>
-				<directory>../breathe.engine/substances</directory>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.properties</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>../breathe.engine/</directory>

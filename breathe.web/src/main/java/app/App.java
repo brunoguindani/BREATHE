@@ -230,6 +230,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	  	patientConditionPanel.getConditionsPanel().enableButtons(true);
 		patientConditionPanel.getPatientPanel().enableComponents(true);
 		ventilatorsPanel.resetButton();
+		patientConditionPanel.getPatientPanel().enableComponents(true);
 		stopLoading();
 	}
     
@@ -264,6 +265,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 			controlPanel.enableControlStartButton(!enable);
 			actionsPanel.enableButtons(enable);
 			ventilatorsPanel.setEnableConnectButton(true);
+			patientConditionPanel.getPatientPanel().enableComponents(false);
 			stopLoading();
          }));
 	}
