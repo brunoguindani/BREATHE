@@ -99,31 +99,59 @@
 		</plugins>
 		<resources>
 			<resource>
-				<directory>../breathe.engine/config</directory>
+				<directory>../breathe.engine/config/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/docs</directory>
+				<directory>../breathe.engine/docs/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/ecg</directory>
+				<directory>../breathe.engine/ecg/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/environments</directory>
+				<directory>../breathe.engine/environments/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/patients</directory>
+				<directory>../breathe.engine/patients/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/resource</directory>
+				<directory>../breathe.engine/resource/</directory>
+				<includes>
+					<include>*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/scenario</directory>
+				<directory>../breathe.engine/scenario/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/states</directory>
+				<directory>../breathe.engine/states/</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
-				<directory>../breathe.engine/substances</directory>
+				<directory>../breathe.engine/substances/</directory>
+				<includes>
+					<include>*.*</include>
+					<include>**/*.*</include>
+				</includes>
 			</resource>
 			<resource>
 				<directory>../breathe.engine/</directory>
