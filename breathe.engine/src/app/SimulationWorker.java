@@ -73,6 +73,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
         patient_configuration = patient.getPatientConfiguration();
+        patient_configuration.setDataRootDir("../breathe.engine/");
         
         for(Condition any : patient.getConditions())
         {
