@@ -316,7 +316,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
             data.add(requestList[i] + ": " + dataValues.get(i));
         }
-        
+
         //print actions
         List<SEAction> actions = new ArrayList<SEAction>();
         pe.getActiveActions(actions);

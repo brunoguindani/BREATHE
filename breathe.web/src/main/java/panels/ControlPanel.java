@@ -151,9 +151,7 @@ public class ControlPanel extends HorizontalLayout {
                 app.startFromFileSimulation(filePath);
             } else {
                 Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
-            	String filePath = "../breathe.engine/states/exported/Standard.json";
                 dialog.close();
-                app.startFromFileSimulation(filePath);
             }
         });
 

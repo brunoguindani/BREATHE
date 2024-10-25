@@ -1,6 +1,9 @@
 package server;
 
 import java.util.ArrayList;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
@@ -19,11 +22,11 @@ public class ZeroServer {
     private double pressure;
     
 
-    private ArrayList<String> data;
+    private JsonNode data;
 
     public void connect() throws Exception {
         context = new ZContext();
-        socket = context.createSocket(SocketType.REP);
+        socket = context.createSocket(SocketType.PUB);
         socket.bind("tcp://*:5555");
     }
 
@@ -43,11 +46,13 @@ public class ZeroServer {
         while (running && !Thread.currentThread().isInterrupted()) {
             byte[] reply = socket.recv(0);
             String receivedData = new String(reply, ZMQ.CHARSET);
-
-            switch (receivedData) {
+            String messageJson = receivedData.trim();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(messageJson);
+            
+            switch (jsonNode.get("message").asText()) {
                 case "disconnect":
-                    System.out.println("Disconnect message received.");
-                    socket.send("Disconnected client.".getBytes(ZMQ.CHARSET), 0);
+                    socket.send("{\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
                     connectionStable = false;
                     disconnecting = true;
                     selectedMode = null;
@@ -59,21 +64,22 @@ public class ZeroServer {
                     sendData();
                     break;
 
-                default:
-                    if (receivedData.startsWith("Volume")) {
+                case "input":
+                	System.out.println(jsonNode.get("ventilatorType").asText());
+                    if (jsonNode.get("ventilatorType").asText().equals("Volume")) {
                         connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Volume";
-                        volume = Double.parseDouble(receivedData.split(": ")[1]);
-                        socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
-                    } else if (receivedData.startsWith("Pressure")) {
+                        volume = Double.parseDouble(jsonNode.get("value").asText());
+                        socket.send("{\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
+                    } else if (jsonNode.get("ventilatorType").asText().equals("Pressure")) {
                         connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Pressure";
-                        pressure = Double.parseDouble(receivedData.split(": ")[1]);
-                        socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
+                        pressure = Double.parseDouble(jsonNode.get("value").asText());
+                        socket.send("{\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
                     } else {
-                        socket.send("Unknown command".getBytes(ZMQ.CHARSET), 0);
+                        socket.send("{\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
                     }
                     break;
             }
@@ -99,19 +105,10 @@ public class ZeroServer {
     }
 
     private void sendData() {
-        if (data != null && !data.isEmpty()) {
-            StringBuilder dataBuilder = new StringBuilder();
-            for (String datum : data) {
-                dataBuilder.append(datum).append(";");
-            }
-            if (dataBuilder.length() > 0) {
-                dataBuilder.setLength(dataBuilder.length() - 1);
-            }
-            String tosend = "Patient Data:" + dataBuilder.toString();
-            socket.send(tosend.getBytes(ZMQ.CHARSET), 0);
-        } else {
-            socket.send("No data available".getBytes(ZMQ.CHARSET), 0);
-        }
+    	if (data != null && !data.isEmpty()) {
+    	    String tosend = data.toString();
+    	    socket.send(tosend.getBytes(ZMQ.CHARSET), 0);  
+    	} 
     }
 
     public boolean isConnectionStable() {
@@ -135,7 +132,48 @@ public class ZeroServer {
     }
 
     public void setSimulationData(ArrayList<String> data) {
-        this.data = data;
+        try {
+			this.data = convertToJson(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
+    
+	public JsonNode convertToJson(ArrayList<String> data) throws Exception {
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ObjectNode patientDataNode = objectMapper.createObjectNode();
+	    
+	    ObjectNode currentSection = patientDataNode;  
+	    String[] lines = data.toArray(new String[0]);  
+	
+	    for (String line : lines) {
+	        line = line.trim();
+	
+	        if (line.contains(": ")) {
+	            String[] keyValue = line.split(": ");
+	            String key = keyValue[0].trim();
+	            String value = keyValue[1].trim();
+	
+	            try {
+	                double numericValue = Double.parseDouble(value);
+	                currentSection.put(key, numericValue);  
+	            } catch (NumberFormatException e) {
+	                currentSection.put(key, value);  
+	            }
+	        } 
+
+	        else if (!line.isEmpty()) {
+	            ObjectNode newSection = objectMapper.createObjectNode();
+	            currentSection.set(line, newSection);  
+	            currentSection = newSection; 
+	        }
+	    }
+	
+	    ObjectNode root = objectMapper.createObjectNode();
+	    root.set("Patient Data", patientDataNode);
+	
+	    return root;
+	}
+
     
 }

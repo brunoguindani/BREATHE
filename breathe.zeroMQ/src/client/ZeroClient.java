@@ -5,6 +5,9 @@ import org.zeromq.ZMQ;
 import org.zeromq.ZMQException;
 import org.zeromq.ZContext;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
@@ -221,19 +224,18 @@ public class ZeroClient {
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
                 	
-
-                    socket.send("requestData".getBytes(ZMQ.CHARSET), 0);
+                    socket.send("{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
 
-                    byte[] reply = socket.recv(0);
-                    String receivedData = new String(reply, ZMQ.CHARSET);
-                    //outputArea.append("Received: " + receivedData + "\n");
+                    byte[] reply = socket.recv(0);                
+                    String receivedData = new String(reply, ZMQ.CHARSET);                
 
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
-                    String request = selectedOption + ": " + value;
+                    //String request = selectedOption + ": " + value;
+                    String request = "{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
                     socket.send(request.getBytes(ZMQ.CHARSET), 0);
 
@@ -281,7 +283,7 @@ public class ZeroClient {
 
             try {
                 if (socket != null) {
-                    socket.send("disconnect".getBytes(ZMQ.CHARSET), 0);
+                    socket.send("{\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Disconnect message sent to server.\n");
                 }
             } catch (ZMQException ex) {
@@ -313,29 +315,33 @@ public class ZeroClient {
     }
 
     private void storeData(String data) {
-        String[] patientDataParts = data.split("Patient Data:");
-        if (patientDataParts.length > 1) {
-            String patientData = patientDataParts[1].trim();
-            
-            String[] keyValuePairs = patientData.split(";");
-            for (String pair : keyValuePairs) {
-                String[] keyValue = pair.split(":");
-                if (keyValue.length == 2) {
-                    String key = keyValue[0].trim();
-                    String valueStr = keyValue[1].trim();
-                    
-                    if (key.equals("SimTime")) {
-                        simTime = valueStr;
-                    } else {
+        try {
+            String[] patientDataParts = data.split("\"Patient Data\":");
+            if (patientDataParts.length > 1) {
+                String patientDataJson = patientDataParts[1].trim();
+
+                // Usa ObjectMapper per convertire la stringa JSON in JsonNode
+                ObjectMapper objectMapper = new ObjectMapper();
+                JsonNode jsonNode = objectMapper.readTree(patientDataJson);
+                
+                if (jsonNode.has("SimTime")) {
+                    simTime = jsonNode.get("SimTime").asText();
+                }
+
+                // Itera attraverso gli altri campi
+                jsonNode.fieldNames().forEachRemaining(key -> {
+                    if (!key.equals("SimTime")) {  // Salta SimTime, già gestito
                         try {
-                            double value = Double.parseDouble(valueStr);
+                            double value = jsonNode.get(key).asDouble();
                             receivedDataMap.put(key, value);
-                        } catch (NumberFormatException e) {
-                            outputArea.append("Errore nel parsing del valore: " + valueStr + "\n");
+                        } catch (Exception e) {
+                            outputArea.append("Errore nel parsing del valore per " + key + ": " + jsonNode.get(key).asText() + "\n");
                         }
                     }
-                }
+                });
             }
+        } catch (Exception e) {
+            outputArea.append("Errore nel parsing dei dati: " + e.getMessage() + "\n");
         }
     }
 
