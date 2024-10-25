@@ -1,5 +1,7 @@
 package panels;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,6 +17,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.html.Div;
 
 import java.io.File;
+import java.io.IOException;
+
 
 import files.DownloadLinksArea;
 import files.UploadArea;
@@ -96,6 +100,7 @@ public class ControlPanel extends HorizontalLayout {
     }
 
     private void showStartOptions() {
+    	uploadedFileName = null;
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select Start Option");
         
@@ -146,14 +151,12 @@ public class ControlPanel extends HorizontalLayout {
         
         Button startSimulationButton = new Button("Start Simulation", e -> {
             if (uploadedFileName != null) {
-                String filePath = "../breathe.engine/states/uploaded/" + uploadedFileName;
+                String patientFilePath = "../breathe.engine/states/uploaded/" + uploadedFileName;
                 dialog.close();
-                app.startFromFileSimulation(filePath);
+                if(app.loadPatientData(patientFilePath)) 
+                	app.startFromFileSimulation(patientFilePath);
             } else {
                 Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
-            	String filePath = "../breathe.engine/states/exported/Standard.json";
-                dialog.close();
-                app.startFromFileSimulation(filePath);
             }
         });
 
@@ -178,9 +181,22 @@ public class ControlPanel extends HorizontalLayout {
         
         Button startScenarioButton = new Button("Start Scenario", e -> {
             if (uploadedFileName != null) {
-                String filePath = "../breathe.engine/scenario/" + uploadedFileName;
-                dialog.close();
-                app.startScenario(filePath);
+            	try {
+            		 String filePath = "../breathe.engine/scenario/" + uploadedFileName;
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode rootNode_scenario = mapper.readTree(new File(filePath));
+                    String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
+                    
+                    if(app.loadPatientData(PatientFilePath)) {
+                    	dialog.close();
+                    	enableControlStartButton(false);
+                    	app.startFromScenarioSimulation(filePath);
+                    }
+                    	
+            	} catch (IOException ex) {
+	                //ex.printStackTrace();
+	                Notification.show("Please upload a valid scenario file.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
+            	}
             } else {
                 Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
             }
@@ -192,8 +208,14 @@ public class ControlPanel extends HorizontalLayout {
     }
     
     private void exportSimulation() {
-    	 String defaultFileName = "../breathe.engine/states/exported/"+ app.getPatientName()+ ".json";
-         app.exportSimulation(defaultFileName);
+    	 String filePath = "../breathe.engine/states/exported/"+ app.getPatientName()+ ".json";
+    	 
+    	 int counter = 1;
+         while (new File(filePath).exists()) {
+             filePath = "../breathe.engine/states/exported/"+ app.getPatientName()+ " (" + counter+ ").json";
+             counter++;
+         }
+         app.exportSimulation(filePath);
          
          Dialog dialog = new Dialog();
          

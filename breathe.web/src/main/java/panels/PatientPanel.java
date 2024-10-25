@@ -1,9 +1,15 @@
 package panels;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -51,14 +57,14 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField weightField = new NumberField("Weight");
 		weightField.setValue(77.0);
-		weightField.setStep(1);
+		weightField.setStep(0.5);
 		weightField.setStepButtonsVisible(true);
 		weightField.setWidth("10vw");
 		fieldMap.put("Weight", weightField);
 
 		NumberField heightField = new NumberField("Height");
 		heightField.setValue(180.0);
-		heightField.setStep(1);
+		heightField.setStep(1.0);
 		heightField.setStepButtonsVisible(true);
 		heightField.setWidth("10vw");
 		fieldMap.put("Height", heightField);
@@ -76,7 +82,7 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField heartRateField = new NumberField("Heart Rate Baseline");
 		heartRateField.setValue(72.0);
-		heartRateField.setStep(1);
+		heartRateField.setStep(1.0);
 		heartRateField.setMin(50);
 		heartRateField.setMax(110);
 		heartRateField.setWidth("10vw");
@@ -85,7 +91,7 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField diastolicPressureField = new NumberField("Diastolic Pressure");
 		diastolicPressureField.setValue(72.0);
-		diastolicPressureField.setStep(1);
+		diastolicPressureField.setStep(1.0);
 		diastolicPressureField.setMin(60);
 		diastolicPressureField.setMax(80);
 		diastolicPressureField.setWidth("10vw");
@@ -94,7 +100,7 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField systolicPressureField = new NumberField("Systolic Pressure");
 		systolicPressureField.setValue(114.0);
-		systolicPressureField.setStep(1);
+		systolicPressureField.setStep(1.0);
 		systolicPressureField.setMin(90);
 		systolicPressureField.setMax(120);
 		systolicPressureField.setWidth("10vw");
@@ -103,7 +109,7 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField respirationRateField = new NumberField("Respiration Rate Baseline");
 		respirationRateField.setValue(16.0);
-		respirationRateField.setStep(1);
+		respirationRateField.setStep(1.0);
 		respirationRateField.setMin(8);
 		respirationRateField.setMax(20);
 		respirationRateField.setWidth("10vw");
@@ -112,7 +118,7 @@ public class PatientPanel extends VerticalLayout {
 
 		NumberField basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
 		basalMetabolicRateField.setValue(1600.0);
-		basalMetabolicRateField.setStep(10);
+		basalMetabolicRateField.setStep(1.0);
 		basalMetabolicRateField.setStepButtonsVisible(true);
 		basalMetabolicRateField.setWidth("10vw");
 		fieldMap.put("BasalMetabolicRate", basalMetabolicRateField);
@@ -229,5 +235,51 @@ public class PatientPanel extends VerticalLayout {
 	public String getPatientName() {
 		return nameField.getValue();
 	}
+
+    public boolean loadPatientData(String patientFilePath) {
+        try { 
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(new File(patientFilePath));
+
+            // Retrieve patient data from the selected file
+            String name = rootNode.path("InitialPatient").path("Name").asText();
+            String sex = rootNode.path("InitialPatient").path("Sex").asText();
+            if (sex.isBlank()) sex = "Male";
+            // Use Math.round to control decimal places directly
+            double age = Math.round(rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asDouble());
+            double weight = Math.round(rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble() * 100.0) / 100.0; // 2 decimal places
+            String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
+            double height = Math.round(rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asDouble());
+            String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
+            double bodyFat = Math.round(rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble() * 100.0) / 100.0; // 2 decimal places
+            double heartRate = Math.round(rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble());
+            double diastolicPressure = Math.round(rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble());
+            double systolicPressure = Math.round(rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble());
+            double respirationRate = Math.round(rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asDouble());
+            double basalMetabolicRate = Math.round(rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble());
+
+            // Set the values to the appropriate fields
+            nameField.setValue(name);
+            sexComboBox.setValue(sex);
+            fieldMap.get("Age").setValue(age);
+            fieldMap.get("Weight").setValue(weight);
+            weightUnitComboBox.setValue(weightUnit);
+            fieldMap.get("Height").setValue(height);
+            heightUnitComboBox.setValue(heightUnit);
+            fieldMap.get("BodyFatFraction").setValue(bodyFat);
+            fieldMap.get("HeartRateBaseline").setValue(heartRate);
+            fieldMap.get("DiastolicArterialPressureBaseline").setValue(diastolicPressure);
+            fieldMap.get("SystolicArterialPressureBaseline").setValue(systolicPressure);
+            fieldMap.get("RespirationRateBaseline").setValue(respirationRate);
+            fieldMap.get("BasalMetabolicRate").setValue(basalMetabolicRate);
+ 
+            return true;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
 
 }
