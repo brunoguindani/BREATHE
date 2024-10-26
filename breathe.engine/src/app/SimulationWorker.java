@@ -298,7 +298,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
     
     private void exportInitialPatient(SEPatient patient) {
-        String basePath = "../breathe.engine/states/exported";
+        String basePath = "../breathe.engine/states/exported/";
         String baseFileName = patient.getName() + "@0s.json";
         String filePath = basePath + baseFileName;
 

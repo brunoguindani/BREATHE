@@ -203,20 +203,13 @@ public class ZeroClient {
         synchronized (this) {
             context = new ZContext();
             socketPub = context.createSocket(SocketType.PUB);
+            socketPub.bind("tcp://*:5556");
             socketSub = context.createSocket(SocketType.SUB);
+            socketSub.connect("tcp://localhost:5555");
         }
         
         outputArea.append("Connecting to server...\n");
-        
-        try {
-            socketPub.connect("tcp://localhost:5555");
-            socketSub.connect("tcp://localhost:5556");
-        } catch (ZMQException ex) {
-            outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
-            return;
-        }
-        
-        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
+        socketSub.subscribe("Server-".getBytes(ZMQ.CHARSET));   
 
         synchronized (this) {
             isConnected = true;
@@ -227,8 +220,7 @@ public class ZeroClient {
 
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
-                	
-                    socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
+                    socketPub.send("Client-{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
 
                     byte[] reply = socketSub.recv(0);                
@@ -240,7 +232,7 @@ public class ZeroClient {
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
                     //String request = selectedOption + ": " + value;
-                    String request = "Client {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
+                    String request = "Client-{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
                     socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
 
