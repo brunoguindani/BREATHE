@@ -217,7 +217,13 @@ public class ZeroClient {
         }
         
         socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
-
+        
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        
         synchronized (this) {
             isConnected = true;
         }
@@ -231,9 +237,9 @@ public class ZeroClient {
                     socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
 
-                    byte[] reply = socketSub.recv(0);                
+                    byte[] reply = socketSub.recv();    
                     String receivedData = new String(reply, ZMQ.CHARSET);  
-                    System.out.println(receivedData);
+                    receivedData = receivedData.trim().replace("Server", "").trim();
 
                     storeData(receivedData);
 
@@ -244,7 +250,7 @@ public class ZeroClient {
                     outputArea.append("Sending: " + request + "\n");
                     socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
 
-                    reply = socketSub.recv(0);
+                    reply = socketSub.recv();
                     outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
 
                     Thread.sleep(200);
