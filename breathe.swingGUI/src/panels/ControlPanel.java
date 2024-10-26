@@ -186,7 +186,7 @@ public class ControlPanel extends JPanel{
 	//start from scenario simulation
     private void startingScenarioSimulation() {
     	clearOutputDisplay();
-    	JFileChooser fileChooser = new JFileChooser("../breathe.engine/scenario/");
+    	JFileChooser fileChooser = new JFileChooser("../breathe.engine/scenario/exported");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String scenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
@@ -196,9 +196,13 @@ public class ControlPanel extends JPanel{
                 JsonNode rootNode_scenario = mapper.readTree(new File(scenarioFilePath));
                 String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
 
-                enableControlStartButton(false);
-                if(app.loadPatientData(PatientFilePath)) 
+                if(new File(PatientFilePath).exists() && app.loadPatientData(PatientFilePath)) {
+                	enableControlStartButton(false);
                 	app.startFromScenarioSimulation(scenarioFilePath);
+                }
+                else
+                	app.minilogStringData("\nPlease upload a valid scenario file.");
+                
             } catch (IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error loading scenario JSON file.", "Error", JOptionPane.ERROR_MESSAGE);

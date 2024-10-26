@@ -194,9 +194,9 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
 	
 	public boolean startSimulation() {
-		startLoading();
     	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());
     	if(new_patient != null) {
+    		startLoading();
     		sim = new SimulationWorker(this);
     		sim.simulation(new_patient);	
         	patientConditionPanel.getConditionsPanel().enableButtons(false);
@@ -207,8 +207,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
 	
 	public boolean startFromScenarioSimulation(String file) {
-		startLoading();
     	if(file != null) {
+    		startLoading();
     		clearOutputDisplay();
     		sim = new SimulationWorker(this);
     		sim.simulationFromScenario(file);
@@ -218,8 +218,8 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	}
     
     public boolean startFromFileSimulation(String file) {
-		startLoading();
     	if(file != null) {
+    		startLoading();
     		clearOutputDisplay();
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);

@@ -310,7 +310,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         
         //print requested data
     	List<Double> dataValues = pe.pullData();
-        dataRequests.writeData(dataValues);
         gui.logStringData("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
         	gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
@@ -510,14 +509,14 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	            sce.getActions().add(action.getKey().getAction());
 	        }
         }
-        String filePath = "../breathe.engine/scenario/" + scenarioName + ".json";
+        String filePath = "../breathe.engine/scenario/exported/" + scenarioName + ".json";
         int counter = 1;
         while (new File(filePath).exists()) {
-            filePath = "../breathe.engine/scenario/"+ scenarioName + " (" + counter+ ").json";
+            filePath = "../breathe.engine/scenario/exported/"+ scenarioName + " (" + counter+ ").json";
             counter++;
         }
         sce.writeFile(filePath);
-        gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/" + scenarioName + ".json");
+        gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/exported/" + scenarioName + ".json");
     }
     
 }
