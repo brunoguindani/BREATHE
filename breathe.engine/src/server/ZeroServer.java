@@ -26,7 +26,7 @@ public class ZeroServer {
 
     public void connect() throws Exception {
         context = new ZContext();
-        socket = context.createSocket(SocketType.PUB);
+        socket = context.createSocket(SocketType.REP);
         socket.bind("tcp://*:5555");
     }
 
@@ -134,46 +134,73 @@ public class ZeroServer {
     public void setSimulationData(ArrayList<String> data) {
         try {
 			this.data = convertToJson(data);
+    	    System.out.println(this.data.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
     
-	public JsonNode convertToJson(ArrayList<String> data) throws Exception {
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    ObjectNode patientDataNode = objectMapper.createObjectNode();
-	    
-	    ObjectNode currentSection = patientDataNode;  
-	    String[] lines = data.toArray(new String[0]);  
-	
-	    for (String line : lines) {
-	        line = line.trim();
-	
-	        if (line.contains(": ")) {
-	            String[] keyValue = line.split(": ");
-	            String key = keyValue[0].trim();
-	            String value = keyValue[1].trim();
-	
-	            try {
-	                double numericValue = Double.parseDouble(value);
-	                currentSection.put(key, numericValue);  
-	            } catch (NumberFormatException e) {
-	                currentSection.put(key, value);  
-	            }
-	        } 
+    public JsonNode convertToJson(ArrayList<String> data) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode patientDataNode = objectMapper.createObjectNode();
 
-	        else if (!line.isEmpty()) {
-	            ObjectNode newSection = objectMapper.createObjectNode();
-	            currentSection.set(line, newSection);  
-	            currentSection = newSection; 
-	        }
-	    }
-	
-	    ObjectNode root = objectMapper.createObjectNode();
-	    root.set("Patient Data", patientDataNode);
-	
-	    return root;
-	}
+        ObjectNode currentSection = patientDataNode;
+        String[] lines = data.toArray(new String[0]);
+        ObjectNode conditionNode = null; // Nodo per le condizioni
+
+        for (String line : lines) {
+            line = line.trim();
+
+            if (line.contains(": ")) {
+                String[] keyValue = line.split(": ", 2);
+                String key = keyValue[0].replaceAll("[\\n\\t]", "").trim();
+                String value = keyValue[1].trim();
+
+                // Verifica se il valore rappresenta un oggetto condizionale (es. contiene "\n\t")
+                if (value.contains("\n\t")) {
+                    // Crea un nuovo nodo per la condizione
+                    conditionNode = objectMapper.createObjectNode();
+                    currentSection.set(key, conditionNode); // Aggiungi alla sezione corrente
+                    currentSection = conditionNode; // Passa al nodo della condizione
+
+                    // Separa le severità
+                    String[] severities = value.split("\n\t");
+                    for (String severity : severities) {
+                        String[] severityKeyValue = severity.split(": ", 2);
+                        if (severityKeyValue.length == 2) {
+                            String severityKey = severityKeyValue[0].replaceAll("[\\n\\t]", "").trim();
+                            String severityValue = severityKeyValue[1].trim();
+                            try {
+                                double numericValue = Double.parseDouble(severityValue);
+                                conditionNode.put(severityKey, numericValue);
+                            } catch (NumberFormatException e) {
+                                conditionNode.put(severityKey, severityValue);
+                            }
+                        }
+                    }
+                } else {
+                    // Se non è una condizione, gestiscilo normalmente
+                    try {
+                        double numericValue = Double.parseDouble(value);
+                        currentSection.put(key, numericValue);
+                    } catch (NumberFormatException e) {
+                        currentSection.put(key, value);
+                    }
+                }
+            } 
+            else if (!line.isEmpty() && conditionNode != null) {
+                // Gestisci linee non vuote sotto la condizione
+                ObjectNode newSection = objectMapper.createObjectNode();
+                currentSection.set(line.replaceAll("[\\n\\t]", "").trim(), newSection);
+                currentSection = newSection; // Passa al nuovo sotto-nodo
+            }
+        }
+
+        ObjectNode root = objectMapper.createObjectNode();
+        root.set("Patient Data", patientDataNode);
+
+        return root;
+    }
 
     
 }
