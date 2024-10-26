@@ -1,2 +1,2 @@
 # BREATHE
-BREATHE – Biomedical Respiratory Engine for Advanced Training and Human Evaluation
+BREATHE – A Respiratory System Simulator for Mechanical Ventilator Testing and Training

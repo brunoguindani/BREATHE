@@ -22,7 +22,7 @@ public class ZeroClient {
     private JTextArea outputArea;
     private JSpinner rrSpinner, ieRatioSpinner, pinspSpinner, vtSpinner, peepSpinner;
 
-    private ZMQ.Socket socket;
+    private ZMQ.Socket socketPub,socketSub;
     private ZContext context;
     private String selectedOption;
     private boolean isConnected = false;
@@ -202,17 +202,21 @@ public class ZeroClient {
     private void connectToServerWithTimer() {
         synchronized (this) {
             context = new ZContext();
-            socket = context.createSocket(SocketType.REQ);
+            socketPub = context.createSocket(SocketType.PUB);
+            socketSub = context.createSocket(SocketType.SUB);
         }
-
+        
         outputArea.append("Connecting to server...\n");
-
+        
         try {
-            socket.connect("tcp://localhost:5555");
+            socketPub.connect("tcp://localhost:5555");
+            socketSub.connect("tcp://localhost:5556");
         } catch (ZMQException ex) {
             outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
             return;
         }
+        
+        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
 
         synchronized (this) {
             isConnected = true;
@@ -224,22 +228,23 @@ public class ZeroClient {
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
                 	
-                    socket.send("{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
+                    socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
 
-                    byte[] reply = socket.recv(0);                
-                    String receivedData = new String(reply, ZMQ.CHARSET);                
+                    byte[] reply = socketSub.recv(0);                
+                    String receivedData = new String(reply, ZMQ.CHARSET);  
+                    System.out.println(receivedData);
 
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
                     //String request = selectedOption + ": " + value;
-                    String request = "{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
+                    String request = "Client {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
-                    socket.send(request.getBytes(ZMQ.CHARSET), 0);
+                    socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
 
-                    reply = socket.recv(0);
+                    reply = socketSub.recv(0);
                     outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
 
                     Thread.sleep(200);
@@ -257,9 +262,13 @@ public class ZeroClient {
                 }
             } finally {
                 synchronized (this) {
-                    if (socket != null) {
-                        socket.close();
-                        socket = null;
+                    if (socketPub != null) {
+                        socketPub.close();
+                        socketPub = null;
+                    }
+                    if (socketSub != null) {
+                        socketSub.close();
+                        socketSub = null;
                     }
                     if (context != null) {
                         context.close();
@@ -282,8 +291,8 @@ public class ZeroClient {
             }
 
             try {
-                if (socket != null) {
-                    socket.send("{\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
+                if (socketPub != null) {
+                	socketPub.send("Client {\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Disconnect message sent to server.\n");
                 }
             } catch (ZMQException ex) {
@@ -299,9 +308,13 @@ public class ZeroClient {
             }
 
             synchronized (this) {
-                if (socket != null) {
-                    socket.close();
-                    socket = null;
+                if (socketPub != null) {
+                	socketPub.close();
+                	socketPub = null;
+                }
+                if (socketSub != null) {
+                	socketSub.close();
+                	socketSub = null;
                 }
                 if (context != null) {
                     context.close();
@@ -316,34 +329,47 @@ public class ZeroClient {
 
     private void storeData(String data) {
         try {
-            String[] patientDataParts = data.split("\"Patient Data\":");
-            if (patientDataParts.length > 1) {
-                String patientDataJson = patientDataParts[1].trim();
-
-                // Usa ObjectMapper per convertire la stringa JSON in JsonNode
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode jsonNode = objectMapper.readTree(patientDataJson);
-                
-                if (jsonNode.has("SimTime")) {
-                    simTime = jsonNode.get("SimTime").asText();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(data);
+            
+            JsonNode patientDataNode = rootNode.path("Patient Data");
+            if (patientDataNode.isObject()) {
+                if (patientDataNode.has("SimTime")) {
+                    JsonNode simTimeNode = patientDataNode.get("SimTime");
+                    simTime = simTimeNode.get("value").asText();
                 }
 
-                // Itera attraverso gli altri campi
-                jsonNode.fieldNames().forEachRemaining(key -> {
-                    if (!key.equals("SimTime")) {  // Salta SimTime, già gestito
+                patientDataNode.fieldNames().forEachRemaining(key -> {
+                    if (!key.equals("SimTime")) {  
                         try {
-                            double value = jsonNode.get(key).asDouble();
-                            receivedDataMap.put(key, value);
+                            JsonNode valueNode = patientDataNode.get(key);
+                            double value = valueNode.get("value").asDouble();
+                            receivedDataMap.put(key, value);  
                         } catch (Exception e) {
-                            outputArea.append("Errore nel parsing del valore per " + key + ": " + jsonNode.get(key).asText() + "\n");
+                            outputArea.append("Errore nel parsing del valore per " + key + "\n");
                         }
                     }
                 });
             }
+
+            //JsonNode conditionsNode = rootNode.path("Conditions");
+            // Could save conditions data
+
+            JsonNode actionsNode = rootNode.path("Actions");
+            actionsNode.fieldNames().forEachRemaining(actionKey -> {
+                JsonNode actionNode = actionsNode.get(actionKey);
+                actionNode.fieldNames().forEachRemaining(conditionKey -> {
+                    //double severity = actionNode.get(conditionKey).asDouble();
+                    // Could save actions Data as
+                    // receivedDataMap.put(conditionKey, severity);
+                });
+            });
+
         } catch (Exception e) {
             outputArea.append("Errore nel parsing dei dati: " + e.getMessage() + "\n");
         }
     }
+
 
     private double processVolume() {
         double volume = 20;
