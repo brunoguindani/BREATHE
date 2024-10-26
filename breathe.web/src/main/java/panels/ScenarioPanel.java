@@ -130,7 +130,7 @@ public class ScenarioPanel extends VerticalLayout {
 			}
 		}
 
-		patientFileComboBox.setItems(patientFiles); // Imposta gli elementi del ComboBox
+		patientFileComboBox.setItems(patientFiles); 
 	}
 
 	private String formatTime(int seconds) {
@@ -174,7 +174,7 @@ public class ScenarioPanel extends VerticalLayout {
 		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
 		Dialog dialog = new Dialog();
 
-		File uploadFolder = app.getFolder("scenario");
+		File uploadFolder = app.getFolder("scenario/exported/");
 		DownloadLinksArea linksArea = new DownloadLinksArea(uploadFolder);
 		VerticalLayout dialogLayout = new VerticalLayout(linksArea);
 

@@ -169,7 +169,7 @@ public class ControlPanel extends HorizontalLayout {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select File Option");
         
-        File uploadFolder = app.getFolder("scenario");
+        File uploadFolder = app.getFolder("scenario/uploaded");
         
         UploadArea upload = new UploadArea(uploadFolder);
         upload.getUploadField().addSucceededListener(e -> {
@@ -182,20 +182,21 @@ public class ControlPanel extends HorizontalLayout {
         Button startScenarioButton = new Button("Start Scenario", e -> {
             if (uploadedFileName != null) {
             	try {
-            		 String filePath = "../breathe.engine/scenario/" + uploadedFileName;
+            		String filePath = "../breathe.engine/scenario/uploaded/" + uploadedFileName;
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode rootNode_scenario = mapper.readTree(new File(filePath));
                     String PatientFilePath = rootNode_scenario.path("EngineStateFile").asText();
                     
-                    if(app.loadPatientData(PatientFilePath)) {
+                    if(new File(PatientFilePath).exists() && app.loadPatientData(PatientFilePath)) {
                     	dialog.close();
                     	enableControlStartButton(false);
                     	app.startFromScenarioSimulation(filePath);
                     }
-                    	
+                    else
+                    	Notification.show("Please upload a valid scenario file.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+                    
             	} catch (IOException ex) {
-	                //ex.printStackTrace();
-	                Notification.show("Please upload a valid scenario file.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
+	                ex.printStackTrace();
             	}
             } else {
                 Notification.show("Please upload a file before starting the simulation.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;

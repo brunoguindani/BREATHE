@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -28,6 +26,8 @@ public class PatientPanel extends VerticalLayout {
 
 	private TextField nameField;
 	private ComboBox<String> sexComboBox, weightUnitComboBox, heightUnitComboBox;
+	
+	private NumberField ageField, heightField, weightField, bodyFatField,heartRateField, diastolicPressureField, systolicPressureField, respirationRateField, basalMetabolicRateField;
 	private Map<String, NumberField> fieldMap = new HashMap<>();
 
 	public PatientPanel(App app) {
@@ -46,7 +46,7 @@ public class PatientPanel extends VerticalLayout {
 		nameField = new TextField("Name");
 		nameField.setValue("Standard");
 
-		NumberField ageField = new NumberField("Age");
+		ageField = new NumberField("Age");
 		ageField.setValue(44.0);
 		ageField.setStep(1);
 		ageField.setMin(18);
@@ -54,15 +54,19 @@ public class PatientPanel extends VerticalLayout {
 		ageField.setStepButtonsVisible(true);
 		ageField.setWidth("10vw");
 		fieldMap.put("Age", ageField);
+		ageField.setTooltipText(
+				"Value must be between 18 and 65");
 
-		NumberField weightField = new NumberField("Weight");
+		weightField = new NumberField("Weight");
 		weightField.setValue(77.0);
 		weightField.setStep(0.5);
 		weightField.setStepButtonsVisible(true);
 		weightField.setWidth("10vw");
 		fieldMap.put("Weight", weightField);
+		weightField.setTooltipText(
+				"No upper and lower limit");
 
-		NumberField heightField = new NumberField("Height");
+		heightField = new NumberField("Height");
 		heightField.setValue(180.0);
 		heightField.setStep(1.0);
 		heightField.setStepButtonsVisible(true);
@@ -71,16 +75,16 @@ public class PatientPanel extends VerticalLayout {
 		heightField.setTooltipText(
 				"Value must be between 163cm and 190cm for male patients and between 151cm and 175cm for female patients");
 
-		NumberField bodyFatField = new NumberField("Body Fat Fraction");
+		bodyFatField = new NumberField("Body Fat Fraction");
 		bodyFatField.setValue(0.21);
 		bodyFatField.setStep(0.01);
 		bodyFatField.setStepButtonsVisible(true);
 		bodyFatField.setWidth("10vw");
-		bodyFatField.setTooltipText(
-				"Value must be between 0.02% and 0.25% for male patients and 0.32% for female patients");
 		fieldMap.put("BodyFatFraction", bodyFatField);
-
-		NumberField heartRateField = new NumberField("Heart Rate Baseline");
+		bodyFatField.setTooltipText(
+				"Value must be between 0.02% and 0.25% for male patients and between 0.1% and 0.32% for female patients");
+		
+		heartRateField = new NumberField("Heart Rate Baseline");
 		heartRateField.setValue(72.0);
 		heartRateField.setStep(1.0);
 		heartRateField.setMin(50);
@@ -88,8 +92,10 @@ public class PatientPanel extends VerticalLayout {
 		heartRateField.setWidth("10vw");
 		heartRateField.setStepButtonsVisible(true);
 		fieldMap.put("HeartRateBaseline", heartRateField);
+		heartRateField.setTooltipText(
+				"Value must be between 50bpm and 110bpm");
 
-		NumberField diastolicPressureField = new NumberField("Diastolic Pressure");
+		diastolicPressureField = new NumberField("Diastolic Pressure");
 		diastolicPressureField.setValue(72.0);
 		diastolicPressureField.setStep(1.0);
 		diastolicPressureField.setMin(60);
@@ -97,8 +103,10 @@ public class PatientPanel extends VerticalLayout {
 		diastolicPressureField.setWidth("10vw");
 		diastolicPressureField.setStepButtonsVisible(true);
 		fieldMap.put("DiastolicArterialPressureBaseline", diastolicPressureField);
+		diastolicPressureField.setTooltipText(
+				"Value must be between 60mmHg and 80mmHg");
 
-		NumberField systolicPressureField = new NumberField("Systolic Pressure");
+		systolicPressureField = new NumberField("Systolic Pressure");
 		systolicPressureField.setValue(114.0);
 		systolicPressureField.setStep(1.0);
 		systolicPressureField.setMin(90);
@@ -106,8 +114,10 @@ public class PatientPanel extends VerticalLayout {
 		systolicPressureField.setWidth("10vw");
 		systolicPressureField.setStepButtonsVisible(true);
 		fieldMap.put("SystolicArterialPressureBaseline", systolicPressureField);
-
-		NumberField respirationRateField = new NumberField("Respiration Rate Baseline");
+		systolicPressureField.setTooltipText(
+				"Value must be between 90mmHg and 120mmHg");
+		
+		respirationRateField = new NumberField("Respiration Rate Baseline");
 		respirationRateField.setValue(16.0);
 		respirationRateField.setStep(1.0);
 		respirationRateField.setMin(8);
@@ -115,28 +125,35 @@ public class PatientPanel extends VerticalLayout {
 		respirationRateField.setWidth("10vw");
 		respirationRateField.setStepButtonsVisible(true);
 		fieldMap.put("RespirationRateBaseline", respirationRateField);
+		respirationRateField.setTooltipText(
+				"Value must be between 8bpm and 20bpm");
 
-		NumberField basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
+		basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
 		basalMetabolicRateField.setValue(1600.0);
-		basalMetabolicRateField.setStep(1.0);
+		basalMetabolicRateField.setStep(10.0);
 		basalMetabolicRateField.setStepButtonsVisible(true);
 		basalMetabolicRateField.setWidth("10vw");
 		fieldMap.put("BasalMetabolicRate", basalMetabolicRateField);
+		basalMetabolicRateField.setTooltipText(
+				"No upper and lower limit");
 
 		sexComboBox = new ComboBox<>("Sex");
 		sexComboBox.setItems("Male", "Female");
 		sexComboBox.setValue("Male");
 		sexComboBox.setWidth("10vw");
+		sexComboBox.addValueChangeListener(event -> updateFieldRange());
 
 		weightUnitComboBox = new ComboBox<>("   ");
 		weightUnitComboBox.setItems("kg", "lb");
 		weightUnitComboBox.setValue("kg");
 		weightUnitComboBox.setWidth("5vw");
-
+		weightUnitComboBox.addValueChangeListener(event -> updateFieldRange());
+		
 		heightUnitComboBox = new ComboBox<>("   ");
 		heightUnitComboBox.setItems("cm", "m", "in", "ft");
 		heightUnitComboBox.setValue("cm");
 		heightUnitComboBox.setWidth("5vw");
+		heightUnitComboBox.addValueChangeListener(event -> updateFieldRange());
 
 		formLayout.add(nameField);
 		HorizontalLayout user = new HorizontalLayout(ageField, sexComboBox);
@@ -168,38 +185,7 @@ public class PatientPanel extends VerticalLayout {
 
 	}
 
-	public Patient generateInitialPatient(List<Condition> conditions) {
-		String name = nameField.getValue();
-		Map<String, Double> parameters = new HashMap<>();
 
-		char sex = 'F';
-		for (Map.Entry<String, NumberField> entry : fieldMap.entrySet()) {
-
-			if (!entry.getKey().equals("Name")) {
-				NumberField numberField = (NumberField) entry.getValue();
-				Double value = numberField.getValue();
-				Double minValue = numberField.getMin();
-				Double maxValue = numberField.getMax();
-
-				// Controlla se il valore è fuori dall'intervallo
-				if (value < minValue || value > maxValue) {
-					numberField.setInvalid(true);
-					numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
-					return null;
-				}
-
-				numberField.setInvalid(false);
-				parameters.put(entry.getKey(), value);
-			}
-		}
-
-		if (sexComboBox.getValue().equals("Male"))
-			sex = 'M';
-
-		checkUnits(parameters);
-
-		return new Patient(name, sex, parameters, conditions);
-	}
 
 	private void checkUnits(Map<String, Double> parameters) {
 
@@ -219,6 +205,91 @@ public class PatientPanel extends VerticalLayout {
 			break;
 		}
 	}
+	
+	
+	//TO TEST
+	private void updateFieldRange() {
+	    String selectedUnit = heightUnitComboBox.getValue();
+	    String selectedSex = sexComboBox.getValue();
+
+	    double minHeight, maxHeight;
+	    if ("Male".equals(selectedSex)) {
+	        switch (selectedUnit) {
+	            case "cm":
+	                minHeight = 163.0;
+	                maxHeight = 190.0;
+	                break;
+	            case "m":
+	                minHeight = 1.63;
+	                maxHeight = 1.90;
+	                break;
+	            case "in":
+	                minHeight = 64.2; // 163 cm to inches
+	                maxHeight = 74.8; // 190 cm to inches
+	                break;
+	            case "ft":
+	                minHeight = 5.35; // 163 cm to feet
+	                maxHeight = 6.23; // 190 cm to feet
+	                break;
+	            default:
+	                minHeight = 0;
+	                maxHeight = 0;
+	                break;
+	        }
+	    } else {
+	        switch (selectedUnit) {
+	            case "cm":
+	                minHeight = 151.0;
+	                maxHeight = 175.0;
+	                break;
+	            case "m":
+	                minHeight = 1.51;
+	                maxHeight = 1.75;
+	                break;
+	            case "in":
+	                minHeight = 59.4; // 151 cm to inches
+	                maxHeight = 68.9; // 175 cm to inches
+	                break;
+	            case "ft":
+	                minHeight = 4.95; // 151 cm to feet
+	                maxHeight = 5.74; // 175 cm to feet
+	                break;
+	            default:
+	                minHeight = 0;
+	                maxHeight = 0;
+	                break;
+	        }
+	    }
+	    heightField.setMin(minHeight);
+	    heightField.setMax(maxHeight);
+	    
+	    if ("Male".equals(selectedSex)) {
+	        bodyFatField.setMin(0.02);
+	        bodyFatField.setMax(0.25);
+	    } else {
+	        bodyFatField.setMin(0.1);
+	        bodyFatField.setMax(0.32);
+	    }
+	    
+		for (Map.Entry<String, NumberField> entry : fieldMap.entrySet()) {
+			if (!entry.getKey().equals("Name")) {
+				NumberField numberField = (NumberField) entry.getValue();
+				Double value = numberField.getValue();
+				Double minValue = numberField.getMin();
+				Double maxValue = numberField.getMax();
+				if (value < minValue || value > maxValue) {
+					numberField.setInvalid(true);
+					numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+				}
+				else
+					numberField.setInvalid(false);
+			}
+		}
+	}
+	
+	public void checkField() {
+		
+	}
 
 	public void enableComponents(boolean enabled) {
 		nameField.setEnabled(enabled);
@@ -235,6 +306,38 @@ public class PatientPanel extends VerticalLayout {
 	public String getPatientName() {
 		return nameField.getValue();
 	}
+	
+	public Patient generateInitialPatient(List<Condition> conditions) {
+		String name = nameField.getValue();
+		Map<String, Double> parameters = new HashMap<>();
+
+		char sex = 'F';
+		for (Map.Entry<String, NumberField> entry : fieldMap.entrySet()) {
+
+			if (!entry.getKey().equals("Name")) {
+				NumberField numberField = (NumberField) entry.getValue();
+				Double value = numberField.getValue();
+				Double minValue = numberField.getMin();
+				Double maxValue = numberField.getMax();
+
+				if (value < minValue || value > maxValue) {
+					numberField.setInvalid(true);
+					numberField.setErrorMessage("Value must be between " + minValue + " and " + maxValue);
+					return null;
+				}
+
+				numberField.setInvalid(false);
+				parameters.put(entry.getKey(), value);
+			}
+		}
+
+		if (sexComboBox.getValue().equals("Male"))
+			sex = 'M';
+
+		checkUnits(parameters);
+
+		return new Patient(name, sex, parameters, conditions);
+	}
 
     public boolean loadPatientData(String patientFilePath) {
         try { 
@@ -246,17 +349,17 @@ public class PatientPanel extends VerticalLayout {
             String sex = rootNode.path("InitialPatient").path("Sex").asText();
             if (sex.isBlank()) sex = "Male";
             // Use Math.round to control decimal places directly
-            double age = Math.round(rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asDouble());
-            double weight = Math.round(rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble() * 100.0) / 100.0; // 2 decimal places
+            double age =rootNode.path("InitialPatient").path("Age").path("ScalarTime").path("Value").asDouble();
+            double weight = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Value").asDouble(); // 2 decimal places
             String weightUnit = rootNode.path("InitialPatient").path("Weight").path("ScalarMass").path("Unit").asText();
-            double height = Math.round(rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asDouble());
+            double height =rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Value").asDouble();
             String heightUnit = rootNode.path("InitialPatient").path("Height").path("ScalarLength").path("Unit").asText();
-            double bodyFat = Math.round(rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble() * 100.0) / 100.0; // 2 decimal places
-            double heartRate = Math.round(rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble());
-            double diastolicPressure = Math.round(rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble());
-            double systolicPressure = Math.round(rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble());
-            double respirationRate = Math.round(rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asDouble());
-            double basalMetabolicRate = Math.round(rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble());
+            double bodyFat = rootNode.path("InitialPatient").path("BodyFatFraction").path("Scalar0To1").path("Value").asDouble(); // 2 decimal places
+            double heartRate = rootNode.path("InitialPatient").path("HeartRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+            double diastolicPressure = rootNode.path("InitialPatient").path("DiastolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            double systolicPressure = rootNode.path("InitialPatient").path("SystolicArterialPressureBaseline").path("ScalarPressure").path("Value").asDouble();
+            double respirationRate = rootNode.path("InitialPatient").path("RespirationRateBaseline").path("ScalarFrequency").path("Value").asDouble();
+            double basalMetabolicRate = rootNode.path("InitialPatient").path("BasalMetabolicRate").path("ScalarPower").path("Value").asDouble();
 
             // Set the values to the appropriate fields
             nameField.setValue(name);
@@ -276,7 +379,6 @@ public class PatientPanel extends VerticalLayout {
             return true;
         } catch (IOException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }
