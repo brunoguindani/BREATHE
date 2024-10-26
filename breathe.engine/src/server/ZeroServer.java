@@ -1,6 +1,7 @@
 package server;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.zeromq.SocketType;
 import org.zeromq.ZMQ;
@@ -8,7 +9,7 @@ import org.zeromq.ZContext;
 
 public class ZeroServer {
     private ZContext context;
-    private ZMQ.Socket socket;
+    private ZMQ.Socket socketPub, socketSub;
     private Thread receiveThread;
     private boolean running = false;
     private boolean connectionStable = false;
@@ -19,12 +20,15 @@ public class ZeroServer {
     private double pressure;
     
 
-    private ArrayList<String> data;
+    private String data;
 
     public void connect() throws Exception {
         context = new ZContext();
-        socket = context.createSocket(SocketType.REP);
-        socket.bind("tcp://*:5555");
+        socketPub = context.createSocket(SocketType.PUB);
+        socketPub.bind("tcp://*:5556");
+        socketSub = context.createSocket(SocketType.SUB);
+        socketSub.bind("tcp://*:5555");
+        socketSub.subscribe("Client".getBytes(ZMQ.CHARSET));   
     }
 
     public void startReceiving() {
@@ -41,13 +45,14 @@ public class ZeroServer {
 
     public void receive() throws Exception {
         while (running && !Thread.currentThread().isInterrupted()) {
-            byte[] reply = socket.recv(0);
+            byte[] reply = socketSub.recv(0);
             String receivedData = new String(reply, ZMQ.CHARSET);
-
-            switch (receivedData) {
+            String messageJson = receivedData.trim();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(messageJson);
+            switch (jsonNode.get("message").asText()) {
                 case "disconnect":
-                    System.out.println("Disconnect message received.");
-                    socket.send("Disconnected client.".getBytes(ZMQ.CHARSET), 0);
+                    socketPub.send("Server {\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
                     connectionStable = false;
                     disconnecting = true;
                     selectedMode = null;
@@ -59,21 +64,22 @@ public class ZeroServer {
                     sendData();
                     break;
 
-                default:
-                    if (receivedData.startsWith("Volume")) {
+                case "input":
+                	System.out.println(jsonNode.get("ventilatorType").asText());
+                    if (jsonNode.get("ventilatorType").asText().equals("Volume")) {
                         connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Volume";
-                        volume = Double.parseDouble(receivedData.split(": ")[1]);
-                        socket.send("Volume received".getBytes(ZMQ.CHARSET), 0);
-                    } else if (receivedData.startsWith("Pressure")) {
+                        volume = Double.parseDouble(jsonNode.get("value").asText());
+                        socketPub.send("Server  {\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
+                    } else if (jsonNode.get("ventilatorType").asText().equals("Pressure")) {
                         connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Pressure";
-                        pressure = Double.parseDouble(receivedData.split(": ")[1]);
-                        socket.send("Pressure received".getBytes(ZMQ.CHARSET), 0);
+                        pressure = Double.parseDouble(jsonNode.get("value").asText());
+                        socketPub.send("Server  {\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
                     } else {
-                        socket.send("Unknown command".getBytes(ZMQ.CHARSET), 0);
+                    	socketPub.send("Server  {\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
                     }
                     break;
             }
@@ -90,8 +96,11 @@ public class ZeroServer {
 
     public void close() {
         stopReceiving();
-        if (socket != null) {
-            socket.close();
+        if (socketPub != null) {
+        	socketPub.close();
+        }
+        if (socketSub != null) {
+        	socketSub.close();
         }
         if (context != null) {
             context.close();
@@ -99,19 +108,9 @@ public class ZeroServer {
     }
 
     private void sendData() {
-        if (data != null && !data.isEmpty()) {
-            StringBuilder dataBuilder = new StringBuilder();
-            for (String datum : data) {
-                dataBuilder.append(datum).append(";");
-            }
-            if (dataBuilder.length() > 0) {
-                dataBuilder.setLength(dataBuilder.length() - 1);
-            }
-            String tosend = "Patient Data:" + dataBuilder.toString();
-            socket.send(tosend.getBytes(ZMQ.CHARSET), 0);
-        } else {
-            socket.send("No data available".getBytes(ZMQ.CHARSET), 0);
-        }
+    	if (data != null && !data.isEmpty()) {
+    	    socketPub.send(data.getBytes(ZMQ.CHARSET), 0);  
+    	} 
     }
 
     public boolean isConnectionStable() {
@@ -134,8 +133,12 @@ public class ZeroServer {
         return pressure;
     }
 
-    public void setSimulationData(ArrayList<String> data) {
-        this.data = data;
+    public void setSimulationData(String data) {
+        try {
+			this.data = data;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
     
 }
