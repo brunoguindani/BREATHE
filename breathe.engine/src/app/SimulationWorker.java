@@ -13,6 +13,10 @@ import java.util.List;
 
 import javax.swing.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.kitware.pulse.cdm.engine.SEDataRequestManager;
 import com.kitware.pulse.cdm.properties.CommonUnits.*;
 import com.kitware.pulse.engine.PulseEngine;
@@ -20,8 +24,6 @@ import com.kitware.pulse.cdm.engine.SEPatientConfiguration;
 import com.kitware.pulse.cdm.patient.SEPatient;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
 import com.kitware.pulse.cdm.conditions.SECondition;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.actions.SEAdvanceTime;
@@ -38,7 +40,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private String initializeMode;
     
     private SEDataRequestManager dataRequests;
-    private String[] requestList;
+    private String[] requestList, unitList;
     
     private GuiCallback gui;
     
@@ -213,6 +215,19 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 				"AirwayPressure",
 				"OxygenSaturation"
 				};
+    	String[] unitList = {"s",                
+                "per_min",          
+                "mL",               
+                "per_min",          
+                "mV",               
+                "mmHg",             
+                "mmHg",             
+                "mmHg",             
+                ""                  
+               };
+
+		this.requestList = requestList;
+		this.unitList = unitList; // assegna alla variabile membro
     	
     	this.requestList = requestList;
     	
@@ -297,33 +312,94 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     
-    private ArrayList<String> sendData() {
-    	ArrayList<String> data = new ArrayList<String>();
+    private String sendData() {
+    	//ArrayList<String> data = new ArrayList<String>();
     	
-    	//print conditions
-        pe.getConditions(patient_configuration.getConditions());
-        for(SECondition any : patient_configuration.getConditions())
-        {
-        	gui.logStringData(any.toString()+ "\n");
-            data.add(any.toString());
-        }
-        
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	ObjectNode rootNode = objectMapper.createObjectNode(); 
+        ObjectNode patientDataNode = objectMapper.createObjectNode();
+        ObjectNode conditionsNode = objectMapper.createObjectNode();
+        ObjectNode actionsNode = objectMapper.createObjectNode();
+    	String currentCondition = null; 
+    	ObjectNode currentConditionNode = null; 
+    	
         //print requested data
     	List<Double> dataValues = pe.pullData();
         gui.logStringData("---------------------------\n");
         for(int i = 0; i < (dataValues.size()); i++ ) {
-        	gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
-            data.add(requestList[i] + ": " + dataValues.get(i));
+        	ObjectNode dataNode = objectMapper.createObjectNode(); 
+    	    dataNode.put("value", dataValues.get(i));
+    	    dataNode.put("unit", unitList[i]);   
+    	    patientDataNode.set(requestList[i], dataNode);
+
+            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
         }
+        rootNode.set("Patient Data", patientDataNode);
+        
+    	//print conditions
+        pe.getConditions(patient_configuration.getConditions());
+        for(SECondition any : patient_configuration.getConditions())
+        {
+        	String[] dataLines = any.toString().split("\n");
+        	for (int i = 0; i < dataLines.length; i++) {
+        	    dataLines[i] = dataLines[i].trim();
+        	}
         	
+        	for (String line : dataLines) {
+        	    line = line.trim();
+
+        	    if (line.contains(":")) {
+        	        String[] keyValue = line.split(":");
+        	        String key = keyValue[0].trim();
+        	        String value = keyValue[1].trim();
+
+        	        if (currentConditionNode != null) {
+        	            currentConditionNode.put(key, Double.parseDouble(value)); 
+        	        }
+        	    } else if (!line.isEmpty()) {
+        	        currentCondition = line; 
+        	        currentConditionNode = objectMapper.createObjectNode(); 
+
+        	        conditionsNode.set(currentCondition, currentConditionNode);
+        	    }
+        	}
+        	
+        	gui.logStringData(any.toString()+ "\n");
+        }
+        rootNode.set("Conditions", conditionsNode);
+
         //print actions
         List<SEAction> actions = new ArrayList<SEAction>();
         pe.getActiveActions(actions);
         for(SEAction any : actions)
         {
+        	String[] dataLines = any.toString().split("\n");
+        	for (int i = 0; i < dataLines.length; i++) {
+        	    dataLines[i] = dataLines[i].trim();
+        	}
+        	
+        	for (String line : dataLines) {
+        	    line = line.trim();
+
+        	    if (line.contains(":")) {
+        	        String[] keyValue = line.split(":");
+        	        String key = keyValue[0].trim();
+        	        String value = keyValue[1].trim();
+
+        	        if (currentConditionNode != null) {
+        	            currentConditionNode.put(key, Double.parseDouble(value)); 
+        	        }
+        	    } else if (!line.isEmpty()) {
+        	        currentCondition = line; 
+        	        currentConditionNode = objectMapper.createObjectNode(); 
+
+        	        actionsNode.set(currentCondition, currentConditionNode);
+        	    }
+        	}
+        	
         	gui.logStringData(any.toString()+ "\n");
-            data.add(any.toString());
         }
+        rootNode.set("Actions", actionsNode);
         
         //send data to graphs to be printed
         double x = dataValues.get(0);
@@ -332,9 +408,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	y = dataValues.get(i);
             gui.logItemDisplayData(requestList[i],x, y);
         }
-        return data;
+        
+        String jsonString = "";
+		try {
+			jsonString = objectMapper.writeValueAsString(rootNode);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+        
+        return jsonString;
     }
-    
     
     public void connectVentilator(Ventilator v) {
         switch (v.getMode()) {
