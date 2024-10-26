@@ -48,7 +48,6 @@ public class PatientPanel extends VerticalLayout {
 
 		ageField = new NumberField("Age");
 		ageField.setValue(44.0);
-		ageField.setStep(1);
 		ageField.setMin(18);
 		ageField.setMax(65);
 		ageField.setStepButtonsVisible(true);
@@ -59,7 +58,6 @@ public class PatientPanel extends VerticalLayout {
 
 		weightField = new NumberField("Weight");
 		weightField.setValue(77.0);
-		weightField.setStep(0.5);
 		weightField.setStepButtonsVisible(true);
 		weightField.setWidth("10vw");
 		fieldMap.put("Weight", weightField);
@@ -68,7 +66,6 @@ public class PatientPanel extends VerticalLayout {
 
 		heightField = new NumberField("Height");
 		heightField.setValue(180.0);
-		heightField.setStep(1.0);
 		heightField.setStepButtonsVisible(true);
 		heightField.setWidth("10vw");
 		fieldMap.put("Height", heightField);
@@ -77,7 +74,6 @@ public class PatientPanel extends VerticalLayout {
 
 		bodyFatField = new NumberField("Body Fat Fraction");
 		bodyFatField.setValue(0.21);
-		bodyFatField.setStep(0.01);
 		bodyFatField.setStepButtonsVisible(true);
 		bodyFatField.setWidth("10vw");
 		fieldMap.put("BodyFatFraction", bodyFatField);
@@ -86,7 +82,6 @@ public class PatientPanel extends VerticalLayout {
 		
 		heartRateField = new NumberField("Heart Rate Baseline");
 		heartRateField.setValue(72.0);
-		heartRateField.setStep(1.0);
 		heartRateField.setMin(50);
 		heartRateField.setMax(110);
 		heartRateField.setWidth("10vw");
@@ -97,7 +92,6 @@ public class PatientPanel extends VerticalLayout {
 
 		diastolicPressureField = new NumberField("Diastolic Pressure");
 		diastolicPressureField.setValue(72.0);
-		diastolicPressureField.setStep(1.0);
 		diastolicPressureField.setMin(60);
 		diastolicPressureField.setMax(80);
 		diastolicPressureField.setWidth("10vw");
@@ -108,7 +102,6 @@ public class PatientPanel extends VerticalLayout {
 
 		systolicPressureField = new NumberField("Systolic Pressure");
 		systolicPressureField.setValue(114.0);
-		systolicPressureField.setStep(1.0);
 		systolicPressureField.setMin(90);
 		systolicPressureField.setMax(120);
 		systolicPressureField.setWidth("10vw");
@@ -119,7 +112,6 @@ public class PatientPanel extends VerticalLayout {
 		
 		respirationRateField = new NumberField("Respiration Rate Baseline");
 		respirationRateField.setValue(16.0);
-		respirationRateField.setStep(1.0);
 		respirationRateField.setMin(8);
 		respirationRateField.setMax(20);
 		respirationRateField.setWidth("10vw");
@@ -130,7 +122,6 @@ public class PatientPanel extends VerticalLayout {
 
 		basalMetabolicRateField = new NumberField("Basal Metabolic Rate");
 		basalMetabolicRateField.setValue(1600.0);
-		basalMetabolicRateField.setStep(10.0);
 		basalMetabolicRateField.setStepButtonsVisible(true);
 		basalMetabolicRateField.setWidth("10vw");
 		fieldMap.put("BasalMetabolicRate", basalMetabolicRateField);
@@ -155,6 +146,7 @@ public class PatientPanel extends VerticalLayout {
 		heightUnitComboBox.setWidth("5vw");
 		heightUnitComboBox.addValueChangeListener(event -> updateFieldRange());
 
+		
 		formLayout.add(nameField);
 		HorizontalLayout user = new HorizontalLayout(ageField, sexComboBox);
 		formLayout.add(user);
