@@ -35,9 +35,6 @@ public class ReciverTest {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (disconnectButton.isEnabled()) {
-                    disconnectFromServer();
-                }
                 frame.dispose();
                 System.exit(0);
             }
@@ -60,14 +57,6 @@ public class ReciverTest {
         connectButton.setFocusPainted(false);
         panel.add(connectButton);
 
-        disconnectButton = new JButton("Disconnect");
-        disconnectButton.setBounds(200, 20, 120, 25);
-        disconnectButton.setBackground(new Color(255, 59, 48));
-        disconnectButton.setForeground(Color.WHITE);
-        disconnectButton.setFocusPainted(false);
-        disconnectButton.setEnabled(false);
-        panel.add(disconnectButton);
-
         outputArea = new JTextArea();
         panel.add(outputArea);
         outputArea.setLineWrap(true);
@@ -78,25 +67,11 @@ public class ReciverTest {
         scrollPane.setBounds(40, 60, 300, 250);
         panel.add(scrollPane);
 
-     
-
-
         connectButton.addActionListener(e -> {
             if (!isConnected) {
                 connectToServer();
                 connectButton.setEnabled(false);
                 disconnectButton.setEnabled(true);
-            }
-        });
-
-        disconnectButton.addActionListener(e -> {
-            if (isConnected) {
-                disconnectFromServer();
-                connectButton.setEnabled(true);
-                disconnectButton.setEnabled(false);
-                outputArea.append("Disconnected.\n");
-                frame.dispose();
-                System.exit(0);
             }
         });
 
@@ -167,39 +142,6 @@ public class ReciverTest {
         });
 
         communicationThread.start();
-    }
-
-    private void disconnectFromServer() {
-        outputArea.append("Disconnecting from server...\n");
-
-        new Thread(() -> {
-            synchronized (this) {
-                isConnected = false;
-            }
-
-
-            if (communicationThread != null) {
-                try {
-                    communicationThread.join();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-
-            synchronized (this) {
-                if (socketSub != null) {
-                	socketSub.close();
-                	socketSub = null;
-                }
-                if (context != null) {
-                    context.close();
-                    context = null;
-                }
-                isConnected = false;
-            }
-
-            outputArea.append("Disconnected.\n");
-        }).start();
     }
 
     private void storeData(String data) {
