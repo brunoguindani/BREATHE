@@ -127,7 +127,7 @@ public class ReciverTest {
         }
         
         outputArea.append("Connecting to server...\n");
-        socketSub.subscribe("".getBytes(ZMQ.CHARSET));   
+        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
 
         synchronized (this) {
             isConnected = true;

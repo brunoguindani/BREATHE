@@ -203,7 +203,7 @@ public class ZeroClient {
         synchronized (this) {
             context = new ZContext();
             socketPub = context.createSocket(SocketType.PUB);
-            socketPub.bind("tcp://*:5556");
+            socketPub.bind("tcp://localhost:5556");
             socketSub = context.createSocket(SocketType.SUB);
             socketSub.bind("tcp://localhost:5555");
         }
