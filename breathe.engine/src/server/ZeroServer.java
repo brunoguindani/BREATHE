@@ -45,8 +45,7 @@ public class ZeroServer {
 
     public void receive() throws Exception {
         while (running && !Thread.currentThread().isInterrupted()) {
-            byte[] reply = socketSub.recv();
-            String receivedData = new String(reply, ZMQ.CHARSET);
+        	String receivedData = socketSub.recvStr();
             receivedData = receivedData.trim().replace("Client", "").trim();
             String messageJson = receivedData.trim();
             ObjectMapper objectMapper = new ObjectMapper();
