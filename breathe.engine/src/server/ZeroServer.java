@@ -24,10 +24,12 @@ public class ZeroServer {
 
     public void connect() throws Exception {
         context = new ZContext();
+        
         socketPub = context.createSocket(SocketType.PUB);
         socketPub.bind("tcp://*:5555");
+        
         socketSub = context.createSocket(SocketType.SUB);
-        socketSub.bind("tcp://*:5556");
+        socketSub.connect("tcp://localhost:5556");
         socketSub.subscribe("Client".getBytes(ZMQ.CHARSET)); 
     }
 
@@ -44,7 +46,7 @@ public class ZeroServer {
     }
 
     public void receive() throws Exception {
-        while (running && !Thread.currentThread().isInterrupted()) {
+        while (running && !receiveThread.isInterrupted()) {
         	String receivedData = socketSub.recvStr();
             receivedData = receivedData.trim().replace("Client", "").trim();
             String messageJson = receivedData.trim();
@@ -53,7 +55,6 @@ public class ZeroServer {
 
             switch (jsonNode.get("message").asText()) {
                 case "disconnect":
-                    //socketPub.send("Server {\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
                     connectionStable = false;
                     disconnecting = true;
                     selectedMode = null;
@@ -62,28 +63,22 @@ public class ZeroServer {
                 case "requestData":
                     connectionStable = true;
                     disconnecting = false;
-                    //sendData();
                     break;
 
                 case "input":
                     if (jsonNode.get("ventilatorType").asText().equals("Volume")) {
-                        connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Volume";
                         volume = Double.parseDouble(jsonNode.get("value").asText());
-                        //socketPub.send("Server {\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
                     } else if (jsonNode.get("ventilatorType").asText().equals("Pressure")) {
-                        connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Pressure";
                         pressure = Double.parseDouble(jsonNode.get("value").asText());
-                        //socketPub.send("Server {\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
-                    } else {
-                    	//socketPub.send("Server {\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
-                    }
-                    break;
+                    } 
+                break;
             }
         }
+       
     }
 
     private void stopReceiving() {
