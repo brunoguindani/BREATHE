@@ -46,11 +46,14 @@ public class ZeroServer {
     }
 
     public void receive() throws Exception {
+
         while (running && !receiveThread.isInterrupted()) {
             String receivedData = socketRep.recvStr();
+
             String messageJson = receivedData.trim();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(messageJson);
+
             switch (jsonNode.get("message").asText()) {
                 case "disconnect":
                 	socketRep.send("{\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
@@ -72,18 +75,26 @@ public class ZeroServer {
                         disconnecting = false;
                         selectedMode = "Volume";
                         volume = Double.parseDouble(jsonNode.get("value").asText());
+                      
                         socketRep.send("{\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
                         socketPub.send("{\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
+                        //socketPub.send("Server {\"message\":\"Volume received\"}".getBytes(ZMQ.CHARSET), 0);
                     } else if (jsonNode.get("ventilatorType").asText().equals("Pressure")) {
                         connectionStable = true;
                         disconnecting = false;
                         selectedMode = "Pressure";
                         pressure = Double.parseDouble(jsonNode.get("value").asText());
+
                         socketRep.send("{\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
                         socketPub.send("{\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
                     } else {
                     	socketRep.send("{\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
                     	socketPub.send("{\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
+
+//                        socketPub.send("Server {\"message\":\"Pressure received\"}".getBytes(ZMQ.CHARSET), 0);
+//                  } else {
+//                	  socketPub.send("Server {\"message\":\"Unknown command\"}".getBytes(ZMQ.CHARSET), 0);
+
                     }
                     break;
             }
@@ -113,8 +124,13 @@ public class ZeroServer {
 
     private void sendData() {
     	if (data != null && !data.isEmpty()) {
+
     		socketRep.send(data.getBytes(ZMQ.CHARSET), 0);  
     	    socketPub.send(data.getBytes(ZMQ.CHARSET), 0);  
+
+//    		String toSend = "Server " + data;
+//    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
+
     	} 
     }
 

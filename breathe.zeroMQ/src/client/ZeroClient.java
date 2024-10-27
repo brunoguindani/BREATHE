@@ -202,14 +202,29 @@ public class ZeroClient {
     private void connectToServer() {
         synchronized (this) {
             context = new ZContext();
-//            socketPub = context.createSocket(SocketType.PUB);
-//            socketPub.bind("tcp://*:5556");
             socketReq = context.createSocket(SocketType.REQ);
             socketReq.connect("tcp://localhost:5556");
 
         }
         
         outputArea.append("Connecting to server...\n");
+      
+//        try {
+//            socketPub.connect("tcp://localhost:5555");
+//            socketSub.connect("tcp://localhost:5556");
+//        } catch (ZMQException ex) {
+//            outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
+//            return;
+//        }
+        
+//        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
+        
+//        try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+        
 
         synchronized (this) {
             isConnected = true;
@@ -223,8 +238,14 @@ public class ZeroClient {
                 	
                 	socketReq.send("{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
-                    //String receivedData = socketSub.recvStr(); 
+
                     String receivedData = socketReq.recvStr(); 
+
+
+//                    byte[] reply = socketSub.recv();    
+//                    String receivedData = new String(reply, ZMQ.CHARSET);  
+//                    receivedData = receivedData.trim().replace("Server", "").trim();
+
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
@@ -232,9 +253,16 @@ public class ZeroClient {
                     //String request = selectedOption + ": " + value;
                     String request = "{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
+
                     socketReq.send(request.getBytes(ZMQ.CHARSET), 0);
                     receivedData = socketReq.recvStr(); 
                     outputArea.append("Received: " + receivedData + "\n");
+
+//                  socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
+
+//                    reply = socketSub.recv();
+//                    outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
+
 
                     Thread.sleep(200);
                 }
