@@ -22,7 +22,7 @@ public class ZeroClient {
     private JTextArea outputArea;
     private JSpinner rrSpinner, ieRatioSpinner, pinspSpinner, vtSpinner, peepSpinner;
 
-    private ZMQ.Socket socketPub,socketSub;
+    private ZMQ.Socket socketReq;
     private ZContext context;
     private String selectedOption;
     private boolean isConnected = false;
@@ -162,7 +162,7 @@ public class ZeroClient {
         connectButton.addActionListener(e -> {
             if (!isConnected) {
                 selectedOption = volumeButton.isSelected() ? "Volume" : "Pressure";
-                connectToServerWithTimer();
+                connectToServer();
                 volumeButton.setEnabled(false);
                 pressureButton.setEnabled(false);
                 connectButton.setEnabled(false);
@@ -199,32 +199,31 @@ public class ZeroClient {
     }
 
 
-    private void connectToServerWithTimer() {
+    private void connectToServer() {
         synchronized (this) {
             context = new ZContext();
-            socketPub = context.createSocket(SocketType.PUB);
-            socketPub.bind("tcp://*:5556");
-            socketSub = context.createSocket(SocketType.SUB);
-            socketSub.connect("tcp://localhost:5555");
+            socketReq = context.createSocket(SocketType.REQ);
+            socketReq.connect("tcp://localhost:5556");
+
         }
         
         outputArea.append("Connecting to server...\n");
+      
+//        try {
+//            socketPub.connect("tcp://localhost:5555");
+//            socketSub.connect("tcp://localhost:5556");
+//        } catch (ZMQException ex) {
+//            outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
+//            return;
+//        }
         
-        try {
-            socketPub.connect("tcp://localhost:5555");
-            socketSub.connect("tcp://localhost:5556");
-        } catch (ZMQException ex) {
-            outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
-            return;
-        }
+//        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
         
-        socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
-        
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//        try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
         
 
         synchronized (this) {
@@ -236,24 +235,34 @@ public class ZeroClient {
 
             try {
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
-                    socketPub.send("Client-{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
+                	
+                	socketReq.send("{\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Request Sent\n");
 
-                    byte[] reply = socketSub.recv();    
-                    String receivedData = new String(reply, ZMQ.CHARSET);  
-                    receivedData = receivedData.trim().replace("Server", "").trim();
+                    String receivedData = socketReq.recvStr(); 
+
+
+//                    byte[] reply = socketSub.recv();    
+//                    String receivedData = new String(reply, ZMQ.CHARSET);  
+//                    receivedData = receivedData.trim().replace("Server", "").trim();
 
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
                     //String request = selectedOption + ": " + value;
-                    String request = "Client-{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
+                    String request = "{\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
-                    socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
 
-                    reply = socketSub.recv();
-                    outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
+                    socketReq.send(request.getBytes(ZMQ.CHARSET), 0);
+                    receivedData = socketReq.recvStr(); 
+                    outputArea.append("Received: " + receivedData + "\n");
+
+//                  socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
+
+//                    reply = socketSub.recv();
+//                    outputArea.append("Received: " + new String(reply, ZMQ.CHARSET) + "\n");
+
 
                     Thread.sleep(200);
                 }
@@ -270,13 +279,9 @@ public class ZeroClient {
                 }
             } finally {
                 synchronized (this) {
-                    if (socketPub != null) {
-                        socketPub.close();
-                        socketPub = null;
-                    }
-                    if (socketSub != null) {
-                        socketSub.close();
-                        socketSub = null;
+                    if (socketReq != null) {
+                    	socketReq.close();
+                        socketReq = null;
                     }
                     if (context != null) {
                         context.close();
@@ -299,8 +304,8 @@ public class ZeroClient {
             }
 
             try {
-                if (socketPub != null) {
-                	socketPub.send("Client {\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
+                if (socketReq != null) {
+                	socketReq.send("{\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
                     outputArea.append("Disconnect message sent to server.\n");
                 }
             } catch (ZMQException ex) {
@@ -316,13 +321,9 @@ public class ZeroClient {
             }
 
             synchronized (this) {
-                if (socketPub != null) {
-                	socketPub.close();
-                	socketPub = null;
-                }
-                if (socketSub != null) {
-                	socketSub.close();
-                	socketSub = null;
+                if (socketReq != null) {
+                	socketReq.close();
+                	socketReq = null;
                 }
                 if (context != null) {
                     context.close();
