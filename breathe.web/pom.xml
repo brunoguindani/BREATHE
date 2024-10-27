@@ -104,13 +104,6 @@
 					<include>application.properties</include>
 				</includes>
 			</resource>
-			<resource>
-				<directory>../breathe.engine/</directory>
-				<includes>
-					<include>PulseJNI.dll</include>
-					<include>PulseC.dll</include>
-				</includes>
-			</resource>
 		</resources>
 	</build>
 
