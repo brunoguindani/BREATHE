@@ -203,16 +203,14 @@ public class ZeroClient {
         synchronized (this) {
             context = new ZContext();
             socketPub = context.createSocket(SocketType.PUB);
-            socketPub.bind("tcp://localhost:5556");
             socketSub = context.createSocket(SocketType.SUB);
-            socketSub.bind("tcp://localhost:5555");
         }
         
         outputArea.append("Connecting to server...\n");
         
         try {
-            socketPub.connect("tcp://localhost:5555");
-            socketSub.connect("tcp://localhost:5556");
+            socketPub.connect("tcp://localhost:5556");
+            socketSub.connect("tcp://localhost:5555");
         } catch (ZMQException ex) {
             outputArea.append("Failed to connect to server: " + ex.getMessage() + "\n");
             return;
@@ -220,11 +218,12 @@ public class ZeroClient {
         
         socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));   
         
+        /*
         try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
         
 
         synchronized (this) {
@@ -233,15 +232,17 @@ public class ZeroClient {
 
         communicationThread = new Thread(() -> {
             outputArea.append("Thread started. Entering while loop...\n");
+            
+            socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
+            outputArea.append("Request Sent\n");
 
             try {
-                while (isConnected && !Thread.currentThread().isInterrupted()) {
-                    socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
-                    outputArea.append("Request Sent\n");
+                while (true && !Thread.currentThread().isInterrupted()) {
 
                     String receivedData  = socketSub.recvStr();   
                     receivedData = receivedData.trim().replace("Server", "").trim();
-
+                    outputArea.append("Received ");
+                    
                     storeData(receivedData);
 
                     double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
@@ -250,15 +251,10 @@ public class ZeroClient {
                     String request = "Client {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption + "\", \"value\":\"" + value + "\"}";
                     outputArea.append("Sending: " + request + "\n");
                     socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
+                    //receivedData = socketSub.recvStr();
 
-                    receivedData = socketSub.recvStr();
-                    outputArea.append("Received: " + receivedData + "\n");
-
-                    Thread.sleep(200);
+                    //outputArea.append("Received: " + receivedData + "\n");
                 }
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                outputArea.append("Thread was interrupted.\n");
             } catch (ZMQException ex) {
                 if (ex.getErrorCode() == ZMQ.Error.ETERM.getCode()) {
                     outputArea.append("ZMQ context terminated.\n");
@@ -267,7 +263,7 @@ public class ZeroClient {
                 } else {
                     throw ex;
                 }
-            } finally {
+			} finally {
                 synchronized (this) {
                     if (socketPub != null) {
                         socketPub.close();
