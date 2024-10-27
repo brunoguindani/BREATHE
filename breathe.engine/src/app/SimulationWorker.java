@@ -372,7 +372,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         List<SEAction> actions = new ArrayList<SEAction>();
         pe.getActiveActions(actions);
         for(SEAction any : actions)
-        {
+        {	
         	String[] dataLines = any.toString().split("\n");
         	for (int i = 0; i < dataLines.length; i++) {
         	    dataLines[i] = dataLines[i].trim();
@@ -380,15 +380,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	
         	for (String line : dataLines) {
         	    line = line.trim();
-
         	    if (line.contains(":")) {
         	        String[] keyValue = line.split(":");
         	        String key = keyValue[0].trim();
         	        String value = keyValue[1].trim();
-
-        	        if (currentConditionNode != null) {
-        	            currentConditionNode.put(key, Double.parseDouble(value)); 
-        	        }
+        	        if (isNumeric(value)) {
+                        currentConditionNode.put(key, Double.parseDouble(value));
+                    } else {
+                        currentConditionNode.put(key, value); // Memorizza come stringa
+                    }
         	    } else if (!line.isEmpty()) {
         	        currentCondition = line; 
         	        currentConditionNode = objectMapper.createObjectNode(); 
@@ -599,6 +599,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         sce.writeFile(filePath);
         gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/exported/" + scenarioName + ".json");
+    }
+    
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
     
 }
