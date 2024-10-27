@@ -186,7 +186,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             //Send data (to gui and to ext ventilator)
             if(extVent_running) {
             	manage_ext();
-            	System.out.println("aa");
             	zmqServer.setSimulationData(sendData());
             }
             else
