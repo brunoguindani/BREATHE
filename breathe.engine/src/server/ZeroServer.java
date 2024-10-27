@@ -25,10 +25,10 @@ public class ZeroServer {
     public void connect() throws Exception {
         context = new ZContext();
         socketPub = context.createSocket(SocketType.PUB);
-        socketPub.bind("tcp://*:5555");
+        socketPub.connect("tcp://*:5555");
         socketSub = context.createSocket(SocketType.SUB);
         socketSub.connect("tcp://localhost:5556");
-        socketSub.subscribe("Client-".getBytes(ZMQ.CHARSET)); 
+        socketSub.subscribe("Client".getBytes(ZMQ.CHARSET)); 
     }
 
     public void startReceiving() {
@@ -54,7 +54,7 @@ public class ZeroServer {
 
             switch (jsonNode.get("message").asText()) {
                 case "disconnect":
-                    socketPub.send("Server-{\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
+                    socketPub.send("Server {\"message\":\"Disconnected client\"}".getBytes(ZMQ.CHARSET), 0);
                     connectionStable = false;
                     disconnecting = true;
                     selectedMode = null;
