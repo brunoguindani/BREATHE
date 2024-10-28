@@ -30,6 +30,7 @@ import com.kitware.pulse.cdm.actions.SEAdvanceTime;
 import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.cdm.scenario.SEScenario;
+import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -103,15 +104,27 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		pe.getInitialPatient(initialPatient);
 		
 		//get conditions
-		List<SECondition> list = new ArrayList<>();
-		List<Condition> temp_list = new ArrayList<>();
-        pe.getConditions(list);
-        for(SECondition c : list) {
+		List<SECondition> listCondition = new ArrayList<>();
+		List<Condition> temp_listCondition = new ArrayList<>();
+        pe.getConditions(listCondition);
+        for(SECondition c : listCondition) {
         	Condition temp = new Condition(c);
-        	temp_list.add(temp);
+        	temp_listCondition.add(temp);
         }
-        gui.setInitialCondition(temp_list);
-
+        gui.setInitialCondition(temp_listCondition);
+        
+		//get ventilators data (if connected)
+        List<SEAction> listAction = new ArrayList<>();
+		Ventilator temp_ventilator;
+        pe.getActiveActions(listAction);
+        for(SEAction a : listAction) {
+        	if (a instanceof SEEquipmentAction) {
+        		temp_ventilator = new Ventilator(a);
+        		gui.setVentilator(temp_ventilator);
+        		break;
+        	}
+        }
+        
     	this.execute();
     }
     
@@ -390,7 +403,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	        if (isNumeric(value)) {
                         currentConditionNode.put(key, Double.parseDouble(value));
                     } else {
-                        currentConditionNode.put(key, value); // Memorizza come stringa
+                        currentConditionNode.put(key, value); 
                     }
         	    } else if (!line.isEmpty()) {
         	        currentCondition = line; 
