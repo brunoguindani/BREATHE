@@ -73,7 +73,6 @@ public class ControlPanel extends JPanel{
         
         startButton.addActionListener(e -> {
         	startingStandardSimulation();
-        	enableControlStartButton(false);
         });
         
         //STOP SIMULATION BUTTON

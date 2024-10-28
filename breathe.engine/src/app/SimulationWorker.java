@@ -337,6 +337,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         rootNode.set("Patient Data", patientDataNode);
         
     	//print conditions
+        
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {
@@ -353,9 +354,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	        String key = keyValue[0].trim();
         	        String value = keyValue[1].trim();
 
-        	        if (currentConditionNode != null) {
-        	            currentConditionNode.put(key, Double.parseDouble(value)); 
-        	        }
+        	        if (isNumeric(value)) {
+                        currentConditionNode.put(key, Double.parseDouble(value));
+                    } else {
+                        currentConditionNode.put(key, value); 
+                    }
         	    } else if (!line.isEmpty()) {
         	        currentCondition = line; 
         	        currentConditionNode = objectMapper.createObjectNode(); 

@@ -151,6 +151,7 @@ public class App extends JFrame implements GuiCallback {
     		patientConditionPanel.getConditionsPanel().enableButtons(false);
     		ventilatorsPanel.setEnableConnectButton(true);
     		patientConditionPanel.getPatientPanel().enableComponents(false);
+    		controlPanel.enableControlStartButton(false);
     		return true;
     	}
     	return false;
