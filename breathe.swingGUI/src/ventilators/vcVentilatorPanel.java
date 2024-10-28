@@ -19,6 +19,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import app.App;
+import data.Ventilator;
 
 public class vcVentilatorPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -94,7 +95,22 @@ public class vcVentilatorPanel extends JPanel{
         return dataMap;
     }
     
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
+		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod"));
+		flow.setValue(ventilator.getParameters().get("Flow"));
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
+		respirationRate.setValue(ventilator.getParameters().get("RespirationRate"));
+		tidalVol.setValue(ventilator.getParameters().get("TidalVol"));
+		if((int) ventilator.getParameters().get("AssistedMode") == 0) AM.setSelectedItem("AC");
+		else AM.setSelectedItem("CMV");
+		
+    	applyButton.setEnabled(true);
+	}
+    
     public void setEnableApplyButton(boolean enable) {
     	applyButton.setEnabled(enable);
     }
+
+
 }

@@ -205,4 +205,24 @@ public class VentilatorsPanel extends JPanel {
         extPanel.setVolumeLabel(volume);
     }
 
+    //load Patient Data from File
+    public void setVentilatorsData(Ventilator ventilator) {
+    	switch (ventilator.getMode()) {
+        case PC:
+            pcPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.PC;
+            break;
+        case CPAP:
+            cpapPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.VC;
+            break;
+        case VC:
+            vcPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.CPAP;
+            break;
+        default:
+            break;
+    	}
+    }
+
 }

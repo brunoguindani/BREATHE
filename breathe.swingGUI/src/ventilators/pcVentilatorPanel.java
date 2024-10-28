@@ -15,6 +15,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import app.App;
+import data.Ventilator;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -97,7 +98,22 @@ public class pcVentilatorPanel extends JPanel {
         return dataMap;
     }
     
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
+		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod"));
+		inspiratoryPressure.setValue(ventilator.getParameters().get("InspiratoryPressure"));
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
+		respirationRate.setValue(ventilator.getParameters().get("RespirationRate"));
+		slope.setValue(ventilator.getParameters().get("Slope"));
+		if((int) ventilator.getParameters().get("AssistedMode") == 0) AM.setSelectedItem("AC");
+		else AM.setSelectedItem("CMV");
+		
+		applyButton.setEnabled(true);
+	}
+    
     public void setEnableApplyButton(boolean enable) {
     	applyButton.setEnabled(enable);
     }
+
+
 }
