@@ -103,15 +103,24 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		pe.getInitialPatient(initialPatient);
 		
 		//get conditions
-		List<SECondition> list = new ArrayList<>();
-		List<Condition> temp_list = new ArrayList<>();
-        pe.getConditions(list);
-        for(SECondition c : list) {
+		List<SECondition> listCondition = new ArrayList<>();
+		List<Condition> temp_listCondition = new ArrayList<>();
+        pe.getConditions(listCondition);
+        for(SECondition c : listCondition) {
         	Condition temp = new Condition(c);
-        	temp_list.add(temp);
+        	temp_listCondition.add(temp);
         }
-        gui.setInitialCondition(temp_list);
-
+        gui.setInitialCondition(temp_listCondition);
+        
+		//get ventilators data (if connected)
+        List<SEAction> listAction = new ArrayList<>();
+		List<Action> temp_listAction = new ArrayList<>();
+        pe.getActiveActions(listAction);
+        for(SEAction a : listAction) {
+        	Action temp = new Action(a);
+        	temp_listAction.add(temp);
+        }
+        
     	this.execute();
     }
     

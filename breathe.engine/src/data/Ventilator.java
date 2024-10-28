@@ -2,6 +2,7 @@ package data;
 
 import java.util.Map;
 
+import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
@@ -51,6 +52,39 @@ public class Ventilator {
 	    }
 	}
 	
+	public Ventilator(SEEquipmentAction ventilator) {
+		
+		if(ventilator instanceof SEMechanicalVentilatorVolumeControl) {
+			mode = VentilationMode.VC;
+			
+			SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) ventilator;
+			//AC = 0, CMV = 1
+			if(ventilator_VC.getMode().equals(MechanicalVentilatorVolumeControlData.eMode.AssistedControl)) ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
+			else ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
+			
+			ventilator_VC.getFlow().setValue((int) parameters.get("Flow"), VolumePerTimeUnit.L_Per_min);
+			ventilator_VC.getFractionInspiredOxygen().setValue((double) parameters.get("FractionInspiredOxygen"));
+			ventilator_VC.getInspiratoryPeriod().setValue((double) parameters.get("InspiratoryPeriod"), TimeUnit.s);
+			ventilator_VC.getPositiveEndExpiratoryPressure().setValue((int) parameters.get("PositiveEndExpiratoryPressure"), PressureUnit.cmH2O);
+			ventilator_VC.getRespirationRate().setValue((int) parameters.get("RespirationRate"), FrequencyUnit.Per_min);
+			ventilator_VC.getTidalVolume().setValue((int) parameters.get("TidalVolume"), VolumeUnit.mL);
+			
+			
+		} else if(ventilator instanceof SEMechanicalVentilatorPressureControl) {
+			mode = VentilationMode.VC;
+			
+			SEMechanicalVentilatorPressureControl ventilator_VC = (SEMechanicalVentilatorPressureControl) ventilator;
+			System.out.println(ventilator_VC.getMode());
+			
+		} else if(ventilator instanceof SEMechanicalVentilatorContinuousPositiveAirwayPressure) {
+			mode = VentilationMode.VC;
+			
+			SEMechanicalVentilatorContinuousPositiveAirwayPressure ventilator_VC = (SEMechanicalVentilatorContinuousPositiveAirwayPressure) ventilator;
+			
+			
+		}
+	}
+
 	//Set up parameters depending on mode
 	private void manageSEVentilator() {
 		if(mode == VentilationMode.VC) {

@@ -5,15 +5,24 @@ import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.FlowLayout;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import app.App;
+import data.Condition;
 import data.Ventilator;
+import inputItems.ConditionBox;
 import utils.VentilationMode;
 import ventilators.*;
 
@@ -204,5 +213,10 @@ public class VentilatorsPanel extends JPanel {
 
     public void setEXTVolumeLabel(Double volume) {
         extPanel.setVolumeLabel(volume);
+    }
+
+    //load Patient Data from File
+    public boolean setVentilatorsData(List<Condition> list) {
+        return true;
     }
 }
