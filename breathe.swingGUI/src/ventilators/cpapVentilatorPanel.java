@@ -87,9 +87,9 @@ public class cpapVentilatorPanel extends JPanel{
     
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
-		deltaPressureSup.setValue(ventilator.getParameters().get("DeltaPressureSup"));
+		deltaPressureSup.setValue(ventilator.getParameters().get("DeltaPressureSup").intValue());
 		slope.setValue(ventilator.getParameters().get("Slope"));
-		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure").intValue());
 		
 		applyButton.setEnabled(true);
 	}

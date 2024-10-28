@@ -9,7 +9,6 @@ import javax.swing.*;
 
 import panels.*;
 import utils.Pair;
-import utils.VentilationMode;
 import data.Action;
 import data.Condition;
 import data.Patient;
@@ -161,7 +160,6 @@ public class App extends JFrame implements GuiCallback {
     		sim = new SimulationWorker(this);
     		sim.simulationFromFile(file);	
     		patientConditionPanel.getConditionsPanel().enableButtons(false);
-    		ventilatorsPanel.setEnableConnectButton(true);
     		patientConditionPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {
@@ -173,7 +171,6 @@ public class App extends JFrame implements GuiCallback {
     	if(scenarioFile != null) {
     		sim = new SimulationWorker(this);
     		sim.simulationFromScenario(scenarioFile);	
-    		ventilatorsPanel.setEnableConnectButton(true);
     		patientConditionPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {
@@ -223,6 +220,7 @@ public class App extends JFrame implements GuiCallback {
 		controlPanel.showControlStartButton(!enable);
 		actionsPanel.enableButtons(enable);
 		patientConditionPanel.getConditionsPanel().enableButtons(!enable);
+		ventilatorsPanel.manageConnectButton();
 	}
     
 	@Override

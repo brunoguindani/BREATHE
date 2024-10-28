@@ -26,7 +26,7 @@ public class pcVentilatorPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private JSpinner fractionInspOxygen, inspiratoryPeriod, inspiratoryPressure, positiveEndExpPres, respirationRate, slope;
-    private JComboBox<String> AM = new JComboBox<>(new String[]{"AC", "CMV"});
+    private JComboBox<String> assistedMode = new JComboBox<>(new String[]{"AC", "CMV"});
 
     private JButton applyButton;
     
@@ -51,7 +51,7 @@ public class pcVentilatorPanel extends JPanel {
         addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPres = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), inputPanel, gbc);
         addLabelAndField("Respiration Rate - RR", respirationRate = new JSpinner(new SpinnerNumberModel(12, 0, 60, 1)), inputPanel, gbc);
         addLabelAndField("Slope", slope = new JSpinner(new SpinnerNumberModel(0.2, 0, 2, 0.1)), inputPanel, gbc);
-        addLabelAndField("Assisted Mode", AM, inputPanel, gbc);
+        addLabelAndField("Assisted Mode", assistedMode, inputPanel, gbc);
 
         // Create the Apply button
         applyButton = new JButton("Apply");
@@ -91,7 +91,7 @@ public class pcVentilatorPanel extends JPanel {
         dataMap.put("RespirationRate", (int) respirationRate.getValue());
         dataMap.put("Slope", (double) slope.getValue());
         // Include the Assisted Mode as a String value
-        if (AM.getSelectedItem().toString().equals("AC"))
+        if (assistedMode.getSelectedItem().toString().equals("AC"))
             dataMap.put("AssistedMode", 0);
         else
             dataMap.put("AssistedMode", 1);
@@ -101,12 +101,12 @@ public class pcVentilatorPanel extends JPanel {
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
 		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod"));
-		inspiratoryPressure.setValue(ventilator.getParameters().get("InspiratoryPressure"));
-		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
-		respirationRate.setValue(ventilator.getParameters().get("RespirationRate"));
+		inspiratoryPressure.setValue(ventilator.getParameters().get("InspiratoryPressure").intValue());
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure").intValue());
+		respirationRate.setValue(ventilator.getParameters().get("RespirationRate").intValue());
 		slope.setValue(ventilator.getParameters().get("Slope"));
-		if((int) ventilator.getParameters().get("AssistedMode") == 0) AM.setSelectedItem("AC");
-		else AM.setSelectedItem("CMV");
+		if((int) ventilator.getParameters().get("AssistedMode") == 0) assistedMode.setSelectedItem("AC");
+		else assistedMode.setSelectedItem("CMV");
 		
 		applyButton.setEnabled(true);
 	}

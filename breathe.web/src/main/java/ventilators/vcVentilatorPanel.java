@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
 import app.App;
+import data.Ventilator;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -137,6 +138,20 @@ public class vcVentilatorPanel extends VerticalLayout {
         dataMap.put("AssistedMode", assistedMode.getValue().equals("AC") ? 0 : 1);  
         return dataMap;
     }
+    
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
+		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod").doubleValue());
+		flow.setValue(ventilator.getParameters().get("Flow").doubleValue());
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure").doubleValue());
+		respirationRate.setValue(ventilator.getParameters().get("RespirationRate").doubleValue());
+		tidalVol.setValue(ventilator.getParameters().get("TidalVolume").doubleValue());
+		if((int) ventilator.getParameters().get("AssistedMode") == 0) assistedMode.setValue("AC");
+		else assistedMode.setValue("CMV");
+		
+    	applyButton.setEnabled(true);
+	}
+    
    
     public void setEnableApplyButton(boolean enable) {
         applyButton.setEnabled(enable);

@@ -7,6 +7,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
 import app.App;
+import data.Ventilator;
 
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
@@ -107,6 +108,15 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		return dataMap;
 	}
 
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
+		deltaPressureSup.setValue(ventilator.getParameters().get("DeltaPressureSup").doubleValue());
+		slope.setValue(ventilator.getParameters().get("Slope").doubleValue());
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure").doubleValue());
+		
+		applyButton.setEnabled(true);
+	}
+	
 	public void setEnableApplyButton(boolean enable) {
 		applyButton.setEnabled(enable);
 	}

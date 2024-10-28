@@ -6,7 +6,7 @@
 - se faccio partire una simulazione, attacco un ventilatore, cambio schermata, fermo la simulazione, il pulsante Apply rimane attivo.
 - idem se cambio schermata e faccio disconnect.
 
-- se faccio partire da file magari c'è dentro un ventilatore ( un po' come le condizioni)
+- se faccio partire da file (o scenario) magari c'è dentro un ventilatore -> FATTO MA DA TESTARE SOPRATTUTTO L'ESTERNO
 
 - grafici si smacellano quando selezioni/deselezioni
 
