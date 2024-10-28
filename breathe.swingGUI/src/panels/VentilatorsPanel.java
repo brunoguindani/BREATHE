@@ -69,7 +69,6 @@ public class VentilatorsPanel extends JPanel {
 
         JPanel ventilatorsRadioPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,0, 10));
         
-        
         ventilatorsRadioPanel.setBackground(Color.LIGHT_GRAY);
         ventilatorsRadioPanel.add(pcToggleButton);
         ventilatorsRadioPanel.add(cpapToggleButton);
@@ -111,7 +110,7 @@ public class VentilatorsPanel extends JPanel {
         disconnectButton.addActionListener(e -> {
             app.disconnectVentilator();
             connectButton.setEnabled(true);
-            setEnableApplyButton(getCurrentMode(), false);
+            setEnableApplyButton(activeMode, false);
             disconnectButton.setEnabled(false);
             disconnectButton.setText("Disconnect");
             activeMode = null;
@@ -170,7 +169,7 @@ public class VentilatorsPanel extends JPanel {
     public void resetButton() {
         connectButton.setEnabled(false);
         disconnectButton.setEnabled(false);
-        setEnableApplyButton(getCurrentMode(), false);
+        if(activeMode!=null) setEnableApplyButton(activeMode, false);
         disconnectButton.setText("Disconnect");
     }
 
@@ -225,4 +224,5 @@ public class VentilatorsPanel extends JPanel {
             break;
     	}
     }
+
 }

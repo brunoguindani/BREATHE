@@ -88,6 +88,7 @@ public class ControlPanel extends JPanel{
         
         stopButton.addActionListener(e -> {
         	app.stopSimulation();
+        	app.resetVentilatorsButton();
         	enableControlStartButton(true);
         	showControlStartButton(true);
         });

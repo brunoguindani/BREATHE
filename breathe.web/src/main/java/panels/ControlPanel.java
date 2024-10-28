@@ -78,13 +78,13 @@ public class ControlPanel extends HorizontalLayout {
                 UI.getCurrent().getElement().getThemeList().remove(Lumo.LIGHT);
                 UI.getCurrent().getElement().getThemeList().add(Lumo.DARK);
             }
-        });
+        });     
         
         setWidth("100%");
         Div spacer = new Div();
         spacer.getStyle().set("flex-grow", "1");
 
-        add(startButton, stopButton, exportButton, scenarioButton, spacer, themeButton);
+        add(startButton, stopButton, exportButton, scenarioButton, spacer,  themeButton);
     }
 
     

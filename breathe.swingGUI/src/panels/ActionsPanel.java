@@ -81,13 +81,13 @@ public class ActionsPanel extends JPanel{
 
         Map<String, JComponent> copdExacerbationComponents = new HashMap<>();
         copdExacerbationComponents.put("BronchitisSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        copdExacerbationComponents.put("EmphysemaLeftLungSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
-        copdExacerbationComponents.put("EmphysemaRightLungSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
+        copdExacerbationComponents.put("LeftLungEmphysemaSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
+        copdExacerbationComponents.put("RightLungEmphysemaSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
         ActionBox copdExacerbationBox = new ActionBox(app, "COPD Exacerbation", copdExacerbationComponents);
         boxes.add(copdExacerbationBox);
 
         Map<String, JComponent> dyspneaComponents = new HashMap<>();
-        dyspneaComponents.put("Severity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
+        dyspneaComponents.put("RespirationRateSeverity", new JSpinner(new SpinnerNumberModel(0, 0, 1, 0.01)));
         ActionBox dyspneaBox = new ActionBox(app, "Dyspnea", dyspneaComponents);
         boxes.add(dyspneaBox);
 

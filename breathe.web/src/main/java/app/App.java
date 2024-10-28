@@ -40,7 +40,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     private final VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
     private final OutputPanel outputPanel = new OutputPanel(this);
     private final ControlPanel controlPanel = new ControlPanel(this);
-    
+        
     private SimulationWorker sim;
     private ProgressBar loadingIndicator;
     
@@ -77,7 +77,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         buttonContainer.setAlignItems(FlexComponent.Alignment.CENTER);
 
         topArea.add(logoContainer, buttonContainer);
-
+        
         mainLayout.add(topArea);
         
         VerticalLayout leftColumn = createColumn();
@@ -134,8 +134,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
             
         }
     }
-    
-    
+   
     
     /*
      * GUI TO GUI
@@ -290,7 +289,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	
 	@Override
 	public void logStringData(String data) {
-		//DATA FOR LOGPANEL
+
 	}
 
 	@Override

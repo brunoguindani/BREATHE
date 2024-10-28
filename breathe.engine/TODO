@@ -1,8 +1,15 @@
 #############################
 ###TODO###
 ############################
+- se un valore viene rifiutato i bottoni si disattivano lo stesso
 
-- se faccio partire una simulazione, attacco un ventilatore, fermo la simulazione, il pulsante Apply rimane attivo.
+- se faccio partire una simulazione, attacco un ventilatore, cambio schermata, fermo la simulazione, il pulsante Apply rimane attivo.
+- idem se cambio schermata e faccio disconnect.
 
 - se faccio partire da file magari c'è dentro un ventilatore ( un po' come le condizioni)
 
+- grafici si smacellano quando selezioni/deselezioni
+
+
+WEB:
+- se carichi da file poi puoi mettere/togliere condizioni
