@@ -12,6 +12,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 
 import app.App;
+import data.Ventilator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -139,6 +140,19 @@ public class pcVentilatorPanel extends VerticalLayout {
         return dataMap;
     }
 
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
+		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod").doubleValue());
+		inspiratoryPressure.setValue(ventilator.getParameters().get("InspiratoryPressure").doubleValue());
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure").doubleValue());
+		respirationRate.setValue(ventilator.getParameters().get("RespirationRate").doubleValue());
+		slope.setValue(ventilator.getParameters().get("Slope").doubleValue());
+		if((int) ventilator.getParameters().get("AssistedMode") == 0) assistedMode.setValue("AC");
+		else assistedMode.setValue("CMV");
+		
+		applyButton.setEnabled(true);
+	}
+	
     public void setEnableApplyButton(boolean enable) {
         applyButton.setEnabled(enable);
     }

@@ -31,6 +31,7 @@ import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.properties.SEScalarTime;
 import com.kitware.pulse.cdm.scenario.SEScenario;
 import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
+import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorConfiguration;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -113,15 +114,23 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         gui.setInitialCondition(temp_listCondition);
         
+     
 		//get ventilators data (if connected)
-        List<SEAction> listAction = new ArrayList<>();
+        List<SEAction> listAction = new ArrayList<SEAction>();
+		pe.getActiveActions(listAction);
 		Ventilator temp_ventilator;
-        pe.getActiveActions(listAction);
         for(SEAction a : listAction) {
-        	if (a instanceof SEEquipmentAction) {
+        	
+        	if ((a instanceof SEEquipmentAction) && !(a instanceof SEMechanicalVentilatorConfiguration)) {
         		temp_ventilator = new Ventilator(a);
         		gui.setVentilator(temp_ventilator);
         		break;
+        	}
+        	
+        	if((a instanceof SEMechanicalVentilation)){
+        		SEMechanicalVentilation vent = (SEMechanicalVentilation) a;
+        		vent.setState(eSwitch.Off);
+    		    pe.processAction(vent);
         	}
         }
         
@@ -165,6 +174,19 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         gui.setInitialCondition(temp_list);
 
+      //get ventilators data (if connected)
+        List<SEAction> listAction = new ArrayList<SEAction>();
+		pe.getActiveActions(listAction);
+		Ventilator temp_ventilator;
+        for(SEAction a : listAction) {
+        	
+        	if ((a instanceof SEEquipmentAction) && !(a instanceof SEMechanicalVentilatorConfiguration)) {
+        		temp_ventilator = new Ventilator(a);
+        		gui.setVentilator(temp_ventilator);
+        		break;
+        	}
+        }
+        
     	this.execute();
     }
 
@@ -350,7 +372,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         rootNode.set("Patient Data", patientDataNode);
         
     	//print conditions
-        
         pe.getConditions(patient_configuration.getConditions());
         for(SECondition any : patient_configuration.getConditions())
         {

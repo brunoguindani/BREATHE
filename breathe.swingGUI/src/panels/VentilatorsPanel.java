@@ -173,9 +173,6 @@ public class VentilatorsPanel extends JPanel {
         disconnectButton.setText("Disconnect");
     }
 
-    public void setEnableConnectButton(boolean enable) {
-        connectButton.setEnabled(enable);
-    }
 
     private void setEnableApplyButton(VentilationMode mode, boolean enable) {
         switch (mode) {
@@ -193,6 +190,18 @@ public class VentilatorsPanel extends JPanel {
         }
     }
 
+
+    public void manageConnectButton() {
+    	if(activeMode == null)
+    		connectButton.setEnabled(true);
+    	else
+    		connectButton.setEnabled(false);
+    }
+    
+    public void setEnableConnectButton(boolean enable) {
+        connectButton.setEnabled(enable);
+    }
+    
     public void setEnableDisconnectButton(boolean enable) {
         disconnectButton.setEnabled(enable);
     }
@@ -205,7 +214,7 @@ public class VentilatorsPanel extends JPanel {
         extPanel.setVolumeLabel(volume);
     }
 
-    //load Patient Data from File
+    //load Ventilator Data from File (if connected i.e. after an export)
     public void setVentilatorsData(Ventilator ventilator) {
     	switch (ventilator.getMode()) {
         case PC:
@@ -218,11 +227,16 @@ public class VentilatorsPanel extends JPanel {
             break;
         case VC:
             vcPanel.setVentilator(ventilator);
-            activeMode = VentilationMode.CPAP;
+            activeMode = VentilationMode.VC;
             break;
         default:
             break;
     	}
+    	setEnableApplyButton(activeMode, true);
+        disconnectButton.setEnabled(true);
+        disconnectButton.setText("Disconnect " + activeMode);
+        buttonPanel.revalidate();
+        buttonPanel.repaint();
     }
 
 }

@@ -267,7 +267,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		 getUI().ifPresent(ui -> ui.access(() -> {
 			controlPanel.enableControlStartButton(!enable);
 			actionsPanel.enableButtons(enable);
-			ventilatorsPanel.setEnableConnectButton(true);
+			ventilatorsPanel.manageConnectButton();
 			patientConditionPanel.getPatientPanel().enableComponents(false);
 			stopLoading();
          }));
@@ -305,6 +305,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	@Override
 	public void logVolumeExternalVentilatorData(double volume) {
 
+	}
+
+	@Override
+	public void setVentilator(Ventilator ventilator) {
+		ventilatorsPanel.setVentilatorsData(ventilator);
 	}
 
 

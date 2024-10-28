@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.kitware.pulse.cdm.actions.SEAction;
-import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorPressureControlData;
 import com.kitware.pulse.cdm.bind.MechanicalVentilatorActions.MechanicalVentilatorVolumeControlData;
 import com.kitware.pulse.cdm.patient.actions.SEMechanicalVentilation;
@@ -13,10 +12,7 @@ import com.kitware.pulse.cdm.properties.CommonUnits.PressureUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.TimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumeUnit;
-import com.kitware.pulse.cdm.substance.SESubstanceFraction;
 import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
-import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.SEMechanicalVentilatorSettings;
-import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorConfiguration;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
@@ -75,12 +71,12 @@ public class Ventilator {
 			if((int)parameters.get("AssistedMode") == 0) ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.AssistedControl);
 			else ventilator_VC.setMode(MechanicalVentilatorVolumeControlData.eMode.ContinuousMandatoryVentilation);
 			
-			ventilator_VC.getFlow().setValue( parameters.get("Flow").intValue(), VolumePerTimeUnit.L_Per_min);
-			ventilator_VC.getFractionInspiredOxygen().setValue( parameters.get("FractionInspiredOxygen").doubleValue());
-			ventilator_VC.getInspiratoryPeriod().setValue(parameters.get("InspiratoryPeriod").doubleValue(), TimeUnit.s);
-			ventilator_VC.getPositiveEndExpiratoryPressure().setValue( parameters.get("PositiveEndExpiratoryPressure").intValue(), PressureUnit.cmH2O);
-			ventilator_VC.getRespirationRate().setValue( parameters.get("RespirationRate").intValue(), FrequencyUnit.Per_min);
-			ventilator_VC.getTidalVolume().setValue(parameters.get("TidalVolume").intValue(), VolumeUnit.mL);
+			ventilator_VC.getFlow().setValue((int) parameters.get("Flow"), VolumePerTimeUnit.L_Per_min);
+			ventilator_VC.getFractionInspiredOxygen().setValue((double) parameters.get("FractionInspiredOxygen"));
+			ventilator_VC.getInspiratoryPeriod().setValue((double) parameters.get("InspiratoryPeriod"), TimeUnit.s);
+			ventilator_VC.getPositiveEndExpiratoryPressure().setValue((int) parameters.get("PositiveEndExpiratoryPressure"), PressureUnit.cmH2O);
+			ventilator_VC.getRespirationRate().setValue((int) parameters.get("RespirationRate"), FrequencyUnit.Per_min);
+			ventilator_VC.getTidalVolume().setValue((int) parameters.get("TidalVolume"), VolumeUnit.mL);
 			
 			this.ventilator = ventilator_VC;
 			
@@ -125,30 +121,26 @@ public class Ventilator {
 	}
 	
 	private void loadVentilatorData(SEAction ventilator) {
-		SEMechanicalVentilatorConfiguration vent_conf = (SEMechanicalVentilatorConfiguration) ventilator;
-		SEMechanicalVentilatorSettings vent_set = vent_conf.getSettings();
-		vent_set.setConnection(eSwitch.Off);
 		parameters = new HashMap<>();
-		if(vent_set.getInspirationTargetFlow() != null) {
+		if(ventilator instanceof SEMechanicalVentilatorVolumeControl) {
 			mode = VentilationMode.VC;
 			
+			SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) ventilator;
 			//AC = 0, CMV = 1
-			if(vent_set.getInspirationPatientTriggerRespiratoryModel().getNumber() == 2) parameters.put("AssistedMode", 0);
+			if(ventilator_VC.getMode().equals(MechanicalVentilatorVolumeControlData.eMode.AssistedControl)) parameters.put("AssistedMode", 0);
 			else parameters.put("AssistedMode", 1);
 			
-			parameters.put("Flow", vent_set.getInspirationTargetFlow().getValue());
-			for(SESubstanceFraction sf : vent_set.getFractionInspiredGas())
-				parameters.put("FractionInspiredOxygen", sf.getAmount().getValue());
-			parameters.put("InspiratoryPeriod", vent_set.getInspirationWaveformPeriod().getValue());
-			parameters.put("PositiveEndExpiratoryPressure", vent_set.getPositiveEndExpiratoryPressure().getValue());
-			parameters.put("RespirationRate", 60/(vent_set.getExpirationCycleTime().getValue() + vent_set.getInspirationMachineTriggerTime().getValue()));
-			parameters.put("TidalVolume", vent_set.getInspirationLimitVolume().getValue());
-
-			vent_set.setConnection(eSwitch.Off);
+			parameters.put("Flow", ventilator_VC.getFlow().getValue());
+			parameters.put("FractionInspiredOxygen", ventilator_VC.getFractionInspiredOxygen().getValue());
+			parameters.put("InspiratoryPeriod", ventilator_VC.getInspiratoryPeriod().getValue());
+			parameters.put("PositiveEndExpiratoryPressure", ventilator_VC.getPositiveEndExpiratoryPressure().getValue());
+			parameters.put("RespirationRate", ventilator_VC.getRespirationRate().getValue());
+			parameters.put("TidalVolume", ventilator_VC.getTidalVolume().getValue());
+			
+			this.ventilator = ventilator_VC;
 			
 		} else if(ventilator instanceof SEMechanicalVentilatorPressureControl) {
 			mode = VentilationMode.PC;
-			
 			SEMechanicalVentilatorPressureControl ventilator_PC = (SEMechanicalVentilatorPressureControl) ventilator;
 
 			//AC = 0, CMV = 1
@@ -162,6 +154,8 @@ public class Ventilator {
 			parameters.put("RespirationRate", ventilator_PC.getRespirationRate().getValue());
 			parameters.put("InspiratoryPressure", ventilator_PC.getInspiratoryPressure().getValue());
 			
+			this.ventilator = ventilator_PC;
+			
 		} else if(ventilator instanceof SEMechanicalVentilatorContinuousPositiveAirwayPressure) {
 			mode = VentilationMode.CPAP;
 			
@@ -171,9 +165,9 @@ public class Ventilator {
 			parameters.put("FractionInspiredOxygen", ventilator_CPAP.getFractionInspiredOxygen().getValue());
 			parameters.put("DeltaPressureSupport", ventilator_CPAP.getDeltaPressureSupport().getValue());
 			parameters.put("PositiveEndExpiratoryPressure", ventilator_CPAP.getPositiveEndExpiratoryPressure().getValue());
+			
+			this.ventilator = ventilator_CPAP;
 		}
-		
-		manageSEVentilator();
 		
 	}
 	

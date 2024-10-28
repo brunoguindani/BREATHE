@@ -181,8 +181,39 @@ public class VentilatorsPanel extends VerticalLayout {
         setEnableApplyButton(activeMode, false);
         disconnectButton.setText("Disconnect");
     }
+    
+    public void manageConnectButton() {
+    	if(activeMode == null)
+    		connectButton.setEnabled(true);
+    	else
+    		connectButton.setEnabled(false);
+    }
 
 	public void setEnableConnectButton(boolean b) {
 		connectButton.setEnabled(b);
 	}
+
+    //load Ventilator Data from File (if connected i.e. after an export)
+    public void setVentilatorsData(Ventilator ventilator) {
+    	switch (ventilator.getMode()) {
+        case PC:
+            pcPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.PC;
+            break;
+        case CPAP:
+            cpapPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.VC;
+            break;
+        case VC:
+            vcPanel.setVentilator(ventilator);
+            activeMode = VentilationMode.VC;
+            break;
+        default:
+            break;
+    	}
+    	setEnableApplyButton(activeMode, true);
+        disconnectButton.setEnabled(true);
+        disconnectButton.setText("Disconnect " + activeMode);
+    }
+    
 }
