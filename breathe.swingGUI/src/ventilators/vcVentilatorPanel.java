@@ -101,7 +101,7 @@ public class vcVentilatorPanel extends JPanel{
 		flow.setValue(ventilator.getParameters().get("Flow"));
 		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
 		respirationRate.setValue(ventilator.getParameters().get("RespirationRate"));
-		tidalVol.setValue(ventilator.getParameters().get("TidalVol"));
+		tidalVol.setValue(ventilator.getParameters().get("TidalVolume"));
 		if((int) ventilator.getParameters().get("AssistedMode") == 0) AM.setSelectedItem("AC");
 		else AM.setSelectedItem("CMV");
 		
