@@ -6,25 +6,27 @@ import com.vaadin.flow.router.Route;
 
 import app.App;
 import java.util.LinkedList;
-/*
-    CLASS NOT USED
-*/
 
 @Route("logpanel")
 public class LogPanel extends VerticalLayout {
+	
+	/*
+	 * NOT USED 
+	 */
+	
     private static final long serialVersionUID = 1L;
     
 	private TextArea resultArea;
     private LinkedList<String> logLines; 
-    private static final int MAX_LINES = 30; 
+    private static final int MAX_LINES = 20; 
 
     public LogPanel(App app) {
-		getStyle().set("border", "1px solid #ccc"); 
         setPadding(false);
         setMargin(false);
 
         resultArea = new TextArea();
         resultArea.setReadOnly(true); 
+        resultArea.setSizeFull();
         resultArea.getStyle().set("background-color", "white");
         resultArea.getStyle().set("font-family", "monospace");
         resultArea.getStyle().set("font-size", "12px");
@@ -42,6 +44,11 @@ public class LogPanel extends VerticalLayout {
             logLines.removeFirst();
         }
 
-        resultArea.setValue(String.join("\n", logLines));
+        StringBuilder logContent = new StringBuilder();
+        for (String line : logLines) {
+            logContent.append(line).append("\n");
+        }
+        
+        resultArea.setValue(logContent.toString());
     }
 }

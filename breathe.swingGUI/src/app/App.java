@@ -9,6 +9,7 @@ import javax.swing.*;
 
 import panels.*;
 import utils.Pair;
+import utils.VentilationMode;
 import data.Action;
 import data.Condition;
 import data.Patient;
@@ -137,8 +138,6 @@ public class App extends JFrame implements GuiCallback {
 	public String getPatientName() {
 		return patientConditionPanel.getPatientPanel().getPatientName();
 	}
-	
-
     
     /*
      * GUI TO SIMULATIONWORKER

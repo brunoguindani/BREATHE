@@ -106,7 +106,6 @@ public class ZeroServer {
     	if (data != null && !data.isEmpty()) {
     		String toSend = "Server " + data;
     	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
-    	    System.out.println(toSend);
     	} 
     }
 

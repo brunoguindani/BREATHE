@@ -65,7 +65,7 @@ public class Action {
 	            break;
 
 	        case "Brain Injury":
-	            SEAcuteStress brainInjury = new SEAcuteStress();
+	            SEBrainInjury brainInjury = new SEBrainInjury();
 	            brainInjury.getSeverity().setValue(parameters.get("Severity"));
 	            action = brainInjury;
 	            break;
