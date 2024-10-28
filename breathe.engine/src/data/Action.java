@@ -6,7 +6,6 @@ import java.util.Map;
 import com.kitware.pulse.cdm.actions.SEAction;
 import com.kitware.pulse.cdm.bind.Physiology.eLungCompartment;
 import com.kitware.pulse.cdm.patient.actions.*;
-import com.kitware.pulse.cdm.system.equipment.SEEquipmentAction;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.*;
 import com.kitware.pulse.cdm.properties.CommonUnits.VolumePerTimeUnit;
 
@@ -33,11 +32,6 @@ public class Action {
 	    this.parameters = new HashMap<>(pairs); 
 	    
 	    generateSEAction(); //generate and save SEAction object
-	}
-	
-	public Action(SEAction action) {
-		this.action = action;
-		extractVentilatorsFromAction();
 	}
 	
 
@@ -139,16 +133,6 @@ public class Action {
 	            action = leak;
 	            break;
 	    }
-	}
-	
-	/*
-	 * extract from SECondition object
-	 */
-	private void extractVentilatorsFromAction() {
-
-	    if (this.action instanceof SEEquipmentAction) {
-	        new Ventilator((SEEquipmentAction) action);
-	    } 
 	}
 	
 	/*

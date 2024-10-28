@@ -18,6 +18,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import app.App;
+import data.Ventilator;
 
 public class cpapVentilatorPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
@@ -84,7 +85,18 @@ public class cpapVentilatorPanel extends JPanel{
         return dataMap;
     }
     
+	public void setVentilator(Ventilator ventilator) {
+		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
+		deltaPressureSup.setValue(ventilator.getParameters().get("DeltaPressureSup"));
+		slope.setValue(ventilator.getParameters().get("Slope"));
+		positiveEndExpPres.setValue(ventilator.getParameters().get("PositiveEndExpiratoryPressure"));
+		
+		applyButton.setEnabled(true);
+	}
+    
     public void setEnableApplyButton(boolean enable) {
     	applyButton.setEnabled(enable);
     }
+
+
 }

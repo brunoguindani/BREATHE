@@ -3,6 +3,7 @@ package interfaces;
 import java.util.List;
 
 import data.Condition;
+import data.Ventilator;
 
 public interface GuiCallback {
 	
@@ -24,6 +25,6 @@ public interface GuiCallback {
     
     void setInitialCondition(List<Condition> list);
 
-	void setVentilatorsCondition(List<Condition> list);
+	void setVentilator(Ventilator ventilator);
     
 }

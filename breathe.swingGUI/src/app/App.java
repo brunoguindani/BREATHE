@@ -257,7 +257,7 @@ public class App extends JFrame implements GuiCallback {
 	}
 
 	@Override
-	public void setVentilatorsCondition(List<Condition> list) {	
-		patientConditionPanel.getConditionsPanel().setInitialConditions(list);
+	public void setVentilator(Ventilator ventilator) {
+		ventilatorsPanel.setVentilatorsData(ventilator);
 	}
 }
