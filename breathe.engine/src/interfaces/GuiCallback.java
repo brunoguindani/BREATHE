@@ -23,7 +23,7 @@ public interface GuiCallback {
     
     void logVolumeExternalVentilatorData(double volume);
     
-    void setInitialCondition(List<Condition> list);
+    void setCondition(List<Condition> list);
 
 	void setVentilator(Ventilator ventilator);
     

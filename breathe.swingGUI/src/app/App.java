@@ -137,6 +137,7 @@ public class App extends JFrame implements GuiCallback {
 	public String getPatientName() {
 		return patientConditionPanel.getPatientPanel().getPatientName();
 	}
+	
     
     /*
      * GUI TO SIMULATIONWORKER
@@ -249,8 +250,8 @@ public class App extends JFrame implements GuiCallback {
 	}
 	
 	@Override
-	public void setInitialCondition(List<Condition> list) {	
-		patientConditionPanel.getConditionsPanel().setInitialConditions(list);
+	public void setCondition(List<Condition> list) {	
+		patientConditionPanel.getConditionsPanel().setConditions(list);
 	}
 
 	@Override

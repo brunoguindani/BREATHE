@@ -20,8 +20,6 @@ public class ZeroServer {
     private double pressure;
     
 
-    private String data;
-
     public void connect() throws Exception {
         context = new ZContext();
         
@@ -102,11 +100,17 @@ public class ZeroServer {
         }
     }
 
-    private void sendData() {
-    	if (data != null && !data.isEmpty()) {
-    		String toSend = "Server " + data;
-    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
-    	} 
+    public void publishSimulationData(String data) {
+        try {
+			if(running && !Thread.currentThread().isInterrupted()) {
+				if (data != null && !data.isEmpty()) {
+		    		String toSend = "Server " + data;
+		    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
+		    	} 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public boolean isConnectionStable() {
@@ -129,15 +133,6 @@ public class ZeroServer {
         return pressure;
     }
 
-    public void setSimulationData(String data) {
-        try {
-			this.data = data;
-			if(running && !Thread.currentThread().isInterrupted()) {
-				sendData();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
+
     
 }

@@ -198,21 +198,6 @@ public class VentilatorsPanel extends JPanel {
     		connectButton.setEnabled(false);
     }
     
-    public void setEnableConnectButton(boolean enable) {
-        connectButton.setEnabled(enable);
-    }
-    
-    public void setEnableDisconnectButton(boolean enable) {
-        disconnectButton.setEnabled(enable);
-    }
-
-    public void setEXTPressureLabel(Double pressure) {
-        extPanel.setPressureLabel(pressure);
-    }
-
-    public void setEXTVolumeLabel(Double volume) {
-        extPanel.setVolumeLabel(volume);
-    }
 
     //load Ventilator Data from File (if connected i.e. after an export)
     public void setVentilatorsData(Ventilator ventilator) {
@@ -237,6 +222,23 @@ public class VentilatorsPanel extends JPanel {
         disconnectButton.setText("Disconnect " + activeMode);
         buttonPanel.revalidate();
         buttonPanel.repaint();
+    }
+
+    
+    public void setEnableConnectButton(boolean enable) {
+        connectButton.setEnabled(enable);
+    }
+    
+    public void setEnableDisconnectButton(boolean enable) {
+        disconnectButton.setEnabled(enable);
+    }
+
+    public void setEXTPressureLabel(Double pressure) {
+        extPanel.setPressureLabel(pressure);
+    }
+
+    public void setEXTVolumeLabel(Double volume) {
+        extPanel.setVolumeLabel(volume);
     }
 
 }

@@ -120,6 +120,7 @@ public class Ventilator {
 	    manageSEVentilator(); 
 	}
 	
+	//create a ventilator (when simulation loaded from file)
 	private void loadVentilatorData(SEAction ventilator) {
 		parameters = new HashMap<>();
 		if(ventilator instanceof SEMechanicalVentilatorVolumeControl) {

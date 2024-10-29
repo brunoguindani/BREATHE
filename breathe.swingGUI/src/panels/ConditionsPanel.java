@@ -192,7 +192,7 @@ public class ConditionsPanel extends JPanel{
         }    	
     }
 
-    public void setInitialConditions(List<Condition> list) {
+    public void setConditions(List<Condition> list) {
     	activeConditions.clear();
         boolean found = false;
         int i = 0;

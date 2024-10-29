@@ -13,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.progressbar.ProgressBar;
@@ -30,7 +29,6 @@ import panels.*;
 import utils.Pair;
 
 @PageTitle("Breathe")
-@Menu(icon = "line-awesome/svg/pencil-ruler-solid.svg", order = 0)
 @Route("")
 public class App extends Composite<VerticalLayout> implements GuiCallback {
 	private static final long serialVersionUID = 1L;
@@ -82,7 +80,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
         
         VerticalLayout leftColumn = createColumn();
         leftColumn.getStyle().set("padding", "0px"); 
-        //leftColumn.setWidth("25vw");
 
         Tabs leftTabs = createLeftTabs();
         VerticalLayout leftContentLayout = new VerticalLayout();
@@ -287,30 +284,35 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
          }));
 	}
 	
-	@Override
-	public void logStringData(String data) {
-
-	}
 
 	@Override
-	public void setInitialCondition(List<Condition> list) {
-		patientConditionPanel.getConditionsPanel().setInitialConditions(list);
+	public void setCondition(List<Condition> list) {
+		patientConditionPanel.getConditionsPanel().setConditions(list);
 	}	
 
+	
+	@Override
+	public void setVentilator(Ventilator ventilator) {
+		ventilatorsPanel.setVentilatorsData(ventilator);
+	}
+
+	//log panel not present
+	@Override
+	public void logStringData(String data) {
+	}
+
+	//external ventilator not present
 	@Override
 	public void logPressureExternalVentilatorData(double pressure) {
 
 	}
 
+	//external ventilator not present
 	@Override
 	public void logVolumeExternalVentilatorData(double volume) {
 
 	}
 
-	@Override
-	public void setVentilator(Ventilator ventilator) {
-		ventilatorsPanel.setVentilatorsData(ventilator);
-	}
 
 
 }

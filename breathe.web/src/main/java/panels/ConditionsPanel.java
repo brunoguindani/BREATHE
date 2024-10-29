@@ -113,7 +113,7 @@ public class ConditionsPanel extends VerticalLayout {
         }
     }
 
-    public void setInitialConditions(List<Condition> list) {
+    public void setConditions(List<Condition> list) {
         activeConditions.clear();
         for (ConditionBox box : boxes) {
             boolean found = false;
