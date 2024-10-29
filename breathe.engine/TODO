@@ -1,6 +1,6 @@
-#############################
+##########
 ###TODO###
-############################
+##########
 - se un valore viene rifiutato i bottoni si disattivano lo stesso
 
 - se faccio partire una simulazione, attacco un ventilatore, cambio schermata, fermo la simulazione, il pulsante Apply rimane attivo.
@@ -13,3 +13,5 @@
 
 WEB:
 - se carichi da file poi puoi mettere/togliere condizioni
+
+- aggiungere commenti

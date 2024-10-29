@@ -29,7 +29,7 @@ public class InfoBox extends ItemDisplay {
             g2.setFont(g2.getFont().deriveFont(16f));
             g2.setColor(TEXT_COLOR);
             int titleWidth = g2.getFontMetrics().stringWidth(title);
-            g2.drawString(title, (getWidth() - titleWidth) / 2, 25);  // Posiziona il titolo
+            g2.drawString(title, (getWidth() - titleWidth) / 2, 25);  // title
         }
 
         // Add value
@@ -37,14 +37,14 @@ public class InfoBox extends ItemDisplay {
         g2.setColor(TEXT_COLOR);
         String valueStr = String.format("%.2f", currentValue);
         int valueWidth = g2.getFontMetrics().stringWidth(valueStr);
-        g2.drawString(valueStr, (getWidth() - valueWidth) / 2, getHeight() / 2);  // Posiziona il valore
+        g2.drawString(valueStr, (getWidth() - valueWidth) / 2, getHeight() / 2);  // value
 
         // Add unit
         if (unit != null) {
             g2.setFont(g2.getFont().deriveFont(14f));
             String unitStr = "(" + unit.toString() + ")";
             int unitWidth = g2.getFontMetrics().stringWidth(unitStr);
-            g2.drawString(unitStr, (getWidth() - unitWidth) / 2, getHeight() / 2 + 30);  // Posiziona l'unità
+            g2.drawString(unitStr, (getWidth() - unitWidth) / 2, getHeight() / 2 + 30);  // unity
         }
     }
 

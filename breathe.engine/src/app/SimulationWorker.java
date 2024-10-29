@@ -112,7 +112,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	Condition temp = new Condition(c);
         	temp_listCondition.add(temp);
         }
-        gui.setInitialCondition(temp_listCondition);
+        gui.setCondition(temp_listCondition);
         
      
 		//get ventilators data (if connected)
@@ -172,7 +172,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         	Condition temp = new Condition(c);
         	temp_list.add(temp);
         }
-        gui.setInitialCondition(temp_list);
+        gui.setCondition(temp_list);
 
       //get ventilators data (if connected)
         List<SEAction> listAction = new ArrayList<SEAction>();
@@ -221,7 +221,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             //Send data (to gui and to ext ventilator)
             if(extVent_running) {
             	manage_ext();
-            	zmqServer.setSimulationData(sendData());
+            	zmqServer.publishSimulationData(sendData());
             }
             else
             	sendData();
@@ -318,7 +318,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		            //Send data (to gui and to ext ventilator)
 		            if(extVent_running) {
 		            	manage_ext();
-		            	zmqServer.setSimulationData(sendData());
+		            	zmqServer.publishSimulationData(sendData());
 		            }
 		            else
 		            	sendData();
@@ -598,16 +598,25 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		gui.minilogStringData("\nApplying " +  action.getAction().toString());
 		pe.processAction(action.getAction());
 	}
+	
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
 	public void exportSimulation(String exportFilePath) {
-		if ( pe.serializeToFile(exportFilePath) )  
+		if (pe.serializeToFile(exportFilePath))  
 			gui.minilogStringData("\nExported Patient File to " + exportFilePath);
 		else
 			gui.minilogStringData("\nExported Failed to " + exportFilePath);
 	}
 
 	
-    public void createScenario(String patientFile,String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
+    public void createScenario(String patientFile ,String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
         SEScenario sce = new SEScenario();
 
         sce.setName(scenarioName);
@@ -636,15 +645,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         sce.writeFile(filePath);
         gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/exported/" + scenarioName + ".json");
-    }
-    
-    private boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
     
 }
