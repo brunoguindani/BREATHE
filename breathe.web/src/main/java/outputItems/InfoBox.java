@@ -4,6 +4,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class InfoBox extends ItemDisplay {
+	
+	/*
+	 * ITEM TO DISPLAY A SINGLE OUTPUT VALUE AND NAME
+	 */
     private static final long serialVersionUID = 1L;
     
     protected Span titleLabel;

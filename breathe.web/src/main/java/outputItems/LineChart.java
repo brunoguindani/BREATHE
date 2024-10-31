@@ -7,6 +7,9 @@ import com.vaadin.flow.component.page.Push;
 @Route
 @Push
 public class LineChart extends ItemDisplay {
+	/*
+	 * Item connected to javascript to display dynamic line charts
+	 */
     private static final long serialVersionUID = 1L;
 
     private Div chartContainer; 

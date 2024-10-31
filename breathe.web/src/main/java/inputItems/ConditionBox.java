@@ -14,6 +14,11 @@ import app.App;
 import data.Condition;
 
 public class ConditionBox extends VerticalLayout {
+	
+	/*
+	 * ITEM to display a button for a single Condition
+	 */
+    
 	private static final long serialVersionUID = 1L;
 	
 	private Button applySectionButton;
@@ -35,18 +40,21 @@ public class ConditionBox extends VerticalLayout {
 
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
-
+		
+        //Button with Conditions Name to show text fields
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
         headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
+        // Text fields and Apply Buttons
         VerticalLayout fieldsLayout = new VerticalLayout();
         fieldsLayout.getStyle().set("margin","0px" );
         fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
 
+        // Add Labels and Components
         for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
@@ -59,6 +67,7 @@ public class ConditionBox extends VerticalLayout {
             fieldsLayout.add(entry.getValue()); 
         }
 
+        // "Apply" button
         applySectionButton = new Button("Apply", e -> applyCondition());
         applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         applySectionButton.setEnabled(true);
@@ -67,6 +76,7 @@ public class ConditionBox extends VerticalLayout {
         add(headerButton, fieldsLayout);
     }
 
+    //Show /Hide fields
     private void toggleFields() {
         VerticalLayout fieldsLayout = (VerticalLayout) getComponentAt(1);
         boolean isVisible = !fieldsLayout.isVisible();
@@ -74,6 +84,7 @@ public class ConditionBox extends VerticalLayout {
         headerButton.setText(isVisible ? title + " (Close)" : title);
     }
 
+    //Apply Condition to Patient
     private void applyCondition() {
         if (!applied) {
 
@@ -111,6 +122,7 @@ public class ConditionBox extends VerticalLayout {
         }
     }
 
+    //enable/disable fields
     private void enableFields(boolean enable) {
         for (Map.Entry<String, Component> entry : components.entrySet()) {
         	if (entry.getValue() instanceof HasEnabled) { 
@@ -119,16 +131,20 @@ public class ConditionBox extends VerticalLayout {
         }
     }
 
+    //condition applied to patient
     public boolean isApplied() {
         return applied;
     }
 
+    //get name of condition
     public String getTitle() {
         return title;
     }
-
+    
+    //set components to 0
     public void reset() {
         enableFields(true);
+        if(applied) app.removeCondition(title);
         applySectionButton.setText("Apply");
         headerButton.getStyle().set("background-color", "");
         for (Map.Entry<String, Component> entry : components.entrySet()) {
@@ -140,7 +156,7 @@ public class ConditionBox extends VerticalLayout {
         applied = false;
     }
 
-
+    //set condition from file
     public void setComponents(Map<String, Double> parameters) {
         for (Map.Entry<String, Double> entry : parameters.entrySet()) {
             String key = entry.getKey();
@@ -159,6 +175,7 @@ public class ConditionBox extends VerticalLayout {
         app.applyCondition(new Condition(title, parameters));
     }
     
+    //enable button and components
     public void enableBox(boolean enable) {
     	applySectionButton.setEnabled(enable);
     	enableFields(enable);

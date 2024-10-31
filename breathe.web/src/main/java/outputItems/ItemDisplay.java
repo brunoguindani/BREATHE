@@ -3,6 +3,9 @@ package outputItems;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public abstract class ItemDisplay extends VerticalLayout {
+	/*
+	 * Abtract class for output items
+	 */
 	private static final long serialVersionUID = 1L;
 	
 	protected String title;
