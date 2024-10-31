@@ -19,6 +19,11 @@ import app.App;
 import data.Action;
 
 public class ActionBox extends VerticalLayout {
+	
+	/*
+	 * ITEM to display a button for a single Action
+	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	private String title;
@@ -40,18 +45,21 @@ public class ActionBox extends VerticalLayout {
 
 		getStyle().set("margin","0px" );
 		getStyle().set("padding","0px" );
-      
+
+		//Button with Actions Name to show text fields
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
         headerButton.setWidth("23.5vw");
         headerButton.addClickListener(e -> toggleFields());
 
+        // Text fields and Apply Buttons
         VerticalLayout fieldsLayout = new VerticalLayout();
         fieldsLayout.getStyle().set("margin","0px" );
         fieldsLayout.getStyle().set("padding","0px" );
         fieldsLayout.setAlignItems(Alignment.CENTER);
         fieldsLayout.setVisible(false);
-        
+ 
+        // Add Labels and JComponents
         for (Map.Entry<String, Component> entry : components.entrySet()) {
             if (entry.getValue() instanceof NumberField) {
                 NumberField numberField = (NumberField) entry.getValue(); 
@@ -64,10 +72,12 @@ public class ActionBox extends VerticalLayout {
             fieldsLayout.add(entry.getValue()); 
         }
 
+        // "Apply" button
         applySectionButton = new Button("Apply", e -> applyAction());
         applySectionButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY); 
         applySectionButton.setEnabled(false);
         
+        //Time input for scenario creation
         if(forScenario) {
             createTimeFields(fieldsLayout); 	
         }else{
@@ -77,6 +87,7 @@ public class ActionBox extends VerticalLayout {
         add(headerButton, fieldsLayout);
     }
 
+    //Create time input area
     private void createTimeFields(VerticalLayout fieldsLayout) {
         HorizontalLayout timeLayout = new HorizontalLayout();
         timeLayout.setWidth("23vw");
@@ -117,12 +128,14 @@ public class ActionBox extends VerticalLayout {
         fieldsLayout.add(timeLayout);
     }
 
+    // Show/Hide fields
     private void toggleFields() {
         boolean isVisible = !getComponentAt(1).isVisible();
         getComponentAt(1).setVisible(isVisible);
         headerButton.setText(isVisible ? title + " (Close)" : title);
     }
-    
+  
+    //enable button and components
     public void enableBox(boolean enable) {
     	applySectionButton.setEnabled(enable);
     	for (Map.Entry<String, Component> entry : components.entrySet()) {
@@ -132,6 +145,7 @@ public class ActionBox extends VerticalLayout {
     	}
     }
 
+    //add action to scenario table
     private void addToScenario() {
         int totalSeconds = getTotalTimeInSeconds();
         Map<String, Double> parameters = new HashMap<>();
@@ -158,6 +172,7 @@ public class ActionBox extends VerticalLayout {
         Notification.show("Action added to scenario!",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
+    //apply action at current simulation
     private void applyAction() {
         Map<String, Double> parameters = new HashMap<>();
         
