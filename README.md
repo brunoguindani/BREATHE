@@ -50,7 +50,7 @@ Once the server from the Swing interface is running, you can connect a client. T
 We have created a demo, but you can adjust the values for pressure or volume that you wish to send, depending on your ventilator. Simply modify the `processVolume` and `processPressure` classes to set the desired parameters.
 
 
-### Web App Usage
+## Web App Usage
 
 The view is composed of the following elements:
 
