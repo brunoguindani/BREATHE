@@ -26,7 +26,7 @@ If you successfully launch the web app, you can access it at [http://localhost:8
 
 The view is composed of the following elements:
 
-- **Patient**: Displays all information about the patient, including name, age, weight, etc.
+- **Patient**: Displays all information about the patient.
 - **Conditions**: Shows all conditions applied to the patient at the start of the simulation.
 - **Actions**: Lists all actions that can be applied to the patient during the simulation after it has started.
 - **Ventilators**: Contains all ventilators that can be connected during the simulation. In addition to the standard ventilator, there is also a ZeroMQ server representing an external ventilator. When connected, the server will open and search for a connection (see ZeroMQ Client usage).
@@ -41,3 +41,23 @@ The simulation can be started using three methods:
 2. **From File**: You can select a states file to start the simulation immediately. At any point during the simulation, you can export the current states and reload them in the future to resume from that point.
 
 3. **From Scenario File**: You can choose a scenario file created from the scenario panel. The simulation will start immediately because scenario files use a states file.
+
+
+## External Ventilator Usage
+
+In the `breathe.zeroMQ` package, there is a `zeroClient` class that serves as a demo illustrating what you can do to test an external ventilator. 
+Once the server from the Swing interface is running, you can connect a client. This client will receive information about the simulation and can send a specified pressure or volume.
+We have created a demo, but you can adjust the values for pressure or volume that you wish to send, depending on your ventilator. Simply modify the `processVolume` and `processPressure` classes to set the desired parameters.
+
+
+## Web-app usage
+
+In the `breathe.zeroMQ` package, there is a `zeroClient` class that serves as a demo illustrating what you can do to test an external ventilator. 
+Once the server from the Swing interface is running, you can connect a client. This client will receive information about the simulation and can send a specified pressure or volume.
+We have created a demo, but you can adjust the values for pressure or volume that you wish to send, depending on your ventilator. Simply modify the `processVolume` and `processPressure` classes to set the desired parameters.
+
+
+
+
+
+
