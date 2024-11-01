@@ -178,7 +178,7 @@ public class PatientPanel extends VerticalLayout {
 	}
 
 
-
+	// Convert the value to kg and cm
 	private void checkUnits(Map<String, Double> parameters) {
 
 		if (weightUnitComboBox.getValue().equals("lb")) {
@@ -278,10 +278,6 @@ public class PatientPanel extends VerticalLayout {
 			}
 		}
 	}
-	
-	public void checkField() {
-		
-	}
 
 	public void enableComponents(boolean enabled) {
 		nameField.setEnabled(enabled);
@@ -331,6 +327,7 @@ public class PatientPanel extends VerticalLayout {
 		return new Patient(name, sex, parameters, conditions);
 	}
 
+	//take patient data from file (start from file/scenario)
     public boolean loadPatientData(String patientFilePath) {
         try { 
             ObjectMapper mapper = new ObjectMapper();
