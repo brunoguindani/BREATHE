@@ -18,9 +18,10 @@ public class ActionBox {
 	 */
     
     private JPanel sectionPanel;
+    private JButton applySectionButton;
+    
     private String title;
     private Map<String, JComponent> components;
-    private JButton applySectionButton;
     
     private JSpinner[] time = new JSpinner[3]; //0 hours, 1 minutes, 2 seconds
     

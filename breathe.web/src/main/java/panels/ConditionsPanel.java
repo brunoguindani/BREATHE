@@ -102,17 +102,18 @@ public class ConditionsPanel extends VerticalLayout {
         activeConditions.removeIf(c -> c.getTitle().equals(title));
     }
 
-    public List<Condition> getActiveConditions() {
-        return activeConditions;
-    }
-
     public void enableButtons(boolean enable) {
         resetButton.setEnabled(enable);
         for (ConditionBox box : boxes) {
             box.enableBox(enable); 
         }
     }
+    
+    public List<Condition> getActiveConditions() {
+        return activeConditions;
+    }
 
+    //set condition if setted in file (start from file/scenario)
     public void setConditions(List<Condition> list) {
         activeConditions.clear();
         for (ConditionBox box : boxes) {

@@ -151,6 +151,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     /*
      * GUI TO GUI
      */
+    
     //searches for input folder
     public File getFolder(String f) {
         File folder = new File("../breathe.engine/" + f);
@@ -206,9 +207,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		outputPanel.clearOutputDisplay();
 	}
 	
+	
     /*
      * GUI TO SIMULATION WORKER
      */	
+	
 	//export scenario
 	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
 		sim.createScenario(patientFile, scenarioName, actions);
@@ -228,20 +231,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	return false;
 	}
 	
-	//start simulation from scenario file
-	public boolean startFromScenarioSimulation(String file) {
-    	if(file != null) {
-    		startLoading();
-    		clearOutputDisplay();
-    		sim = new SimulationWorker(this);
-    		sim.simulationFromScenario(file);
-        	patientConditionPanel.getConditionsPanel().enableButtons(false);
-        	patientConditionPanel.getPatientPanel().enableComponents(false);
-    		return true;
-    	}else 
-    		return false;
-	}
-    
 	//start simulation from file
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
@@ -255,6 +244,20 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     	}else 
     		return false;
     }
+    
+	//start simulation from scenario file
+	public boolean startFromScenarioSimulation(String file) {
+    	if(file != null) {
+    		startLoading();
+    		clearOutputDisplay();
+    		sim = new SimulationWorker(this);
+    		sim.simulationFromScenario(file);
+        	patientConditionPanel.getConditionsPanel().enableButtons(false);
+        	patientConditionPanel.getPatientPanel().enableComponents(false);
+    		return true;
+    	}else 
+    		return false;
+	}
     
     //stop simulation
     public void stopSimulation() {
@@ -291,6 +294,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	public void applyAction(Action action) {
 		sim.applyAction(action);
 	}
+	
 		
     /*
      * SIMULATION WORKER TO GUI
@@ -327,7 +331,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		patientConditionPanel.getConditionsPanel().setConditions(list);
 	}	
 
-	
+	//set data ventilator if setted in file (start from file/scenario)
 	@Override
 	public void setVentilator(Ventilator ventilator) {
 		ventilatorsPanel.setVentilatorsData(ventilator);
@@ -349,7 +353,5 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	public void logVolumeExternalVentilatorData(double volume) {
 
 	}
-
-
 
 }
