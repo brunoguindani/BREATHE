@@ -133,6 +133,15 @@ public class Patient {
         }	
 	}
 	
+
+	/*
+	 * Add conditions
+	 */
+	public void addCondition(Condition c){
+		conditions.add(c);
+		patient_configuration.getConditions().add(c.getCondition());
+	}	
+	
 	/*
 	 * Return SEPatient object
 	 */
@@ -149,6 +158,14 @@ public class Patient {
 	}
 	
 	/*
+	 * Return list of conditions
+	 */
+	public List<Condition> getConditions(){
+		return conditions;
+	}
+	
+	
+	/*
 	 * Create SEPatient object
 	 */
 	public void setPatient(SEPatientConfiguration pc, SEPatient p){
@@ -156,19 +173,5 @@ public class Patient {
 		patient = p;
 	}
 	
-	/*
-	 * Return list of conditions
-	 */
-	public List<Condition> getConditions(){
-		return conditions;
-	}
-	
-	/*
-	 * Add conditions
-	 */
-	public void addCondition(Condition c){
-		conditions.add(c);
-		patient_configuration.getConditions().add(c.getCondition());
-	}	
 	
 }

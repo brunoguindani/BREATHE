@@ -38,7 +38,7 @@ import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMe
 
 public class SimulationWorker extends SwingWorker<Void, String>{
 	
-    public PulseEngine pe;
+    private PulseEngine pe;
     private String initializeMode;
     
     private SEDataRequestManager dataRequests;
@@ -90,15 +90,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	/*
 	 * STARTING FILE SIMULATION
 	 */
-    public void simulationFromFile(String file) {
+    public void simulationFromFile(String filePath) {
     	initializeMode = "file";
     	pe = new PulseEngine();
     	
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
         
-		gui.minilogStringData("Loading state file " + file);
-		pe.serializeFromFile(file, dataRequests);
+		gui.minilogStringData("Loading state file " + filePath);
+		pe.serializeFromFile(filePath, dataRequests);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
@@ -599,14 +599,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		pe.processAction(action.getAction());
 	}
 	
-    private boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
 
 	public void exportSimulation(String exportFilePath) {
 		if (pe.serializeToFile(exportFilePath))  
@@ -645,6 +637,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         sce.writeFile(filePath);
         gui.minilogStringData("\nScenario exported to: " + ".../breathe.engine/scenario/exported/" + scenarioName + ".json");
+    }
+    
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
     
 }

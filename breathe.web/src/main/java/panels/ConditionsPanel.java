@@ -99,7 +99,7 @@ public class ConditionsPanel extends VerticalLayout {
     }
 
     public void removeCondition(String title) {
-        activeConditions.removeIf(c -> c.getTitle().equals(title));
+        activeConditions.removeIf(c -> c.getName().equals(title));
     }
 
     public void enableButtons(boolean enable) {
@@ -119,7 +119,7 @@ public class ConditionsPanel extends VerticalLayout {
         for (ConditionBox box : boxes) {
             boolean found = false;
             for (Condition condition : list) {
-                if (box.getTitle().equals(condition.getTitle())) {
+                if (box.getTitle().equals(condition.getName())) {
                     found = true;
                     box.setComponents(condition.getParameters()); 
                     break;

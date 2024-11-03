@@ -16,7 +16,7 @@ public class Condition {
 	 * - add the proper line in "generateSECondition"
 	 */
 	
-	private String title;
+	private String name;
 	private Map<String, Double> parameters = new HashMap<>(); 
 	private SECondition condition; 
 	
@@ -25,7 +25,7 @@ public class Condition {
 	 */
 	public Condition(String name, Map<String, Double> pairs) {
 		
-	    this.title = name;
+	    this.name = name;
 
 	    //Receive a list of parameters as pairs String Double
 	    //Doesn't check for duplicates cause it is completely handled client side
@@ -44,7 +44,7 @@ public class Condition {
 	 */
 	private void generateSECondition() {
 
-		switch (this.title) {
+		switch (this.name) {
 		    case "Chronic Anemia":
 		        SEChronicAnemia condition = new SEChronicAnemia();	                        
 		        condition.getReductionFactor().setValue(parameters.get("ReductionFactor"));	 
@@ -116,53 +116,53 @@ public class Condition {
 	private void extractSECondition() {
 
 	    if (this.condition instanceof SEChronicAnemia) {
-	        this.title = "Chronic Anemia";
+	        this.name = "Chronic Anemia";
 	        SEChronicAnemia condition = (SEChronicAnemia) this.condition;
 	        parameters.put("ReductionFactor", condition.getReductionFactor().getValue());
 
 	    } else if (this.condition instanceof SEAcuteRespiratoryDistressSyndrome) {
-	        this.title = "ARDS";
+	        this.name = "ARDS";
 	        SEAcuteRespiratoryDistressSyndrome ARDS = (SEAcuteRespiratoryDistressSyndrome) this.condition;
 	        parameters.put("LeftLungSeverity", ARDS.getSeverity(eLungCompartment.LeftLung).getValue());
 	        parameters.put("RightLungSeverity", ARDS.getSeverity(eLungCompartment.RightLung).getValue());
 
 	    } else if (this.condition instanceof SEChronicObstructivePulmonaryDisease) {
-	        this.title = "COPD";
+	        this.name = "COPD";
 	        SEChronicObstructivePulmonaryDisease COPD = (SEChronicObstructivePulmonaryDisease) this.condition;
 	        parameters.put("BronchitisSeverity", COPD.getBronchitisSeverity().getValue());
 	        parameters.put("LeftLungEmphysemaSeverity", COPD.getEmphysemaSeverity(eLungCompartment.LeftLung).getValue());
 	        parameters.put("RightLungEmphysemaSeverity", COPD.getEmphysemaSeverity(eLungCompartment.RightLung).getValue());
 
 	    } else if (this.condition instanceof SEChronicPericardialEffusion) {
-	        this.title = "Pericardial Effusion";
+	        this.name = "Pericardial Effusion";
 	        SEChronicPericardialEffusion CPE = (SEChronicPericardialEffusion) this.condition;
 	        parameters.put("AccumulatedVolume", CPE.getAccumulatedVolume().getValue(VolumeUnit.mL));
 
 	    } else if (this.condition instanceof SEChronicRenalStenosis) {
-	        this.title = "Renal Stenosis";
+	        this.name = "Renal Stenosis";
 	        SEChronicRenalStenosis Stenosis = (SEChronicRenalStenosis) this.condition;
 	        parameters.put("LeftKidneySeverity", Stenosis.getLeftKidneySeverity().getValue());
 	        parameters.put("RightKidneySeverity", Stenosis.getRightKidneySeverity().getValue());
 
 	    } else if (this.condition instanceof SEChronicVentricularSystolicDysfunction) {
-	        this.title = "Chronic Ventricular Systolic Disfunction";
+	        this.name = "Chronic Ventricular Systolic Disfunction";
 	        
 	    } else if (this.condition instanceof SEImpairedAlveolarExchange) {
-	        this.title = "Impaired Alveolar Exchange";
+	        this.name = "Impaired Alveolar Exchange";
 	        
 	    } else if (this.condition instanceof SEPneumonia) {
-	        this.title = "Pneumonia";
+	        this.name = "Pneumonia";
 	        SEPneumonia Pneumonia = (SEPneumonia) this.condition;
 	        parameters.put("LeftLungSeverity", Pneumonia.getSeverity(eLungCompartment.LeftLung).getValue());
 	        parameters.put("RightLungSeverity", Pneumonia.getSeverity(eLungCompartment.RightLung).getValue());
 
 	    } else if (this.condition instanceof SEPulmonaryFibrosis) {
-	        this.title = "Pulmonary Fibrosis";
+	        this.name = "Pulmonary Fibrosis";
 	        SEPulmonaryFibrosis fibrosis = (SEPulmonaryFibrosis) this.condition;
 	        parameters.put("Severity", fibrosis.getSeverity().getValue());
 
 	    } else if (this.condition instanceof SEPulmonaryShunt) {
-	        this.title = "Pulmonary Shunt";
+	        this.name = "Pulmonary Shunt";
 	        SEPulmonaryShunt shunt = (SEPulmonaryShunt) this.condition;
 	        parameters.put("Severity", shunt.getSeverity().getValue());
 	    }
@@ -175,12 +175,16 @@ public class Condition {
 		return condition;
 	}
 	
-	public String getTitle() {
-		return title;
+	public String getName() {
+		return name;
 	}
 	
 	public Map<String, Double> getParameters() {
 		return parameters;
+	}
+	
+	public String toString(){
+		return condition.toString();
 	}
 
 }

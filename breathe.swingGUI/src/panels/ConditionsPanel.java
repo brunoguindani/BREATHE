@@ -157,7 +157,7 @@ public class ConditionsPanel extends JPanel{
     
     public void removeCondition(String title) {
     	for(int i=0; i< activeConditions.size() ;i++) {
-    		if(activeConditions.get(i).getTitle().equals(title)) {
+    		if(activeConditions.get(i).getName().equals(title)) {
             	activeConditions.remove(i);
     			break;
     		}
@@ -173,7 +173,7 @@ public class ConditionsPanel extends JPanel{
         
         for (Condition c : activeConditions) {
             for (int i = 0; i < boxes.size(); i++) {
-                if (boxes.get(i).getTitle().equals(c.getTitle())) {
+                if (boxes.get(i).getTitle().equals(c.getName())) {
                     boxes.get(i).reset();
                     break;
                 }
@@ -201,7 +201,7 @@ public class ConditionsPanel extends JPanel{
             i = 0;
 
             for (Condition condition : list) {
-                if (box.getTitle().equals(condition.getTitle())) {
+                if (box.getTitle().equals(condition.getName())) {
                     found = true;
                     break;
                 }
