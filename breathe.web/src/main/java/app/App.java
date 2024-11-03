@@ -174,7 +174,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
     //add Condition to patient
 	public void applyCondition(Condition condition) {
 		patientConditionPanel.getConditionsPanel().addCondition(condition);
-		Notification.show(condition.getTitle() + " added",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+		Notification.show(condition.getName() + " added",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
 	}
 	
     //remove Condition from patient
