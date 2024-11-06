@@ -142,7 +142,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	 */
     public void simulationFromScenario(String scenarioFilePath) {
     	initializeMode = "scenario";
-    	pe = new PulseEngine();
+    	
+    	//METHOD TO SEND DATA TO GUI (conditions and ventilators)
+    	PulseEngine pe1 = new PulseEngine();
 		
         dataRequests = new SEDataRequestManager();
         setDataRequests(dataRequests);
@@ -158,16 +160,16 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         patientFilePath = rootNode_scenario.path("EngineStateFile").asText();
         
         gui.minilogStringData("Loading Scenario " + scenarioFilePath);
-		pe.serializeFromFile(patientFilePath, dataRequests);
+        pe1.serializeFromFile(patientFilePath, dataRequests);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
-		pe.getInitialPatient(initialPatient);
+		pe1.getInitialPatient(initialPatient);
 		
 		gui.minilogStringData("Load state ("+patientFilePath+")");
 		List<SECondition> list = new ArrayList<>();
 		List<Condition> temp_list = new ArrayList<>();
-        pe.getConditions(list);
+		pe1.getConditions(list);
         for(SECondition c : list) {
         	Condition temp = new Condition(c);
         	temp_list.add(temp);
@@ -176,7 +178,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
       //get ventilators data (if connected)
         List<SEAction> listAction = new ArrayList<SEAction>();
-		pe.getActiveActions(listAction);
+        pe1.getActiveActions(listAction);
 		Ventilator temp_ventilator;
         for(SEAction a : listAction) {
         	
@@ -186,6 +188,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         		break;
         	}
         }
+        pe1.clear();
+        pe1.cleanUp();
         
     	this.execute();
     }
@@ -281,6 +285,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private void run_scenario() {
     	
     	//Load scenario
+    	pe = new PulseEngine();
     	SEScenario sce = new SEScenario();
 		try {
 			sce.readFile(scenarioFilePath);
@@ -288,7 +293,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 			e.printStackTrace();
 		}
 		
-		if(sce.hasEngineState()) {		
+		if(sce.hasEngineState()) {
 			if(!pe.serializeFromFile(patientFilePath, dataRequests));
 		} else if(sce.hasPatientConfiguration()) {
 			if(!pe.initializeEngine(sce.getPatientConfiguration(), dataRequests));
@@ -306,7 +311,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    	return;
 			
 		    if (a instanceof SEAdvanceTime) {
-		        
 		        for(int i = 0; i<50; i++){		  
 		            if (!pe.advanceTime(stime)) {
 		        		gui.minilogStringData("\nError!");
@@ -327,6 +331,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
 		    } else {
 		        pe.processAction(a);
+		        gui.minilogStringData("\nApplying " +  a.toString());
 		    }
 		}
 	}
