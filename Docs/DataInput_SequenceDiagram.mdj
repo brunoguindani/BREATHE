@@ -566,7 +566,7 @@
 												"$ref": "AAAAAAGTANApJoT91Lw="
 											},
 											"edgePosition": 1,
-											"text": "1 : Send data"
+											"text": "1 : Data"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -788,7 +788,7 @@
 												"$ref": "AAAAAAGTANXDvIX7F3I="
 											},
 											"edgePosition": 1,
-											"text": "3 : Send conditions"
+											"text": "3 : Conditions"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -900,7 +900,7 @@
 												"$ref": "AAAAAAGTANHaToVGcME="
 											},
 											"edgePosition": 1,
-											"text": "4 : Send patient conditions data"
+											"text": "4 : Patient and conditions data"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -1122,7 +1122,7 @@
 												"$ref": "AAAAAAGTANZPNIYyybI="
 											},
 											"edgePosition": 1,
-											"text": "6 : Send patient"
+											"text": "6 : Patient"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -1234,7 +1234,7 @@
 												"$ref": "AAAAAAGTANNfBoWNfkc="
 											},
 											"edgePosition": 1,
-											"text": "7 : Send patient"
+											"text": "7 : Patient"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -2118,7 +2118,7 @@
 												"$ref": "AAAAAAGTAQbTq49HaD8="
 											},
 											"edgePosition": 1,
-											"text": "13 : Send output data"
+											"text": "13 : Output data"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -2210,7 +2210,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send data",
+							"name": "Data",
 							"source": {
 								"$ref": "AAAAAAGTAMSOdIQ06tI="
 							},
@@ -2238,7 +2238,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send conditions",
+							"name": "Conditions",
 							"source": {
 								"$ref": "AAAAAAGTAM0ZOISwHoM="
 							},
@@ -2253,7 +2253,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send patient conditions data",
+							"name": "Patient and conditions data",
 							"source": {
 								"$ref": "AAAAAAGTAMSOdIQ06tI="
 							},
@@ -2281,7 +2281,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send patient",
+							"name": "Patient",
 							"source": {
 								"$ref": "AAAAAAGTAMYM64R5U9M="
 							},
@@ -2296,7 +2296,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send patient",
+							"name": "Patient",
 							"source": {
 								"$ref": "AAAAAAGTAMSOdIQ06tI="
 							},
@@ -2381,7 +2381,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Send output data",
+							"name": "Output data",
 							"source": {
 								"$ref": "AAAAAAGTAMV9y4RVMbY="
 							},
