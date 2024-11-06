@@ -11,6 +11,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -19,6 +20,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import app.App;
 import data.Action;
 import files.DownloadLinksArea;
+import files.UploadArea;
 import utils.Pair;
 
 import java.io.File;
@@ -50,9 +52,15 @@ public class ScenarioPanel extends VerticalLayout {
 		
 		patientFileComboBox = new ComboBox<>("Patient");
 		patientFileComboBox.setWidth("70%");
-		String[] directories = { "../breathe.engine/states/exported/", "../breathe.engine/states/" };
+		String[] directories = { "../breathe.engine/states/exported/", "../breathe.engine/states/", "../breathe.engine/states/uploaded/"};
 		updatePatientFiles(directories);
 
+		Button newButton = new Button(VaadinIcon.PLUS.create(), e -> uploadNewPatient()); 
+
+		HorizontalLayout patientLayout = new HorizontalLayout();
+		patientLayout.setAlignItems(Alignment.BASELINE);
+		patientLayout.add(patientFileComboBox, newButton);
+		patientLayout.setWidth("70%");
 
 	    Div fixedSizeDiv = new Div();
         fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
@@ -107,7 +115,7 @@ public class ScenarioPanel extends VerticalLayout {
         fieldLayout.setAlignItems(Alignment.CENTER);
         fieldLayout.setPadding(false);
         fieldLayout.setSpacing(false);
-        fieldLayout.add(scenarioNameField, patientFileComboBox);
+        fieldLayout.add(scenarioNameField, patientLayout);
         add(fieldLayout);
         add(fixedSizeDiv);
 		add(buttonsLayout);
@@ -147,6 +155,26 @@ public class ScenarioPanel extends VerticalLayout {
 		actions.sort((pair1, pair2) -> pair1.getValue().compareTo(pair2.getValue()));
 		dataProvider.refreshAll();
 	}
+	
+	private void uploadNewPatient() {
+        
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle("Select New State File");
+        
+        File uploadFolder = app.getFolder("states/uploaded");
+        
+        UploadArea upload = new UploadArea(uploadFolder);
+        upload.getUploadField().addSucceededListener(e -> {
+            upload.hideErrorField();
+    		String[] directories = { "../breathe.engine/states/exported/", "../breathe.engine/states/", "../breathe.engine/states/uploaded/"  };
+        	updatePatientFiles(directories);
+        });
+        
+        VerticalLayout dialogLayout = new VerticalLayout(upload);
+
+        dialog.add(dialogLayout);
+        dialog.open();
+	}
 
 	private void createScenario() {
 		String scenarioName = scenarioNameField.getValue();
@@ -162,13 +190,13 @@ public class ScenarioPanel extends VerticalLayout {
 			return;
 		}
 
-		File patientTempFile = new File("../breathe.engine/states/" + patientFile);
-		if (patientTempFile.exists()) {
-			patientFile = "../breathe.engine/states/" + patientFile;
+		if (new File("../breathe.engine/states/" + patientFile).exists()) {
+		    patientFile = "../breathe.engine/states/" + patientFile;
+		} else if (new File("../breathe.engine/states/exported/" + patientFile).exists()) {
+		    patientFile = "../breathe.engine/states/exported/" + patientFile;
 		} else {
-			patientFile = "../breathe.engine/states/exported/" + patientFile;
+		    patientFile = "../breathe.engine/states/uploaded/" + patientFile;
 		}
-
 		
 		app.createScenario(patientFile, scenarioName, actions);
 		Notification.show("Scenario \"" + scenarioName + "\" created successfully.",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
