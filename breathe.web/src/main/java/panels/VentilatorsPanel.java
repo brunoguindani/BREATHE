@@ -182,11 +182,8 @@ public class VentilatorsPanel extends VerticalLayout {
         disconnectButton.setText("Disconnect");
     }
     
-    public void manageConnectButton() {
-    	if(activeMode == null)
-    		connectButton.setEnabled(true);
-    	else
-    		connectButton.setEnabled(false);
+    public void manageConnectButton(boolean b) {
+    	connectButton.setEnabled(b);
     }
 
 	public void setEnableConnectButton(boolean b) {

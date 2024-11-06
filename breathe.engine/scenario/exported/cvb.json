@@ -1,0 +1,38 @@
+{
+  "Name": "cvb",
+  "EngineStateFile": "../breathe.engine/states/exported/Malannus.json",
+  "AnyAction": [{
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "PatientAction": {
+      "AcuteRespiratoryDistressSyndromeExacerbation": {
+        "PatientAction": {
+          "Action": {
+          }
+        },
+        "Severity": [{
+          "Compartment": "RightLung",
+          "Severity": {
+            "Scalar0To1": {
+              "Value": 0.01
+            }
+          }
+        }, {
+          "Severity": {
+            "Scalar0To1": {
+            }
+          }
+        }]
+      }
+    }
+  }]
+}

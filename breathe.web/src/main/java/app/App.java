@@ -305,7 +305,7 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 		 getUI().ifPresent(ui -> ui.access(() -> {
 			controlPanel.enableControlStartButton(!enable);
 			actionsPanel.enableButtons(enable);
-			ventilatorsPanel.manageConnectButton();
+			ventilatorsPanel.manageConnectButton(true);
 			patientConditionPanel.getPatientPanel().enableComponents(false);
 			stopLoading();
          }));
