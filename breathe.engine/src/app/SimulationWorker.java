@@ -288,8 +288,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 			e.printStackTrace();
 		}
 		
-		if(sce.hasEngineState()) {
-			
+		if(sce.hasEngineState()) {		
 			if(!pe.serializeFromFile(patientFilePath, dataRequests));
 		} else if(sce.hasPatientConfiguration()) {
 			if(!pe.initializeEngine(sce.getPatientConfiguration(), dataRequests));
@@ -536,7 +535,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             gui.minilogStringData("\nVC Ventilator Disconnected");
             break;
 
-        case EXT:	//CLOSED BY SERVER
+        case EXT:
 	        ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
 			ventilator_ext.setState(eSwitch.Off);
 		    pe.processAction(ventilator_ext);
