@@ -27,7 +27,7 @@ public class ZeroServer {
         socketPub.bind("tcp://*:5555");
         
         socketSub = context.createSocket(SocketType.SUB);
-        socketSub.connect("tcp://localhost:5556");
+        socketSub.bind("tcp://localhost:5556");
         socketSub.subscribe("Client".getBytes(ZMQ.CHARSET)); 
     }
 
