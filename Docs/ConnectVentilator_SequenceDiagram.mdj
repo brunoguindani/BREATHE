@@ -25,7 +25,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTAdohGqVwGrQ="
 							},
-							"name": "Connect-Apply ventilator",
+							"name": "Connect ventilator",
 							"ownedViews": [
 								{
 									"_type": "UMLFrameView",
@@ -46,9 +46,9 @@
 											"font": "Arial;13;0",
 											"left": 40.72998046875,
 											"top": 13,
-											"width": 142.62890625,
+											"width": 105.78076171875,
 											"height": 13,
-											"text": "Connect-Apply ventilator"
+											"text": "Connect ventilator"
 										},
 										{
 											"_type": "LabelView",
