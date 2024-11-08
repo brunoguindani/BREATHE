@@ -1358,7 +1358,7 @@
 												"$ref": "AAAAAAGTANPG/YWmZFk="
 											},
 											"edgePosition": 1,
-											"text": "8 : Check Patient"
+											"text": "8 : Load Patient"
 										},
 										{
 											"_type": "EdgeLabelView",
@@ -2548,7 +2548,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGTALhksoQjKLQ="
 							},
-							"name": "Check Patient",
+							"name": "Load Patient",
 							"source": {
 								"$ref": "AAAAAAGTAMV9y4RVMbY="
 							},
