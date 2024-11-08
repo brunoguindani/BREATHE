@@ -213,7 +213,7 @@ public class ZeroClient {
 
 		try {
 			socketPub.connect("tcp://*:5556");
-			socketSub.connect("tcp://localhost:5555");
+			socketSub.connect("tcp://*:5555");
 		} catch (ZMQException ex) {
 			outputAreaServer.append("Failed to connect to server: " + ex.getMessage() + "\n");
 			return;

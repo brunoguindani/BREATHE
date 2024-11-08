@@ -10,6 +10,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -24,8 +25,8 @@ public class ZeroMiddleware {
     private Thread communicationThreadServer, communicationThreadClient;
 
     public ZeroMiddleware() {
-        frame = new JFrame("ZeroMQ Client");
-        frame.setSize(800, 500); // Dimensione aggiornata per adattarsi al layout orizzontale
+        frame = new JFrame("ZeroMQ Middleware");
+        frame.setSize(800, 400); // Dimensione aggiornata per adattarsi al layout orizzontale
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -50,9 +51,12 @@ public class ZeroMiddleware {
         connectButton.setForeground(Color.WHITE);
         connectButton.setFocusPainted(false);
         buttonPanel.add(connectButton);
-        panel.add(buttonPanel);
 
-        JPanel outputPanel = new JPanel(new GridLayout(1, 2, 10, 10)); // Pannello per le due aree di testo affiancate
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); 
+        
+        panel.add(buttonPanel);  
+
+        JPanel outputPanel = new JPanel(new GridLayout(1, 2, 10, 10));
         panel.add(outputPanel);
 
         outputAreaServer = new JTextArea();
@@ -68,6 +72,12 @@ public class ZeroMiddleware {
         outputAreaClient.setEditable(false);
         JScrollPane scrollPaneClient = new JScrollPane(outputAreaClient);
         outputPanel.add(scrollPaneClient);
+
+        outputAreaServer.setPreferredSize(new Dimension(200, 200));
+        outputAreaClient.setPreferredSize(new Dimension(200, 200)); 
+
+        panel.add(Box.createVerticalStrut(10)); 
+
 
         connectButton.addActionListener(e -> {
             connect();
