@@ -19,7 +19,6 @@ public class ZeroServer {
     private double volume;
     private double pressure;
     
-
     public void connect() throws Exception {
         context = new ZContext();
         
@@ -27,7 +26,7 @@ public class ZeroServer {
         socketPub.bind("tcp://*:5555");
         
         socketSub = context.createSocket(SocketType.SUB);
-        socketSub.bind("tcp://*:5556");
+        socketSub.connect("tcp://*:5556");
         socketSub.subscribe("Client".getBytes(ZMQ.CHARSET)); 
     }
 
@@ -131,8 +130,5 @@ public class ZeroServer {
 
     public double getPressure() {
         return pressure;
-    }
-
-
-    
+    }    
 }
