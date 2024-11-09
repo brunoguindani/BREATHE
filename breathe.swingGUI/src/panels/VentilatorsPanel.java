@@ -41,7 +41,7 @@ public class VentilatorsPanel extends JPanel {
         pcPanel = new pcVentilatorPanel(app);
         cpapPanel = new cpapVentilatorPanel(app);
         vcPanel = new vcVentilatorPanel(app);
-        extPanel = new extVentilatorPanel();
+        extPanel = new extVentilatorPanel(app);
 
         ventilatorsCardPanel.add(pcPanel, "PC");
         ventilatorsCardPanel.add(cpapPanel, "CPAP");

@@ -10,13 +10,15 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import app.App;
+
 public class extVentilatorPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	
 	private JLabel pressure, volume;
     
 	// SEMechanicalVentilation (for external ventilators)
-	public extVentilatorPanel() {
+	public extVentilatorPanel(App app) {
 		
 		this.setLayout(new GridBagLayout());
 		this.setBackground(Color.LIGHT_GRAY);
