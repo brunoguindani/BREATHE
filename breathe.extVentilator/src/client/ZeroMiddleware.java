@@ -10,7 +10,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -26,7 +25,7 @@ public class ZeroMiddleware {
 
     public ZeroMiddleware() {
         frame = new JFrame("ZeroMQ Middleware");
-        frame.setSize(800, 400); // Dimensione aggiornata per adattarsi al layout orizzontale
+        frame.setSize(800, 400);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -37,7 +36,7 @@ public class ZeroMiddleware {
         });
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1)); // Layout aggiornato per distribuire verticalmente gli elementi
+        panel.setLayout(new GridLayout(2, 1)); 
         frame.add(panel);
         placeComponents(panel);
 

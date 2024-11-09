@@ -23,15 +23,15 @@ public class App extends JFrame implements GuiCallback {
     private static final long serialVersionUID = 1L;
     
     //All panels
-    public ControlPanel controlPanel = new ControlPanel(this);
-    public ActionsPanel actionsPanel = new ActionsPanel(this);
-    public VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
-    public OutputButtonPanel outputButtonPanel = new OutputButtonPanel(this);
-    public OutputPanel outputPanel = new OutputPanel(this);
-    public LogPanel logPanel = new LogPanel(this);
-    public ScenarioPanel scenarioPanel = new ScenarioPanel(this);
-    public MinilogPanel minilogPanel = new MinilogPanel(this);
-    public PatientConditionsPanel patientConditionPanel = new PatientConditionsPanel(this);
+    private ControlPanel controlPanel = new ControlPanel(this);
+    private ActionsPanel actionsPanel = new ActionsPanel(this);
+    private VentilatorsPanel ventilatorsPanel = new VentilatorsPanel(this);
+    private OutputButtonPanel outputButtonPanel = new OutputButtonPanel(this);
+    private OutputPanel outputPanel = new OutputPanel(this);
+    private LogPanel logPanel = new LogPanel(this);
+    private ScenarioPanel scenarioPanel = new ScenarioPanel(this);
+    private MinilogPanel minilogPanel = new MinilogPanel(this);
+    private PatientConditionsPanel patientConditionPanel = new PatientConditionsPanel(this);
     
     //Left and Right Panel
     public JTabbedPane leftTabbedPane;
