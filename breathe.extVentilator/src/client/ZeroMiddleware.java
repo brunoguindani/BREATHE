@@ -73,9 +73,6 @@ public class ZeroMiddleware {
         JScrollPane scrollPaneClient = new JScrollPane(outputAreaClient);
         outputPanel.add(scrollPaneClient);
 
-        outputAreaServer.setPreferredSize(new Dimension(200, 200));
-        outputAreaClient.setPreferredSize(new Dimension(200, 200)); 
-
         panel.add(Box.createVerticalStrut(10)); 
 
 
@@ -123,8 +120,8 @@ public class ZeroMiddleware {
         outputAreaServer.append("Connecting to server...\n");
 
         try {
-            socketSubServer.connect("tcp://localhost:5555");
-            socketSubClient.connect("tcp://localhost:5556");
+            socketSubServer.connect("tcp://*:5555");
+            socketSubClient.connect("tcp://*:5556");
         } catch (ZMQException ex) {
             outputAreaServer.append("Failed to connect to server: " + ex.getMessage() + "\n");
             return;
