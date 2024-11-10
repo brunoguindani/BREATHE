@@ -24,7 +24,6 @@ public class ActionsPanel extends JPanel{
 	/*
 	 * PANEL CONTAINING ALL ACTIONS
 	 */
-
 	private List<ActionBox> boxes = new ArrayList<>();
 
     public ActionsPanel(App app) {

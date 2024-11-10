@@ -14,10 +14,12 @@ public class UploadArea extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
 	private final Upload uploadField;
+	private final File uploadFolder;
     private final Span errorField;
 
     public UploadArea(File uploadFolder) {
-        uploadField = new Upload(createFileReceiver(uploadFolder));
+    	this.uploadFolder = uploadFolder;
+        uploadField = new Upload(createFileReceiver());
         uploadField.setMaxFiles(1);
         uploadField.setMaxFileSize(50 * 1024 * 1024);
         uploadField.setDropAllowed(true);
@@ -44,7 +46,7 @@ public class UploadArea extends VerticalLayout {
         errorField.setVisible(false);
     }
 
-    private Receiver createFileReceiver(File uploadFolder) {
+    private Receiver createFileReceiver() {
         return (MultiFileReceiver) (filename, mimeType) -> {
             File file = new File(uploadFolder, filename);
             try {

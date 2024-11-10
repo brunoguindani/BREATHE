@@ -166,8 +166,6 @@ public class PatientPanel extends JPanel{
     	}
     }
     
-
-
 	//Check that all values are numeric
     private boolean checkFieldsNumeric() {
         for (Map.Entry<String, JTextField> entry : fieldMap.entrySet()) {
