@@ -571,7 +571,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        	gui.minilogStringData("\nEXTERNAL Ventilator error!!!");
 	        }
 
-		} else if(zmqServer.isDisconnecting()) {	//CLOSED BY CLIENT
+		} else if(zmqServer.isDisconnecting()) {	
 			ventilator_ext.setState(eSwitch.Off);
 		    gui.minilogStringData("\nEXTERNAL Ventilator disconnected");
 		    gui.minilogStringData("Searching for EXTERNAL ventilators...\n");
