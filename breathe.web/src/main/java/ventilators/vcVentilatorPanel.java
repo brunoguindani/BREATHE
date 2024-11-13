@@ -53,7 +53,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         flow.setMin(0);
         flow.setMax(120);
         flow.setStep(1);
-        flow.setWidth("23vw"); 
+        flow.setWidth("26vw"); 
         flow.setStepButtonsVisible(true);
 
         fractionInspOxygen = new NumberField("Fraction Inspired Oxygen - FiO2");
@@ -61,7 +61,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         fractionInspOxygen.setMin(0);
         fractionInspOxygen.setMax(1);
         fractionInspOxygen.setStep(0.01);
-        fractionInspOxygen.setWidth("23vw");
+        fractionInspOxygen.setWidth("26vw");
         fractionInspOxygen.setStepButtonsVisible(true);
 
         positiveEndExpPres = new NumberField("Positive End Expiratory Pressure - PEEP");
@@ -69,7 +69,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         positiveEndExpPres.setMin(0);
         positiveEndExpPres.setMax(20);
         positiveEndExpPres.setStep(1);
-        positiveEndExpPres.setWidth("23vw");
+        positiveEndExpPres.setWidth("26vw");
         positiveEndExpPres.setStepButtonsVisible(true);
 
         inspiratoryPeriod = new NumberField("Inspiratory Period");
@@ -77,7 +77,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         inspiratoryPeriod.setMin(0);
         inspiratoryPeriod.setMax(10);
         inspiratoryPeriod.setStep(0.1);
-        inspiratoryPeriod.setWidth("23vw");
+        inspiratoryPeriod.setWidth("26vw");
         inspiratoryPeriod.setStepButtonsVisible(true);
 
         respirationRate = new NumberField("Respiration Rate - RR");
@@ -85,7 +85,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         respirationRate.setMin(0);
         respirationRate.setMax(60);
         respirationRate.setStep(1);
-        respirationRate.setWidth("23vw");
+        respirationRate.setWidth("26vw");
         respirationRate.setStepButtonsVisible(true);
 
         tidalVol = new NumberField("Tidal Volume - VT");
@@ -93,13 +93,13 @@ public class vcVentilatorPanel extends VerticalLayout {
         tidalVol.setMin(0);
         tidalVol.setMax(2000);
         tidalVol.setStep(10);
-        tidalVol.setWidth("23vw");
+        tidalVol.setWidth("26vw");
         tidalVol.setStepButtonsVisible(true);
 
         assistedMode = new ComboBox<>("Assisted Mode");
         assistedMode.setItems("AC", "CMV");
         assistedMode.setValue("AC");
-        assistedMode.setWidth("23vw");
+        assistedMode.setWidth("26vw");
 
         fieldLayout.add(flow, fractionInspOxygen, positiveEndExpPres, inspiratoryPeriod, respirationRate, tidalVol, assistedMode);
 

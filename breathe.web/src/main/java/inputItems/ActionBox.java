@@ -49,7 +49,7 @@ public class ActionBox extends VerticalLayout {
 		//Button with Actions Name to show text fields
         headerButton = new Button(title);
         headerButton.getStyle().set("text-align", "center");
-        headerButton.setWidth("23.5vw");
+        headerButton.setWidth("26vw");
         headerButton.addClickListener(e -> toggleFields());
 
         // Text fields and Apply Buttons

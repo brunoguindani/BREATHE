@@ -46,7 +46,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		fractionInspOxygen.setMin(0);
 		fractionInspOxygen.setMax(1);
 		fractionInspOxygen.setStep(0.01);
-		fractionInspOxygen.setWidth("23vw");
+		fractionInspOxygen.setWidth("26vw");
 		fractionInspOxygen.setStepButtonsVisible(true);
 
 		deltaPressureSup = new NumberField("Delta Pressure Support - deltaPsupp");
@@ -54,7 +54,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		deltaPressureSup.setMin(0);
 		deltaPressureSup.setMax(50);
 		deltaPressureSup.setStep(1);
-		deltaPressureSup.setWidth("23vw");
+		deltaPressureSup.setWidth("26vw");
 		deltaPressureSup.setStepButtonsVisible(true);
 
 		positiveEndExpPres = new NumberField("Positive End Expiratory Pressure - PEEP");
@@ -62,14 +62,14 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		positiveEndExpPres.setMin(0);
 		positiveEndExpPres.setMax(20);
 		positiveEndExpPres.setStep(1);
-		positiveEndExpPres.setWidth("23vw");
+		positiveEndExpPres.setWidth("26vw");
 		positiveEndExpPres.setStepButtonsVisible(true);
 
 		slope = new NumberField("Slope");
 		slope.setValue(0.2);
 		slope.setMin(0);
 		slope.setMax(2);
-		slope.setWidth("23vw");
+		slope.setWidth("26vw");
 		slope.setStep(0.1);
 		slope.setStepButtonsVisible(true);
 

@@ -53,7 +53,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         fractionInspOxygen.setMin(0);
         fractionInspOxygen.setMax(1);
         fractionInspOxygen.setStep(0.01);
-        fractionInspOxygen.setWidth("23vw"); 
+        fractionInspOxygen.setWidth("26vw"); 
         fractionInspOxygen.setStepButtonsVisible(true);
 
         inspiratoryPeriod = new NumberField("Inspiratory Period - Ti");
@@ -61,7 +61,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         inspiratoryPeriod.setMin(0);
         inspiratoryPeriod.setMax(10);
         inspiratoryPeriod.setStep(0.1);
-        inspiratoryPeriod.setWidth("23vw");
+        inspiratoryPeriod.setWidth("26vw");
         inspiratoryPeriod.setStepButtonsVisible(true);
 
         inspiratoryPressure = new NumberField("Inspiratory Pressure - Pinsp");
@@ -69,7 +69,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         inspiratoryPressure.setMin(0);
         inspiratoryPressure.setMax(100);
         inspiratoryPressure.setStep(1);
-        inspiratoryPressure.setWidth("23vw");
+        inspiratoryPressure.setWidth("26vw");
         inspiratoryPressure.setStepButtonsVisible(true);
 
         positiveEndExpPres = new NumberField("Positive End Expiratory Pressure - PEEP");
@@ -77,7 +77,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         positiveEndExpPres.setMin(0);
         positiveEndExpPres.setMax(20);
         positiveEndExpPres.setStep(1);
-        positiveEndExpPres.setWidth("23vw");
+        positiveEndExpPres.setWidth("26vw");
         positiveEndExpPres.setStepButtonsVisible(true);
 
         respirationRate = new NumberField("Respiration Rate - RR");
@@ -85,7 +85,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         respirationRate.setMin(0);
         respirationRate.setMax(60);
         respirationRate.setStep(1);
-        respirationRate.setWidth("23vw");
+        respirationRate.setWidth("26vw");
         respirationRate.setStepButtonsVisible(true);
 
         slope = new NumberField("Slope");
@@ -93,13 +93,13 @@ public class pcVentilatorPanel extends VerticalLayout {
         slope.setMin(0);
         slope.setMax(2);
         slope.setStep(0.1);
-        slope.setWidth("23vw");
+        slope.setWidth("26vw");
         slope.setStepButtonsVisible(true);
 
         assistedMode = new ComboBox<>("Assisted Mode");
         assistedMode.setItems("AC", "CMV");
         assistedMode.setValue("AC");
-        assistedMode.setWidth("23vw");
+        assistedMode.setWidth("26vw");
 
         fieldLayout.add(fractionInspOxygen, inspiratoryPeriod, inspiratoryPressure,
                 positiveEndExpPres, respirationRate, slope, assistedMode);

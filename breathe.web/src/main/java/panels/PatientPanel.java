@@ -33,7 +33,6 @@ public class PatientPanel extends VerticalLayout {
 	public PatientPanel(App app) {
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "2px");
-		getStyle().set("border-bottom", "2px solid #ccc"); 
 
 		setSpacing(false);
 
@@ -166,13 +165,14 @@ public class PatientPanel extends VerticalLayout {
 		Div scrollableDiv = new Div();
 		scrollableDiv.getStyle().set("overflow-y", "auto");
 		scrollableDiv.getStyle().set("scrollbar-width", "none");
+		scrollableDiv.getStyle().set("border-bottom", "2px solid #ccc"); 
 
 		scrollableDiv.setHeight("70vh"); 
 		scrollableDiv.add(formLayout);
 
 		fixedSizeDiv.add(scrollableDiv);
 		fixedSizeDiv.setHeight("70vh");
-
+		
 		add(fixedSizeDiv);
 
 	}
