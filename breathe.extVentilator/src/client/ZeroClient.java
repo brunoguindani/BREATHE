@@ -33,6 +33,7 @@ public class ZeroClient {
 
 	private Map<String, Double> receivedDataMap;
 	private String simTime;
+	private String unit;
 
 	public ZeroClient() {
 		receivedDataMap = new HashMap<>();
@@ -228,9 +229,10 @@ public class ZeroClient {
 			int firstConnection = 0;
 			try {
 				while (isConnected && !Thread.currentThread().isInterrupted()) {
-					if (firstConnection < 1) {
+					if (firstConnection < 2) { //Sent twice to be sure it's received depending on connection order
 						socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
 						outputAreaServer.append("Request Sent\n");
+						firstConnection +=1 ;
 					}
 					
 					String receivedData = socketSub.recvStr();
@@ -242,7 +244,7 @@ public class ZeroClient {
 					double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
 					String request = "Client {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption
-							+ "\", \"value\":\"" + value + "\"}";
+							+ "\", \"value\":\"" + value + "\", \"unit\":\"" + unit + "\" }";
 					outputAreaServer.append("Sending: " + request + "\n");
 					socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
 				}
@@ -360,11 +362,14 @@ public class ZeroClient {
 
 	private double processVolume() {
 		double volume = 20;
+		unit = "mL";
 
 		return volume; // Return the current pressure value
 	}
 
 	private double processPressure() {
+		unit = "mmHg";
+
 		int respiratoryRate = (int) rrSpinner.getValue();
 		double ieRatio = (double) ieRatioSpinner.getValue();
 		double pinsp = (double) pinspSpinner.getValue();
