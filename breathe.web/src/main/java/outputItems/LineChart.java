@@ -16,10 +16,10 @@ public class LineChart extends ItemDisplay {
 
     public LineChart(String title, String unit) {
         super(title, unit);
-        initializeChart(title); 
+        initializeChart(title, unit); 
     }
 
-    private void initializeChart(String title) {
+    private void initializeChart(String title, String unit) {
     	getElement().getStyle().set("padding", "0");
     	getElement().getStyle().set("margin", "0");
     	
@@ -30,8 +30,8 @@ public class LineChart extends ItemDisplay {
         chartContainer.getElement().getStyle().set("box-shadow", "inset 5px 5px 5px 5px #03070a");
         
         add(chartContainer);
-
-        getElement().executeJs("initLineChart($0)", title);
+        
+        getElement().executeJs("initLineChart($0,$1)", title, unit);
     }
 
     @Override
