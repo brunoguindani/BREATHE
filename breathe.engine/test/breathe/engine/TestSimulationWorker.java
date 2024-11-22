@@ -19,10 +19,10 @@ import interfaces.GuiCallback;
 import utils.Pair;
 import utils.VentilationMode;
 
-public class testSimulationWorker {
+public class TestSimulationWorker {
 
 	@Test
-	public void testSimulation() {
+	public void testStandardSimulation() {
 		GuiCallback gui = new TempGUI();
 		SimulationWorker sim = new SimulationWorker(gui);
 		
@@ -45,39 +45,73 @@ public class testSimulationWorker {
         /*
          * SIMULATION
          */
+        
+        //Add condition
+        Map<String, Double> anemiaParams = new HashMap<>();
+        anemiaParams.put("ReductionFactor", 0.8); // Ad esempio, un fattore di riduzione dell'80%
+
+        Condition chronicAnemiaCondition = new Condition("Chronic Anemia", anemiaParams);
+
+        patient.addCondition(chronicAnemiaCondition);
+        
         sim.simulation(patient);
         
 	}
 	
 	@Test
-	public void testFromFile() {
+	public void testSimulationFromFile() {
 		GuiCallback gui = new TempGUI();
 		SimulationWorker sim = new SimulationWorker(gui);
-        sim.simulationFromFile("../breathe.engine/states/exported/Malannus.json");
+        sim.simulationFromFile("../breathe.engine/states/exported/PC.json");
         try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
         sim.exportSimulation(" ");
-        sim.exportSimulation("../breathe.engine/states/exported/MalannusExported.json");
+        sim.exportSimulation("../breathe.engine/states/exported/ExportTest.json");
         sim.stopSimulation();
 	}
+	
+	@Test
+	public void testSimulationFromScenario() {
+		GuiCallback gui = new TempGUI();
+		SimulationWorker sim = new SimulationWorker(gui);
+        sim.simulationFromScenario("../breathe.engine/scenario/exported/TestPC.json");
+        try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testSimulationFromScenario_extVent() {
+		GuiCallback gui = new TempGUI();
+		SimulationWorker sim = new SimulationWorker(gui);
+        sim.simulationFromScenario("../breathe.engine/scenario/exported/TestEXT.json");
+        try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	@Test
 	public void testAction() {
 		GuiCallback gui = new TempGUI();
 		SimulationWorker sim = new SimulationWorker(gui);
-        sim.simulationFromFile("../breathe.engine/states/exported/Malannus.json");
+        sim.simulationFromFile("../breathe.engine/states/exported/EXT.json");
         try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	   	Map<String, Double> actionParameters = new HashMap<>();
-	    actionParameters.put("BronchitisSeverity", 0.5); // Severità della bronchite (0-1)
-	    actionParameters.put("LeftLungEmphysemaSeverity", 0.6); // Severità dell'enfisema polmonare (polmone sinistro) (0-1)
-	    actionParameters.put("RightLungEmphysemaSeverity", 0.4); // Severità dell'enfisema polmonare (polmone destro) (0-1)
+	    actionParameters.put("BronchitisSeverity", 0.5);
+	    actionParameters.put("LeftLungEmphysemaSeverity", 0.6);
+	    actionParameters.put("RightLungEmphysemaSeverity", 0.4); 
 	
 	    Action copdExacerbationAction = new Action("COPD Exacerbation", actionParameters);
 	    sim.applyAction(copdExacerbationAction);
@@ -91,15 +125,15 @@ public class testSimulationWorker {
 		GuiCallback gui = new TempGUI();
 		SimulationWorker sim = new SimulationWorker(gui);
 	   	Map<String, Double> actionParameters = new HashMap<>();
-	    actionParameters.put("BronchitisSeverity", 0.5); // Severità della bronchite (0-1)
-	    actionParameters.put("LeftLungEmphysemaSeverity", 0.6); // Severità dell'enfisema polmonare (polmone sinistro) (0-1)
-	    actionParameters.put("RightLungEmphysemaSeverity", 0.4); // Severità dell'enfisema polmonare (polmone destro) (0-1)
+	    actionParameters.put("BronchitisSeverity", 0.5); 
+	    actionParameters.put("LeftLungEmphysemaSeverity", 0.6); 
+	    actionParameters.put("RightLungEmphysemaSeverity", 0.4); 
 	    Action copdExacerbationAction = new Action("COPD Exacerbation", actionParameters);
 	    ArrayList<Pair<Action, Integer>> actions = new ArrayList<>();
 		Pair<Action, Integer> p = new Pair<>(copdExacerbationAction, 1);
 		actions.add(p);
-	    sim.createScenario("../breathe.engine/states/exported/Malannus.json","Giornatha", actions);
-	    sim.createScenario("../breathe.engine/states/exported/Malannus.json","Giornatha", actions);
+	    sim.createScenario("../breathe.engine/states/exported/Malannus.json","TestScenario", actions);
+	    sim.createScenario("../breathe.engine/states/exported/Malannus.json","TestScenario", actions);
 	}
 	
 	@Test
@@ -113,15 +147,14 @@ public class testSimulationWorker {
 			e.printStackTrace();
 		}
         Map<String, Number> ventilatorParameters = new HashMap<>();
-        ventilatorParameters.put("AssistedMode", 1); // 0 = AssistedControl, 1 = ContinuousMandatoryVentilation
-        ventilatorParameters.put("Flow", 60); // Flusso in L/min
-        ventilatorParameters.put("FractionInspiredOxygen", 0.5); // 50% ossigeno
-        ventilatorParameters.put("InspiratoryPeriod", 1.2); // Durata inspiratoria in secondi
-        ventilatorParameters.put("PositiveEndExpiratoryPressure", 5); // PEEP in cmH2O
-        ventilatorParameters.put("RespirationRate", 14); // Frequenza respiratoria in respiri al minuto
-        ventilatorParameters.put("TidalVolume", 500); // Volume corrente in mL
+        ventilatorParameters.put("AssistedMode", 1); 
+        ventilatorParameters.put("Flow", 60); 
+        ventilatorParameters.put("FractionInspiredOxygen", 0.5); 
+        ventilatorParameters.put("InspiratoryPeriod", 1.2);
+        ventilatorParameters.put("PositiveEndExpiratoryPressure", 5); 
+        ventilatorParameters.put("RespirationRate", 14); 
+        ventilatorParameters.put("TidalVolume", 500); 
 
-        // Creazione del ventilatore
         Ventilator ventilator = new Ventilator(VentilationMode.VC, ventilatorParameters);
         sim.connectVentilator(ventilator);
         try {
@@ -132,16 +165,6 @@ public class testSimulationWorker {
         sim.disconnectVentilator(ventilator);
 	}
 	
-	@Test
-	public void testFromScenario() {
-		GuiCallback gui = new TempGUI();
-		SimulationWorker sim = new SimulationWorker(gui);
-        sim.simulationFromScenario("../breathe.engine/scenario/exported/Malannus test.json");
-        try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
+
 
 }
