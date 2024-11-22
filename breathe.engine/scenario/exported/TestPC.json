@@ -1,51 +1,7 @@
 {
-  "Name": "Malannus test",
-  "EngineStateFile": "../breathe.engine/states/exported/Malannus.json",
+  "Name": "PC",
+  "EngineStateFile": "../breathe.engine/states/exported/PC.json",
   "AnyAction": [{
-    "AdvanceTime": {
-      "Action": {
-      },
-      "Time": {
-        "ScalarTime": {
-          "Value": 1.0,
-          "Unit": "s"
-        }
-      }
-    }
-  }, {
-    "AdvanceTime": {
-      "Action": {
-      },
-      "Time": {
-        "ScalarTime": {
-          "Value": 1.0,
-          "Unit": "s"
-        }
-      }
-    }
-  }, {
-    "AdvanceTime": {
-      "Action": {
-      },
-      "Time": {
-        "ScalarTime": {
-          "Value": 1.0,
-          "Unit": "s"
-        }
-      }
-    }
-  }, {
-    "AdvanceTime": {
-      "Action": {
-      },
-      "Time": {
-        "ScalarTime": {
-          "Value": 1.0,
-          "Unit": "s"
-        }
-      }
-    }
-  }, {
     "PatientAction": {
       "AcuteRespiratoryDistressSyndromeExacerbation": {
         "PatientAction": {
@@ -55,7 +11,6 @@
         "Severity": [{
           "Severity": {
             "Scalar0To1": {
-              "Value": 0.060000000000000005
             }
           }
         }, {
@@ -112,6 +67,72 @@
       }
     }
   }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
     "PatientAction": {
       "AcuteStress": {
         "PatientAction": {
@@ -120,7 +141,6 @@
         },
         "Severity": {
           "Scalar0To1": {
-            "Value": 0.02
           }
         }
       }
