@@ -1,0 +1,44 @@
+{
+  "Name": "Giornatha",
+  "EngineStateFile": "../breathe.engine/states/exported/Malannus.json",
+  "AnyAction": [{
+    "AdvanceTime": {
+      "Action": {
+      },
+      "Time": {
+        "ScalarTime": {
+          "Value": 1.0,
+          "Unit": "s"
+        }
+      }
+    }
+  }, {
+    "PatientAction": {
+      "ChronicObstructivePulmonaryDiseaseExacerbation": {
+        "PatientAction": {
+          "Action": {
+          }
+        },
+        "BronchitisSeverity": {
+          "Scalar0To1": {
+            "Value": 0.5
+          }
+        },
+        "EmphysemaSeverity": [{
+          "Compartment": "RightLung",
+          "Severity": {
+            "Scalar0To1": {
+              "Value": 0.4
+            }
+          }
+        }, {
+          "Severity": {
+            "Scalar0To1": {
+              "Value": 0.6
+            }
+          }
+        }]
+      }
+    }
+  }]
+}
