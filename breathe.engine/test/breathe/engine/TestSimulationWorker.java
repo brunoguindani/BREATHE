@@ -40,6 +40,7 @@ public class TestSimulationWorker {
         patientParameters.put("BasalMetabolicRate", 1800.0); 
         patientParameters.put("Weight", 75.0); 
         patientParameters.put("Height", 175.0); 
+        
         Map<String, Double> anemiaParams1 = new HashMap<>();
         anemiaParams1.put("ReductionFactor", 0.5);
         Condition anemiaCondition = new Condition("Chronic Anemia", anemiaParams1);
@@ -60,7 +61,6 @@ public class TestSimulationWorker {
         Condition chronicAnemiaCondition = new Condition("Chronic Anemia", anemiaParams);
 
         patient.addCondition(chronicAnemiaCondition);
-        /*
         sim.simulation(patient);
         while(!sim.isStable()) {
             try {
@@ -71,6 +71,12 @@ public class TestSimulationWorker {
         }
         sim.stopSimulation();
         
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        
         sim.simulation(patient);
         while(!sim.isStable()) {
             try {
@@ -80,15 +86,29 @@ public class TestSimulationWorker {
     		}
         }
         sim.stopSimulation();  
-        */
         
 	}
 	
 	@Test
-	public void testPatient() {
+	public void testPatientMale() {
 		Initializer.initilizeJNI();
 		Patient p = new Patient("../breathe.engine/states/exported/Malannus.json");
 	}
+	
+	@Test
+	public void testPatientFemale() {
+		Initializer.initilizeJNI();
+		Patient p = new Patient("../breathe.engine/states/StandardFemale@0s.json");
+	}
+	
+	@Test
+	public void testPatientError() {
+		Initializer.initilizeJNI();
+		try {
+			Patient p = new Patient("../breathe.engine/scenario/exported/ErrorFile.json");
+	    } catch (Exception e) {}
+	}
+	
 	
 	@Test
 	public void testSimulationFromFile() {
@@ -123,6 +143,13 @@ public class TestSimulationWorker {
 		}
         sim.stopSimulation();
         sim.simulationFromFile("../breathe.engine/states/exported/CPAP.json");
+        try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        sim.stopSimulation();
+        sim.simulationFromFile("../breathe.engine/states/StandardFemale@0s.json");
         try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
