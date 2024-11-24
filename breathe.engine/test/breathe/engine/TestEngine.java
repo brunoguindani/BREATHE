@@ -20,7 +20,7 @@ import interfaces.GuiCallback;
 import utils.Pair;
 import utils.VentilationMode;
 
-public class TestSimulationWorker {
+public class TestEngine {
 
 	@Test
 	public void testStandardSimulation() {
@@ -279,9 +279,16 @@ public class TestSimulationWorker {
         sim.connectVentilator(ventilatorCPAP);
         sim.disconnectVentilator(ventilatorCPAP);
 
+        Ventilator cpapWrongConstructor = new Ventilator(VentilationMode.CPAP);
+        
         // EXTERNAL
         Ventilator externalVentilator = new Ventilator(VentilationMode.EXT);
         sim.connectVentilator(externalVentilator);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         TempClient client = new TempClient();
         try {
             Thread.sleep(1000);
@@ -290,7 +297,7 @@ public class TestSimulationWorker {
         }
         client.changetoVolume();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
