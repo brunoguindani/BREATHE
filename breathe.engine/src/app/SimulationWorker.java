@@ -47,6 +47,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private GuiCallback gui;
     
     private boolean stopRequest = false;
+    private boolean stabilized = false;
     
     private SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
     private SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
@@ -206,6 +207,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        exportInitialPatient(patient_configuration.getPatient());	
 	        
 	        //Advice for stabilization completed
+	        stabilized = true;
 			gui.stabilizationComplete(true);
 			gui.minilogStringData("\nSimulation Started");
 		}else if(initializeMode.equals("file")) {
@@ -216,21 +218,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		}
 	
 		while (!stopRequest) {
-            if (!pe.advanceTime(stime)) {
-        		gui.minilogStringData("\nError!");
-        		gui.minilogStringData("Simulation stopped!");
-                return null;
-            }
-            
-            //Send data (to gui and to ext ventilator)
-            if(extVent_running) {
-            	manage_ext();
-            	zmqServer.publishSimulationData(sendData());
-            }
-            else
-            	sendData();
-
-            stime.setValue(0.02, TimeUnit.s);
+        	if(!simulationLoop()) return null;
         }
 		
 		stopRequest = false;
@@ -311,22 +299,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    	return;
 			
 		    if (a instanceof SEAdvanceTime) {
-		        for(int i = 0; i<50; i++){		  
-		            if (!pe.advanceTime(stime)) {
-		        		gui.minilogStringData("\nError!");
-		        		gui.minilogStringData("Simulation stopped!");
-		                return;
-		            }
-
-		            //Send data (to gui and to ext ventilator)
-		            if(extVent_running) {
-		            	manage_ext();
-		            	zmqServer.publishSimulationData(sendData());
-		            }
-		            else
-		            	sendData();
-
-		            stime.setValue(0.02, TimeUnit.s);	
+		        for(int i = 0; i<50; i++){	
+		        	if(!simulationLoop()) return;
 		        }
 
 		    } else {
@@ -335,6 +309,25 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    }
 		}
 	}
+    
+    private boolean simulationLoop() {
+        if (!pe.advanceTime(stime)) {
+    		gui.minilogStringData("\nError!");
+    		gui.minilogStringData("Simulation stopped!");
+            return false;
+        }
+
+        //Send data (to gui and to ext ventilator)
+        if(extVent_running) {
+        	manage_ext();
+        	zmqServer.publishSimulationData(sendData());
+        }
+        else
+        	sendData();
+
+        stime.setValue(0.02, TimeUnit.s);	
+        return true;
+    }
     
     private void exportInitialPatient(SEPatient patient) {
         String basePath = "../breathe.engine/states/exported/";
@@ -650,6 +643,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+    
+    public boolean isStable() {
+    	return stabilized;
     }
     
 }
