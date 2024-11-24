@@ -82,12 +82,7 @@ public class Condition {
 		    case "Chronic Ventricular Systolic Disfunction":
 		        SEChronicVentricularSystolicDysfunction VSD = new SEChronicVentricularSystolicDysfunction();   
 		        this.condition = VSD;
-		        break;	
-		        
-		    case "Impaired Alveolar Exchange":
-		        SEImpairedAlveolarExchange IAE = new SEImpairedAlveolarExchange();                           
-		        this.condition = IAE;
-		        break;		  
+		        break;		      	  
 	
 		    case "Pneumonia":
 		        SEPneumonia Pneumonia = new SEPneumonia();   
@@ -145,10 +140,7 @@ public class Condition {
 	        parameters.put("RightKidneySeverity", Stenosis.getRightKidneySeverity().getValue());
 
 	    } else if (this.condition instanceof SEChronicVentricularSystolicDysfunction) {
-	        this.name = "Chronic Ventricular Systolic Disfunction";
-	        
-	    } else if (this.condition instanceof SEImpairedAlveolarExchange) {
-	        this.name = "Impaired Alveolar Exchange";
+	        this.name = "Chronic Ventricular Systolic Disfunction";	       
 	        
 	    } else if (this.condition instanceof SEPneumonia) {
 	        this.name = "Pneumonia";
