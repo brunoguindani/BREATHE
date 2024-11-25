@@ -55,14 +55,13 @@ public class TempClient {
             try {
                 int firstConnection = 0;
                 while (isConnected && !Thread.currentThread().isInterrupted()) {
-                    if (firstConnection < 2) {
+                    if (firstConnection < 3) {
                         socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
                         firstConnection++;
                     }
-
                     String receivedData = socketSub.recvStr();
                     receivedData = receivedData.trim().replace("Server", "").trim();
-
+                    
                     storeData(receivedData);
 
                     double value = ventilatorType.equals("Volume") ? processVolume() : processPressure();
