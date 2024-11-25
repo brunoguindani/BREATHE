@@ -32,6 +32,7 @@ public class pcVentilatorPanel extends VerticalLayout {
 
     private App app;
 
+    // MechanicalVentilatorContinuousPositiveAirwayPressure (PC)
     public pcVentilatorPanel(App app) {
         this.app = app;
 
@@ -128,6 +129,7 @@ public class pcVentilatorPanel extends VerticalLayout {
         Notification.show("Settings updated",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
+    // Method to get all ventilator data in a Map (The name has to be equal to that of the engine)
     public Map<String, Number> getData() {
         Map<String, Number> dataMap = new HashMap<>();
         dataMap.put("FractionInspiredOxygen", fractionInspOxygen.getValue());
@@ -136,10 +138,12 @@ public class pcVentilatorPanel extends VerticalLayout {
         dataMap.put("PositiveEndExpiratoryPressure", positiveEndExpPres.getValue().intValue());
         dataMap.put("RespirationRate", respirationRate.getValue().intValue());
         dataMap.put("Slope", slope.getValue());
+        // Include the Assisted Mode as a String value
         dataMap.put("AssistedMode", assistedMode.getValue().equals("AC") ? 0 : 1);  
         return dataMap;
     }
 
+	//setting ventilator (if on in the state file)
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
 		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod").doubleValue());
