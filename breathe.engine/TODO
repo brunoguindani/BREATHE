@@ -1,18 +1,6 @@
 ##########
 ###TODO###
 ##########
-- se un valore viene rifiutato i bottoni si disattivano lo stesso ->FATTO
-
-- se faccio partire una simulazione, attacco un ventilatore, cambio schermata, fermo la simulazione, il pulsante Apply rimane attivo.
-- idem se cambio schermata e faccio disconnect.	->FATTO
-
-- se faccio partire da file (o scenario) magari c'è dentro un ventilatore -> FATTO MA DA TESTARE SOPRATTUTTO L'ESTERNO
-
-- grafici si smacellano quando selezioni/deselezioni
-
--Aggiungere load paziente in create scenario
 
 WEB:
 - aggiungere commenti
-- sistemare elementi di patient
-- si potrebbe fare che dopo la stabilizzazione viene scaricato direttamente il file di stato della simulazione

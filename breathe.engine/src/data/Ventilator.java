@@ -17,7 +17,6 @@ import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMe
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
 
-import utils.Pair;
 import utils.VentilationMode;
 
 public class Ventilator {
@@ -46,10 +45,10 @@ public class Ventilator {
 	 * Constructor for "external" ventilators
 	 */
 	public Ventilator(VentilationMode mode) {
-	    this.mode = mode;
 	    if(mode == VentilationMode.EXT) {
-		    if(ventilator_EXTERNAL == null) 
-				ventilator_EXTERNAL = new SEMechanicalVentilation();
+	    	this.mode = mode;
+	    	if(ventilator_EXTERNAL == null)
+	    		ventilator_EXTERNAL = new SEMechanicalVentilation();
 	    }
 	}
 	
@@ -107,17 +106,6 @@ public class Ventilator {
 			
 			this.ventilator = ventilator_CPAP;
 		}
-	}
-	
-	//Clear and update all parameters, then update ventilator
-	@SuppressWarnings("unchecked")
-	public void updateSettings(Pair<String, Double>... pairs) {
-	    this.parameters.clear();
-	    for (Pair<String, Double> pair : pairs) {
-	        this.parameters.put(pair.getKey(), pair.getValue());
-	    } 
-	    
-	    manageSEVentilator(); 
 	}
 	
 	//create a ventilator (when simulation loaded from file)

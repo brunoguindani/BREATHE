@@ -22,7 +22,7 @@
 
     let charts = {}; 
 
-    function initLineChart(name) {
+    function initLineChart(name, unit) {
         if (charts[name]) {
             console.warn(` "${name}" alredy exists.`);
             return;
@@ -43,7 +43,7 @@
             theme: Themes.turquoiseHexagon,
         });
 
-        chart.setTitle(name);
+        chart.setTitle(name + " (" + unit + ")");
         //chart.setMouseInteractions(false);
         chart.getDefaultAxisX()
             .setScrollStrategy(AxisScrollStrategies.progressive)

@@ -2,6 +2,7 @@ package data;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +60,8 @@ public class Patient {
 	/*
 	 * Constructor from File
 	 */
-	public Patient(String file) {	   
+	public Patient(String file) {	
+		this.parameters = new HashMap<String, Double>();
 		loadPatientData(file);
 	}
 	
@@ -135,14 +137,6 @@ public class Patient {
 	
 
 	/*
-	 * Add conditions
-	 */
-	public void addCondition(Condition c){
-		conditions.add(c);
-		patient_configuration.getConditions().add(c.getCondition());
-	}	
-	
-	/*
 	 * Return SEPatient object
 	 */
 	public SEPatient getPatient(){
@@ -163,15 +157,5 @@ public class Patient {
 	public List<Condition> getConditions(){
 		return conditions;
 	}
-	
-	
-	/*
-	 * Create SEPatient object
-	 */
-	public void setPatient(SEPatientConfiguration pc, SEPatient p){
-		patient_configuration = pc;
-		patient = p;
-	}
-	
 	
 }

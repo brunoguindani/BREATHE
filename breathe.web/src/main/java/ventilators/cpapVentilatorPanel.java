@@ -26,6 +26,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 
 	private App app;
 
+	// MechanicalVentilatorContinuousPositiveAirwayPressure (CPAP)
 	public cpapVentilatorPanel(App app) {
 		this.app = app;
 		getStyle().set("margin", "0px");
@@ -99,6 +100,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		app.connectVentilator();
 	}
 
+	//Get ventilator data 
 	public Map<String, Number> getData() {
 		Map<String, Number> dataMap = new HashMap<>();
 		dataMap.put("FractionInspiredOxygen", fractionInspOxygen.getValue());
@@ -108,6 +110,7 @@ public class cpapVentilatorPanel extends VerticalLayout {
 		return dataMap;
 	}
 
+	//setting ventilator (if on in the state file)
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
 		deltaPressureSup.setValue(ventilator.getParameters().get("DeltaPressureSup").doubleValue());
