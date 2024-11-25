@@ -39,9 +39,9 @@ public class TestEngine {
         patientParameters.put("Height", 175.0);
 
         //Add a condition
-        Map < String, Double > anemiaParams1 = new HashMap < > ();
-        anemiaParams1.put("ReductionFactor", 0.5);
-        Condition anemiaCondition = new Condition("Chronic Anemia", anemiaParams1);
+        Map < String, Double > anemiaParams = new HashMap < > ();
+        anemiaParams.put("ReductionFactor", 0.5);
+        Condition anemiaCondition = new Condition("Chronic Anemia", anemiaParams);
 
 
         List < Condition > conditions = new ArrayList < > ();
@@ -53,22 +53,15 @@ public class TestEngine {
         patient.getName();
 
 
-        //CHIEDERE PERCHè NON ABBIAMO USATO QUELLA SOPRA DI CONDIZIONE?
-        Map < String, Double > anemiaParams = new HashMap < > ();
-        anemiaParams.put("ReductionFactor", 0.8);
-        Condition chronicAnemiaCondition = new Condition("Chronic Anemia", anemiaParams);
-        patient.addCondition(chronicAnemiaCondition);
-        //
-
         //Start simulation (standard)
         sim.simulation(patient);
-//        while (!sim.isStable()) {
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        while (!sim.isStable()) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         sim.stopSimulation();
 
         try {
@@ -79,13 +72,13 @@ public class TestEngine {
 
         //Start another simulation for other test
         sim.simulation(patient);
-//        while (!sim.isStable()) {
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        while (!sim.isStable()) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         sim.stopSimulation();
 
     }
@@ -310,31 +303,32 @@ public class TestEngine {
         sim.connectVentilator(ventilatorCPAP);
         sim.disconnectVentilator(ventilatorCPAP);
 
-        //CPAP wrong constructor
-        new Ventilator(VentilationMode.CPAP);
 
         // EXTERNAL
         Ventilator externalVentilator = new Ventilator(VentilationMode.EXT);
         sim.connectVentilator(externalVentilator);
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         TempClient client = new TempClient();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         client.changetoVolume();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         client.disconnectFromServer();
         sim.disconnectVentilator(externalVentilator);
+        
+       //wrong constructor
+       new Ventilator(VentilationMode.CPAP);
     }
 
     @Test

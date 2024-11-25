@@ -45,8 +45,8 @@ public class Ventilator {
 	 * Constructor for "external" ventilators
 	 */
 	public Ventilator(VentilationMode mode) {
-	    this.mode = mode;
 	    if(mode == VentilationMode.EXT) {
+	    	this.mode = mode;
 	    	if(ventilator_EXTERNAL == null)
 	    		ventilator_EXTERNAL = new SEMechanicalVentilation();
 	    }

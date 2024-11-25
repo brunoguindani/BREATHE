@@ -137,14 +137,6 @@ public class Patient {
 	
 
 	/*
-	 * Add conditions
-	 */
-	public void addCondition(Condition c){
-		conditions.add(c);
-		patient_configuration.getConditions().add(c.getCondition());
-	}	
-	
-	/*
 	 * Return SEPatient object
 	 */
 	public SEPatient getPatient(){
