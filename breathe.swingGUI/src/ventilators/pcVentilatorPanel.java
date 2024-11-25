@@ -98,6 +98,7 @@ public class pcVentilatorPanel extends JPanel {
         return dataMap;
     }
     
+	//setting ventilator (if on in the state file)
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
 		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod"));

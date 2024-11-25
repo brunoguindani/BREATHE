@@ -28,6 +28,7 @@ public class vcVentilatorPanel extends JPanel{
     private JComboBox<String> assistedMode = new JComboBox<>(new String[]{"AC", "CMV"});
     
     private JButton applyButton;
+    
     // SEMechanicalVentilatorVolumeControl (VC)
 	public vcVentilatorPanel(App app) {
 		this.setBackground(Color.LIGHT_GRAY);
@@ -95,6 +96,7 @@ public class vcVentilatorPanel extends JPanel{
         return dataMap;
     }
     
+	//setting ventilator (if on in the state file)
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen"));
 		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod"));

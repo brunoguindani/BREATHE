@@ -33,6 +33,8 @@ public class vcVentilatorPanel extends VerticalLayout {
     
     private App app;
 
+    
+    // SEMechanicalVentilatorVolumeControl (VC)
     public vcVentilatorPanel(App app) {
         this.app = app;
         getStyle().set("margin", "0px");
@@ -127,6 +129,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         Notification.show("Settings updated",3000,Position.BOTTOM_END).addThemeVariants(NotificationVariant.LUMO_PRIMARY);;
     }
 
+    //Get ventilator data 
     public Map<String, Number> getData() {
         Map<String, Number> dataMap = new HashMap<>();
         dataMap.put("Flow", flow.getValue().intValue());
@@ -139,6 +142,7 @@ public class vcVentilatorPanel extends VerticalLayout {
         return dataMap;
     }
     
+	//setting ventilator (if on in the state file)
 	public void setVentilator(Ventilator ventilator) {
 		fractionInspOxygen.setValue(ventilator.getParameters().get("FractionInspiredOxygen").doubleValue());
 		inspiratoryPeriod.setValue(ventilator.getParameters().get("InspiratoryPeriod").doubleValue());
