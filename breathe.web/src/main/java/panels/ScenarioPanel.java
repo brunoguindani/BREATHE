@@ -29,6 +29,9 @@ import java.util.List;
 public class ScenarioPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * Panel to create scenario
+	 */
 	private App app;
 
 	private ComboBox<String> patientFileComboBox;
@@ -46,9 +49,11 @@ public class ScenarioPanel extends VerticalLayout {
 		getStyle().set("margin", "0px");
 		getStyle().set("padding", "0px");
 
+		//SCENARIO NAME SETUP
 		scenarioNameField = new TextField("Scenario Name");
 		scenarioNameField.setWidth("70%");
 		
+		//PATIENT NAME SETUP
 		patientFileComboBox = new ComboBox<>("Patient");
 		patientFileComboBox.setWidth("70%");
 		String[] directories = { "../breathe.engine/states/exported/", "../breathe.engine/states/", "../breathe.engine/states/uploaded/"};
@@ -68,6 +73,7 @@ public class ScenarioPanel extends VerticalLayout {
         tableLayout.setPadding(false);
         tableLayout.setSpacing(false);
 
+        //TABLE SETUP
 		actionsGrid = new Grid<>();
 		actionsGrid.addColumn(pair -> pair.getKey().toString().split("\n")[0]).setHeader("Action")
 				.setTooltipGenerator(pair -> pair.getKey().toString());
@@ -90,6 +96,8 @@ public class ScenarioPanel extends VerticalLayout {
         fixedSizeDiv.add(scrollableDiv);
         fixedSizeDiv.setHeight("50vh");
 
+        
+        //BUTTON SETUP
 		Button createScenarioButton = new Button("Create Scenario", e -> createScenario());
 
 		Button removeActionButton = new Button(VaadinIcon.TRASH.create(), e -> removeSelectedActions());
@@ -120,6 +128,7 @@ public class ScenarioPanel extends VerticalLayout {
 		add(buttonsLayout);
 	}
 
+	// get all patients from folder 
 	private void updatePatientFiles(String[] directories) {
 		List<String> patientFiles = new ArrayList<>();
 
@@ -148,6 +157,7 @@ public class ScenarioPanel extends VerticalLayout {
 		return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
 	}
 
+	//Add action to table
 	public void addAction(Action action, int seconds) {
 		Pair<Action, Integer> newAction = new Pair<>(action, seconds);
 		actions.add(newAction);
@@ -155,8 +165,8 @@ public class ScenarioPanel extends VerticalLayout {
 		dataProvider.refreshAll();
 	}
 	
+	//load new state file
 	private void uploadNewPatient() {
-        
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Select New State File");
         
@@ -175,6 +185,7 @@ public class ScenarioPanel extends VerticalLayout {
         dialog.open();
 	}
 
+	 //Export scenario
 	private void createScenario() {
 		String scenarioName = scenarioNameField.getValue();
 
