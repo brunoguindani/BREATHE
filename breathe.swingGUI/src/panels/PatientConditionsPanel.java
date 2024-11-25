@@ -14,6 +14,10 @@ import app.App;
 public class PatientConditionsPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * Panel to group Patient and Conditions Panel
+	 */
+	
 	public PatientPanel patientPanel;
 	 public ConditionsPanel conditionsPanel;
 	 
@@ -35,6 +39,7 @@ public class PatientConditionsPanel extends JPanel{
 	       group.add(conditionsButton);
 	       patientButton.setSelected(true);  
 	        
+	       //Switch between the two panels
 	       JPanel radioPanel = new JPanel();
 	       radioPanel.setBackground(Color.LIGHT_GRAY); 
 	       radioPanel.add(patientButton);

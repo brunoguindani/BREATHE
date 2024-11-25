@@ -27,12 +27,15 @@ import app.App;
 public class ControlPanel extends HorizontalLayout {
     private static final long serialVersionUID = 1L;
 
+	/*
+	 * BUTTONS TO CONTROL THE SIMULATION
+	 */
+    
     private Button startButton, stopButton, exportButton, scenarioButton;
     private String uploadedFileName;
     
     private final ActionsPanel actionsPanel; 
     private final ScenarioPanel scenarioPanel;
-    
     
     App app;
 
@@ -41,11 +44,13 @@ public class ControlPanel extends HorizontalLayout {
         
         actionsPanel = new ActionsPanel(app, true); 
         scenarioPanel = new ScenarioPanel(app);
-        
+       
+        //START SIMULATION
         startButton = new Button(VaadinIcon.PLAY.create(), e -> showStartOptions());
         startButton.setTooltipText("Start simulation");
         startButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY); 
         
+        //STOP SIMULATION
         stopButton = new Button(VaadinIcon.STOP.create());
         stopButton.setTooltipText("Stop simulation");
         stopButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -55,6 +60,7 @@ public class ControlPanel extends HorizontalLayout {
             enableControlStartButton(true);
         });
         
+        //EXPORT SIMULATION
         exportButton = new Button(LumoIcon.DOWNLOAD.create());
         exportButton.setTooltipText("Export simulation");
         exportButton.setEnabled(false);
@@ -62,12 +68,14 @@ public class ControlPanel extends HorizontalLayout {
         	exportSimulation();
         });
         
+        //CREATE SCENARIO
         scenarioButton = new Button(VaadinIcon.CLIPBOARD_TEXT.create());
         scenarioButton.setTooltipText("Create Scenario");
         scenarioButton.addClickListener(e -> {
         	openScenarioDialog();
         });
         
+        //CHANGE THEME
         Button themeButton = new Button(VaadinIcon.MOON.create());
         themeButton.getStyle().set("margin-right", "0px");
         themeButton.addClickListener(e -> {
@@ -87,7 +95,7 @@ public class ControlPanel extends HorizontalLayout {
         add(startButton, stopButton, exportButton, scenarioButton, spacer,  themeButton);
     }
 
-    
+    //Panel to create scenario
     private void openScenarioDialog() {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("New Scenario");
@@ -99,6 +107,7 @@ public class ControlPanel extends HorizontalLayout {
         dialog.open();
     }
 
+    //All options to start a simulation
     private void showStartOptions() {
     	uploadedFileName = null;
         Dialog dialog = new Dialog();
@@ -129,11 +138,13 @@ public class ControlPanel extends HorizontalLayout {
         dialog.open();
     }
     
+    //Standard Simulation
     private void startingSimulation() {
     	app.clearOutputDisplay();
     	app.startSimulation();
     }
 
+    //Starting file Simulation
     private void startingFileSimulation() {
         
         Dialog dialog = new Dialog();
@@ -164,6 +175,7 @@ public class ControlPanel extends HorizontalLayout {
         dialog.open();
     }
     
+    //Starting from Simulation
     private void startingScenario() {
         
         Dialog dialog = new Dialog();
@@ -208,6 +220,7 @@ public class ControlPanel extends HorizontalLayout {
     	
     }
     
+    //Export Simulation
     private void exportSimulation() {
     	 String filePath = "../breathe.engine/states/exported/"+ app.getPatientName()+ ".json";
     	 

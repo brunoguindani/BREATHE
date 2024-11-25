@@ -37,7 +37,7 @@ public class OutputPanel extends JPanel{
     	
     	chartsMap = new HashMap<>();
         
-    	//ALL display vitals
+    	//display ALL vitals
     	chartsMap.put("Total Lung Volume", "mL");
         chartsMap.put("ECG", "mV");
         chartsMap.put("CO2", "mmHg");

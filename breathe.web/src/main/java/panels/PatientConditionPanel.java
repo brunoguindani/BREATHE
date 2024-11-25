@@ -14,6 +14,10 @@ import app.App;
 public class PatientConditionPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * Panel to group Patient and Conditions Panel
+	 */
+	
 	private final PatientPanel patientPanel; 
     private final ConditionsPanel conditionsPanel; 
 
@@ -24,6 +28,7 @@ public class PatientConditionPanel extends VerticalLayout {
         getStyle().set("margin","0px" );
         getStyle().set("padding","0px" );
 
+	    //Buttons to switch between the two panels
         Button patientButton = new Button(VaadinIcon.USER.create());
         patientButton.setTooltipText("Patients info");
         patientButton.setWidth("9vw");

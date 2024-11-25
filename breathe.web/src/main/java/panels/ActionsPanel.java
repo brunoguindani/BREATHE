@@ -18,6 +18,9 @@ import java.util.Map;
 public class ActionsPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * PANEL CONTAINING ALL ACTIONS
+	 */
 	private List<ActionBox> boxes = new ArrayList<>();
 
     public ActionsPanel(App app, boolean forScenario) {
@@ -28,11 +31,15 @@ public class ActionsPanel extends VerticalLayout {
 
         Div fixedSizeDiv = new Div();
         fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
-
+        
+        // Panels with all actions
         VerticalLayout actionLayout = new VerticalLayout();
         actionLayout.setPadding(false);
         actionLayout.setSpacing(false);
         
+        /*
+         * ADD ACTIONS
+         */
         addActionBox(app, "ARDS Exacerbation", new String[]{"LeftLungSeverity", "RightLungSeverity"}, actionLayout, forScenario);
         addActionBox(app, "Acute Stress", new String[]{"Severity"}, actionLayout, forScenario);
         addActionBox(app, "Airway Obstruction", new String[]{"Severity"}, actionLayout, forScenario);

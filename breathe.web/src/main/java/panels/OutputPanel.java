@@ -16,6 +16,10 @@ import java.util.Set;
 public class OutputPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * PANEL to Display Output Items
+	 */
+	
 	private VerticalLayout mainPanel;
     private Map<String, String> chartsMap;
     private Map<String, ItemDisplay> chartPanels;
@@ -38,6 +42,7 @@ public class OutputPanel extends VerticalLayout {
 
         chartsMap = new HashMap<>();
         
+    	//display ALL vitals
         chartsMap.put("Total Lung Volume", "mL");
         chartsMap.put("ECG", "mV");
         chartsMap.put("CO2", "mmHg");
@@ -56,6 +61,7 @@ public class OutputPanel extends VerticalLayout {
         infoBoxPanel.setAlignItems(Alignment.CENTER);
         infoBoxPanel.setJustifyContentMode(JustifyContentMode.CENTER);
         
+        //ADDING LINE CHARTS
         String[] chartOrder = {
             "Total Lung Volume",
             "CO2",
@@ -83,6 +89,7 @@ public class OutputPanel extends VerticalLayout {
         if(count == 1)
         	chartsPanel.add(new HorizontalLayout(oldLine, null));
         
+        //ADDING INFO BOXES
         String[] infoOrder = {
             "Heart Rate",
             "Respiratory Rate",
@@ -97,6 +104,7 @@ public class OutputPanel extends VerticalLayout {
             infoBoxPanel.add(infoBox);
         }
         
+        //SET UP MAIN PANEL
         scrollChartPane = new Div(chartsPanel);
         scrollChartPane.getStyle().set("overflow-y", "auto").set("overflow-x", "hidden");
         scrollChartPane.setWidthFull();
@@ -107,6 +115,7 @@ public class OutputPanel extends VerticalLayout {
         add(mainPanel);
     }
 
+    //GRAPHIC UPDATE OF THE PANELS
     public void updateItemDisplay(Set<String> selectedCharts) { 
         chartsPanel.removeAll();
         infoBoxPanel.removeAll();
@@ -130,6 +139,7 @@ public class OutputPanel extends VerticalLayout {
         scrollChartPane.getElement().executeJs("this.scrollTop = 0");
     }
 
+    //ADDING VALUES depending on name
     public void addValueToItemDisplay(String chartName, double x, double y) {
         String mapChartName;
 

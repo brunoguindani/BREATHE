@@ -22,6 +22,10 @@ import java.util.Map;
 public class ConditionsPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * PANEL WITH ALL CONDITION BOXES
+	 */
+	
 	private List<ConditionBox> boxes = new ArrayList<>();
     private List<Condition> activeConditions = new ArrayList<>();
     private Button resetButton;
@@ -36,10 +40,14 @@ public class ConditionsPanel extends VerticalLayout {
         Div fixedSizeDiv = new Div();
         fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
+        // Panels containing all conditions
         VerticalLayout conditionLayout = new VerticalLayout();
         conditionLayout.setPadding(false);
         conditionLayout.setSpacing(false);
         
+        /*
+         * ADD CONDITIONS
+         */
         addConditionBox(app, "Chronic Anemia", new String[]{"ReductionFactor"}, conditionLayout);
         addConditionBox(app, "ARDS", new String[]{"LeftLungSeverity", "RightLungSeverity"}, conditionLayout);
         addConditionBox(app, "COPD", new String[]{"BronchitisSeverity", "LeftLungEmphysemaSeverity", "RightLungEmphysemaSeverity"}, conditionLayout);
@@ -113,7 +121,7 @@ public class ConditionsPanel extends VerticalLayout {
         return activeConditions;
     }
 
-    //set condition if setted in file (start from file/scenario)
+    //Set Conditions to GUI from File
     public void setConditions(List<Condition> list) {
         activeConditions.clear();
         for (ConditionBox box : boxes) {

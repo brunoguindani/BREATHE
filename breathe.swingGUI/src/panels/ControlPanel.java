@@ -19,6 +19,10 @@ import app.App;
 
 public class ControlPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * BUTTONS TO CONTROL THE SIMULATION
+	 */
 
     JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
     
