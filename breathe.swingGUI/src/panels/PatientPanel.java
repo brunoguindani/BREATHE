@@ -28,6 +28,9 @@ import data.*;
 
 public class PatientPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
+	/*
+	 * PANEL TO SET UP PATIENT DATA
+	 */
 	
 	/*
 	 * Fields

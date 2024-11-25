@@ -192,6 +192,7 @@ public class ConditionsPanel extends JPanel{
         }    	
     }
 
+    //Set Conditions to GUI from File
     public void setConditions(List<Condition> list) {
     	activeConditions.clear();
         boolean found = false;

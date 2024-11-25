@@ -23,10 +23,19 @@ import com.vaadin.flow.component.html.Div;
 
 public class PatientPanel extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
-
+	/*
+	 * PANEL TO SET UP PATIENT DATA
+	 */
+	
+	/*
+	 * Fields
+	 */
 	private TextField nameField;
 	private ComboBox<String> sexComboBox, weightUnitComboBox, heightUnitComboBox;
 	
+	/*
+	 * Inner Panels
+	 */
 	private NumberField ageField, heightField, weightField, bodyFatField,heartRateField, diastolicPressureField, systolicPressureField, respirationRateField, basalMetabolicRateField;
 	private Map<String, NumberField> fieldMap = new HashMap<>();
 
@@ -39,9 +48,13 @@ public class PatientPanel extends VerticalLayout {
 		Div fixedSizeDiv = new Div();
 		fixedSizeDiv.getStyle().set("box-sizing", "border-box"); 
 
+    	//set up dataPanel
 		FormLayout formLayout = new FormLayout();
 		formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1)); 
 
+		/*
+		 * All Fields
+		 */
 		nameField = new TextField("Name");
 		nameField.setValue("Standard");
 
@@ -145,7 +158,7 @@ public class PatientPanel extends VerticalLayout {
 		heightUnitComboBox.setWidth("5vw");
 		heightUnitComboBox.addValueChangeListener(event -> updateFieldRange());
 
-		
+		//Adding fields to panel
 		formLayout.add(nameField);
 		HorizontalLayout user = new HorizontalLayout(ageField, sexComboBox);
 		formLayout.add(user);
@@ -198,8 +211,7 @@ public class PatientPanel extends VerticalLayout {
 		}
 	}
 	
-	
-	//TO TEST
+	//adapt field range depending on unit
 	private void updateFieldRange() {
 	    String selectedUnit = heightUnitComboBox.getValue();
 	    String selectedSex = sexComboBox.getValue();
@@ -295,6 +307,7 @@ public class PatientPanel extends VerticalLayout {
 		return nameField.getValue();
 	}
 	
+    //Generate Patient Data from text Values and Conditions
 	public Patient generateInitialPatient(List<Condition> conditions) {
 		String name = nameField.getValue();
 		Map<String, Double> parameters = new HashMap<>();
