@@ -254,7 +254,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
                };
 
 		this.requestList = requestList;
-		this.unitList = unitList; // assegna alla variabile membro
+		this.unitList = unitList; 
     	
     	this.requestList = requestList;
     	
@@ -564,13 +564,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        	gui.minilogStringData("\nEXTERNAL Ventilator error!!!");
 	        }
 
-		} else if(zmqServer.isDisconnecting()) {	
-			ventilator_ext.setState(eSwitch.Off);
-		    gui.minilogStringData("\nEXTERNAL Ventilator disconnected");
-		    gui.minilogStringData("Searching for EXTERNAL ventilators...\n");
-	        pe.processAction(ventilator_ext);
-	        resetLogExtVentilator();
-	        firstEXTConnection = true;
+		} else {
+			if(zmqServer.isDisconnecting()) {	
+				ventilator_ext.setState(eSwitch.Off);
+			    gui.minilogStringData("\nEXTERNAL Ventilator disconnected");
+			    gui.minilogStringData("Searching for EXTERNAL ventilators...\n");
+		        pe.processAction(ventilator_ext);
+		        resetLogExtVentilator();
+		        firstEXTConnection = true;
+			}
 		}
     }
     
