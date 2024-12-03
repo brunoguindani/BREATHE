@@ -49,6 +49,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean stopRequest = false;
     private boolean stabilized = false;
     
+    private double simulationSpeed = 1;
     private SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
     private SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
@@ -62,8 +63,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean standardVent_running = false;
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
-    
-    
+      
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
     }
@@ -311,23 +311,37 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
     
     private boolean simulationLoop() {
+        long startTime = System.nanoTime(); 
+        
         if (!pe.advanceTime(stime)) {
-    		gui.minilogStringData("\nError!");
-    		gui.minilogStringData("Simulation stopped!");
+            gui.minilogStringData("\nError!");
+            gui.minilogStringData("Simulation stopped!");
             return false;
         }
 
-        //Send data (to gui and to ext ventilator)
-        if(extVent_running) {
-        	manage_ext();
-        	zmqServer.publishSimulationData(sendData());
-        }
-        else
+        if (extVent_running) {
+            manage_ext();
+            zmqServer.publishSimulationData(sendData());
+        } else {
         	sendData();
+        }
 
-        stime.setValue(0.02, TimeUnit.s);	
+        stime.setValue(0.02, TimeUnit.s);
+
+        long elapsedTime = System.nanoTime() - startTime;
+        long sleepTime = (long) (0.02/simulationSpeed * 1_000_000_000) - elapsedTime; 
+
+        if (sleepTime > 0) {
+            try {
+                Thread.sleep(sleepTime / 1_000_000, (int) (sleepTime % 1_000_000));
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
         return true;
     }
+
     
     private void exportInitialPatient(SEPatient patient) {
         String basePath = "../breathe.engine/states/exported/";
@@ -649,6 +663,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     public boolean isStable() {
     	return stabilized;
+    }
+    
+    public void setSpeed(double speed){
+    	simulationSpeed = speed;
     }
     
 }
