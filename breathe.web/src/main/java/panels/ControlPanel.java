@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -32,6 +33,7 @@ public class ControlPanel extends HorizontalLayout {
 	 */
     
     private Button startButton, stopButton, exportButton, scenarioButton;
+    private ComboBox<String> speedSelector;
     private String uploadedFileName;
     
     private final ActionsPanel actionsPanel; 
@@ -58,6 +60,30 @@ public class ControlPanel extends HorizontalLayout {
         stopButton.addClickListener(e -> {
             app.stopSimulation();
             enableControlStartButton(true);
+        });
+        
+        // SPEED SELECTOR
+        speedSelector = new ComboBox<>();
+        speedSelector.setItems("0.5x", "1x", "2x", "3x");
+        speedSelector.setValue("1x"); // Default speed
+        speedSelector.setWidth("100px");
+        speedSelector.setEnabled(false);
+        speedSelector.addValueChangeListener(event -> {
+            String selectedSpeed = event.getValue();
+            switch (selectedSpeed) {
+                case "0.5x":
+                    app.sendSpeed(0.5);
+                    break;
+                case "1x":
+                    app.sendSpeed(1.0);
+                    break;
+                case "2x":
+                    app.sendSpeed(2.0);
+                    break;
+                case "3x":
+                    app.sendSpeed(3.0);
+                    break;
+            }
         });
         
         //EXPORT SIMULATION
@@ -89,10 +115,13 @@ public class ControlPanel extends HorizontalLayout {
         });     
         
         setWidth("100%");
-        Div spacer = new Div();
-        spacer.getStyle().set("flex-grow", "1");
+        Div spacer1 = new Div();
+        spacer1.getStyle().set("flex-grow", "30");
 
-        add(startButton, stopButton, exportButton, scenarioButton, spacer,  themeButton);
+        Div spacer2 = new Div();
+        spacer2.getStyle().set("flex-grow", "20");
+
+        add(startButton, stopButton, exportButton, scenarioButton, spacer1, speedSelector, spacer2, themeButton);
     }
 
     //Panel to create scenario
@@ -251,6 +280,8 @@ public class ControlPanel extends HorizontalLayout {
         startButton.setEnabled(enable); 
         stopButton.setEnabled(!enable);
         exportButton.setEnabled(!enable);
+        speedSelector.setEnabled(!enable);
+        speedSelector.setValue("1x"); // Default speed
     }
     
     public ScenarioPanel getScenarioPanel() {

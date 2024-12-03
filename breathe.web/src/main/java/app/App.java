@@ -212,6 +212,11 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
      * GUI TO SIMULATION WORKER
      */	
 	
+	public void sendSpeed(double speed) {
+		sim.setSpeed(speed);
+        minilogStringData("Simulation speed set to " + speed);
+	}
+	
 	//export scenario
 	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
 		sim.createScenario(patientFile, scenarioName, actions);
@@ -234,13 +239,13 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
 	//start simulation from file
     public boolean startFromFileSimulation(String file) {
     	if(file != null) {
-    		startLoading();
-    		clearOutputDisplay();
-    		sim = new SimulationWorker(this);
-    		sim.simulationFromFile(file);
-        	patientConditionPanel.getConditionsPanel().enableButtons(false);
-        	patientConditionPanel.getPatientPanel().enableComponents(false);
-    		return true;
+     		startLoading();
+     		clearOutputDisplay();
+     		sim = new SimulationWorker(this);
+     		sim.simulationFromFile(file);
+         	patientConditionPanel.getConditionsPanel().enableButtons(false);
+         	patientConditionPanel.getPatientPanel().enableComponents(false);
+	  		return true;
     	}else 
     		return false;
     }
