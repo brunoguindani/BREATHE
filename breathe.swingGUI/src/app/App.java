@@ -142,10 +142,6 @@ public class App extends JFrame implements GuiCallback {
     /*
      * GUI TO SIMULATIONWORKER
      */
-	public void sendSpeed(double speed) {
-		sim.setSpeed(speed);
-        minilogStringData("Simulation speed set to " + speed);
-	}
 	
     public boolean startSimulation() {
     	Patient new_patient = patientConditionPanel.getPatientPanel().generateInitialPatient(getActiveConditions());

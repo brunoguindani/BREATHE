@@ -212,11 +212,6 @@ public class App extends Composite<VerticalLayout> implements GuiCallback {
      * GUI TO SIMULATION WORKER
      */	
 	
-	public void sendSpeed(double speed) {
-		sim.setSpeed(speed);
-        minilogStringData("Simulation speed set to " + speed);
-	}
-	
 	//export scenario
 	public void createScenario(String patientFile, String scenarioName, ArrayList<Pair<Action, Integer>> actions) {
 		sim.createScenario(patientFile, scenarioName, actions);
