@@ -328,11 +328,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         stime.setValue(0.02, TimeUnit.s);
 
         long elapsedTime = System.nanoTime() - startTime;
-        long sleepTime = (long) (0.02 * 1_000_000_000) - elapsedTime; 
-
+        long sleepTime =  (2 * 10000000) - elapsedTime; 
         if (sleepTime > 0) {
             try {
-                Thread.sleep(sleepTime / 1_000_000, (int) (sleepTime % 1_000_000));
+                Thread.sleep(sleepTime / 1000000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

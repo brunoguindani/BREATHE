@@ -63,12 +63,14 @@ public class ZeroServer {
                     break;
 
                 case "input":
-                    if (jsonNode.get("ventilatorType").asText().equals("Volume")) {
+                    if (jsonNode.get("ventilatorType").asText().equals("Volume") && !disconnecting) {
                         selectedMode = "Volume";
                         volume = Double.parseDouble(jsonNode.get("value").asText());
-                    } else if (jsonNode.get("ventilatorType").asText().equals("Pressure")) {
+                        connectionStable = true;
+                    } else if (jsonNode.get("ventilatorType").asText().equals("Pressure") && !disconnecting) {
                         selectedMode = "Pressure";
                         pressure = Double.parseDouble(jsonNode.get("value").asText());
+                        connectionStable = true;
                     } 
                 break;
             }
