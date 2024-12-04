@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,7 +25,6 @@ public class ControlPanel extends JPanel{
 	 */
 
     JButton startFromFileButton,startFromScenarioButton,startButton,stopButton,exportButton;
-    JComboBox<String> speedSelector;
  
     App app;
 
@@ -224,7 +222,6 @@ public class ControlPanel extends JPanel{
         startFromScenarioButton.setEnabled(enable);
         stopButton.setEnabled(!enable);
         exportButton.setEnabled(!enable);
-        speedSelector.setEnabled(!enable);
     }
     
     //From Start to Stop
@@ -234,7 +231,6 @@ public class ControlPanel extends JPanel{
         startFromScenarioButton.setVisible(enable);
         stopButton.setVisible(!enable);
         exportButton.setVisible(!enable);
-        speedSelector.setVisible(!enable);
     }
     
     //Clean outputs graphs
