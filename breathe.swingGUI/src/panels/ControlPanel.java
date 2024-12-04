@@ -158,39 +158,11 @@ public class ControlPanel extends JPanel{
             }
         });
         
-        //SIMULATION SPEED
-        speedSelector = new JComboBox<>(new String[]{"0.5x", "1x", "2x", "3x"});
-        speedSelector.setToolTipText("Set simulation speed");
-        speedSelector.setPreferredSize(new Dimension(100, 30));
-        speedSelector.setBackground(Color.LIGHT_GRAY);
-        speedSelector.setForeground(Color.BLACK);
-        speedSelector.setSelectedIndex(1);
-        speedSelector.setVisible(false);
-        speedSelector.setFocusable(false);
-        speedSelector.addActionListener(e -> {
-            String selectedSpeed = (String) speedSelector.getSelectedItem();
-            switch (selectedSpeed) {
-                case "0.5x":
-                    app.sendSpeed(0.5); // Set speed to 0.5x
-                    break;
-                case "1x":
-                    app.sendSpeed(1.0); // Set speed to 1x
-                    break;
-                case "2x":
-                    app.sendSpeed(2.0); // Set speed to 2x
-                    break;
-                case "3x":
-                    app.sendSpeed(3.0); // Set speed to 3x
-                    break;
-            }
-        });
-        
         //Add buttons to buttonPanel
         this.add(startFromScenarioButton);
         this.add(stopButton); 
         this.add(startFromFileButton);
         this.add(startButton);
-        this.add(speedSelector);
         this.add(exportButton);
     }
     

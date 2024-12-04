@@ -48,8 +48,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     private boolean stopRequest = false;
     private boolean stabilized = false;
-    
-    private double simulationSpeed = 1;
+
     private SEScalarTime stime = new SEScalarTime(0, TimeUnit.s);
     private SEPatientConfiguration patient_configuration = new SEPatientConfiguration();
     
@@ -329,7 +328,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         stime.setValue(0.02, TimeUnit.s);
 
         long elapsedTime = System.nanoTime() - startTime;
-        long sleepTime = (long) (0.02/simulationSpeed * 1_000_000_000) - elapsedTime; 
+        long sleepTime = (long) (0.02 * 1_000_000_000) - elapsedTime; 
 
         if (sleepTime > 0) {
             try {
@@ -663,10 +662,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     public boolean isStable() {
     	return stabilized;
-    }
-    
-    public void setSpeed(double speed){
-    	simulationSpeed = speed;
     }
     
 }
