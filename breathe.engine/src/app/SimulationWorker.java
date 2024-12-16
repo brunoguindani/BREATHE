@@ -62,6 +62,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean standardVent_running = false;
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
+    
+    private String inputPatient = null;
       
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
@@ -103,6 +105,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
+		extractInputPatient(filePath);
 		
 		//get conditions
 		List<SECondition> listCondition = new ArrayList<>();
@@ -161,6 +164,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         
         gui.minilogStringData("Loading Scenario " + scenarioFilePath);
         pe1.serializeFromFile(patientFilePath, dataRequests);
+		extractInputPatient(patientFilePath);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
@@ -351,8 +355,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             filePath = basePath + patient.getName() + "@0 (" + counter+ ").json";
             counter++;
         }
-        if( pe.serializeToFile(filePath) ) 
+        if( pe.serializeToFile(filePath) ) {
         	gui.minilogStringData("\nExported Patient File to " + filePath);
+			extractInputPatient(filePath);
+        }
     }
     
     
@@ -661,6 +667,20 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     public boolean isStable() {
     	return stabilized;
+    }
+    
+    public void extractInputPatient(String patientFile) {
+    	 try { 
+             ObjectMapper mapper = new ObjectMapper();
+             JsonNode rootNode = mapper.readTree(new File(patientFile));
+
+             // Retrieve patient data from the selected file
+             inputPatient = mapper.writeValueAsString(rootNode);
+             //TODO INSERIRE INVIO
+         } catch (IOException ex) {
+             ex.printStackTrace();
+             JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+         }
     }
     
 }

@@ -220,7 +220,7 @@ public class ZeroClient {
 			return;
 		}
 
-		socketSub.subscribe("Server".getBytes(ZMQ.CHARSET));
+		socketSub.subscribe("Server output".getBytes(ZMQ.CHARSET));
 
 		isConnected = true;
 
@@ -230,20 +230,20 @@ public class ZeroClient {
 			try {
 				while (isConnected && !Thread.currentThread().isInterrupted()) {
 					if (firstConnection < 2) { //Sent twice to be sure it's received depending on connection order
-						socketPub.send("Client {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
+						socketPub.send("Client output {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
 						outputAreaServer.append("Request Sent\n");
 						firstConnection +=1 ;
 					}
 					
 					String receivedData = socketSub.recvStr();
-					receivedData = receivedData.trim().replace("Server", "").trim();
+					receivedData = receivedData.trim().replace("Server output", "").trim();
 					outputAreaServer.append("Received ");
 
 					storeData(receivedData);
 
 					double value = selectedOption.equals("Volume") ? processVolume() : processPressure();
 
-					String request = "Client {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption
+					String request = "Client output  {\"message\":\"input\", \"ventilatorType\":\"" + selectedOption
 							+ "\", \"value\":\"" + value + "\", \"unit\":\"" + unit + "\" }";
 					outputAreaServer.append("Sending: " + request + "\n");
 					socketPub.send(request.getBytes(ZMQ.CHARSET), 0);
@@ -284,7 +284,7 @@ public class ZeroClient {
 
 			try {
 				if (socketPub != null) {
-					socketPub.send("Client {\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
+					socketPub.send("Client output  {\"message\":\"disconnect\"}".getBytes(ZMQ.CHARSET), 0);
 					outputAreaServer.append("Disconnect message sent to server.\n");
 				}
 			} catch (ZMQException ex) {
