@@ -129,6 +129,7 @@ public class ZeroMiddleware {
         socketSubServer.subscribe("Server output".getBytes(ZMQ.CHARSET));
         socketSubServer.subscribe("Server input".getBytes(ZMQ.CHARSET));
         socketSubClient.subscribe("Client output".getBytes(ZMQ.CHARSET));
+        socketSubClient.subscribe("Client input".getBytes(ZMQ.CHARSET));
 
 
         communicationThreadServer = new Thread(() -> {

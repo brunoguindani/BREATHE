@@ -224,6 +224,7 @@ public class ZeroClient {
 			int firstConnection = 0;
 			try {
 				while (isConnected && !Thread.currentThread().isInterrupted()) {
+					socketPub.send("Client input " + getVentilatorInputJSON());
 					if (firstConnection < 2) { //Sent twice to be sure it's received depending on connection order
 						socketPub.send("Client output {\"message\":\"requestData\"}".getBytes(ZMQ.CHARSET), 0);
 						outputAreaServer.append("Request Sent\n");
@@ -354,6 +355,37 @@ public class ZeroClient {
 			outputAreaServer.append("Errore nel parsing dei dati: " + e.getMessage() + "\n");
 		}
 	}
+	
+	private String getVentilatorInputJSON() {
+	    try {
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        Map<String, Map<String, Object>> ventilatorData = new HashMap<>();
+
+	        ventilatorData.put("RR", createParamMap((int) rrSpinner.getValue(), "breaths/min"));
+	        ventilatorData.put("IE_Ratio", createParamMap((double) ieRatioSpinner.getValue(), "ratio"));
+
+	        if (selectedOption.equals("Pressure")) {
+	            ventilatorData.put("P_insp", createParamMap((double) pinspSpinner.getValue(), "cmH2O"));
+	            ventilatorData.put("PEEP", createParamMap((double) peepSpinner.getValue(), "cmH2O"));
+	        } else if (selectedOption.equals("Volume")) {
+	            ventilatorData.put("Vt", createParamMap((double) vtSpinner.getValue(), "mL"));
+	            ventilatorData.put("PEEP", createParamMap((double) peepSpinner.getValue(), "cmH2O"));
+	        }
+
+	        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ventilatorData);
+	    } catch (Exception e) {
+	        outputAreaServer.append("Errore nella generazione del JSON: " + e.getMessage() + "\n");
+	        return "{}";
+	    }
+	}
+
+	private Map<String, Object> createParamMap(Object value, String unit) {
+	    Map<String, Object> paramMap = new HashMap<>();
+	    paramMap.put("value", value);
+	    paramMap.put("unit", unit);
+	    return paramMap;
+	}
+
 
 	private double processVolume() {
 		double volume = 20;

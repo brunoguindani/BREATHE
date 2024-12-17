@@ -334,7 +334,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
         if (extVent_running) 
             manage_ext();
-        zmqServer.publishSimulationData(sendData());
+        zmqServer.publishData(sendData());
         
 
         stime.setValue(0.02, TimeUnit.s);
@@ -558,7 +558,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
 			ventilator_ext.setState(eSwitch.Off);
 		    pe.processAction(ventilator_ext);
-	        zmqServer.closeSub();
+	        zmqServer.stopReceiving();
         	gui.minilogStringData("EXTERNAL Ventilator server closed");
         	extVent_running = false;
         	firstEXTConnection = true;
