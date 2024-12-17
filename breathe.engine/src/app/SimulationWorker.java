@@ -162,7 +162,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		}
         patientFilePath = rootNode_scenario.path("EngineStateFile").asText();
         
-		sendInputPatient();
         
         gui.minilogStringData("Loading Scenario " + scenarioFilePath);
         pe1.serializeFromFile(patientFilePath, dataRequests);
@@ -319,6 +318,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    } else {
 		        pe.processAction(a);
 		        gui.minilogStringData("\nApplying " +  a.toString());
+		        sendInputAction(a);
 		    }
 		}
 	}
@@ -617,45 +617,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	public void applyAction(Action action) {
 	    gui.minilogStringData("\nApplying " + action.getAction().toString());
 	    pe.processAction(action.getAction());
-
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    ObjectNode rootNode = objectMapper.createObjectNode();
-	    ObjectNode actionsNode = objectMapper.createObjectNode();
-	    String currentCondition = null;
-	    ObjectNode currentConditionNode = null;
-
-	    String[] dataLines = action.getAction().toString().split("\n");
-	    for (int i = 0; i < dataLines.length; i++) {
-	        dataLines[i] = dataLines[i].trim();
-	    }
-
-	    for (String line : dataLines) {
-	        line = line.trim();
-	        if (line.contains(":")) {
-	            String[] keyValue = line.split(":");
-	            String key = keyValue[0].trim();
-	            String value = keyValue[1].trim();
-	            if (isNumeric(value)) {
-	                currentConditionNode.put(key, Double.parseDouble(value));
-	            } else {
-	                currentConditionNode.put(key, value);
-	            }
-	        } else if (!line.isEmpty()) {
-	            currentCondition = line;
-	            currentConditionNode = objectMapper.createObjectNode();
-
-	            actionsNode.set(currentCondition, currentConditionNode);
-	        }
-	    }
-	    rootNode.set("Actions", actionsNode);
-
-	    String actionData = "";
-	    try {
-	        actionData = objectMapper.writeValueAsString(rootNode);
-	    } catch (JsonProcessingException e) {
-	        e.printStackTrace();
-	    }
-	    zmqServer.publishInputData(actionData);
+	    sendInputAction(action.getAction());
 	}
 
 	
@@ -711,6 +673,48 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	return stabilized;
     }
     
+    public void sendInputAction(SEAction action) {
+
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ObjectNode rootNode = objectMapper.createObjectNode();
+	    ObjectNode actionsNode = objectMapper.createObjectNode();
+	    String currentCondition = null;
+	    ObjectNode currentConditionNode = null;
+
+	    String[] dataLines = action.toString().split("\n");
+	    for (int i = 0; i < dataLines.length; i++) {
+	        dataLines[i] = dataLines[i].trim();
+	    }
+
+	    for (String line : dataLines) {
+	        line = line.trim();
+	        if (line.contains(":")) {
+	            String[] keyValue = line.split(":");
+	            String key = keyValue[0].trim();
+	            String value = keyValue[1].trim();
+	            if (isNumeric(value)) {
+	                currentConditionNode.put(key, Double.parseDouble(value));
+	            } else {
+	                currentConditionNode.put(key, value);
+	            }
+	        } else if (!line.isEmpty()) {
+	            currentCondition = line;
+	            currentConditionNode = objectMapper.createObjectNode();
+
+	            actionsNode.set(currentCondition, currentConditionNode);
+	        }
+	    }
+	    rootNode.set("Actions", actionsNode);
+
+	    String actionData = "";
+	    try {
+	        actionData = objectMapper.writeValueAsString(rootNode);
+	    } catch (JsonProcessingException e) {
+	        e.printStackTrace();
+	    }
+	    zmqServer.publishInputData(actionData);
+    }
+    
     public void sendInputPatient() {
     	try { 
             ObjectMapper mapper = new ObjectMapper();
@@ -726,4 +730,5 @@ public class SimulationWorker extends SwingWorker<Void, String>{
          }
     }
     
+
 }
