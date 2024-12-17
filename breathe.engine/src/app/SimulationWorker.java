@@ -655,7 +655,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    }
-
 	    zmqServer.publishInputData(actionData);
 	}
 

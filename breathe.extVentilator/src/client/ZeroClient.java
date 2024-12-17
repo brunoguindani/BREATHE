@@ -371,7 +371,7 @@ public class ZeroClient {
 	            ventilatorData.put("Vt", createParamMap((double) vtSpinner.getValue(), "mL"));
 	            ventilatorData.put("PEEP", createParamMap((double) peepSpinner.getValue(), "cmH2O"));
 	        }
-
+	        
 	        return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(ventilatorData);
 	    } catch (Exception e) {
 	        outputAreaServer.append("Errore nella generazione del JSON: " + e.getMessage() + "\n");
