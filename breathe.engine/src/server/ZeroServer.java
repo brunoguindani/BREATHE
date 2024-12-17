@@ -45,7 +45,7 @@ public class ZeroServer {
     public void receive() throws Exception {
         while (running && !receiveThread.isInterrupted()) {
         	String receivedData = socketSub.recvStr();
-            receivedData = receivedData.trim().replace("Client output", "").trim();
+            receivedData = receivedData.trim().replace("Client output ", "").trim();
             String messageJson = receivedData.trim();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(messageJson);
@@ -78,16 +78,14 @@ public class ZeroServer {
        
     }
 
-    private void stopReceiving() {
-        running = false;		
-        if (receiveThread != null && receiveThread.isAlive()) {
-            receiveThread.interrupt();
-            selectedMode = null;
-        }
-    }
 
+    public void stopReceiving() {
+    	running = false;		
+        selectedMode = null;
+    }
+    
     public void close() {
-        stopReceiving();
+    	stopReceiving();
         if (socketPub != null) {
         	socketPub.close();
         }
@@ -99,9 +97,9 @@ public class ZeroServer {
         }
     }
 
-    public void publishSimulationData(String data) {
+    public void publishData(String data) {
         try {
-			if(running && !Thread.currentThread().isInterrupted()) {
+			if(!Thread.currentThread().isInterrupted()) {
 				if (data != null && !data.isEmpty()) {
 		    		String toSend = "Server output " + data;
 		    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
@@ -114,7 +112,7 @@ public class ZeroServer {
     
     public void publishInputData(String data) {
         try {
-			if(running && !Thread.currentThread().isInterrupted()) {
+			if(!Thread.currentThread().isInterrupted()) {
 				if (data != null && !data.isEmpty()) {
 		    		String toSend = "Server input " + data;
 		    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
