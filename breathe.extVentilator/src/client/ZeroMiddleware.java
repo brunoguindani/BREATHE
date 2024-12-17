@@ -137,7 +137,8 @@ public class ZeroMiddleware {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String receivedDataServer = socketSubServer.recvStr();
-                    receivedDataServer = receivedDataServer.trim().replace("Server", "").trim();
+                    receivedDataServer = receivedDataServer.trim().replace("Server input", "").trim();
+                    receivedDataServer = receivedDataServer.trim().replace("Server output", "").trim();
                     outputAreaServer.append(receivedDataServer + "\n");
                 }
             } catch (ZMQException ex) {
@@ -160,7 +161,7 @@ public class ZeroMiddleware {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     String receivedDataClient = socketSubClient.recvStr();
-                    receivedDataClient = receivedDataClient.trim().replace("Client", "").trim();
+                    receivedDataClient = receivedDataClient.trim().replace("Client output", "").trim();
                     outputAreaClient.append(receivedDataClient + "\n");
                 }
             } catch (ZMQException ex) {

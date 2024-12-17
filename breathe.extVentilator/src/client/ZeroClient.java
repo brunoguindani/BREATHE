@@ -95,7 +95,7 @@ public class ZeroClient {
 
 		pressureButton = new JRadioButton("Pressure");
 		pressureButton.setBounds(160, 60, 100, 25);
-		pressureButton.setSelected(true); // Default selezionato Pressione
+		pressureButton.setSelected(true); // Default Pression selected
 		panel.add(pressureButton);
 
 		ButtonGroup group = new ButtonGroup();
@@ -120,7 +120,6 @@ public class ZeroClient {
 		ieRatioSpinner.setBounds(220, 90, 60, 25);
 		panel.add(ieRatioSpinner);
 
-		// Spinner per Pinsp (mostrato solo se selezionato Pressure)
 		JLabel pinspLabel = new JLabel("P insp:");
 		pinspLabel.setBounds(50, 120, 100, 25);
 		panel.add(pinspLabel);
@@ -129,18 +128,16 @@ public class ZeroClient {
 		pinspSpinner.setBounds(100, 120, 50, 25);
 		panel.add(pinspSpinner);
 
-		// Spinner per Vt (mostrato solo se selezionato Volume)
 		JLabel vtLabel = new JLabel("Vt:");
 		vtLabel.setBounds(50, 120, 100, 25);
 		panel.add(vtLabel);
 
 		vtSpinner = new JSpinner(new SpinnerNumberModel(500.0, 200.0, 1000.0, 50.0)); // default 500
 		vtSpinner.setBounds(100, 120, 50, 25);
-		vtLabel.setVisible(false); // Nascondi inizialmente
-		vtSpinner.setVisible(false); // Nascondi inizialmente
+		vtLabel.setVisible(false); 
+		vtSpinner.setVisible(false);
 		panel.add(vtSpinner);
 
-		// Spinner per PEEP
 		JLabel peepLabel = new JLabel("PEEP:");
 		peepLabel.setBounds(160, 120, 100, 25);
 		panel.add(peepLabel);
@@ -149,19 +146,17 @@ public class ZeroClient {
 		peepSpinner.setBounds(220, 120, 60, 25);
 		panel.add(peepSpinner);
 
-		// Listener per cambiare la visualizzazione dei componenti in base alla
-		// selezione
 		volumeButton.addActionListener(e -> {
-			vtSpinner.setVisible(true); // Mostra Vt
+			vtSpinner.setVisible(true); 
 			vtLabel.setVisible(true);
-			pinspSpinner.setVisible(false); // Nascondi Pinsp
+			pinspSpinner.setVisible(false); 
 			pinspLabel.setVisible(false);
 		});
 
 		pressureButton.addActionListener(e -> {
-			vtSpinner.setVisible(false); // Nascondi Vt
+			vtSpinner.setVisible(false); 
 			vtLabel.setVisible(false);
-			pinspSpinner.setVisible(true); // Mostra Pinsp
+			pinspSpinner.setVisible(true); 
 			pinspLabel.setVisible(true);
 		});
 

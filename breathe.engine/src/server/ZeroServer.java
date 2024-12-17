@@ -80,12 +80,16 @@ public class ZeroServer {
 
     private void stopReceiving() {
         running = false;		
-        if (receiveThread != null && receiveThread.isAlive()) {
-            receiveThread.interrupt();
-            selectedMode = null;
-        }
+        selectedMode = null;
     }
 
+    public void closeSub() {
+        stopReceiving();
+        if (socketSub != null) {
+        	socketSub.close();
+        }
+    }
+    
     public void close() {
         stopReceiving();
         if (socketPub != null) {
@@ -101,7 +105,7 @@ public class ZeroServer {
 
     public void publishSimulationData(String data) {
         try {
-			if(running && !Thread.currentThread().isInterrupted()) {
+			if(!Thread.currentThread().isInterrupted()) {
 				if (data != null && !data.isEmpty()) {
 		    		String toSend = "Server output " + data;
 		    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  
@@ -114,7 +118,7 @@ public class ZeroServer {
     
     public void publishInputData(String data) {
         try {
-			if(running && !Thread.currentThread().isInterrupted()) {
+			if(!Thread.currentThread().isInterrupted()) {
 				if (data != null && !data.isEmpty()) {
 		    		String toSend = "Server input " + data;
 		    	    socketPub.send(toSend.getBytes(ZMQ.CHARSET), 0);  

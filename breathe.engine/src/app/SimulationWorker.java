@@ -101,11 +101,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         
 		gui.minilogStringData("Loading state file " + filePath);
 		pe.serializeFromFile(filePath, dataRequests);
+		patientFilePath = filePath;
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
 		pe.getInitialPatient(initialPatient);
-		extractInputPatient(filePath);
 		
 		//get conditions
 		List<SECondition> listCondition = new ArrayList<>();
@@ -162,9 +162,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		}
         patientFilePath = rootNode_scenario.path("EngineStateFile").asText();
         
+		sendInputPatient();
+        
         gui.minilogStringData("Loading Scenario " + scenarioFilePath);
         pe1.serializeFromFile(patientFilePath, dataRequests);
-		extractInputPatient(patientFilePath);
 
 		//check that patient has loaded
 		SEPatient initialPatient = new SEPatient();
@@ -200,11 +201,18 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
     public void stopSimulation() {
     	stopRequest = true;
+    	zmqServer.close();
     }
     
 	@Override
 	protected Void doInBackground() throws Exception {
-        
+		zmqServer = new ZeroServer();
+       	try {
+			zmqServer.connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+       	Thread.sleep(1000);
 		if(initializeMode.equals("standard")) {
 	        pe.initializeEngine(patient_configuration, dataRequests); 
 	        exportInitialPatient(patient_configuration.getPatient());	
@@ -213,9 +221,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        stabilized = true;
 			gui.stabilizationComplete(true);
 			gui.minilogStringData("\nSimulation Started");
+			sendInputPatient();
 		}else if(initializeMode.equals("file")) {
 			gui.stabilizationComplete(true);
 			gui.minilogStringData("\nSimulation Started");
+			sendInputPatient();
 		}else if(initializeMode.equals("scenario")) {
 			run_scenario();
 		}
@@ -296,7 +306,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		//Advice for stabilaztion completed
 		gui.stabilizationComplete(true);
 		gui.minilogStringData("\nSimulation Started");
-
+		sendInputPatient();
 		for (SEAction a : sce.getActions()) {
 			if(stopRequest)
 		    	return;
@@ -322,12 +332,10 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             return false;
         }
 
-        if (extVent_running) {
+        if (extVent_running) 
             manage_ext();
-            zmqServer.publishSimulationData(sendData());
-        } else {
-        	sendData();
-        }
+        zmqServer.publishSimulationData(sendData());
+        
 
         stime.setValue(0.02, TimeUnit.s);
 
@@ -357,8 +365,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
         if( pe.serializeToFile(filePath) ) {
         	gui.minilogStringData("\nExported Patient File to " + filePath);
-			extractInputPatient(filePath);
         }
+        
+        patientFilePath = filePath;
     }
     
     
@@ -467,7 +476,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-        
+		
         return jsonString;
     }
     
@@ -514,12 +523,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
         case EXT:
         	ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
-        	zmqServer = new ZeroServer();
-        	try {
-				zmqServer.connect();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
         	//Server wait for data
         	gui.minilogStringData("\nSearching for EXTERNAL ventilators...\n");
     		zmqServer.startReceiving();
@@ -555,7 +558,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        ventilator_ext = (SEMechanicalVentilation) v.getVentilator_External();
 			ventilator_ext.setState(eSwitch.Off);
 		    pe.processAction(ventilator_ext);
-	        zmqServer.close();
+	        zmqServer.closeSub();
         	gui.minilogStringData("EXTERNAL Ventilator server closed");
         	extVent_running = false;
         	firstEXTConnection = true;
@@ -612,11 +615,51 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	}
 	
 	public void applyAction(Action action) {
-		gui.minilogStringData("\nApplying " +  action.getAction().toString());
-		pe.processAction(action.getAction());
-	}
-	
+	    gui.minilogStringData("\nApplying " + action.getAction().toString());
+	    pe.processAction(action.getAction());
 
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    ObjectNode rootNode = objectMapper.createObjectNode();
+	    ObjectNode actionsNode = objectMapper.createObjectNode();
+	    String currentCondition = null;
+	    ObjectNode currentConditionNode = null;
+
+	    String[] dataLines = action.getAction().toString().split("\n");
+	    for (int i = 0; i < dataLines.length; i++) {
+	        dataLines[i] = dataLines[i].trim();
+	    }
+
+	    for (String line : dataLines) {
+	        line = line.trim();
+	        if (line.contains(":")) {
+	            String[] keyValue = line.split(":");
+	            String key = keyValue[0].trim();
+	            String value = keyValue[1].trim();
+	            if (isNumeric(value)) {
+	                currentConditionNode.put(key, Double.parseDouble(value));
+	            } else {
+	                currentConditionNode.put(key, value);
+	            }
+	        } else if (!line.isEmpty()) {
+	            currentCondition = line;
+	            currentConditionNode = objectMapper.createObjectNode();
+
+	            actionsNode.set(currentCondition, currentConditionNode);
+	        }
+	    }
+	    rootNode.set("Actions", actionsNode);
+
+	    String actionData = "";
+	    try {
+	        actionData = objectMapper.writeValueAsString(rootNode);
+	    } catch (JsonProcessingException e) {
+	        e.printStackTrace();
+	    }
+
+	    zmqServer.publishInputData(actionData);
+	}
+
+	
 	public void exportSimulation(String exportFilePath) {
 		if (pe.serializeToFile(exportFilePath))  
 			gui.minilogStringData("\nExported Patient File to " + exportFilePath);
@@ -669,14 +712,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	return stabilized;
     }
     
-    public void extractInputPatient(String patientFile) {
-    	 try { 
-             ObjectMapper mapper = new ObjectMapper();
-             JsonNode rootNode = mapper.readTree(new File(patientFile));
+    public void sendInputPatient() {
+    	try { 
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(new File(patientFilePath));
 
              // Retrieve patient data from the selected file
-             inputPatient = mapper.writeValueAsString(rootNode);
-             //TODO INSERIRE INVIO
+            inputPatient = mapper.writeValueAsString(rootNode);
+             
+         	zmqServer.publishInputData(inputPatient);
          } catch (IOException ex) {
              ex.printStackTrace();
              JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
