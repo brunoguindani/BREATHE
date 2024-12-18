@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Paths;
 
 import javax.swing.*;
 
@@ -63,6 +64,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     private boolean extVent_running = false;
     private boolean firstEXTConnection = true;
     
+    private String patientID = null;
     private String inputPatient = null;
       
     public SimulationWorker(GuiCallback guiCallback) {
@@ -470,9 +472,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             gui.logItemDisplayData(requestList[i],x, y);
         }
         
+        ObjectNode rootNodeJson = objectMapper.createObjectNode();
+        ObjectNode idNode = objectMapper.createObjectNode();
+        idNode.put("id", patientID);
+        rootNodeJson.set("ID", idNode);
+        rootNodeJson.set("SimulationOutput", rootNode);
+        
         String jsonString = "";
 		try {
-			jsonString = objectMapper.writeValueAsString(rootNode);
+			jsonString = objectMapper.writeValueAsString(rootNodeJson);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -684,7 +692,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	    String[] dataLines = action.toString().split("\n");
 	    for (int i = 0; i < dataLines.length; i++) {
 	        dataLines[i] = dataLines[i].trim();
-	    }
+	    }	    
 
 	    for (String line : dataLines) {
 	        line = line.trim();
@@ -705,10 +713,15 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	        }
 	    }
 	    rootNode.set("Actions", actionsNode);
-
+	    
+        ObjectNode rootNodeJson = objectMapper.createObjectNode();
+        ObjectNode idNode = objectMapper.createObjectNode();
+        idNode.put("id", patientID);
+        rootNodeJson.set("ID", idNode);
+        rootNodeJson.set("InputAction", rootNode);
 	    String actionData = "";
 	    try {
-	        actionData = objectMapper.writeValueAsString(rootNode);
+	        actionData = objectMapper.writeValueAsString(rootNodeJson);
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    }
@@ -716,18 +729,24 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     public void sendInputPatient() {
-    	try { 
+        try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(new File(patientFilePath));
-
-             // Retrieve patient data from the selected file
             inputPatient = mapper.writeValueAsString(rootNode);
-             
-         	zmqServer.publishInputData(inputPatient);
-         } catch (IOException ex) {
-             ex.printStackTrace();
-             JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
-         }
+            String fileName = Paths.get(patientFilePath).getFileName().toString();
+            String parentDir = Paths.get(patientFilePath).getParent().getFileName().toString();
+            patientID = parentDir + "_" + fileName;
+            ObjectNode rootNodeJson = mapper.createObjectNode();
+            ObjectNode idNode = mapper.createObjectNode();
+            idNode.put("id", patientID);
+            rootNodeJson.set("ID", idNode);
+            rootNodeJson.set("InputPatient", rootNode);
+            String finalJson = mapper.writeValueAsString(rootNodeJson);
+            zmqServer.publishInputData(finalJson);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error loading JSON file.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
 
