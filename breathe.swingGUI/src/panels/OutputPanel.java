@@ -59,12 +59,8 @@ public class OutputPanel extends JPanel{
         String[] chartOrder = {
         	    "Heart Rate",
         	    "Respiratory Rate",
-        	    "Airway Pressure",
-        	    "Oxygen Saturation",
         	    "Total Lung Volume",
-        	    "CO2",
-        	    "Pleth",
-        	    "ECG"
+        	    "Oxygen Saturation"
         	};
         
         for (String chartName : chartOrder) {
@@ -78,6 +74,10 @@ public class OutputPanel extends JPanel{
         
         //ADDING INFO BOXES
         String[] infoOrder = {
+        	    "Airway Pressure",
+        	    "CO2",
+        	    "Pleth",
+        	    "ECG"
         	};
         
         for (String chartName : infoOrder) {
