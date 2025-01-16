@@ -3,7 +3,7 @@ package panels;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
+import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class OutputPanel extends JPanel{
     
     public OutputPanel(App app) {
     	this.setBackground(Color.LIGHT_GRAY);
-    	this.setPreferredSize(new Dimension(650, 700));
+    	this.setPreferredSize(new Dimension(1300, 700));
     	
     	chartsMap = new HashMap<>();
         
@@ -48,7 +48,7 @@ public class OutputPanel extends JPanel{
         
         chartPanels = new HashMap<>();
              
-        chartsPanel.setLayout(new BoxLayout(chartsPanel, BoxLayout.Y_AXIS));
+        chartsPanel.setLayout(new GridLayout(0, 2, 10, 10));
         chartsPanel.setBackground(Color.BLACK);
 
         infoBoxPanel = new JPanel();
