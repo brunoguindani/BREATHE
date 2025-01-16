@@ -29,7 +29,6 @@ public class OutputPanel extends JPanel{
     public JPanel chartsPanel = new JPanel();
     JScrollPane scrollChartPane;
     JPanel infoBoxPanel;
-    JScrollPane scrollInfoBoxPane;
     
     public OutputPanel(App app) {
     	this.setBackground(Color.LIGHT_GRAY);
@@ -55,15 +54,13 @@ public class OutputPanel extends JPanel{
         infoBoxPanel = new JPanel();
         infoBoxPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         infoBoxPanel.setBackground(Color.BLACK);
-
-        scrollInfoBoxPane = new JScrollPane(infoBoxPanel);
-        scrollInfoBoxPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollInfoBoxPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollInfoBoxPane.setBorder(null);
-        scrollInfoBoxPane.setPreferredSize(new Dimension(150, 300));
         
         //ADDING LINE CHARTS
         String[] chartOrder = {
+        	    "Heart Rate",
+        	    "Respiratory Rate",
+        	    "Airway Pressure",
+        	    "Oxygen Saturation",
         	    "Total Lung Volume",
         	    "CO2",
         	    "Pleth",
@@ -81,10 +78,6 @@ public class OutputPanel extends JPanel{
         
         //ADDING INFO BOXES
         String[] infoOrder = {
-        	    "Heart Rate",
-        	    "Respiratory Rate",
-        	    "Airway Pressure",
-        	    "Oxygen Saturation"
         	};
         
         for (String chartName : infoOrder) {
@@ -104,7 +97,6 @@ public class OutputPanel extends JPanel{
         scrollChartPane.setBorder(null);
         
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.add(scrollInfoBoxPane);
         this.add(scrollChartPane);
         this.setBackground(Color.BLACK);
     }
@@ -127,17 +119,9 @@ public class OutputPanel extends JPanel{
             }
         }
 
-        if (infoBoxPanel.getComponentCount() == 0) {
-            scrollInfoBoxPane.setPreferredSize(new Dimension(0, 0));
-        } else {
-        	scrollInfoBoxPane.setPreferredSize(new Dimension(150, 300));  
-        }
-
-        scrollInfoBoxPane.revalidate();
         chartsPanel.revalidate();
         infoBoxPanel.revalidate();
 
-        scrollInfoBoxPane.repaint();
         chartsPanel.repaint();
         infoBoxPanel.repaint();
     }

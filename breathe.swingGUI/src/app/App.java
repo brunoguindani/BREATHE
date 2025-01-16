@@ -49,7 +49,7 @@ public class App extends JFrame implements GuiCallback {
         setTitle("Breathe Simulation");
         setSize(1200, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.LIGHT_GRAY);
 
