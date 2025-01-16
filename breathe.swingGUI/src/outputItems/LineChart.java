@@ -151,6 +151,16 @@ public class LineChart extends ItemDisplay {
                 this.minYValue = 0;
                 this.yStep = 20;  
                 break;
+            case "Airway Pressure":
+                this.maxYValue = 1000;
+                this.minYValue = 500;
+                this.yStep = 50;
+                break;
+            case "Oxygen Saturation":
+                this.maxYValue = 1;
+                this.minYValue = 0;
+                this.yStep = 1;
+                break;
             case "Total Lung Volume":
                 this.maxYValue = 3500;
                 this.minYValue = 1500;
