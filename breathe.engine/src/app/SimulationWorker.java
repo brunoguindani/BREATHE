@@ -383,7 +383,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         ObjectNode actionsNode = objectMapper.createObjectNode();
     	String currentCondition = null; 
     	ObjectNode currentConditionNode = null; 
-    	
+	    rootNode.put("id", patientID);
+	    
         //print requested data
     	List<Double> dataValues = pe.pullData();
         gui.logStringData("---------------------------\n");
@@ -472,15 +473,11 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             gui.logItemDisplayData(requestList[i],x, y);
         }
         
-        ObjectNode rootNodeJson = objectMapper.createObjectNode();
-        ObjectNode idNode = objectMapper.createObjectNode();
-        idNode.put("id", patientID);
-        rootNodeJson.set("ID", idNode);
-        rootNodeJson.set("SimulationOutput", rootNode);
+
         
         String jsonString = "";
 		try {
-			jsonString = objectMapper.writeValueAsString(rootNodeJson);
+			jsonString = objectMapper.writeValueAsString(rootNode);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -712,16 +709,13 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 	            actionsNode.set(currentCondition, currentConditionNode);
 	        }
 	    }
-	    rootNode.set("Actions", actionsNode);
-	    
-        ObjectNode rootNodeJson = objectMapper.createObjectNode();
-        ObjectNode idNode = objectMapper.createObjectNode();
-        idNode.put("id", patientID);
-        rootNodeJson.set("ID", idNode);
-        rootNodeJson.set("InputAction", rootNode);
+	    rootNode.put("id", patientID);
+	    rootNode.set("Action", actionsNode);
+	          
 	    String actionData = "";
 	    try {
-	        actionData = objectMapper.writeValueAsString(rootNodeJson);
+	        actionData = objectMapper.writeValueAsString(rootNode);
+		    System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode));
 	    } catch (JsonProcessingException e) {
 	        e.printStackTrace();
 	    }
@@ -737,9 +731,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
             String parentDir = Paths.get(patientFilePath).getParent().getFileName().toString();
             patientID = parentDir + "_" + fileName;
             ObjectNode rootNodeJson = mapper.createObjectNode();
-            ObjectNode idNode = mapper.createObjectNode();
-            idNode.put("id", patientID);
-            rootNodeJson.set("ID", idNode);
+            rootNodeJson.put("id", patientID);
             rootNodeJson.set("InputPatient", rootNode);
             String finalJson = mapper.writeValueAsString(rootNodeJson);
             zmqServer.publishInputData(finalJson);
