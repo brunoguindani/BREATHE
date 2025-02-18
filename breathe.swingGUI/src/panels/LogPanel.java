@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,5 +40,14 @@ public class LogPanel extends JPanel{
     public void append(String log) {
     	resultArea.append(log);
     	resultArea.setCaretPosition(resultArea.getDocument().getLength());
+    }
+
+    public void write(String filepath) throws IOException {
+    	FileWriter logfile = new FileWriter(filepath, true);
+    	resultArea.write(logfile);
+    }
+
+    public void clear() {
+    	resultArea.setText("");
     }
 }
