@@ -190,7 +190,7 @@ public class ControlPanel extends JPanel{
 	//start from scenario simulation
     private void startingScenarioSimulation() {
     	clearOutputDisplay();
-    	JFileChooser fileChooser = new JFileChooser("../breathe.engine/scenario/exported");
+    	JFileChooser fileChooser = new JFileChooser("../..");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String scenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
