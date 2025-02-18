@@ -173,7 +173,8 @@ public class App extends JFrame implements GuiCallback {
     public boolean startFromScenarioSimulation(String scenarioFile) {
     	if(scenarioFile != null) {
     		sim = new SimulationWorker(this);
-    		sim.simulationFromScenario(scenarioFile);	
+    		sim.simulationFromScenario(scenarioFile);
+    		logPanel.append("\n" + scenarioFile + "\n");
     		patientConditionPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {
