@@ -2,6 +2,7 @@ package app;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,6 +183,14 @@ public class App extends JFrame implements GuiCallback {
     
     public void stopSimulation() {
     	sim.stopSimulation();	
+
+    	try {
+    		logPanel.write("../simulations.log");
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    	}
+    	logPanel.clear();
+
     	patientConditionPanel.getConditionsPanel().enableButtons(true);
     	patientConditionPanel.getPatientPanel().enableComponents(true);
     	actionsPanel.enableButtons(false);
