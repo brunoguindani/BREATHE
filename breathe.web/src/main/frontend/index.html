@@ -22,22 +22,34 @@
 
     let charts = {}; 
 
-    function initLineChart(name, unit) {
+    async function getLicenseKey() {
+        try {
+            const response = await fetch('license.txt');
+            if (!response.ok) throw new Error('Failed to load license file');
+            return await response.text();
+        } catch (error) {
+            console.error('Error fetching license key:', error);
+            return '';
+        }
+    }
+
+    async function initLineChart(name, unit) {
         if (charts[name]) {
             console.warn(` "${name}" alredy exists.`);
             return;
         }
 
         const chartContainer = document.getElementById(name);
+        const licenseKey = await getLicenseKey();
 
-		const lc = lightningChart({
-		    license: "0002-n3Kei2+JqP3mbgcisdTOqyUYkI9dKwBznrJ7kaTi8nYLPWlsFq7MjLj6N0CRKnGEhitt1MItFk92rt167zJjsqiu-MEUCIDmZsdNiMy4uw/r8V7eEl10rvnW8OF+DmWC7itAAEChIAiEA2cNQHKBUzKVR56eimH17WbRLSvoAhWAI7IMSB0PCUyg=",
-		    licenseInformation: {
-		        appTitle: "LightningChart JS Trial",
-		        company: "LightningChart Ltd."
-		    },
-			container: chartContainer
-		})
+        const lc = lightningChart({
+            license: licenseKey.trim(),
+        licenseInformation: {
+            appTitle: "LightningChart JS Trial",
+            company: "LightningChart Ltd."
+        },
+      container: chartContainer
+    })
 
         const chart = lc.ChartXY({
             theme: Themes.turquoiseHexagon,
