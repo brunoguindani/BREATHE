@@ -44,12 +44,12 @@ public class vcVentilatorPanel extends JPanel{
         gbc.gridx = 0;
         gbc.gridy = 0;
         
-        addLabelAndField("Flow", flow = new JSpinner(new SpinnerNumberModel(60, 0, 120, 1)), inputPanel, gbc);
         addLabelAndField("Fraction Inspired Oxygen - FiO2", fractionInspOxygen = new JSpinner(new SpinnerNumberModel(0.21, 0, 1, 0.01)), inputPanel, gbc);
-        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPres = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), inputPanel, gbc);
-        addLabelAndField("Inspiratory Period", inspiratoryPeriod = new JSpinner(new SpinnerNumberModel(1.0, 0.0, 10.0, 0.1)), inputPanel, gbc);
-        addLabelAndField("Respiration Rate - RR", respirationRate = new JSpinner(new SpinnerNumberModel(12, 0, 60, 1)), inputPanel, gbc);
+        addLabelAndField("Inspiratory Period - Ti", inspiratoryPeriod = new JSpinner(new SpinnerNumberModel(1, 0, 10, 0.1)), inputPanel, gbc);
         addLabelAndField("Tidal Volume - VT", tidalVol = new JSpinner(new SpinnerNumberModel(900, 0, 2000, 10)), inputPanel, gbc);
+        addLabelAndField("Positive End Expiratory Pressure - PEEP", positiveEndExpPres = new JSpinner(new SpinnerNumberModel(5, 0, 20, 1)), inputPanel, gbc);
+        addLabelAndField("Respiration Rate - RR", respirationRate = new JSpinner(new SpinnerNumberModel(12, 0, 60, 1)), inputPanel, gbc);
+        addLabelAndField("Flow", flow = new JSpinner(new SpinnerNumberModel(60, 0, 120, 1)), inputPanel, gbc);
         addLabelAndField("Assisted Mode", assistedMode, inputPanel, gbc);
         
         applyButton = new JButton("Apply");
