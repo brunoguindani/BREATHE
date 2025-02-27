@@ -48,7 +48,7 @@ public class App extends JFrame implements GuiCallback {
     	
     	//Main Panel Style
         setTitle("Breathe Simulation");
-        setSize(1850, 700);
+        setSize(1850, 830);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
         setLayout(new BorderLayout());
