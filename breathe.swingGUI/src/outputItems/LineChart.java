@@ -151,20 +151,20 @@ public class LineChart extends ItemDisplay {
                 this.minYValue = 0;
                 this.yStep = 20;  
                 break;
-            case "Airway Pressure":
-                this.maxYValue = 1000;
-                this.minYValue = 500;
-                this.yStep = 50;
+            case "Peak Inspiratory Pressure":
+                this.maxYValue = 10;
+                this.minYValue = 0;
+                this.yStep = 1;
                 break;
             case "Oxygen Saturation":
                 this.maxYValue = 1;
                 this.minYValue = 0;
                 this.yStep = 1;
                 break;
-            case "Total Lung Volume":
-                this.maxYValue = 3500;
-                this.minYValue = 1500;
-                this.yStep = 400;  
+            case "Tidal Volume":
+                this.maxYValue = 500;
+                this.minYValue = 0;
+                this.yStep = 50;  
                 break;
             case "Respiratory Rate":
                 this.maxYValue = 30;
@@ -177,14 +177,14 @@ public class LineChart extends ItemDisplay {
                 this.yStep = 1;   
                 break;
             case "CO2":
-                this.maxYValue = 50;
+                this.maxYValue = 70;
                 this.minYValue = 0;
-                this.yStep = 5;   
+                this.yStep = 10;   
                 break;
             case "Pleth":
-                this.maxYValue = 150;
-                this.minYValue = 50;
-                this.yStep = 20;   
+                this.maxYValue = 210;
+                this.minYValue = 60;
+                this.yStep = 30;   
                 break;
             default:
                 this.maxYValue = 100;

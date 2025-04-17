@@ -38,13 +38,13 @@ public class OutputPanel extends JPanel{
     	chartsMap = new HashMap<>();
         
     	//display ALL vitals
-    	chartsMap.put("Total Lung Volume", "mL");
+    	chartsMap.put("Tidal Volume", "mL");
         chartsMap.put("ECG", "mV");
-        chartsMap.put("CO2", "mmHg");
-        chartsMap.put("Pleth", "mmHg");
+        chartsMap.put("CO2", "cmH2O");
+        chartsMap.put("Pleth", "cmH2O");
         chartsMap.put("Heart Rate", "1/min");
         chartsMap.put("Respiratory Rate", "1/min");
-        chartsMap.put("Airway Pressure", "mmHg");
+        chartsMap.put("Peak Inspiratory Pressure", "cmH2O");
         chartsMap.put("Oxygen Saturation", "%");
         
         chartPanels = new HashMap<>();
@@ -65,8 +65,8 @@ public class OutputPanel extends JPanel{
         //ADDING LINE CHARTS
         String[] chartOrder = {
         		"CO2",
-        	    "Airway Pressure",
-        	    "Total Lung Volume",
+        	    "Peak Inspiratory Pressure",
+        	    "Tidal Volume",
         	    "Respiratory Rate"
         	};
         
@@ -150,8 +150,8 @@ public class OutputPanel extends JPanel{
 	        case "HeartRate":
 	            mapChartName = "Heart Rate";
 	            break;
-	        case "AirwayPressure":
-	            mapChartName = "Airway Pressure";
+	        case "PeakInspiratoryPressure":
+	            mapChartName = "Peak Inspiratory Pressure";
 	            break;
 	        case "RespirationRate":
 	            mapChartName = "Respiratory Rate";
@@ -159,8 +159,8 @@ public class OutputPanel extends JPanel{
 	        case "OxygenSaturation":
 	        	mapChartName = "Oxygen Saturation";
 	            break;
-	        case "TotalLungVolume":
-	            mapChartName = "Total Lung Volume";
+	        case "TidalVolume":
+	            mapChartName = "Tidal Volume";
 	            break;
 	        case "Lead3ElectricPotential":
 	            mapChartName = "ECG";

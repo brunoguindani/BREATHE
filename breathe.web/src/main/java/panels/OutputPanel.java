@@ -43,7 +43,7 @@ public class OutputPanel extends VerticalLayout {
         chartsMap = new HashMap<>();
         
     	//display ALL vitals
-        chartsMap.put("Total Lung Volume", "mL");
+        chartsMap.put("Tidal Volume", "mL");
         chartsMap.put("ECG", "mV");
         chartsMap.put("CO2", "mmHg");
         chartsMap.put("Pleth", "mmHg");
@@ -63,7 +63,7 @@ public class OutputPanel extends VerticalLayout {
         
         //ADDING LINE CHARTS
         String[] chartOrder = {
-            "Total Lung Volume",
+            "Tidal Volume",
             "CO2",
             "Pleth",
             "ECG"
@@ -156,8 +156,8 @@ public class OutputPanel extends VerticalLayout {
             case "OxygenSaturation":
             	mapChartName = "Oxygen Saturation";
                 break;
-            case "TotalLungVolume":
-                mapChartName = "Total Lung Volume";
+            case "TidalVolume":
+                mapChartName = "Tidal Volume";
                 break;
             case "Lead3ElectricPotential":
                 mapChartName = "ECG";

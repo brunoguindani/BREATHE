@@ -248,22 +248,22 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	//order is important
     	String[] requestList = {"SimTime",
 				"HeartRate",
-				"TotalLungVolume",
+				"TidalVolume",
 				"RespirationRate",
 				"Lead3ElectricPotential",
 				"CarbonDioxide",
 				"ArterialPressure",
-				"AirwayPressure",
+				"PeakInspiratoryPressure",
 				"OxygenSaturation"
 				};
     	String[] unitList = {"s",                
                 "per_min",          
-                "mL",               
+                "mL",               	
                 "per_min",          
                 "mV",               
-                "mmHg",             
-                "mmHg",             
-                "mmHg",             
+                "cmH2O",             
+                "cmH2O",             
+                "cmH2O",             
                 ""                  
                };
 
@@ -277,9 +277,9 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         dataRequests.createPhysiologyDataRequest(requestList[2], VolumeUnit.mL);
         dataRequests.createPhysiologyDataRequest(requestList[3], FrequencyUnit.Per_min);
         dataRequests.createECGDataRequest(requestList[4], ElectricPotentialUnit.mV);
-        dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.mmHg);
-        dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.mmHg);
-        dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.mmHg);
+        dataRequests.createGasCompartmentDataRequest("Carina", "CarbonDioxide", "PartialPressure", PressureUnit.cmH2O);
+        dataRequests.createPhysiologyDataRequest(requestList[6], PressureUnit.cmH2O);
+        dataRequests.createPhysiologyDataRequest(requestList[7], PressureUnit.cmH2O);
         dataRequests.createPhysiologyDataRequest(requestList[8]);
     }
     
