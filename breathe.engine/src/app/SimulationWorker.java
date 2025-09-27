@@ -377,7 +377,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		    if (outcome == DecisionTree.AdvanceStatus.ADVANCED) {
 		    	// We moved down the tree: apply next action
 		    	gui.minilogStringData("Moved to:\n" + dtree.printCurrentNode());
-				SEMechanicalVentilatorVolumeControl a = dtree.getCurrentSettings();
+				SEAction a = dtree.getCurrentSettings();
 		        pe.processAction(a);
 		        gui.minilogStringData("\nApplying:\n" +  a.toString());
 		        sendInputAction(a);
