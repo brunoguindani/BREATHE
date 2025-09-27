@@ -9,7 +9,9 @@ import utils.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.nio.file.Paths;
 
 import javax.swing.*;
@@ -36,6 +38,8 @@ import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMe
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorContinuousPositiveAirwayPressure;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorPressureControl;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
+
+import app.DecisionTree;
 
 public class SimulationWorker extends SwingWorker<Void, String>{
 	
@@ -66,6 +70,12 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     
     private String patientID = null;
     private String inputPatient = null;
+
+    // !!
+    private String decisionTreeFile = null;
+    private DecisionTree dtree;
+    private Map<String, Double> patientState = new HashMap<>();
+    private double pollInterval = 7;
       
     public SimulationWorker(GuiCallback guiCallback) {
     	this.gui = guiCallback;
@@ -166,6 +176,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         
         
         gui.minilogStringData("Loading Scenario " + scenarioFilePath);
+        gui.minilogStringData("Using decision tree " + decisionTreeFile);
         pe1.serializeFromFile(patientFilePath, dataRequests);
 
 		//check that patient has loaded
@@ -284,7 +295,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     }
     
     
-    private void run_scenario() {
+    private void run_scenario() throws Exception {
     	
     	//Load scenario
     	pe = new PulseEngine();
@@ -308,6 +319,20 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		gui.stabilizationComplete(true);
 		gui.minilogStringData("\nSimulation Started");
 		sendInputPatient();
+
+		// !!
+		// Get initial data
+    	List<Double> dataValues = pe.pullData();
+    	for (int i = 0; i < dataValues.size(); i++) {
+    		patientState.put(requestList[i], dataValues.get(i));
+    		gui.minilogStringData(requestList[i] + " " + dataValues.get(i));
+    	}
+        // Read decision tree
+        gui.minilogStringData(">> reading decision tree " + decisionTreeFile);
+		dtree = new DecisionTree(decisionTreeFile);
+		gui.minilogStringData(dtree.printTree());
+		gui.minilogStringData(">> performing scenario actions");
+		// Original loop of regular actions/diseases
 		for (SEAction a : sce.getActions()) {
 			if(stopRequest)
 		    	return;
@@ -321,6 +346,54 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		        pe.processAction(a);
 		        gui.minilogStringData("\nApplying " +  a.toString());
 		        sendInputAction(a);
+		    }
+		}
+		// !!! Tree loop
+		double nearestMultiple;
+		boolean firstSkipped = false;
+		gui.minilogStringData(">> done, now executing tree");
+		while(true) {
+			if (stopRequest)
+				return;
+			gui.minilogStringData("\n>> simulation time: " + patientState.get("SimTime"));
+			nearestMultiple = Math.round(patientState.get("SimTime") / pollInterval) * pollInterval;
+			if (!firstSkipped || Math.abs(patientState.get("SimTime") - nearestMultiple) > 0.05) {
+				gui.minilogStringData(">> skipping");
+				firstSkipped = true;
+			    for(int i = 0; i<50; i++){
+				      if(!simulationLoop()) return;
+				}
+				continue;
+			}
+			gui.minilogStringData(">> current settings:\n" + dtree.getCurrentSettings());
+			gui.minilogStringData(">> pending conditions:\n" + dtree.getPendingConditions());
+			gui.minilogStringData(">> current state:");
+			for (Map.Entry<String, Double> entry : patientState.entrySet()) {
+			    gui.minilogStringData(entry.getKey() + " " + entry.getValue());
+			}
+			// Read patient state and possibly move down the tree
+		    DecisionTree.AdvanceStatus outcome = dtree.maybeAdvance(patientState);
+		    gui.minilogStringData(">> outcome read");
+		    if (outcome == DecisionTree.AdvanceStatus.ADVANCED) {
+		    	// We moved down the tree: apply next action
+		    	gui.minilogStringData("Moved to:\n" + dtree.printCurrentNode());
+				SEMechanicalVentilatorVolumeControl a = dtree.getCurrentSettings();
+		        pe.processAction(a);
+		        gui.minilogStringData("\nApplying:\n" +  a.toString());
+		        sendInputAction(a);
+			    for(int i = 0; i<50; i++){
+				      if(!simulationLoop()) return;
+				}
+		    } else if (outcome == DecisionTree.AdvanceStatus.DID_NOT_ADVANCE) {
+		    	// No condition was met to advance: wait
+		    	gui.minilogStringData(">> waiting");
+			    for(int i = 0; i<50; i++){
+				      if(!simulationLoop()) return;
+				}
+		    } else if (outcome == DecisionTree.AdvanceStatus.TREE_ENDED) {
+		    	// We reached a leaf node: scenario simulation has finished
+		    	gui.minilogStringData(">> tree has ended");
+		    	break;
 		    }
 		}
 	}
@@ -391,11 +464,17 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         for(int i = 0; i < (dataValues.size()); i++ ) {
         	ObjectNode dataNode = objectMapper.createObjectNode(); 
     	    dataNode.put("value", dataValues.get(i));
-    	    dataNode.put("unit", unitList[i]);   
+    	    dataNode.put("unit", unitList[i]);
     	    patientDataNode.set(requestList[i], dataNode);
-
-            gui.logStringData(requestList[i] + ": " + dataValues.get(i) + "\n");
+    	    String stringData = requestList[i] + ": " + dataValues.get(i) + "\n";
+            gui.logStringData(stringData);
         }
+
+        // !! Record current patient state
+        for(int i = 0; i < dataValues.size(); i++ ) {
+        	patientState.put(requestList[i], dataValues.get(i));
+        }
+        
         rootNode.set("Patient Data", patientDataNode);
         
     	//print conditions
@@ -516,6 +595,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         case VC:
         	SEMechanicalVentilatorVolumeControl ventilator_VC = (SEMechanicalVentilatorVolumeControl) v.getVentilator();
         	ventilator_VC.setConnection(eSwitch.On);
+        	gui.minilogStringData("\n!!3 Action: " + ventilator_VC);
         	if(pe.processAction(ventilator_VC)) {
 	        	if(!standardVent_running) {
 	        		gui.minilogStringData("\nVC Ventilator Connected ");
@@ -741,5 +821,8 @@ public class SimulationWorker extends SwingWorker<Void, String>{
         }
     }
     
-
+    // !!
+    public void setDecisionTreeFile(String file) {
+    	decisionTreeFile = file;
+    }
 }

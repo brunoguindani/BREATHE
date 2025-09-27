@@ -190,6 +190,15 @@ public class ControlPanel extends JPanel{
 	//start from scenario simulation
     private void startingScenarioSimulation() {
     	clearOutputDisplay();
+
+        // !!
+    	String decisionTreeFile = null;
+    	JFileChooser fileChooser2 = new JFileChooser("../../breathe/maractus_trees");
+        int returnValue2 = fileChooser2.showOpenDialog(null); // pick a file
+        if (returnValue2 == JFileChooser.APPROVE_OPTION) {
+        	decisionTreeFile = fileChooser2.getSelectedFile().getAbsolutePath();
+        }
+    	
     	JFileChooser fileChooser = new JFileChooser("../..");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -202,7 +211,7 @@ public class ControlPanel extends JPanel{
 
                 if(new File(PatientFilePath).exists() && app.loadPatientData(PatientFilePath)) {
                 	enableControlStartButton(false);
-                	app.startFromScenarioSimulation(scenarioFilePath);
+                	app.startFromScenarioSimulation(scenarioFilePath, decisionTreeFile);
                 }
                 else
                 	app.minilogStringData("\nPlease upload a valid scenario file.");
