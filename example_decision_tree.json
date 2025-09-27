@@ -1,0 +1,61 @@
+{
+  "actions": [
+    { "param": "TV", "op": "set", "value": 6 },
+    { "param": "FiO2", "op": "set", "value": 1.0 },
+    { "param": "PEEP", "op": "set", "value": 5 }
+  ],
+  "branches": [
+    {
+      "guard": [
+        { "metric": "cd", "interval": { "low": 60.0, "high": 999.0 } }
+      ],
+      "then": {
+        "actions": [
+          { "param": "RR", "op": "set", "value": 35 },
+          { "param": "TV", "op": "inc", "value": 1 }
+        ]
+      }
+    },
+    {
+      "guard": [
+        { "metric": "cd", "interval": { "low": 45.0, "high": 60.0 } }
+      ],
+      "then": {
+        "actions": [
+          { "param": "RR", "op": "inc", "value": 1 }
+        ]
+      }
+    }
+  ],
+  "else": {
+    "branches": [
+      {
+        "guard": [
+          { "metric": "os", "interval": { "low": 0.0, "high": 88.0 } }
+        ],
+        "then": {
+          "actions": [
+            { "param": "FiO2", "op": "inc", "value": 0.1 },
+            { "param": "PEEP", "op": "inc", "value": 1 }
+          ]
+        }
+      },
+      {
+        "guard": [
+          { "metric": "os", "interval": { "low": 95.0, "high": 100.0 } }
+        ],
+        "then": {
+          "actions": [
+            { "param": "FiO2", "op": "dec", "value": 0.1 },
+            { "param": "PEEP", "op": "dec", "value": 1 }
+          ]
+        }
+      }
+    ],
+    "else": {
+      "actions": [
+        { "param": "null", "op": "null", "value": null }
+      ]
+    }
+  }
+}
