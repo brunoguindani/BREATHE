@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitware.pulse.cdm.properties.CommonUnits.*;
 import com.kitware.pulse.cdm.system.equipment.mechanical_ventilator.actions.SEMechanicalVentilatorVolumeControl;
+import com.kitware.pulse.cdm.bind.Enums.eDriverWaveform;
+import com.kitware.pulse.cdm.bind.Enums.eSwitch;
 
 import java.io.*;
 import java.util.*;
@@ -50,6 +52,9 @@ public class DecisionTree {
     currentSettings.getPositiveEndExpiratoryPressure().setValue(6, PressureUnit.cmH2O);
     currentSettings.getRespirationRate().setValue(12, FrequencyUnit.Per_min);
     currentSettings.getTidalVolume().setValue(400, VolumeUnit.mL);
+    currentSettings.setInspirationWaveform(eDriverWaveform.Square);
+    currentSettings.setConnection(eSwitch.On);
+
 
     // Add initial node pointing to root
     Node initial = new Node();

@@ -325,7 +325,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
     	List<Double> dataValues = pe.pullData();
     	for (int i = 0; i < dataValues.size(); i++) {
     		patientState.put(requestList[i], dataValues.get(i));
-    		gui.minilogStringData(requestList[i] + " " + dataValues.get(i));
     	}
         // Read decision tree
         gui.minilogStringData(">> reading decision tree " + decisionTreeFile);
@@ -344,7 +343,7 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 
 		    } else {
 		        pe.processAction(a);
-		        gui.minilogStringData("\nApplying " +  a.toString());
+		        gui.minilogStringData("\nApplying:\n" +  a.toString());
 		        sendInputAction(a);
 		    }
 		}
@@ -355,7 +354,6 @@ public class SimulationWorker extends SwingWorker<Void, String>{
 		while(true) {
 			if (stopRequest)
 				return;
-			gui.minilogStringData("\n>> simulation time: " + patientState.get("SimTime"));
 			nearestMultiple = Math.round(patientState.get("SimTime") / pollInterval) * pollInterval;
 			if (!firstSkipped || Math.abs(patientState.get("SimTime") - nearestMultiple) > 0.05) {
 				gui.minilogStringData(">> skipping");
