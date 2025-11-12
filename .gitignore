@@ -1,3 +1,5 @@
 /.metadata/
 *.log
 *.sublime-*
+maractus_trees/
+split_logs*.sh
