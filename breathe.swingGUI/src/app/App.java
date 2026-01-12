@@ -170,12 +170,12 @@ public class App extends JFrame implements GuiCallback {
     	}
     }
     
-    public boolean startFromScenarioSimulation(String scenarioFile, String decisionTreeFile) {
+    public boolean startFromScenarioSimulation(String scenarioFile, String twinStrategyFile) {
     	if(scenarioFile != null) {
     		sim = new SimulationWorker(this);
-    		sim.setDecisionTreeFile(decisionTreeFile);
+    		sim.setTwinStrategyFile(twinStrategyFile);
     		sim.simulationFromScenario(scenarioFile);
-    		logPanel.append("\n" + scenarioFile + "\n" + decisionTreeFile + "\n");
+    		logPanel.append("\n" + scenarioFile + "\n" + twinStrategyFile + "\n");
     		patientConditionPanel.getPatientPanel().enableComponents(false);
     		return true;
     	}else {

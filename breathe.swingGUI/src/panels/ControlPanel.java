@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -192,14 +193,15 @@ public class ControlPanel extends JPanel{
     	clearOutputDisplay();
 
         // !!
-    	String decisionTreeFile = null;
-    	JFileChooser fileChooser2 = new JFileChooser("../../breathe/maractus_trees");
-        int returnValue2 = fileChooser2.showOpenDialog(null); // pick a file
-        if (returnValue2 == JFileChooser.APPROVE_OPTION) {
-        	decisionTreeFile = fileChooser2.getSelectedFile().getAbsolutePath();
-        }
+//    	String twinStrategyFile = null;
+//    	JFileChooser fileChooser2 = new JFileChooser("../../breathe/stratego");
+//        int returnValue2 = fileChooser2.showOpenDialog(null); // pick a file
+//        if (returnValue2 == JFileChooser.APPROVE_OPTION) {
+//        	twinStrategyFile = fileChooser2.getSelectedFile().getAbsolutePath();
+//        }
+    	String twinStrategyFile = "../../breathe_stratego/strat_05.json";
     	
-    	JFileChooser fileChooser = new JFileChooser("../..");
+    	JFileChooser fileChooser = new JFileChooser("../../breathe_scenarios");
         int returnValue = fileChooser.showOpenDialog(null); // pick a file
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             String scenarioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
@@ -211,7 +213,7 @@ public class ControlPanel extends JPanel{
 
                 if(new File(PatientFilePath).exists() && app.loadPatientData(PatientFilePath)) {
                 	enableControlStartButton(false);
-                	app.startFromScenarioSimulation(scenarioFilePath, decisionTreeFile);
+                	app.startFromScenarioSimulation(scenarioFilePath, twinStrategyFile);
                 }
                 else
                 	app.minilogStringData("\nPlease upload a valid scenario file.");
